@@ -26,6 +26,8 @@ public class HardwareDragonfly {
     public DcMotor bl   = null;
     public DcMotor  br  = null;
 
+    public Servo sv1 = null;
+
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -40,6 +42,8 @@ public class HardwareDragonfly {
         // Save reference to Hardware map
         hwMap = ahwMap;
         double sp = 0;
+
+        sv1 = hwMap.servo.get("servo1");
 
         // Define and Initialize Motors
 //        fl   = hwMap.dcMotor.get("fl");
@@ -61,6 +65,13 @@ public class HardwareDragonfly {
 //        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void turnServoContinuous(double speed){
+        sv1.setPosition(speed);
+    }
+    public void stopServoContinuous(){
+        sv1.setPosition(0);
     }
 
     public void resetEncoders()

@@ -43,6 +43,16 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("gamepad1 RY", gamepad1.right_stick_y);
         updateTelemetry(telemetry);
 
+        double c1rjy = gamepad1.right_stick_y;
+        robot.turnServoContinuous((c1rjy)/2+0.5);
+
+        if(gamepad1.a){
+            robot.turnServoContinuous(1);
+        }else if(gamepad1.y){
+            robot.turnServoContinuous(-1);
+        }else{
+            robot.stopServoContinuous();
+        }
 
         //debug
 //        telemetry.addData("count ", close_count);
