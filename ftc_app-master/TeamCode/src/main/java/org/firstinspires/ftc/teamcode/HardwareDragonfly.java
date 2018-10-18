@@ -7,6 +7,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDeviceInterfaceModu
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -46,25 +47,29 @@ public class HardwareDragonfly {
         sv1 = hwMap.servo.get("servo1");
 
         // Define and Initialize Motors
-//        fl   = hwMap.dcMotor.get("fl");
-//        fr  = hwMap.dcMotor.get("fr");
-//        bl   = hwMap.dcMotor.get("bl");
-//        br  = hwMap.dcMotor.get("br");
-//
-//        fl.setPower(sp);
-//        fr.setPower(sp);
-//        bl.setPower(sp);
-//        br.setPower(sp);
-//
-//        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//
-//        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fl   = hwMap.dcMotor.get("fl");
+        fr  = hwMap.dcMotor.get("fr");
+        bl   = hwMap.dcMotor.get("bl");
+        br  = hwMap.dcMotor.get("br");
+
+        fl.setPower(sp);
+        fr.setPower(sp);
+        bl.setPower(sp);
+        br.setPower(sp);
+
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+        br.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
 
     public void turnServoContinuous(double speed){
@@ -86,58 +91,58 @@ public class HardwareDragonfly {
         bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    public void encoderDrive(double flspeed, double frspeed, double blspeed, double brspeed, int fltarget, int frtarget, int bltarget, int brtarget) {
-        int newFLTarget;
-        int newFRTarget;
-        int newBLTarget;
-        int newBRTarget;
+//    public void encoderDrive(double flspeed, double frspeed, double blspeed, double brspeed, int fltarget, int frtarget, int bltarget, int brtarget) {
+//        int newFLTarget;
+//        int newFRTarget;
+//        int newBLTarget;
+//        int newBRTarget;
+//
+//        // Determine new target position, and pass to motor controller
+//        newFLTarget = fl.getCurrentPosition()+fltarget;
+//        newFRTarget = fr.getCurrentPosition()+frtarget;
+//        newBLTarget = bl.getCurrentPosition()+bltarget;
+//        newBRTarget = br.getCurrentPosition()+brtarget;
+//
+//        resetEncoders();
+//
+//        fl.setPower(flspeed);
+//        fr.setPower(frspeed);
+//        bl.setPower(blspeed);
+//        br.setPower(brspeed);
+//
+//        // keep looping while we are still active, and there is time left, and both motors are running.
+//        while(Math.abs(fl.getCurrentPosition())<Math.abs(fltarget) || Math.abs(fr.getCurrentPosition())<Math.abs(frtarget) || Math.abs(bl.getCurrentPosition())<Math.abs(bltarget) || Math.abs(br.getCurrentPosition())<Math.abs(brtarget))
+//        {
+//            if(!(Math.abs(fl.getCurrentPosition())<Math.abs(fltarget)))
+//            {
+//                fl.setPower(0);
+//            }
+//            if(!(Math.abs(fr.getCurrentPosition())<Math.abs(frtarget)))
+//            {
+//                fr.setPower(0);
+//            }
+//            if(!(Math.abs(bl.getCurrentPosition())<Math.abs(bltarget)))
+//            {
+//                bl.setPower(0);
+//            }
+//            if(!(Math.abs(br.getCurrentPosition())<Math.abs(brtarget)))
+//            {
+//                br.setPower(0);
+//            }
+//        }
+//
+//        fl.setPower(0);
+//        fr.setPower(0);
+//        bl.setPower(0);
+//        br.setPower(0);
+//    }
 
-        // Determine new target position, and pass to motor controller
-        newFLTarget = fl.getCurrentPosition()+fltarget;
-        newFRTarget = fr.getCurrentPosition()+frtarget;
-        newBLTarget = bl.getCurrentPosition()+bltarget;
-        newBRTarget = br.getCurrentPosition()+brtarget;
 
-        resetEncoders();
-
-        fl.setPower(flspeed);
-        fr.setPower(frspeed);
-        bl.setPower(blspeed);
-        br.setPower(brspeed);
-
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        while(Math.abs(fl.getCurrentPosition())<Math.abs(fltarget) || Math.abs(fr.getCurrentPosition())<Math.abs(frtarget) || Math.abs(bl.getCurrentPosition())<Math.abs(bltarget) || Math.abs(br.getCurrentPosition())<Math.abs(brtarget))
-        {
-            if(!(Math.abs(fl.getCurrentPosition())<Math.abs(fltarget)))
-            {
-                fl.setPower(0);
-            }
-            if(!(Math.abs(fr.getCurrentPosition())<Math.abs(frtarget)))
-            {
-                fr.setPower(0);
-            }
-            if(!(Math.abs(bl.getCurrentPosition())<Math.abs(bltarget)))
-            {
-                bl.setPower(0);
-            }
-            if(!(Math.abs(br.getCurrentPosition())<Math.abs(brtarget)))
-            {
-                br.setPower(0);
-            }
-        }
-
-        fl.setPower(0);
-        fr.setPower(0);
-        bl.setPower(0);
-        br.setPower(0);
-    }
-
-
-    public void driveLimitless(double flspeed, double frspeed, double blspeed, double brspeed) {
-        fl.setPower(flspeed);
-        fr.setPower(frspeed);
-        bl.setPower(blspeed);
-        br.setPower(brspeed);
+    public void driveLimitless(double left, double right) {
+        fl.setPower(left);
+        fr.setPower(right);
+        bl.setPower(left);
+        br.setPower(right);
     }
 
     public void allStop()

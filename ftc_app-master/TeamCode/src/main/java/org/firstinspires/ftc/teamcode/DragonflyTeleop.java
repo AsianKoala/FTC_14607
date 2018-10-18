@@ -43,9 +43,6 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("gamepad1 RY", gamepad1.right_stick_y);
         updateTelemetry(telemetry);
 
-        double c1rjy = gamepad1.right_stick_y;
-        robot.turnServoContinuous((c1rjy)/2+0.5);
-
         if(gamepad1.a){
             robot.turnServoContinuous(1);
         }else if(gamepad1.y){
@@ -53,6 +50,12 @@ public class DragonflyTeleop extends OpMode{
         }else{
             robot.stopServoContinuous();
         }
+
+        double leftDrivePower = gamepad1.left_stick_y;
+        double rightDrivePower = gamepad1.right_stick_y;
+        if(Math.abs(leftDrivePower) < 0.05) leftDrivePower = 0;
+        if(Math.abs(rightDrivePower) < 0.05) rightDrivePower = 0;
+        robot.driveLimitless(leftDrivePower, rightDrivePower);
 
         //debug
 //        telemetry.addData("count ", close_count);
