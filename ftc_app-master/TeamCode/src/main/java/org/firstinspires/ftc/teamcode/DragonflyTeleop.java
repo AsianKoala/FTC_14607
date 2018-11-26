@@ -36,6 +36,12 @@ public class DragonflyTeleop extends OpMode{
     public void start() {
     }
 
+    public static double expo(double driveVal){
+        if (driveVal>0)
+            return Math.pow(2,driveVal/15.02)-1;
+        else
+            return -(Math.pow(2,driveVal/15.02)-1);
+    }
     @Override
     public void loop() {
 
@@ -45,7 +51,7 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("gamepad1 LY", gamepad1.left_stick_y);
         telemetry.addData("gamepad1 RX", gamepad1.right_stick_x);
         telemetry.addData("gamepad1 RY", gamepad1.right_stick_y);
-        telemetry.addData("lift ENCODER", robot.lift.getCurrentPosition());
+        telemetry.addData("lift ENCODER", robot.lift.getCurre.oi.intPosition());
         telemetry.addData("lift target position var", lift_motor_position);
         telemetry.addData("lift actual target", robot.lift.getTargetPosition());
         updateTelemetry(telemetry);
@@ -62,7 +68,7 @@ public class DragonflyTeleop extends OpMode{
         double rightDrivePower = gamepad2.right_stick_y;
         if(Math.abs(leftDrivePower) < 0.05) leftDrivePower = 0;
         if(Math.abs(rightDrivePower) < 0.05) rightDrivePower = 0;
-        robot.driveLimitless(leftDrivePower, rightDrivePower);
+        robot.driveLimitless(expo(leftDrivePower), expo(rightDrivePower));
 
         robot.intake.setPower(gamepad1.right_stick_y);
 
