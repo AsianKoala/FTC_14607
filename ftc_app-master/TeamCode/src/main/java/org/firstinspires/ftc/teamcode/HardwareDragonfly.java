@@ -16,6 +16,11 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 
 /**
  * Created by charliewu on 9/20/18.
@@ -33,6 +38,12 @@ public class HardwareDragonfly {
     public DcMotor lift   = null;
 
     public CRServo intake = null;
+
+    public Servo intakeDoor = null;
+    public Servo hangRelease = null;
+    public Servo markerDeployer = null;
+
+    public BNO055IMU revIMU = null;
 
 //
 //    public Servo sv1 = null;
@@ -66,6 +77,13 @@ public class HardwareDragonfly {
 
         intake = hwMap.crservo.get("intake");
 
+        intakeDoor = hwMap.servo.get("intakeDoor");
+        hangRelease = hwMap.servo.get("hangRelease");
+        markerDeployer = hwMap.servo.get("markerDeployer");
+
+        revIMU = hwMap.get(BNO055IMU.class, "revIMU");
+        revIMU.initialize(new BNO055IMU.Parameters());
+
         fl.setPower(sp);
         fr.setPower(sp);
         bl.setPower(sp);
@@ -75,6 +93,10 @@ public class HardwareDragonfly {
         cascade.setPower(sp);
 
         intake.setPower(0);
+
+        intakeDoor.setPosition(0);
+        hangRelease.setPosition(0.2); // latch hang on start
+        markerDeployer.setPosition(0);
 
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -89,7 +111,7 @@ public class HardwareDragonfly {
         bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         cascade.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -182,6 +204,10 @@ public class HardwareDragonfly {
         fr.setPower(0);
         bl.setPower(0);
         br.setPower(0);
+    }
+
+    public int getHeading(){
+        return -(int)Math.floor(revIMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle);
     }
 
     /***

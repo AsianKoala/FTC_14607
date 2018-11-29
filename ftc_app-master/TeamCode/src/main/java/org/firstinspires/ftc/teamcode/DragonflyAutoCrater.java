@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -14,6 +16,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 @Autonomous(name = "Dragonfly Crater", group = "Dragonfly")
 
 public class DragonflyAutoCrater extends LinearOpMode {
+    HardwareDragonfly robot = new HardwareDragonfly();
+
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -34,6 +38,14 @@ public class DragonflyAutoCrater extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        robot.init(hardwareMap);
+        robot.resetEncoders();
+        telemetry.addData("Say", "Hello Driver");
+        updateTelemetry(telemetry);
+
+        robot.lift.setPower(0); // brake lift motor to keep robot hanging in place
+
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -45,17 +57,20 @@ public class DragonflyAutoCrater extends LinearOpMode {
         }
 
         /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start tracking");
-        telemetry.update();
+        telemetry.addData("status", "waiting for start");
+        updateTelemetry(telemetry);
         waitForStart();
 
+        long timeOfStart = System.currentTimeMillis();
+
+        int goldState = 1; // 0 = left, 1 = center, 2 = right
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
                 tfod.activate();
             }
             boolean twoObjectsFound = false;
-            while(opModeIsActive() && !twoObjectsFound){
+            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<5000){ // 5 second timeout in case phone does not recognize minerals
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
@@ -82,30 +97,14 @@ public class DragonflyAutoCrater extends LinearOpMode {
 
                         if(silverCenter && silverRight){ // GOLD IS LEFT
                             telemetry.addData("GOLD: ", "LEFT");
+                            goldState = 0;
                         }else if(!silverCenter && silverRight){ // GOLD IS LEFT
                             telemetry.addData("GOLD: ", "CENTER");
+                            goldState = 1;
                         }else if(silverCenter && !silverRight){ // GOLD IS LEFT
                             telemetry.addData("GOLD: ", "RIGHT");
+                            goldState = 2;
                         }
-                        // DONE
-//                        for (Recognition recognition : updatedRecognitions) {
-//                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-//                                goldMineralX = (int) recognition.getLeft();
-//                            } else if (silverMineral1X == -1) {
-//                                silverMineral1X = (int) recognition.getLeft();
-//                            } else {
-//                                silverMineral2X = (int) recognition.getLeft();
-//                            }
-//                        }
-//                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-//                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-//                                    telemetry.addData("Gold Mineral Position", "Left");
-//                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-//                                    telemetry.addData("Gold Mineral Position", "Right");
-//                                } else {
-//                                    telemetry.addData("Gold Mineral Position", "Center");
-//                                }
-//                            }
                     }else{
                         telemetry.addData("No two objects found: ", updatedRecognitions.size());
                     }
@@ -117,7 +116,27 @@ public class DragonflyAutoCrater extends LinearOpMode {
         if (tfod != null) {
             tfod.shutdown();
         }
-        while (opModeIsActive()){
+
+        switch(goldState){
+            case 0:
+                unlockHang();
+                lowerHangPowerless(3000);
+                detachHang();
+                moveForward(0.3, 12);
+                resetHang();
+                turn(-0.3, -45);
+                moveForward(0.3, 30);
+
+                break;
+            case 1:
+//                moveForward(0.8, 24);
+                break;
+            case 2:
+//                moveForward(0.8, 24);
+                break;
+        }
+
+        while (opModeIsActive()){ // wait until end of opmode
 
         }
     }
@@ -149,5 +168,66 @@ public class DragonflyAutoCrater extends LinearOpMode {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+    }
+
+    final double WHEEL_CIRCUMFERENCE_INCHES = Math.PI * 4;
+    public double encoderValToInches(int val){
+        double rotations = ((double)val)/537.6;
+        double inches_travelled = rotations*WHEEL_CIRCUMFERENCE_INCHES;
+        return inches_travelled;
+    }
+
+    public void moveForward(double power, double inches){
+        int startLeftEncoderPos = robot.fl.getCurrentPosition();
+        int startRightEncoderPos = robot.fr.getCurrentPosition();
+        robot.fl.setPower(-power);
+        robot.fr.setPower(-power);
+        robot.bl.setPower(-power);
+        robot.br.setPower(-power);
+        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
+            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+                robot.fl.setPower(0);
+                robot.bl.setPower(0);
+            }
+            if (encoderValToInches(robot.fr.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+                robot.fr.setPower(0);
+                robot.br.setPower(0);
+            }
+        }
+    }
+
+    public void unlockHang(){
+        robot.hangRelease.setPosition(0);
+        sleep(1000); // wait for locker to move completely out of way before drop
+    }
+
+    public void lowerHangPowerless(int timeMillis){
+        robot.lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        sleep(timeMillis);
+        robot.lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public void detachHang(){
+        while(opModeIsActive() && robot.lift.getCurrentPosition() > -5000){
+            robot.lift.setPower(-0.3);
+        }
+        robot.lift.setPower(0);
+    }
+
+    public void resetHang(){
+        while(opModeIsActive() && robot.lift.getCurrentPosition() < 0){
+            robot.lift.setPower(0.3);
+        }
+        robot.lift.setPower(0);
+    }
+
+    public void turn(double power, double degrees){ // positive power and positive degrees for right turn
+        int startHeading = robot.getHeading();
+        int headingDiff = robot.getHeading()-startHeading;
+        while(Math.abs(headingDiff)<Math.abs(degrees)){
+            headingDiff = robot.getHeading()-startHeading;
+            robot.driveLimitless(power, -power);
+        }
+        robot.allStop();
     }
 }
