@@ -1,20 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-import java.util.List;
+@Autonomous(name = "Dragonfly Marker", group = "Dragonfly")
 
-@Autonomous(name = "Dragonfly Crater", group = "Dragonfly")
-
-public class DragonflyAutoCrater extends LinearOpMode {
+public class DragonflyAutoMarker extends LinearOpMode {
     HardwareDragonfly robot = new HardwareDragonfly();
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";

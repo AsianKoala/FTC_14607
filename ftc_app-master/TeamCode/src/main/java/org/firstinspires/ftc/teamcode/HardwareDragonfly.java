@@ -42,6 +42,7 @@ public class HardwareDragonfly {
     public Servo intakeDoor = null;
     public Servo hangRelease = null;
     public Servo markerDeployer = null;
+    public Servo hookRelease = null;
 
     public BNO055IMU revIMU = null;
 
@@ -80,6 +81,7 @@ public class HardwareDragonfly {
         intakeDoor = hwMap.servo.get("intakeDoor");
         hangRelease = hwMap.servo.get("hangRelease");
         markerDeployer = hwMap.servo.get("markerDeployer");
+        hookRelease = hwMap.servo.get("hookRelease");
 
         revIMU = hwMap.get(BNO055IMU.class, "revIMU");
         revIMU.initialize(new BNO055IMU.Parameters());
@@ -92,11 +94,12 @@ public class HardwareDragonfly {
         lift.setPower(sp);
         cascade.setPower(sp);
 
-        intake.setPower(0);
+        intake.setPower(0.01);
 
-        intakeDoor.setPosition(0);
+        intakeDoor.setPosition(0.6);
         hangRelease.setPosition(0.2); // latch hang on start
-        markerDeployer.setPosition(0);
+        markerDeployer.setPosition(0.85);
+        hookRelease.setPosition(0.6);
 
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
