@@ -60,6 +60,8 @@ public class DragonflyAutoCrater extends LinearOpMode {
         updateTelemetry(telemetry);
         waitForStart();
 
+        int globalStartHeading = robot.getHeading();
+
         long timeOfStart = System.currentTimeMillis();
 
         int goldState = 1; // 0 = left, 1 = center, 2 = right
@@ -123,19 +125,52 @@ public class DragonflyAutoCrater extends LinearOpMode {
                 detachHang();
                 moveForward(0.1, 12);
                 sleep(2000);
+
+                while(robot.getHeading()>globalStartHeading){
+                    robot.driveLimitless(0.1, -0.1);
+                }
+                robot.allStop();
+                while(robot.getHeading()<globalStartHeading){
+                    robot.driveLimitless(-0.1, 0.1);
+                }
+                robot.allStop();
+
+                sleep(2000);
                 resetHang();
                 sleep(2000);
-                turn(0.3, 35);
+//                turn(0.1, 35);
+
+
+                while(robot.getHeading()>-45){
+                    robot.driveLimitless(0.05, -0.05);
+                }
+                robot.allStop();
+                while(robot.getHeading()<-45){
+                    robot.driveLimitless(-0.05, 0.05);
+                }
+                robot.allStop();
+
+
                 sleep(2000);
-                moveForward(0.3, 30);
+                moveForward(0.1, 30);
                 sleep(2000);
-                turn(0.3, 90);
+//                turn(0.1, 90);
+
+                while(robot.getHeading()>-135){
+                    robot.driveLimitless(0.05, -0.05);
+                }
+                robot.allStop();
+                while(robot.getHeading()<-135){
+                    robot.driveLimitless(-0.05, 0.05);
+                }
+                robot.allStop();
+
                 sleep(2000);
-                moveBackwards(0.3, 30);
+                moveBackwards(0.1, 30);
                 sleep(2000);
                 dropMarker();
                 sleep(2000);
-                moveForward(0.3, 80);
+                moveForward(0.1, 80);
                 sleep(2000);
                 break;
             case 1:
@@ -223,22 +258,26 @@ public class DragonflyAutoCrater extends LinearOpMode {
     }
 
     public void moveForward(double power, double inches){
+        robot.resetDriveEncoders();
+        //sleep(200);
         int startLeftEncoderPos = robot.fl.getCurrentPosition();
-        int startRightEncoderPos = robot.fr.getCurrentPosition();
+        //int startRightEncoderPos = robot.fr.getCurrentPosition();
         robot.fl.setPower(-power);
         robot.fr.setPower(-power);
         robot.bl.setPower(-power);
         robot.br.setPower(-power);
-        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
-            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
-                robot.fl.setPower(0);
-                robot.bl.setPower(0);
-            }
-            if (encoderValToInches(robot.fr.getCurrentPosition() - startLeftEncoderPos) >= inches) {
-                robot.fr.setPower(0);
-                robot.br.setPower(0);
-            }
+        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches) {
         }
+//        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
+//            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+//                robot.fl.setPower(0);
+//                robot.bl.setPower(0);
+//            }
+//            if (encoderValToInches(robot.fr.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+//                robot.fr.setPower(0);
+//                robot.br.setPower(0);
+//            }
+//        }
         robot.allStop();
     }
 
@@ -281,15 +320,15 @@ public class DragonflyAutoCrater extends LinearOpMode {
             robot.lift.setPower(0.5);
         }
         robot.lift.setPower(0);
-        robot.hookRelease.setPosition(0.13);
+        robot.hookRelease.setPosition(0.2); //0.13 correct
         sleep(750);
         robot.hookRelease.setPosition(0.6);
         sleep(750);
-        robot.hookRelease.setPosition(0.13);
+        robot.hookRelease.setPosition(0.2);
         sleep(750);
         robot.hookRelease.setPosition(0.6);
         sleep(750);
-        robot.hookRelease.setPosition(0.13);
+        robot.hookRelease.setPosition(0.2);
         sleep(1000);
     }
 
@@ -303,6 +342,15 @@ public class DragonflyAutoCrater extends LinearOpMode {
 
     public void turn(double power, double degrees){ // positive power and positive degrees for right turn
         int startHeading = robot.getHeading();
+        int headingDiff = robot.getHeading()-startHeading;
+        while(Math.abs(headingDiff)<Math.abs(degrees)){
+            headingDiff = robot.getHeading()-startHeading;
+            robot.driveLimitless(power, -power);
+        }
+        robot.allStop();
+    }
+
+    public void turn(double power, double degrees, int startHeading){ // positive power and positive degrees for right turn
         int headingDiff = robot.getHeading()-startHeading;
         while(Math.abs(headingDiff)<Math.abs(degrees)){
             headingDiff = robot.getHeading()-startHeading;
