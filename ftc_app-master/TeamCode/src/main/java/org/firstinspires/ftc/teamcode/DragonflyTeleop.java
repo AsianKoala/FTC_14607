@@ -73,8 +73,8 @@ public class DragonflyTeleop extends OpMode{
             rightDrivePower*=3;
         }
         if(gamepad2.left_trigger>0.5){
-            leftDrivePower=gamepad2.left_stick_y/5;
-            rightDrivePower=gamepad2.right_stick_y/5;
+            leftDrivePower=gamepad2.left_stick_y/7; //5???
+            rightDrivePower=gamepad2.right_stick_y/7;
         }
         robot.driveLimitless((leftDrivePower), (rightDrivePower));
 
@@ -93,7 +93,9 @@ public class DragonflyTeleop extends OpMode{
 
         double intakePower = gamepad1.right_stick_y;
         if(Math.abs(intakePower) < 0.05) intakePower = 1.0;
-        robot.intake.setPower(intakePower);
+        robot.intake.setPower(-intakePower);
+//        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGER
+        //intake power !!
 
         if(gamepad1.dpad_down){
             robot.intakeDoor.setPosition(0);

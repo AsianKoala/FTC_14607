@@ -1,21 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-@Autonomous(name = "Dragonfly Crater", group = "Dragonfly")
+import java.util.ArrayList;
+import java.util.List;
 
-public class DragonflyAutoCrater extends LinearOpMode {
+@Autonomous(name = "Dragonfly TESTER", group = "Dragonfly")
+
+public class DragonflyAutoTester extends LinearOpMode {
     HardwareDragonfly robot = new HardwareDragonfly();
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -61,6 +61,8 @@ public class DragonflyAutoCrater extends LinearOpMode {
         updateTelemetry(telemetry);
         waitForStart();
 
+        int globalStartHeading = robot.getHeading();
+
         long timeOfStart = System.currentTimeMillis();
 
         int goldState = 1; // 0 = left, 1 = center, 2 = right
@@ -70,9 +72,21 @@ public class DragonflyAutoCrater extends LinearOpMode {
                 tfod.activate();
             }
             boolean twoObjectsFound = false;
-            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<5000){ // 5 second timeout in case phone does not recognize minerals
+            while(opModeIsActive() && !twoObjectsFound){ // 5 second timeout in case phone does not recognize minerals
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                List<Recognition> updatedRecognitionsCropped = new ArrayList<Recognition>(updatedRecognitions);
+
+                //start of sketchy
+                for(Recognition x : updatedRecognitions){
+                    telemetry.addData(x.getLabel(), x.getTop());
+                    if(x.getTop()<600){ //above 60 px0 from the top
+                        updatedRecognitionsCropped.remove(x);
+                    }
+                }
+                updatedRecognitions = updatedRecognitionsCropped;
+                //end of sketchy
+
                 if (updatedRecognitions != null) {
                     if (updatedRecognitions.size() == 2) {
                         twoObjectsFound = true;
@@ -115,70 +129,6 @@ public class DragonflyAutoCrater extends LinearOpMode {
         }
         if (tfod != null) {
             tfod.shutdown();
-        }
-
-        switch(goldState){
-            case 0:
-                unlockHang();
-                lowerHangPowerless(3000);
-                detachHang();
-                moveForward(0.1, 12);
-                sleep(2000);
-                resetHang();
-                sleep(2000);
-                turn(0.3, 35);
-                sleep(2000);
-                moveForward(0.3, 30);
-                sleep(2000);
-                turn(0.3, 90);
-                sleep(2000);
-                moveBackwards(0.3, 30);
-                sleep(2000);
-                dropMarker();
-                sleep(2000);
-                moveForward(0.3, 80);
-                sleep(2000);
-                break;
-            case 1:
-                unlockHang();
-                lowerHangPowerless(3000);
-                detachHang();
-                moveForward(0.1, 12);
-                sleep(2000);
-                resetHang();
-                sleep(2000);
-                moveForward(0.3, 34+6);
-                sleep(2000);
-                turn(0.3, 140); //should be 135
-                sleep(2000);
-                dropMarker();
-                sleep(2000);
-                moveForward(0.3, 85); //80?
-                sleep(2000);
-                break;
-            case 2:
-                unlockHang();
-                lowerHangPowerless(3000);
-                detachHang();
-                moveForward(0.1, 12);
-                sleep(2000);
-                resetHang();
-                sleep(2000);
-                turn(-0.3, -35);
-                sleep(2000);
-                moveForward(0.3, 30);
-                sleep(2000);
-                turn(0.3, 90); //should be 135
-                sleep(2000);
-                moveForward(0.3, 24+10);
-                sleep(2000);
-                turn(0.3, 90);
-                sleep(2000);
-                dropMarker();
-                sleep(2000);
-                moveForward(0.3, 85); //80?
-                sleep(2000);
-                break;
         }
 
         while (opModeIsActive()){ // wait until end of opmode
@@ -224,22 +174,49 @@ public class DragonflyAutoCrater extends LinearOpMode {
     }
 
     public void moveForward(double power, double inches){
+        robot.resetDriveEncoders();
+        //sleep(200);
         int startLeftEncoderPos = robot.fl.getCurrentPosition();
-        int startRightEncoderPos = robot.fr.getCurrentPosition();
+        //int startRightEncoderPos = robot.fr.getCurrentPosition();
         robot.fl.setPower(-power);
         robot.fr.setPower(-power);
         robot.bl.setPower(-power);
         robot.br.setPower(-power);
-        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
-            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
-                robot.fl.setPower(0);
-                robot.bl.setPower(0);
-            }
-            if (encoderValToInches(robot.fr.getCurrentPosition() - startLeftEncoderPos) >= inches) {
-                robot.fr.setPower(0);
-                robot.br.setPower(0);
-            }
+        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches) {
         }
+//        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
+//            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+//                robot.fl.setPower(0);
+//                robot.bl.setPower(0);
+//            }
+//            if (encoderValToInches(robot.fr.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+//                robot.fr.setPower(0);
+//                robot.br.setPower(0);
+//            }
+//        }
+        robot.allStop();
+    }
+
+    public void turnEncoders(double power, double val){
+        //sleep(200);
+        int startLeftEncoderPos = robot.fl.getCurrentPosition();
+        //int startRightEncoderPos = robot.fr.getCurrentPosition();
+        robot.fl.setPower(-power);
+        robot.fr.setPower(power);
+        robot.bl.setPower(-power);
+        robot.br.setPower(power);
+        while(opModeIsActive() && Math.abs(robot.fl.getCurrentPosition()-startLeftEncoderPos) < val) {
+        }
+//        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
+//            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+//                robot.fl.setPower(0);
+//                robot.bl.setPower(0);
+//            }
+//            if (encoderValToInches(robot.fr.getCurrentPosition() - startLeftEncoderPos) >= inches) {
+//                robot.fr.setPower(0);
+//                robot.br.setPower(0);
+//            }
+//        }
         robot.allStop();
     }
 
@@ -282,15 +259,15 @@ public class DragonflyAutoCrater extends LinearOpMode {
             robot.lift.setPower(0.5);
         }
         robot.lift.setPower(0);
-        robot.hookRelease.setPosition(0.13);
+        robot.hookRelease.setPosition(0.2); //0.13 correct
         sleep(750);
         robot.hookRelease.setPosition(0.6);
         sleep(750);
-        robot.hookRelease.setPosition(0.13);
+        robot.hookRelease.setPosition(0.2);
         sleep(750);
         robot.hookRelease.setPosition(0.6);
         sleep(750);
-        robot.hookRelease.setPosition(0.13);
+        robot.hookRelease.setPosition(0.2);
         sleep(1000);
     }
 
@@ -304,6 +281,15 @@ public class DragonflyAutoCrater extends LinearOpMode {
 
     public void turn(double power, double degrees){ // positive power and positive degrees for right turn
         int startHeading = robot.getHeading();
+        int headingDiff = robot.getHeading()-startHeading;
+        while(Math.abs(headingDiff)<Math.abs(degrees)){
+            headingDiff = robot.getHeading()-startHeading;
+            robot.driveLimitless(power, -power);
+        }
+        robot.allStop();
+    }
+
+    public void turn(double power, double degrees, int startHeading){ // positive power and positive degrees for right turn
         int headingDiff = robot.getHeading()-startHeading;
         while(Math.abs(headingDiff)<Math.abs(degrees)){
             headingDiff = robot.getHeading()-startHeading;

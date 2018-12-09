@@ -94,7 +94,7 @@ public class HardwareDragonfly {
         lift.setPower(sp);
         cascade.setPower(sp);
 
-        intake.setPower(0.01);
+        intake.setPower(0.1120);
 
         intakeDoor.setPosition(0.6);
         hangRelease.setPosition(0.2); // latch hang on start
