@@ -38,6 +38,7 @@ public class HardwareDragonfly {
     public DcMotor lift   = null;
 
     public CRServo intake = null;
+    public CRServo intake2 = null;
 
     public Servo intakeDoor = null;
     public Servo hangRelease = null;
@@ -77,6 +78,7 @@ public class HardwareDragonfly {
         cascade   = hwMap.dcMotor.get("cascade");
 
         intake = hwMap.crservo.get("intake");
+        intake2 = hwMap.crservo.get("intake2");
 
         intakeDoor = hwMap.servo.get("intakeDoor");
         hangRelease = hwMap.servo.get("hangRelease");
@@ -95,6 +97,7 @@ public class HardwareDragonfly {
         cascade.setPower(sp);
 
         intake.setPower(0.1120);
+        intake2.setPower(0.1120);
 
         intakeDoor.setPosition(0.6);
         hangRelease.setPosition(0.2); // latch hang on start

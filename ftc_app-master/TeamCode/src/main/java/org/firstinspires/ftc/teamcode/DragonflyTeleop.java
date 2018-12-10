@@ -83,6 +83,7 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("rightDrivePower", expo(rightDrivePower));
         telemetry.addData("lift motor runmode", robot.lift.getZeroPowerBehavior());
         telemetry.addData("intake power get", robot.intake.getPower());
+        telemetry.addData("intake2 power get", robot.intake2.getPower());
         telemetry.addData("intakeDoor position get", robot.intakeDoor.getPosition());
         telemetry.addData("markerDeployer position get", robot.markerDeployer.getPosition());
         telemetry.addData("hangRelease position get", robot.hangRelease.getPosition());
@@ -94,7 +95,9 @@ public class DragonflyTeleop extends OpMode{
         double intakePower = gamepad1.right_stick_y;
         if(Math.abs(intakePower) < 0.05) intakePower = 1.0;
         robot.intake.setPower(-intakePower);
+        robot.intake2.setPower(-intakePower);
 //        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGER
+//        robot.intake2.setPower(gamepad1.right_stick_y/2);
         //intake power !!
 
         if(gamepad1.dpad_down){
