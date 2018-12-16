@@ -71,7 +71,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 tfod.activate();
             }
             boolean twoObjectsFound = false;
-            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<2500){ // 2.5 second timeout in case phone does not recognize minerals
+            while(opModeIsActive() && opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<2500){ // 2.5 second timeout in case phone does not recognize minerals
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
@@ -138,17 +138,17 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
         //turn out of hang
         if(goldState != 0){
-            while(robot.getHeading()>-30){ robot.driveLimitless(0.3, -0.3); }
+            while(opModeIsActive() && robot.getHeading()>-30){ robot.driveLimitless(0.3, -0.3); }
             robot.allStop();
         }else{
             //turn to face wall
-            while(robot.getHeading()>-28){ robot.driveLimitless(0.3, -0.3); }
+            while(opModeIsActive() && robot.getHeading()>-28){ robot.driveLimitless(0.3, -0.3); }
             robot.allStop();
             sleep(200);
-            while(robot.getHeading()<-28){ robot.driveLimitless(-0.20, 0.20); }
+            while(opModeIsActive() && robot.getHeading()<-28){ robot.driveLimitless(-0.20, 0.20); }
             robot.allStop();
             sleep(200);
-            while(robot.getHeading()>-28){ robot.driveLimitless(0.2, -0.2); }
+            while(opModeIsActive() && robot.getHeading()>-28){ robot.driveLimitless(0.2, -0.2); }
             robot.allStop();
         }
 
@@ -158,9 +158,9 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
             //turn back to face forward
 
-            while(robot.getHeading()<globalStartHeading+5){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+            while(opModeIsActive() && robot.getHeading()<globalStartHeading+5){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
             sleep(200);
-            while(robot.getHeading()>globalStartHeading+5){ robot.driveLimitless(0.2, -0.2); }
+            while(opModeIsActive() && robot.getHeading()>globalStartHeading+5){ robot.driveLimitless(0.2, -0.2); }
             robot.allStop();
             //drive to sampling field
             moveForward(0.7, 6);
@@ -173,29 +173,37 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 moveForward(0.8, 38); //42
 
                 //turn to face back of robot to marker zone
-                while(robot.getHeading()>-135){ robot.driveLimitless(0.3, -0.3); }
+                while(opModeIsActive() && robot.getHeading()>-135){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
                 sleep(200);
-                while(robot.getHeading()<-135){ robot.driveLimitless(-0.20, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-135){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
                 //back up until in marker zone
                 moveForward(-0.8, 27);
 
                 //correction alignment to face crater
-                while(robot.getHeading()>-135){ robot.driveLimitless(0.2, -0.2); }
+                while(opModeIsActive() && robot.getHeading()>-135){ robot.driveLimitless(0.2, -0.2); }
                 robot.allStop();
                 sleep(200);
-                while(robot.getHeading()<-135){ robot.driveLimitless(-0.20, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-135){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
                 //drop marker
                 dropMarker();
 
                 //move forwards to crater
-                moveForward(1, 53); //TEST
+                moveForward(1, 53); //TEST 53
 
-                moveForward(0.8, 10);
+                while(opModeIsActive() && robot.getHeading()<-125){ robot.driveLimitless(-0.20, 0.20); }
+                robot.allStop();
+                sleep(200);
+                while(opModeIsActive() && robot.getHeading()>-125){ robot.driveLimitless(0.2, -0.2); }
+                robot.allStop();
+
+
+
+                moveForward(0.8, 30);
 
                 break;
             case 1:
@@ -203,10 +211,10 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 moveForward(0.8, 48); //30
 
                 //turn to face wall
-                while(robot.getHeading()>-90){ robot.driveLimitless(0.3, -0.3); }
+                while(opModeIsActive() && robot.getHeading()>-90){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
                 sleep(200);
-                while(robot.getHeading()<-90){ robot.driveLimitless(-0.20, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-90){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
                 //drop marker
@@ -214,32 +222,32 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 sleep(500);
 
                 //turn to face crater
-                while(robot.getHeading()>-132){ robot.driveLimitless(0, -0.3); }
+                while(opModeIsActive() && robot.getHeading()>-132){ robot.driveLimitless(0, -0.3); }
                 robot.allStop();
                 sleep(200);
-                while(robot.getHeading()<-132){ robot.driveLimitless(0, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-132){ robot.driveLimitless(0, 0.20); }
                 robot.allStop();
 
                 //move forwards to crater
                 moveForward(1, 50); //TEST
 
-                moveForward(0.5, 10);
+                moveForward(0.8, 18); //10 0.5
 
                 break;
             case 2:
-                while(robot.getHeading()>35){ robot.driveLimitless(0.3, -0.3); }
+                while(opModeIsActive() && robot.getHeading()>35){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
                 sleep(200);
-                while(robot.getHeading()<35){ robot.driveLimitless(-0.20, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<35){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
                 //move forward to knock off gold mineral
                 moveForward(0.8, 35); //30
 
                 //turn to face marker wall
-                while(robot.getHeading()>-55){ robot.driveLimitless(0.3, -0.3); }
+                while(opModeIsActive() && robot.getHeading()>-55){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
                 sleep(200);
-                while(robot.getHeading()<-55){ robot.driveLimitless(-0.20, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-55){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
                 //drive forwards toward marker zone
@@ -249,16 +257,16 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 dropMarker();
 
                 //turn to face crater
-                while(robot.getHeading()>-132){ robot.driveLimitless(0.3, -0.3); }
+                while(opModeIsActive() && robot.getHeading()>-132){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
                 sleep(200);
-                while(robot.getHeading()<-132){ robot.driveLimitless(-0.20, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-132){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
                 //move forwards to crater
                 moveForward(1, 50); //TEST
 
-                moveForward(0.8, 10);
+                moveForward(0.8, 18); //10
 
                 break;
         }
@@ -308,7 +316,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
     public void lowerHangFast(){
         robot.lift.setPower(1.0);
-        while(robot.lift.getCurrentPosition() > -36854){ //lower robot until hook is not touching latch
+        while(opModeIsActive() && robot.lift.getCurrentPosition() > -36854){ //lower robot until hook is not touching latch
 
         }
         robot.lift.setPower(0);
@@ -316,7 +324,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
     public void resetHangPartial(){
         robot.lift.setPower(-1.0);
-        while(robot.lift.getCurrentPosition() < -27440){ //lower hook until hook is not at latch level
+        while(opModeIsActive() && robot.lift.getCurrentPosition() < -27440){ //lower hook until hook is not at latch level
 
         }
         robot.lift.setPower(0);
@@ -331,9 +339,9 @@ public class DragonflyAutoMarker extends LinearOpMode {
         robot.fr.setPower(-power);
         robot.bl.setPower(-power);
         robot.br.setPower(-power);
-        while(opModeIsActive() && Math.abs(encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos)) < inches) {
+        while(opModeIsActive() && opModeIsActive() && Math.abs(encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos)) < inches) {
         }
-//        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
+//        while(opModeIsActive() && opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
 //            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
 //                robot.fl.setPower(0);
 //                robot.bl.setPower(0);
@@ -354,9 +362,9 @@ public class DragonflyAutoMarker extends LinearOpMode {
         robot.fr.setPower(power);
         robot.bl.setPower(-power);
         robot.br.setPower(power);
-        while(opModeIsActive() && Math.abs(robot.fl.getCurrentPosition()-startLeftEncoderPos) < val) {
+        while(opModeIsActive() && opModeIsActive() && Math.abs(robot.fl.getCurrentPosition()-startLeftEncoderPos) < val) {
         }
-//        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
+//        while(opModeIsActive() && opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
 //            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {
 //                robot.fl.setPower(0);
 //                robot.bl.setPower(0);
@@ -376,7 +384,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
         robot.fr.setPower(power);
         robot.bl.setPower(power);
         robot.br.setPower(power);
-        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) > -inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) > -inches) {
+        while(opModeIsActive() && opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) > -inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) > -inches) {
             if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) <= -inches) {
                 robot.fl.setPower(0);
                 robot.bl.setPower(0);
@@ -404,7 +412,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
     }
 
     public void detachHang(){
-        while(opModeIsActive() && robot.lift.getCurrentPosition() > -4684){
+        while(opModeIsActive() && opModeIsActive() && robot.lift.getCurrentPosition() > -4684){
             robot.lift.setPower(0.5);
         }
         robot.lift.setPower(0);
@@ -422,7 +430,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
     public void resetHang(){
         robot.hookRelease.setPosition(0.6);
-        while(opModeIsActive() && robot.lift.getCurrentPosition() < -100){
+        while(opModeIsActive() && opModeIsActive() && robot.lift.getCurrentPosition() < -100){
             robot.lift.setPower(-0.3);
         }
         robot.lift.setPower(0);
@@ -431,7 +439,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
     public void turn(double power, double degrees){ // positive power and positive degrees for right turn
         int startHeading = robot.getHeading();
         int headingDiff = robot.getHeading()-startHeading;
-        while(Math.abs(headingDiff)<Math.abs(degrees)){
+        while(opModeIsActive() && Math.abs(headingDiff)<Math.abs(degrees)){
             headingDiff = robot.getHeading()-startHeading;
             robot.driveLimitless(power, -power);
         }
@@ -440,7 +448,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
     public void turn(double power, double degrees, int startHeading){ // positive power and positive degrees for right turn
         int headingDiff = robot.getHeading()-startHeading;
-        while(Math.abs(headingDiff)<Math.abs(degrees)){
+        while(opModeIsActive() && Math.abs(headingDiff)<Math.abs(degrees)){
             headingDiff = robot.getHeading()-startHeading;
             robot.driveLimitless(power, -power);
         }
