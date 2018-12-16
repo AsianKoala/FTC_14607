@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -46,8 +47,6 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
         robot.lift.setPower(0); // brake lift motor to keep robot hanging in place
 
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -65,27 +64,16 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
         long timeOfStart = System.currentTimeMillis();
 
-        int goldState = 1; // 0 = left, 1 = center, 2 = right
+        int goldState = 0; // 0 = left, 1 = center, 2 = right
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
                 tfod.activate();
             }
             boolean twoObjectsFound = false;
-            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<5000){ // 5 second timeout in case phone does not recognize minerals
+            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<2500){ // 2.5 second timeout in case phone does not recognize minerals
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-//                List<Recognition> updatedRecognitionsCropped = new ArrayList<Recognition>(updatedRecognitions);
-//
-//                //start of sketchy
-//                for(Recognition x : updatedRecognitions){
-//                    if(x.getTop()<600){ //above 60 px0 from the top
-//                        updatedRecognitionsCropped.remove(x);
-//                    }
-//                }
-//                updatedRecognitions = updatedRecognitionsCropped;
-                //end of sketchy
-
                 if (updatedRecognitions != null) {
                     if (updatedRecognitions.size() == 2) {
                         twoObjectsFound = true;
@@ -95,31 +83,46 @@ public class DragonflyAutoMarker extends LinearOpMode {
                         // telemetry.addData("recognitions", updatedRecognitions.toString());
                         if(updatedRecognitions.get(0).getLabel().equals(LABEL_SILVER_MINERAL)){
                             if(updatedRecognitions.get(0).getLeft()<updatedRecognitions.get(1).getLeft()){
-                                silverCenter = true;
-                            }else{
                                 silverRight = true;
+                            }else{
+                                silverCenter = true;
                             }
                         }
                         if(updatedRecognitions.get(1).getLabel().equals(LABEL_SILVER_MINERAL)){
                             if(updatedRecognitions.get(1).getLeft()>updatedRecognitions.get(0).getLeft()) {
-                                silverRight = true;
-                            }else{
                                 silverCenter = true;
+                            }else{
+                                silverRight = true;
                             }
                         }
 
                         if(silverCenter && silverRight){ // GOLD IS LEFT
                             telemetry.addData("GOLD: ", "LEFT");
                             goldState = 0;
-                        }else if(!silverCenter && silverRight){ // GOLD IS LEFT
+                        }else if(!silverCenter && silverRight){ // GOLD IS CENTER
                             telemetry.addData("GOLD: ", "CENTER");
                             goldState = 1;
-                        }else if(silverCenter && !silverRight){ // GOLD IS LEFT
+                        }else if(silverCenter && !silverRight){ // GOLD IS RIGHT
                             telemetry.addData("GOLD: ", "RIGHT");
                             goldState = 2;
                         }
                     }else{
                         telemetry.addData("No two objects found: ", updatedRecognitions.size());
+                        if(updatedRecognitions.size() == 1){
+                            //more than 265 from left is center, less is right
+                            if(updatedRecognitions.get(0).getLabel().equals(LABEL_GOLD_MINERAL)){
+                                if(updatedRecognitions.get(0).getLeft()>265){
+                                    goldState = 1;
+                                    twoObjectsFound = true;
+                                }else{
+                                    goldState = 2;
+                                    twoObjectsFound = true;
+                                }
+                            }
+                            telemetry.addData("gold possible: "+updatedRecognitions.get(0).getLabel(), updatedRecognitions.get(0).getLeft());
+                        }else{
+//                            goldState = 0; //TODO: temp fix
+                        }
                     }
                     telemetry.update();
                 }
@@ -130,110 +133,133 @@ public class DragonflyAutoMarker extends LinearOpMode {
             tfod.shutdown();
         }
 
+        // detach and lower from hang
+        lowerHangFast();
+
+        //turn out of hang
+        if(goldState != 0){
+            while(robot.getHeading()>-30){ robot.driveLimitless(0.3, -0.3); }
+            robot.allStop();
+        }else{
+            //turn to face wall
+            while(robot.getHeading()>-28){ robot.driveLimitless(0.3, -0.3); }
+            robot.allStop();
+            sleep(200);
+            while(robot.getHeading()<-28){ robot.driveLimitless(-0.20, 0.20); }
+            robot.allStop();
+            sleep(200);
+            while(robot.getHeading()>-28){ robot.driveLimitless(0.2, -0.2); }
+            robot.allStop();
+        }
+
+        if(goldState!=0){
+            //reset hang mechanism out of the way of the latch
+            resetHangPartial();
+
+            //turn back to face forward
+
+            while(robot.getHeading()<globalStartHeading+5){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+            sleep(200);
+            while(robot.getHeading()>globalStartHeading+5){ robot.driveLimitless(0.2, -0.2); }
+            robot.allStop();
+            //drive to sampling field
+            moveForward(0.7, 6);
+        }
+
+        //switch depending on location of gold mineral
         switch(goldState){
             case 0:
-                unlockHang();
-                lowerHangPowerless(3000);
-                detachHang();
-                moveForward(0.1, 6);
-                sleep(2000);
+                //move forward to wall
+                moveForward(0.8, 38); //42
 
-                while(robot.getHeading()>globalStartHeading){
-                    robot.driveLimitless(0.1, -0.1);
-                }
+                //turn to face back of robot to marker zone
+                while(robot.getHeading()>-135){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
-                while(robot.getHeading()<globalStartHeading){
-                    robot.driveLimitless(-0.1, 0.1);
-                }
+                sleep(200);
+                while(robot.getHeading()<-135){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
-                sleep(2000);
-                resetHang();
-                sleep(2000);
-                turnEncoders(-0.3, (0.65)*(0.125)*1750); //0.6 original
-                moveForward(0.01, 18); //30
-                sleep(2000);
+                //back up until in marker zone
+                moveForward(-0.8, 27);
+
+                //correction alignment to face crater
+                while(robot.getHeading()>-135){ robot.driveLimitless(0.2, -0.2); }
+                robot.allStop();
+                sleep(200);
+                while(robot.getHeading()<-135){ robot.driveLimitless(-0.20, 0.20); }
+                robot.allStop();
+
+                //drop marker
+                dropMarker();
+
+                //move forwards to crater
+                moveForward(1, 53); //TEST
+
+                moveForward(0.8, 10);
+
                 break;
             case 1:
-                unlockHang();
-                lowerHangPowerless(3000);
-                detachHang();
-                moveForward(0.1, 6);
-                sleep(2000);
+                //move forward to knock off gold mineral
+                moveForward(0.8, 48); //30
 
-                while(robot.getHeading()>globalStartHeading){
-                    robot.driveLimitless(0.1, -0.1);
-                }
+                //turn to face wall
+                while(robot.getHeading()>-90){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
-                while(robot.getHeading()<globalStartHeading){
-                    robot.driveLimitless(-0.1, 0.1);
-                }
+                sleep(200);
+                while(robot.getHeading()<-90){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
-                sleep(2000);
-                resetHang();
-                sleep(2000);
-                moveForward(0.01, 18); //30
-                sleep(2000);
-//                unlockHang();
-//                lowerHangPowerless(3000);
-//                detachHang();
-//                moveForward(0.1, 12);
-//                sleep(2000);
-//                resetHang();
-//                sleep(2000);
-//                moveForward(0.3, 34+6);
-//                sleep(2000);
-//                turn(0.3, 140); //should be 135
-//                sleep(2000);
-//                dropMarker();
-//                sleep(2000);
-//                moveForward(0.3, 85); //80?
-//                sleep(2000);
+                //drop marker
+                dropMarker();
+                sleep(500);
+
+                //turn to face crater
+                while(robot.getHeading()>-132){ robot.driveLimitless(0, -0.3); }
+                robot.allStop();
+                sleep(200);
+                while(robot.getHeading()<-132){ robot.driveLimitless(0, 0.20); }
+                robot.allStop();
+
+                //move forwards to crater
+                moveForward(1, 50); //TEST
+
+                moveForward(0.5, 10);
+
                 break;
             case 2:
-                unlockHang();
-                lowerHangPowerless(3000);
-                detachHang();
-                moveForward(0.1, 6);
-                sleep(2000);
-
-                while(robot.getHeading()>globalStartHeading){
-                    robot.driveLimitless(0.1, -0.1);
-                }
+                while(robot.getHeading()>35){ robot.driveLimitless(0.3, -0.3); }
                 robot.allStop();
-                while(robot.getHeading()<globalStartHeading){
-                    robot.driveLimitless(-0.1, 0.1);
-                }
+                sleep(200);
+                while(robot.getHeading()<35){ robot.driveLimitless(-0.20, 0.20); }
+                robot.allStop();
+                //move forward to knock off gold mineral
+                moveForward(0.8, 35); //30
+
+                //turn to face marker wall
+                while(robot.getHeading()>-55){ robot.driveLimitless(0.3, -0.3); }
+                robot.allStop();
+                sleep(200);
+                while(robot.getHeading()<-55){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
 
-                sleep(2000);
-                resetHang();
-                sleep(2000);
-                turnEncoders(0.3, (0.65)*(0.125)*1750);
-                moveForward(0.01, 18); //30
-                sleep(2000);
-//                unlockHang();
-//                lowerHangPowerless(3000);
-//                detachHang();
-//                moveForward(0.1, 12);
-//                sleep(2000);
-//                resetHang();
-//                sleep(2000);
-//                turn(-0.3, -35);
-//                sleep(2000);
-//                moveForward(0.3, 30);
-//                sleep(2000);
-//                turn(0.3, 90); //should be 135
-//                sleep(2000);
-//                moveForward(0.3, 24+10);
-//                sleep(2000);
-//                turn(0.3, 90);
-//                sleep(2000);
-//                dropMarker();
-//                sleep(2000);
-//                moveForward(0.3, 85); //80?
-//                sleep(2000);
+                //drive forwards toward marker zone
+                moveForward(0.8, 32); //28
+
+                //drop marker
+                dropMarker();
+
+                //turn to face crater
+                while(robot.getHeading()>-132){ robot.driveLimitless(0.3, -0.3); }
+                robot.allStop();
+                sleep(200);
+                while(robot.getHeading()<-132){ robot.driveLimitless(-0.20, 0.20); }
+                robot.allStop();
+
+                //move forwards to crater
+                moveForward(1, 50); //TEST
+
+                moveForward(0.8, 10);
+
                 break;
         }
 
@@ -252,7 +278,8 @@ public class DragonflyAutoMarker extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+//        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "webcam");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -279,6 +306,22 @@ public class DragonflyAutoMarker extends LinearOpMode {
         return ((double)val)/(1000/24);
     }
 
+    public void lowerHangFast(){
+        robot.lift.setPower(1.0);
+        while(robot.lift.getCurrentPosition() > -36854){ //lower robot until hook is not touching latch
+
+        }
+        robot.lift.setPower(0);
+    }
+
+    public void resetHangPartial(){
+        robot.lift.setPower(-1.0);
+        while(robot.lift.getCurrentPosition() < -27440){ //lower hook until hook is not at latch level
+
+        }
+        robot.lift.setPower(0);
+    }
+
     public void moveForward(double power, double inches){
         robot.resetDriveEncoders();
         //sleep(200);
@@ -288,7 +331,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
         robot.fr.setPower(-power);
         robot.bl.setPower(-power);
         robot.br.setPower(-power);
-        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches) {
+        while(opModeIsActive() && Math.abs(encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos)) < inches) {
         }
 //        while(opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
 //            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {

@@ -9,6 +9,14 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 @TeleOp(name="Teleop : Dragonfly", group="Dragonfly")
 public class DragonflyTeleop extends OpMode{
 
+    final int ARM_MAX_ENCODER = 999;
+    final int CASCADE_MAX_ENCODER = 999;
+    final int LIFT_MAX_ENCODER = 999;
+
+    final int ARM_ENCODER_POSITION_HORIZONTAL = 555;
+    final int ARM_ENCODER_POSITION_NEUTRAL_EXTENDED = 555;
+    final int ARM_ENCODER_POSITION_VERTICAL = 555;
+
 
     HardwareDragonfly robot = new HardwareDragonfly();
     boolean closed = false;
@@ -63,19 +71,41 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("fl ENCODER", robot.fl.getCurrentPosition());
         telemetry.addData("fr ENCODER", robot.fr.getCurrentPosition());
 
+        telemetry.addData("IMU", robot.getHeading());
+
 
         double leftDrivePower = expo(gamepad2.left_stick_y);
         double rightDrivePower = expo(gamepad2.right_stick_y);
         if(Math.abs(leftDrivePower) < 0.05) leftDrivePower = 0;
         if(Math.abs(rightDrivePower) < 0.05) rightDrivePower = 0;
-        if(gamepad2.right_trigger>0.5){
-            leftDrivePower*=3;
-            rightDrivePower*=3;
+//        if(gamepad2.right_trigger>0.5){
+//            leftDrivePower*=3;
+//            rightDrivePower*=3;
+//        }
+//        if(gamepad2.left_trigger>0.5){
+//            leftDrivePower=gamepad2.left_stick_y/7; //5???
+//            rightDrivePower=gamepad2.right_stick_y/7;
+//        }
+
+        if(gamepad2.right_trigger > 0.05){
+            leftDrivePower = gamepad2.right_trigger/4;
+            rightDrivePower = gamepad2.right_trigger/4;
         }
-        if(gamepad2.left_trigger>0.5){
-            leftDrivePower=gamepad2.left_stick_y/7; //5???
-            rightDrivePower=gamepad2.right_stick_y/7;
+
+        if(gamepad2.left_trigger > 0.05){
+            leftDrivePower = -gamepad2.left_trigger/4;
+            rightDrivePower = -gamepad2.left_trigger/4;
         }
+
+//        leftDrivePower = leftDrivePower/8;
+//        rightDrivePower = rightDrivePower/8;
+        if(gamepad2.left_bumper){
+        }
+        if(gamepad2.right_bumper){
+            leftDrivePower = leftDrivePower*4;
+            rightDrivePower = rightDrivePower*4;
+        }
+
         robot.driveLimitless((leftDrivePower), (rightDrivePower));
 
 
