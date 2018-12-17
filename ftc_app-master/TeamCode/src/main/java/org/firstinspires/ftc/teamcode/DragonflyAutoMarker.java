@@ -193,17 +193,17 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 dropMarker();
 
                 //move forwards to crater
-                moveForward(1, 53); //TEST 53
+                moveForward(1, 48); //TEST 53
 
-                while(opModeIsActive() && robot.getHeading()<-125){ robot.driveLimitless(-0.20, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-115){ robot.driveLimitless(-0.20, 0.20); }
                 robot.allStop();
                 sleep(200);
-                while(opModeIsActive() && robot.getHeading()>-125){ robot.driveLimitless(0.2, -0.2); }
+                while(opModeIsActive() && robot.getHeading()>-115){ robot.driveLimitless(0.2, -0.2); }
                 robot.allStop();
 
 
 
-                moveForward(0.8, 30);
+                moveForward(0.8, 38); //30
 
                 break;
             case 1:
@@ -222,16 +222,22 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 sleep(500);
 
                 //turn to face crater
-                while(opModeIsActive() && robot.getHeading()>-132){ robot.driveLimitless(0, -0.3); }
+                while(opModeIsActive() && robot.getHeading()>-128){ robot.driveLimitless(0, -0.3); } //132
                 robot.allStop();
                 sleep(200);
-                while(opModeIsActive() && robot.getHeading()<-132){ robot.driveLimitless(0, 0.20); }
+                while(opModeIsActive() && robot.getHeading()<-128){ robot.driveLimitless(0, 0.20); }
                 robot.allStop();
 
                 //move forwards to crater
-                moveForward(1, 50); //TEST
+                moveForward(1, 60); //TEST 50
 
-                moveForward(0.8, 18); //10 0.5
+                while(opModeIsActive() && robot.getHeading()>-120){ robot.driveLimitless(0, -0.3); }
+                robot.allStop();
+                sleep(200);
+                while(opModeIsActive() && robot.getHeading()<-120){ robot.driveLimitless(0, 0.20); }
+                robot.allStop();
+
+                moveForward(0.8, 10); //10 0.5 //18
 
                 break;
             case 2:

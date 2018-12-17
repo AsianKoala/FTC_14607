@@ -123,14 +123,14 @@ public class DragonflyTeleop extends OpMode{
         updateTelemetry(telemetry);
 
         double intakePower = gamepad1.right_stick_y;
-        if(Math.abs(intakePower) < 0.05) intakePower = 1.0;
+        if(Math.abs(intakePower) < 0.05) intakePower = 0.5;
         robot.intake.setPower(-intakePower);
         robot.intake2.setPower(intakePower);
 //        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGER
 //        robot.intake2.setPower(gamepad1.right_stick_y/2);
         //intake power !!
 
-        if(gamepad1.dpad_down){
+        if(!gamepad1.dpad_down){
             robot.intakeDoor.setPosition(0);
         }else{
             robot.intakeDoor.setPosition(0.6);

@@ -99,7 +99,7 @@ public class HardwareDragonfly {
         intake.setPower(0.1120);
         intake2.setPower(0.1120);
 
-        intakeDoor.setPosition(0.6);
+        intakeDoor.setPosition(0);
         hangRelease.setPosition(0.2); // latch hang on start
         markerDeployer.setPosition(0.85);
         hookRelease.setPosition(0.6);
