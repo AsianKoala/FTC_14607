@@ -7,6 +7,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDeviceInterfaceModu
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
@@ -33,8 +34,8 @@ public class HardwareDragonfly {
     public DcMotor bl   = null;
     public DcMotor  br  = null;
 
-    public DcMotor arm   = null;
-    public DcMotor cascade   = null;
+    public DcMotorEx arm   = null;
+    public DcMotorEx cascade   = null;
     public DcMotor lift   = null;
 
     public CRServo intake = null;
@@ -46,6 +47,19 @@ public class HardwareDragonfly {
     public Servo hookRelease = null;
 
     public BNO055IMU revIMU = null;
+
+    public final int ARM_LOWERED_VAL = 0;
+    public final int ARM_LEVEL_VAL = 743;
+    public final int ARM_VERTICAL_VAL = 1905;
+    public final int ARM_BACK_VAL = 2198;
+
+    public final int LIFT_DOWN_VAL = 0;
+    public final int LIFT_MAX_VAL = -28866;
+    public final int LIFT_HOOK_VAL = -24273;
+    public final int LIFT_DETATCH_VAL = -18016;
+
+    public final int CASCADE_IN_VAL = 0;
+    public final int CASCADE_MAX_VAL = 6886;
 
 //
 //    public Servo sv1 = null;
@@ -73,9 +87,9 @@ public class HardwareDragonfly {
         bl   = hwMap.dcMotor.get("bl");
         br  = hwMap.dcMotor.get("br");
 
-        arm   = hwMap.dcMotor.get("arm");
+        arm   = hwMap.get(DcMotorEx.class, "arm");
         lift   = hwMap.dcMotor.get("lift");
-        cascade   = hwMap.dcMotor.get("cascade");
+        cascade   = hwMap.get(DcMotorEx.class, "cascade");
 
         intake = hwMap.crservo.get("intake");
         intake2 = hwMap.crservo.get("intake2");
@@ -92,9 +106,12 @@ public class HardwareDragonfly {
         fr.setPower(sp);
         bl.setPower(sp);
         br.setPower(sp);
-        arm.setPower(sp);
+//        arm.setPower(sp);
         lift.setPower(sp);
-        cascade.setPower(sp);
+//        cascade.setPower(sp);
+
+        arm.setVelocity(0, AngleUnit.DEGREES);
+        cascade.setVelocity(0, AngleUnit.DEGREES);
 
         intake.setPower(0.1120);
         intake2.setPower(0.1120);
@@ -116,9 +133,9 @@ public class HardwareDragonfly {
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        cascade.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        cascade.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
         br.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -138,17 +155,17 @@ public class HardwareDragonfly {
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        cascade.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        cascade.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        cascade.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 
     public void resetDriveEncoders()

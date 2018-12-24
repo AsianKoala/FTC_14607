@@ -2,21 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.configuration.annotations.MotorType;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 //test
 @TeleOp(name="Teleop : Dragonfly", group="Dragonfly")
 public class DragonflyTeleop extends OpMode{
-
-    final int ARM_MAX_ENCODER = 999;
-    final int CASCADE_MAX_ENCODER = 999;
-    final int LIFT_MAX_ENCODER = 999;
-
-    final int ARM_ENCODER_POSITION_HORIZONTAL = 555;
-    final int ARM_ENCODER_POSITION_NEUTRAL_EXTENDED = 555;
-    final int ARM_ENCODER_POSITION_VERTICAL = 555;
-
 
     HardwareDragonfly robot = new HardwareDragonfly();
     boolean closed = false;
@@ -29,8 +23,9 @@ public class DragonflyTeleop extends OpMode{
     @Override
     public void init() {
         robot.init(hardwareMap);
-        robot.resetEncoders();
+//        robot.resetEncoders(); TODO: RESET ARM ENCODERS DEPENDING ON AUTO RUN
         lift_motor_position = robot.lift.getCurrentPosition();
+        robot.arm.setTargetPosition(0);
         telemetry.addData("Say", "Hello Driver");
         updateTelemetry(telemetry);
     }
@@ -49,16 +44,19 @@ public class DragonflyTeleop extends OpMode{
 
     public static double expo(double driveVal){
         if (driveVal>0) {
-            return (0.3*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(100*driveVal/56.03234, 2.711895)))-0.301))/100;//0.5*(0.0004*(Math.pow((driveVal-50), 3))+50);//Math.pow(2, driveVal / 15.02) - 1;
+            return (0.5*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(100*driveVal/56.03234, 2.711895)))-0.301))/100;//0.5*(0.0004*(Math.pow((driveVal-50), 3))+50);//Math.pow(2, driveVal / 15.02) - 1;
         }else {
-            return -(0.3*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(-100*driveVal/56.03234, 2.711895)))-0.301))/100;//-0.5*(0.0004*(Math.pow((-driveVal-50), 3))+50);
+            return -(0.5*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(-100*driveVal/56.03234, 2.711895)))-0.301))/100;//-0.5*(0.0004*(Math.pow((-driveVal-50), 3))+50);
         }
     }
     @Override
     public void loop() {
 
-        double threshold = 0.1;
+        if(gamepad1.start && gamepad1.back){
+            robot.resetEncoders();
+        }
 
+        // START TELEMETRY
         telemetry.addData("gamepad1 LX", gamepad1.left_stick_x);
         telemetry.addData("gamepad1 LY", gamepad1.left_stick_y);
         telemetry.addData("gamepad1 RX", gamepad1.right_stick_x);
@@ -70,45 +68,34 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("arm ENCODER", robot.arm.getCurrentPosition());
         telemetry.addData("fl ENCODER", robot.fl.getCurrentPosition());
         telemetry.addData("fr ENCODER", robot.fr.getCurrentPosition());
-
         telemetry.addData("IMU", robot.getHeading());
+        //END TELEMETRY
 
 
+        //START DRIVE CODE
         double leftDrivePower = expo(gamepad2.left_stick_y);
         double rightDrivePower = expo(gamepad2.right_stick_y);
         if(Math.abs(leftDrivePower) < 0.05) leftDrivePower = 0;
         if(Math.abs(rightDrivePower) < 0.05) rightDrivePower = 0;
-//        if(gamepad2.right_trigger>0.5){
-//            leftDrivePower*=3;
-//            rightDrivePower*=3;
-//        }
-//        if(gamepad2.left_trigger>0.5){
-//            leftDrivePower=gamepad2.left_stick_y/7; //5???
-//            rightDrivePower=gamepad2.right_stick_y/7;
-//        }
-
         if(gamepad2.right_trigger > 0.05){
-            leftDrivePower = gamepad2.right_trigger/4;
-            rightDrivePower = gamepad2.right_trigger/4;
+            leftDrivePower = gamepad2.right_trigger/2;
+            rightDrivePower = gamepad2.right_trigger/2;
         }
-
         if(gamepad2.left_trigger > 0.05){
-            leftDrivePower = -gamepad2.left_trigger/4;
-            rightDrivePower = -gamepad2.left_trigger/4;
+            leftDrivePower = -gamepad2.left_trigger/2;
+            rightDrivePower = -gamepad2.left_trigger/2;
         }
-
-//        leftDrivePower = leftDrivePower/8;
-//        rightDrivePower = rightDrivePower/8;
         if(gamepad2.left_bumper){
         }
         if(gamepad2.right_bumper){
-            leftDrivePower = leftDrivePower*4;
-            rightDrivePower = rightDrivePower*4;
+            leftDrivePower = leftDrivePower*2;
+            rightDrivePower = rightDrivePower*2;
         }
-
         robot.driveLimitless((leftDrivePower), (rightDrivePower));
+        //END DRIVE CODE
 
 
+        //START ADDITIONAL TELEMETRY
         telemetry.addData("leftDrivePower", -expo(leftDrivePower));
         telemetry.addData("rightDrivePower", expo(rightDrivePower));
         telemetry.addData("lift motor runmode", robot.lift.getZeroPowerBehavior());
@@ -117,68 +104,101 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("intakeDoor position get", robot.intakeDoor.getPosition());
         telemetry.addData("markerDeployer position get", robot.markerDeployer.getPosition());
         telemetry.addData("hangRelease position get", robot.hangRelease.getPosition());
-
         telemetry.addData("armpower", gamepad1.left_trigger-gamepad1.right_trigger);
-
         updateTelemetry(telemetry);
+        //END ADDITIONAL TELEMETRY
 
+
+        //START INTAKE
         double intakePower = gamepad1.right_stick_y;
-        if(Math.abs(intakePower) < 0.05) intakePower = 0.5;
+        if(Math.abs(intakePower) < 0.05) intakePower = 0;
         robot.intake.setPower(-intakePower);
-        robot.intake2.setPower(intakePower);
-//        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGER
+//        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGING USE ONLY
 //        robot.intake2.setPower(gamepad1.right_stick_y/2);
-        //intake power !!
-
-        if(!gamepad1.dpad_down){
-            robot.intakeDoor.setPosition(0);
-        }else{
+        if(gamepad1.right_bumper){ //default position
             robot.intakeDoor.setPosition(0.6);
         }
-
-        if(gamepad1.y){
-         }else{
-            robot.hangRelease.setPosition(0);
+        if(gamepad1.left_bumper){
+            robot.intakeDoor.setPosition(0);
         }
+        //END INTAKE
 
-        if(gamepad1.b){
-            robot.markerDeployer.setPosition(0.85);
-        }else{
-            robot.markerDeployer.setPosition(0);
-        }
 
-        if(gamepad1.a){
-            robot.hookRelease.setPosition(0.13);
-        }else{
-            robot.hookRelease.setPosition(0.6);
-        }
-
+        //START ARM
         double armPower = gamepad1.left_trigger-gamepad1.right_trigger;
         if(Math.abs(armPower)<0.05) armPower = 0;
-        if(!gamepad1.x && robot.arm.getCurrentPosition() > 0 && armPower > 0) armPower = 0;
-        if(!gamepad1.x && robot.arm.getCurrentPosition() < -1577 && armPower < 0) armPower = 0;
-        robot.arm.setPower(armPower);
+//        if(!gamepad1.dpad_up && robot.arm.getCurrentPosition() > 0 && armPower > 0) armPower = 0;
+//        if(!gamepad1.dpad_up && robot.arm.getCurrentPosition() < -1577 && armPower < 0) armPower = 0;
+        if(robot.arm.isBusy()) {
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+        }else{
+            robot.arm.setPower(0);
+        }
+        if(gamepad1.a){
+            robot.arm.setTargetPosition(robot.ARM_LOWERED_VAL);
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+        }
+        if(gamepad1.b){
+            robot.arm.setTargetPosition(robot.ARM_LEVEL_VAL);
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+        }
+        if(gamepad1.y){
+            robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+        }
+        if(gamepad1.x){
+            robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+        }
 
+
+
+
+//        else{
+////            robot.arm.setPower(expo(armPower));
+//        }
+        //END ARM
+
+
+        //START CASCADE
         double cascadePower = 0;
-        if(gamepad1.left_bumper) cascadePower = 0.5;
-        if(gamepad1.right_bumper) cascadePower = -0.5;
-        if(!gamepad1.x && robot.cascade.getCurrentPosition() > 0 && cascadePower < 0) cascadePower = 0;
-        if(!gamepad1.x && robot.cascade.getCurrentPosition() < -3310 && cascadePower > 0) cascadePower = 0;
+        if(Math.abs(gamepad1.left_stick_y)>0.05){
+            cascadePower = gamepad1.left_stick_y;
+        }
+        if(robot.cascade.getCurrentPosition() > robot.CASCADE_MAX_VAL && cascadePower < 0) cascadePower = 0;
+        if(robot.cascade.getCurrentPosition() <= robot.CASCADE_IN_VAL && cascadePower > 0) cascadePower = 0;
         robot.cascade.setPower(cascadePower);
+        //END CASCADE
 
-        double liftPower = -gamepad1.left_stick_y;
-        if(Math.abs(liftPower)<0.1){
-            liftPower = 0;
+
+        //START LIFT
+        double liftPower = -(gamepad1.right_trigger-gamepad1.left_trigger);
+        if(!robot.lift.isBusy()){
             robot.lift.setPower(0);
-        }else {
-            if(!gamepad1.x && robot.lift.getCurrentPosition() > 0 && liftPower < 0) liftPower = 0;
-            if(!gamepad1.x && robot.lift.getCurrentPosition() < -4684 && liftPower > 0) liftPower = 0;
-//            lift_motor_position += (int) (10 * liftPower);
+        }
+        if(Math.abs(liftPower)>=0.1){
+            if(!robot.lift.getMode().equals(DcMotor.RunMode.RUN_USING_ENCODER)){
+                robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
             robot.lift.setPower(liftPower);
+        }else if(gamepad1.dpad_up){
+            if(!robot.lift.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            robot.lift.setTargetPosition(robot.LIFT_HOOK_VAL);
+            robot.lift.setPower(-1);
+        }else if(gamepad1.dpad_down){
+            if(!robot.lift.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            robot.lift.setTargetPosition(0);
+            robot.lift.setPower(1);
         }
 //        robot.lift.setPower(-Math.max(-1.0, Math.min((lift_motor_position-robot.lift.getCurrentPosition())/150, 1.0)));
+        //END LIFT
 
-        //debug
+
+        //START DEBUGGING CODE
 //        telemetry.addData("count ", close_count);
 //        telemetry.update();
 //
@@ -203,6 +223,7 @@ public class DragonflyTeleop extends OpMode{
 //            robot.fr.setPower(speed_multiplier *( (-gamepad2.left_stick_y - gamepad2.left_stick_x)/2-(gamepad2.right_stick_x)/2));
 //            robot.br.setPower(speed_multiplier *( (-gamepad2.left_stick_y + gamepad2.left_stick_x)/2-(gamepad2.right_stick_x)/2));
 //        }
+        //END DEBUGGING CODE
 
     }
 
