@@ -81,19 +81,84 @@ public class DragonflyTeleop extends OpMode{
         if(Math.abs(leftDrivePower) < 0.05) leftDrivePower = 0;
         if(Math.abs(rightDrivePower) < 0.05) rightDrivePower = 0;
         if(gamepad2.right_trigger > 0.05){
-            leftDrivePower = gamepad2.right_trigger/2;
-            rightDrivePower = gamepad2.right_trigger/2;
+            leftDrivePower = gamepad2.right_trigger/1.5;
+            rightDrivePower = gamepad2.right_trigger/1.5;
         }
         if(gamepad2.left_trigger > 0.05){
-            leftDrivePower = -gamepad2.left_trigger/2;
-            rightDrivePower = -gamepad2.left_trigger/2;
+            leftDrivePower = -gamepad2.left_trigger/1.5;
+            rightDrivePower = -gamepad2.left_trigger/1.5;
+        }
+        
+        if(dpad_up){
+
+99
+
+            leftDrivePower = 0.1;
+
+100
+
+            rightDrivePower = 0.1;
+
+101
+
+        }
+
+102
+
+        if(dpad_down){
+
+103
+
+            leftDrivePower = -0.1;
+
+104
+
+            rightDrivePower = -0.1;
+
+105
+
+        }
+
+106
+
+        if(dpad_right){
+
+107
+
+            leftDrivePower = 0.07;
+
+108
+
+            rightDrivePower = -0.07;
+
+109
+
+        }
+
+110
+
+        if(dpad_left){
+
+111
+
+            leftDrivePower = -0.07;
+
+112
+
+            rightDrivePower = 0.07;
+
+113
+
         }
         if(gamepad2.left_bumper){
+            leftDrivePower/=1.25;
+            rightDrivePower/=1.25;
         }
         if(gamepad2.right_bumper){
-            leftDrivePower = leftDrivePower*2;
-            rightDrivePower = rightDrivePower*2;
+            leftDrivePower = leftDrivePower*1.5;
+            rightDrivePower = rightDrivePower*1.5;
         }
+        
         robot.driveLimitless((leftDrivePower), (rightDrivePower));
         //END DRIVE CODE
 
