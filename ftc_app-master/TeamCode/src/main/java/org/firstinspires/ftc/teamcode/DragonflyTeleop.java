@@ -42,6 +42,7 @@ public class DragonflyTeleop extends OpMode{
     public void start() {
     }
 
+    //DRIVE EXPO
     public static double expo(double driveVal){
         if (driveVal>0) {
             return (0.5*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(100*driveVal/56.03234, 2.711895)))-0.301))/100;//0.5*(0.0004*(Math.pow((driveVal-50), 3))+50);//Math.pow(2, driveVal / 15.02) - 1;
@@ -49,6 +50,8 @@ public class DragonflyTeleop extends OpMode{
             return -(0.5*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(-100*driveVal/56.03234, 2.711895)))-0.301))/100;//-0.5*(0.0004*(Math.pow((-driveVal-50), 3))+50);
         }
     }
+    //END DRIVE EXPO
+
     @Override
     public void loop() {
 
