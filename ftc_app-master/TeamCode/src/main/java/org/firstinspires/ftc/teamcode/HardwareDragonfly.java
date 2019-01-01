@@ -55,8 +55,9 @@ public class HardwareDragonfly {
 
     public final int LIFT_DOWN_VAL = 0;
     public final int LIFT_MAX_VAL = -28866;
-    public final int LIFT_HOOK_VAL = -24273;
+    public final int LIFT_HOOK_VAL = -24000; //-24273
     public final int LIFT_DETATCH_VAL = -18016;
+    public final int LIFT_CLEAR_VAL = -14000;
 
     public final int CASCADE_IN_VAL = 0;
     public final int CASCADE_MAX_VAL = 6886;

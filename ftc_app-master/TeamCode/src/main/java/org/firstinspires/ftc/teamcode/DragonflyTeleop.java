@@ -89,67 +89,23 @@ public class DragonflyTeleop extends OpMode{
             rightDrivePower = -gamepad2.left_trigger/1.5;
         }
         
-        if(dpad_up){
-
-99
-
-            leftDrivePower = 0.1;
-
-100
-
-            rightDrivePower = 0.1;
-
-101
-
+        if(gamepad2.dpad_up){
+            leftDrivePower = -0.2;
+            rightDrivePower = -0.2;
+        }
+        if(gamepad2.dpad_down){
+            leftDrivePower = 0.2;
+            rightDrivePower = 0.2;
+        }
+        if(gamepad2.dpad_right){
+            leftDrivePower = -0.3;
+            rightDrivePower = 0.3;
+        }
+        if(gamepad2.dpad_left){
+            leftDrivePower = 0.3;
+            rightDrivePower = -0.3;
         }
 
-102
-
-        if(dpad_down){
-
-103
-
-            leftDrivePower = -0.1;
-
-104
-
-            rightDrivePower = -0.1;
-
-105
-
-        }
-
-106
-
-        if(dpad_right){
-
-107
-
-            leftDrivePower = 0.07;
-
-108
-
-            rightDrivePower = -0.07;
-
-109
-
-        }
-
-110
-
-        if(dpad_left){
-
-111
-
-            leftDrivePower = -0.07;
-
-112
-
-            rightDrivePower = 0.07;
-
-113
-
-        }
         if(gamepad2.left_bumper){
             leftDrivePower/=1.25;
             rightDrivePower/=1.25;
@@ -179,7 +135,7 @@ public class DragonflyTeleop extends OpMode{
 
         //START INTAKE
         double intakePower = gamepad1.right_stick_y;
-        if(Math.abs(intakePower) < 0.05) intakePower = 0;
+        if(Math.abs(intakePower) < 0.05) intakePower = 0.85; //AUTOMATIC INTAKING
         robot.intake.setPower(-intakePower);
 //        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGING USE ONLY
 //        robot.intake2.setPower(gamepad1.right_stick_y/2);
@@ -217,6 +173,15 @@ public class DragonflyTeleop extends OpMode{
         if(gamepad1.x){
             robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
             robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+        }
+
+        if(gamepad1.left_bumper){
+            robot.arm.setTargetPosition(robot.arm.getTargetPosition()+50); //ARM INCREMENT UP
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.8)));
+        }
+        if(gamepad1.right_bumper){
+            robot.arm.setTargetPosition(robot.arm.getTargetPosition()-50); //ARM INCREMENT DOWN
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.8)));
         }
 
 
@@ -260,6 +225,18 @@ public class DragonflyTeleop extends OpMode{
                 robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
             robot.lift.setTargetPosition(0);
+            robot.lift.setPower(1);
+        }else if(gamepad1.dpad_left){ //LINING UP FOR HOOK
+            if(!robot.lift.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            robot.lift.setTargetPosition(robot.LIFT_DETATCH_VAL);
+            robot.lift.setPower(1);
+        }else if(gamepad1.dpad_right){ //RESET POSITION FOR SCORING
+            if(!robot.lift.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            robot.lift.setTargetPosition(robot.LIFT_CLEAR_VAL);
             robot.lift.setPower(1);
         }
 //        robot.lift.setPower(-Math.max(-1.0, Math.min((lift_motor_position-robot.lift.getCurrentPosition())/150, 1.0)));
