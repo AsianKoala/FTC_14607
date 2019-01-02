@@ -24,4 +24,12 @@ repositories {
     }
 }
 
+//breaking
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+//end
+
 apply from: 'build.release.gradle'

@@ -123,6 +123,10 @@ import org.firstinspires.inspection.RcInspectionActivity;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+//breaking
+import com.acmerobotics.dashboard.FtcDashboard;
+//end
+
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends Activity
   {
@@ -339,6 +343,11 @@ public class FtcRobotControllerActivity extends Activity
     if (preferencesHelper.readBoolean(getString(R.string.pref_wifi_automute), false)) {
       initWifiMute(true);
     }
+
+    //breaking
+    FtcDashboard.start();
+    //end
+
   }
 
   protected UpdateUI createUpdateUI() {
@@ -418,6 +427,11 @@ public class FtcRobotControllerActivity extends Activity
 
     preferencesHelper.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener);
     RobotLog.cancelWriteLogcatToDisk();
+
+    //breaking
+    FtcDashboard.stop();
+    //end
+
   }
 
   protected void bindToService() {
@@ -618,6 +632,10 @@ public class FtcRobotControllerActivity extends Activity
         return service.getRobot().eventLoopManager;
       }
     });
+
+    //breaking
+    FtcDashboard.attachWebServer(service.getWebServer());
+    //end
   }
 
   private void updateUIAndRequestRobotSetup() {
