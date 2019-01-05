@@ -45,9 +45,9 @@ public class DragonflyTeleop extends OpMode{
     //DRIVE EXPO
     public static double expo(double driveVal){
         if (driveVal>0) {
-            return (0.5*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(100*driveVal/56.03234, 2.711895)))-0.301))/100;//0.5*(0.0004*(Math.pow((driveVal-50), 3))+50);//Math.pow(2, driveVal / 15.02) - 1;
+            return (0.75*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(100*driveVal/56.03234, 2.711895)))-0.301))/100;//0.5*(0.0004*(Math.pow((driveVal-50), 3))+50);//Math.pow(2, driveVal / 15.02) - 1;
         }else {
-            return -(0.5*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(-100*driveVal/56.03234, 2.711895)))-0.301))/100;//-0.5*(0.0004*(Math.pow((-driveVal-50), 3))+50);
+            return -(0.75*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(-100*driveVal/56.03234, 2.711895)))-0.301))/100;//-0.5*(0.0004*(Math.pow((-driveVal-50), 3))+50);
         }
     }
     //END DRIVE EXPO
@@ -134,7 +134,7 @@ public class DragonflyTeleop extends OpMode{
 
 
         //START INTAKE
-        double intakePower = gamepad1.right_stick_y;
+        double intakePower = gamepad1.right_stick_y*0.85;
         if(Math.abs(intakePower) < 0.05) intakePower = 0.85; //AUTOMATIC INTAKING
         robot.intake.setPower(-intakePower);
 //        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGING USE ONLY
@@ -198,8 +198,8 @@ public class DragonflyTeleop extends OpMode{
         if(Math.abs(gamepad1.left_stick_y)>0.05){
             cascadePower = gamepad1.left_stick_y;
         }
-        if(robot.cascade.getCurrentPosition() > robot.CASCADE_MAX_VAL && cascadePower < 0) cascadePower = 0;
-        if(robot.cascade.getCurrentPosition() <= robot.CASCADE_IN_VAL && cascadePower > 0) cascadePower = 0;
+        if(robot.cascade.getCurrentPosition() <= robot.CASCADE_MAX_VAL && cascadePower < 0) cascadePower = 0;
+        if(robot.cascade.getCurrentPosition() >= robot.CASCADE_IN_VAL && cascadePower > 0) cascadePower = 0;
         robot.cascade.setPower(cascadePower);
         //END CASCADE
 
