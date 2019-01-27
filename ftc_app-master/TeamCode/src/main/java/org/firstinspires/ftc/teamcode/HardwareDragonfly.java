@@ -43,6 +43,8 @@ public class HardwareDragonfly {
     public DcMotorEx cascade   = null;
     public DcMotor lift   = null;
 
+    public DcMotor intake_motor = null;
+
     public CRServo intake = null;
     public CRServo intake2 = null;
 
@@ -132,6 +134,8 @@ public class HardwareDragonfly {
         intake = hwMap.crservo.get("intake");
         intake2 = hwMap.crservo.get("intake2");
 
+        intake_motor = hwMap.dcMotor.get("intake_motor");
+
         intakeDoor = hwMap.servo.get("intakeDoor");
         hangRelease = hwMap.servo.get("hangRelease");
         markerDeployer = hwMap.servo.get("markerDeployer");
@@ -169,6 +173,8 @@ public class HardwareDragonfly {
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         cascade.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        intake_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -176,6 +182,8 @@ public class HardwareDragonfly {
         arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         cascade.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        intake_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
         br.setDirection(DcMotorSimple.Direction.REVERSE);

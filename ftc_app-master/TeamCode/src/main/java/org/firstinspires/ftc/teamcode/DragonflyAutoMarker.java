@@ -176,7 +176,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
         }
 
         //drop team marker by spinning intake out
-        robot.intake.setPower(0.85);
+        robot.intake_motor.setPower(0.85);
         sleep(1000);
 
         //retract cascade
@@ -188,7 +188,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
         while(opModeIsActive()&& robot.cascade.isBusy()){
         }
 
-        robot.intake.setPower(0);
+        robot.intake_motor.setPower(0);
 
         //switch depending on location of gold mineral
         switch(goldState){
@@ -197,7 +197,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
             case 1:
 
                 //start intake
-                robot.intake.setPower(-0.85);
+                robot.intake_motor.setPower(-0.85);
 
                 while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL+robot.TURN_CENTER_GOLD_MINADJUST){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
                 robot.allStop();

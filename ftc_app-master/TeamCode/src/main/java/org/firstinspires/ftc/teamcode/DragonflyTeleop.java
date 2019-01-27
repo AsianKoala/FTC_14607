@@ -16,6 +16,7 @@ public class DragonflyTeleop extends OpMode{
     boolean closed = false;
     int close_count = 0;
     double speed_multiplier = 1;
+    double intakePower = 0;
     int lift_motor_position;
     /*
      * Code to run ONCE when the driver hits INIT
@@ -134,17 +135,26 @@ public class DragonflyTeleop extends OpMode{
 
 
         //START INTAKE
-        double intakePower = gamepad1.right_stick_y*0.85;
-        if(Math.abs(intakePower) < 0.05) intakePower = 0.85; //AUTOMATIC INTAKING
-        robot.intake.setPower(-intakePower);
+
+        if(gamepad1.right_stick_button){
+            intakePower = 0;
+        }
+        if(Math.abs(gamepad1.right_stick_y) > 0.05){
+            intakePower = gamepad1.right_stick_y;
+        }
+//        intakePower = gamepad1.right_stick_y*0.85;
+        if(Math.abs(gamepad1.right_stick_y) < 0.05 && intakePower!=0) intakePower = 0.85; //AUTOMATIC INTAKING
+//        robot.intake.setPower(-intakePower);
+        robot.intake_motor.setPower(-intakePower);
+
 //        robot.intake.setPower(gamepad1.right_stick_y/2); //DEBUGGING USE ONLY
 //        robot.intake2.setPower(gamepad1.right_stick_y/2);
-        if(gamepad1.right_bumper){ //default position
-            robot.intakeDoor.setPosition(0.6);
-        }
-        if(gamepad1.left_bumper){
-            robot.intakeDoor.setPosition(0);
-        }
+//        if(gamepad1.right_bumper){ //default position
+//            robot.intakeDoor.setPosition(0.6);
+//        }
+//        if(gamepad1.left_bumper){
+//            robot.intakeDoor.setPosition(0);
+//        }
         //END INTAKE
 
 
@@ -171,8 +181,8 @@ public class DragonflyTeleop extends OpMode{
             robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
         }
         if(gamepad1.x){
-            robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
-            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//            robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
+//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
         }
 
         if(gamepad1.left_bumper){
