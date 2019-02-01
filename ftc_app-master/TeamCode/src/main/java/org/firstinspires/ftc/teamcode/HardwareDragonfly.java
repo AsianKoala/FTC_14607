@@ -60,13 +60,14 @@ public class HardwareDragonfly {
     public static int ARM_LOWERED_VAL = 0;
     public static int ARM_LEVEL_VAL = 743;
     public static int ARM_VERTICAL_VAL = 1905;
+    public static int ARM_TRANSITION_VAL = 1000; //1200
     public static int ARM_BACK_VAL = 2198;
 
-    public static int ARM_LEFT_GOLD_VAL = 0;
-    public static int ARM_CENTER_GOLD_VAL = 202;
-    public static int ARM_RIGHT_GOLD_VAL = 0;
+    public static int ARM_LEFT_GOLD_VAL = 210;
+    public static int ARM_CENTER_GOLD_VAL = 162; //202
+    public static int ARM_RIGHT_GOLD_VAL = 232;
 
-    public static int ARM_MARKER_DEPLOY_VAL = 675;
+    public static int ARM_MARKER_DEPLOY_VAL = 560; //675
 
     public static int LIFT_DOWN_VAL = 0;
     public static int LIFT_MAX_VAL = -28866;
@@ -76,12 +77,12 @@ public class HardwareDragonfly {
 
     public static int CASCADE_IN_VAL = 0;
     public static int CASCADE_MAX_VAL = -4500;
-    public static int CASCADE_SCORE_DEFAULT_VAL = -560;
+    public static int CASCADE_SCORE_DEFAULT_VAL = -555; //-560 540 545
 
 
-    public static int CASCADE_LEFT_GOLD_EXTEND_VAL = -3000;
-    public static int CASCADE_CENTER_GOLD_EXTEND_VAL = -1997;
-    public static int CASCADE_RIGHT_GOLD_EXTEND_VAL = -3000;
+    public static int CASCADE_LEFT_GOLD_EXTEND_VAL = -2200; //2250
+    public static int CASCADE_CENTER_GOLD_EXTEND_VAL = -1900; //-1997
+    public static int CASCADE_RIGHT_GOLD_EXTEND_VAL = -2500; //-2000
     public static int CASCADE_MARKER_EXTEND_VAL = -4500;
 
     public static int TURN_OUT_DELATCH_VAL = -30; //degrees
@@ -90,14 +91,15 @@ public class HardwareDragonfly {
     public static int TURN_CENTER_GOLD_MINADJUST = 5; //degrees
 
     public static int TURN_OUT_DRIVE_PARK_VAL_1 = -40; //degrees
-    public static int FORWARD_MOVE_PARK_VAL_1 = 30; //inches
-    public static int TURN_OUT_DRIVE_PARK_VAL_2 = -100; //degrees
-    public static int FORWARD_MOVE_PARK_VAL_2 = 10; //inches
+    public static int FORWARD_MOVE_PARK_VAL_1 = 22; //inches //30
+    public static int TURN_OUT_DRIVE_PARK_VAL_2 = -110; //degrees //-100
+    public static int FORWARD_MOVE_PARK_VAL_2 = 12; //inches //10
 
-    public static int FORWARD_MOVE_MARKER_VAL = 15; //inches
+    public static int FORWARD_MOVE_SAMPLING_VAL = 13; //inches //15
+    public static int FORWARD_MOVE_MARKER_VAL_EXTRA = 19; //inches
     public static int BACKWARDS_MOVE_SAMPLING_VAL = 6; //inches
-    public static int TURN_LEFT_GOLD_VAL = -35; //degrees
-    public static int TURN_RIGHT_GOLD_VAL = 35; //degrees
+    public static int TURN_LEFT_GOLD_VAL = -33; //degrees
+    public static int TURN_RIGHT_GOLD_VAL = 41; //degrees
 
             //END ROBOT CONFIG CONSTANTS
 
