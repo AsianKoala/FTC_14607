@@ -160,7 +160,11 @@ public class DragonflyAutoCrater extends LinearOpMode {
                 robot.allStop();
                 sleep(100);
 
-
+                //move to pushing location
+                moveForward(-0.35, robot.FORWARD_MOVE_GOLD_CENTER_PUSH_VAL);
+                sleep(500);
+                //move back to sampling location
+                moveForward(-0.35, robot.FORWARD_MOVE_GOLD_CENTER_PUSH_VAL);
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
@@ -203,7 +207,11 @@ public class DragonflyAutoCrater extends LinearOpMode {
                 robot.allStop();
                 sleep(100);
 
-
+                //move to pushing location
+                moveForward(-0.35, robot.FORWARD_MOVE_GOLD_CENTER_PUSH_VAL);
+                sleep(500);
+                //move back to sampling location
+                moveForward(-0.35, robot.FORWARD_MOVE_GOLD_CENTER_PUSH_VAL);
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
@@ -275,8 +283,7 @@ public class DragonflyAutoCrater extends LinearOpMode {
 
         //move backwards to park
         //
-        //
-        //
+        moveForward(-0.7, 48);
 
         while (opModeIsActive()){ // wait until end of opmode
             telemetry.addData("Autonomous completed... ", 0);
