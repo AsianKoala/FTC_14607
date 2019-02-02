@@ -191,8 +191,6 @@ public class DragonflyAutoMarker extends LinearOpMode {
         while(opModeIsActive()&& robot.cascade.isBusy()){
         }
 
-//        robot.intake_motor.setPower(0);
-
         //start intake
         robot.intake_motor.setPower(-0.85);
 
@@ -225,6 +223,9 @@ public class DragonflyAutoMarker extends LinearOpMode {
 
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
+
+                //stop intake
+                robot.intake_motor.setPower(0);
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
@@ -259,6 +260,9 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
 
+                //stop intake
+                robot.intake_motor.setPower(0);
+
                 break;
             case 2:
 
@@ -287,6 +291,9 @@ public class DragonflyAutoMarker extends LinearOpMode {
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
 
+                //stop intake
+                robot.intake_motor.setPower(0);
+
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
                 robot.allStop();
@@ -314,7 +321,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
         sleep(500);
 
         //reset arm position
-        robot.arm.setTargetPosition(robot.ARM_LEVEL_VAL);
+        robot.arm.setTargetPosition(robot.ARM_PARK_VAL);
         robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
 
         //turn out to path to park

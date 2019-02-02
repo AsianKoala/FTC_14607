@@ -26,7 +26,7 @@ public class DragonflyTeleop extends OpMode{
         robot.init(hardwareMap);
 //        robot.resetEncoders(); TODO: RESET ARM ENCODERS DEPENDING ON AUTO RUN
         lift_motor_position = robot.lift.getCurrentPosition();
-        robot.arm.setTargetPosition(0);
+//        robot.arm.setTargetPosition(0); //arm stays at previous position
         telemetry.addData("Say", "Hello Driver");
         updateTelemetry(telemetry);
     }

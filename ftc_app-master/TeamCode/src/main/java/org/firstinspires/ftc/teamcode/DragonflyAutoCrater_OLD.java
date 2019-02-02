@@ -1,20 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name = "Dragonfly Marker 2", group = "Dragonfly")
+@Disabled
+@Autonomous(name = "Dragonfly Crater OLD", group = "Dragonfly")
 
-public class DragonflyAutoMarker2 extends LinearOpMode {
+public class DragonflyAutoCrater_OLD extends LinearOpMode {
     HardwareDragonfly robot = new HardwareDragonfly();
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -135,146 +139,120 @@ public class DragonflyAutoMarker2 extends LinearOpMode {
         lowerHangFast();
 
         //turn out of hang
-        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(0.3, -0.3); }
-        robot.allStop();
+        if(goldState != 0){
+            while(opModeIsActive() && robot.getHeading()>-30){ robot.driveLimitless(0.3, -0.3); }
+            robot.allStop();
+            //reset hang mechanism out of the way of the latch
+            resetHangPartial();
 
-        //lift arm to extend cascade
-        robot.arm.setTargetPosition(robot.ARM_MARKER_DEPLOY_VAL);
-        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+            //turn back to face forward
+            if(goldState == 1){
+                while(opModeIsActive() && robot.getHeading()<globalStartHeading+5){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+                sleep(200);
+                while(opModeIsActive() && robot.getHeading()>globalStartHeading+5){ robot.driveLimitless(0.2, -0.2); }
+                robot.allStop();
+                sleep(200);
+                while(opModeIsActive() && robot.getHeading()<globalStartHeading+5){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+                robot.allStop();
 
-        //extend cascade to drop team marker
-        if(!robot.cascade.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
-            robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
-        robot.cascade.setPower(0.9);
+            }else if(goldState == 2){
+                //turn to face gold mineral on right
+                while(opModeIsActive() && robot.getHeading()<30){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+                sleep(200);
+                while(opModeIsActive() && robot.getHeading()>30){ robot.driveLimitless(0.2, -0.2); }
+                robot.allStop();
+                sleep(200);
+                while(opModeIsActive() && robot.getHeading()<30){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+                robot.allStop(); //TODO: add allstops in markers
+            }
 
-        //reset hang mechanism out of the way of the latch
-        resetHangPartial();
-
-        //turn back to face forward
-
-        while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
-        robot.allStop();
-        sleep(200);
-        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(0.2, -0.2); } //TODO ?
-        robot.allStop();
-        sleep(200);
-        while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
-        robot.allStop();
-        sleep(200);
-
-        //drive to marker deployment location
-        moveForward(0.7, robot.FORWARD_MOVE_SAMPLING_VAL);
-
-        while(opModeIsActive()&& robot.arm.isBusy()) {
-        }
-
-        while(opModeIsActive()&& robot.cascade.isBusy()){
-        }
-
-        //drop team marker by spinning intake out
-        robot.intake_motor.setPower(0.85);
-        sleep(1000);
-
-        //retract cascade
-        if(!robot.cascade.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
-            robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        robot.cascade.setTargetPosition(robot.CASCADE_IN_VAL);
-        robot.cascade.setPower(0.9);
-        while(opModeIsActive()&& robot.cascade.isBusy()){
+        }else{
+            //turn to face wall
+            while(opModeIsActive() && robot.getHeading()>-28){ robot.driveLimitless(0.3, -0.3); }
+            robot.allStop();
+            sleep(200);
+            while(opModeIsActive() && robot.getHeading()<-28){ robot.driveLimitless(-0.20, 0.20); }
+            robot.allStop();
+            sleep(200);
+            while(opModeIsActive() && robot.getHeading()>-28){ robot.driveLimitless(0.2, -0.2); }
+            robot.allStop();
         }
 
-        robot.intake_motor.setPower(0);
+        if(goldState!=0){
+
+        }
 
         //switch depending on location of gold mineral
         switch(goldState){
             case 0:
+                //move forward to knock of gold mineral
+                moveForward(0.8, 38); //42
+
                 break;
             case 1:
+                //move forward to knock off gold mineral
+                moveForward(0.8, 38); //30
 
-                //start intake
-                robot.intake_motor.setPower(-0.85);
+//                //turn to face wall
+//                while(opModeIsActive() && robot.getHeading()>-90){ robot.driveLimitless(0.3, -0.3); }
+//                robot.allStop();
+//                sleep(200);
+//                while(opModeIsActive() && robot.getHeading()<-90){ robot.driveLimitless(-0.20, 0.20); }
+//                robot.allStop();
+//
+//                //drop marker
+//                dropMarker();
+//                sleep(500);
+//
+//                //turn to face crater
+//                while(opModeIsActive() && robot.getHeading()>-132){ robot.driveLimitless(0, -0.3); }
+//                robot.allStop();
+//                sleep(200);
+//                while(opModeIsActive() && robot.getHeading()<-132){ robot.driveLimitless(0, 0.20); }
+//                robot.allStop();
+//
+//                //move forwards to crater
+//                moveForward(1, 50); //TEST
+//
+//                moveForward(0.5, 10);
 
-                while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_RESET_VAL+robot.TURN_CENTER_GOLD_MINADJUST){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
-                robot.allStop();
-                sleep(200);
-
-                //extend arm to knock off gold mineral
-                robot.arm.setTargetPosition(robot.ARM_CENTER_GOLD_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-                robot.cascade.setTargetPosition(robot.CASCADE_CENTER_GOLD_EXTEND_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
-
-                sleep(1000); //wait for gold mineral to be collected
-
-                //retract arm to default position
-                robot.arm.setTargetPosition(robot.ARM_LEVEL_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                //drive backwards towards lander to score gold mineral
-                while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_RESET_VAL){ robot.driveLimitless(0.3, -0.3); } //TODO ?
-                robot.allStop();
-                sleep(200);
-                moveForward(-0.7, robot.FORWARD_MOVE_SAMPLING_VAL);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
-
-                //tilt arm up to score gold mineral
-                robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                sleep(500);
-
-                //reset arm position
-                robot.arm.setTargetPosition(robot.ARM_LEVEL_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-                //turn out to path to park
-                while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DRIVE_PARK_VAL_1){ robot.driveLimitless(0.4, -0.4); } //TODO ?
-                robot.allStop();
-                sleep(200);
-
-                //drive forward to path to park
-                moveForward(0.7, robot.FORWARD_MOVE_PARK_VAL_1);
-
-                //extend cascade to park
-                robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
-                robot.cascade.setPower(0.9);
-
-                //turn out to path to park
-                while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DRIVE_PARK_VAL_2){ robot.driveLimitless(0.4, -0.4); } //TODO ?
-                robot.allStop();
-                sleep(200);
-
-                //drive forward to path to park
-                moveForward(0.7, robot.FORWARD_MOVE_PARK_VAL_2);
-
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-
-                }
-
-
-
-
-                //temp stop
-                sleep(30000);
                 break;
             case 2:
+                //move forward to knock off gold mineral
+                moveForward(0.8, 42); //30
+//                while(opModeIsActive() && robot.getHeading()>35){ robot.driveLimitless(0.3, -0.3); }
+//                robot.allStop();
+//                sleep(200);
+//                while(opModeIsActive() && robot.getHeading()<35){ robot.driveLimitless(-0.20, 0.20); }
+//                robot.allStop();
+//                //move forward to knock off gold mineral
+//                moveForward(0.8, 35); //30
+//
+//                //turn to face marker wall
+//                while(opModeIsActive() && robot.getHeading()>-55){ robot.driveLimitless(0.3, -0.3); }
+//                robot.allStop();
+//                sleep(200);
+//                while(opModeIsActive() && robot.getHeading()<-55){ robot.driveLimitless(-0.20, 0.20); }
+//                robot.allStop();
+//
+//                //drive forwards toward marker zone
+//                moveForward(0.8, 32); //28
+//
+//                //drop marker
+//                dropMarker();
+//
+//                //turn to face crater
+//                while(opModeIsActive() && robot.getHeading()>-132){ robot.driveLimitless(0.3, -0.3); }
+//                robot.allStop();
+//                sleep(200);
+//                while(opModeIsActive() && robot.getHeading()<-132){ robot.driveLimitless(-0.20, 0.20); }
+//                robot.allStop();
+//
+//                //move forwards to crater
+//                moveForward(1, 50); //TEST
+//
+//                moveForward(0.8, 10);
+
                 break;
         }
 
@@ -322,33 +300,19 @@ public class DragonflyAutoMarker2 extends LinearOpMode {
     }
 
     public void lowerHangFast(){
-//        robot.lift.setPower(1.0);
-//        while(opModeIsActive() && robot.lift.getCurrentPosition() > -36854){ //lower robot until hook is not touching latch
-//
-//        }
-//        robot.lift.setPower(0);
-        if(!robot.lift.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
-            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(1.0);
+        while(opModeIsActive() && robot.lift.getCurrentPosition() > -36854){ //lower robot until hook is not touching latch
+
         }
-        robot.lift.setTargetPosition(robot.LIFT_HOOK_VAL);
-        robot.lift.setPower(-1);
-        while(robot.lift.isBusy()){
-        }
+        robot.lift.setPower(0);
     }
 
     public void resetHangPartial(){
-//        robot.lift.setPower(-1.0);
-//        while(opModeIsActive() && robot.lift.getCurrentPosition() < -27440){ //lower hook until hook is not at latch level
-//
-//        }
-//        robot.lift.setPower(0);
-        if(!robot.lift.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
-            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(-1.0);
+        while(opModeIsActive() && robot.lift.getCurrentPosition() < -27440){ //lower hook until hook is not at latch level
+
         }
-        robot.lift.setTargetPosition(robot.LIFT_DETATCH_VAL);
-        robot.lift.setPower(-1);
-        while(robot.lift.isBusy()){
-        }
+        robot.lift.setPower(0);
     }
 
     public void moveForward(double power, double inches){
@@ -360,15 +324,7 @@ public class DragonflyAutoMarker2 extends LinearOpMode {
         robot.fr.setPower(-power);
         robot.bl.setPower(-power);
         robot.br.setPower(-power);
-        while(opModeIsActive() && opModeIsActive() && (Math.abs(encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos)) < inches || Math.abs(encoderValToInches(robot.fr.getCurrentPosition()-startLeftEncoderPos)) < inches)) {
-            if(Math.abs(encoderValToInches(robot.fr.getCurrentPosition()-startLeftEncoderPos)) > inches){
-                robot.fr.setPower(0);
-                robot.br.setPower(0);
-            }
-            if(Math.abs(encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos)) > inches){
-                robot.fl.setPower(0);
-                robot.bl.setPower(0);
-            }
+        while(opModeIsActive() && opModeIsActive() && Math.abs(encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos)) < inches) {
         }
 //        while(opModeIsActive() && opModeIsActive() && encoderValToInches(robot.fl.getCurrentPosition()-startLeftEncoderPos) < inches || encoderValToInches(robot.fr.getCurrentPosition()-startRightEncoderPos) < inches) {
 //            if (encoderValToInches(robot.fl.getCurrentPosition() - startLeftEncoderPos) >= inches) {

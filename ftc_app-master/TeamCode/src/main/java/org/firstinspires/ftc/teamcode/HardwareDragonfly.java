@@ -61,6 +61,7 @@ public class HardwareDragonfly {
     public static int ARM_LEVEL_VAL = 743;
     public static int ARM_VERTICAL_VAL = 1905;
     public static int ARM_TRANSITION_VAL = 1000; //1200
+    public static int ARM_PARK_VAL = 900;
     public static int ARM_BACK_VAL = 2198;
 
     public static int ARM_LEFT_GOLD_VAL = 210;
@@ -95,11 +96,20 @@ public class HardwareDragonfly {
     public static int TURN_OUT_DRIVE_PARK_VAL_2 = -110; //degrees //-100
     public static int FORWARD_MOVE_PARK_VAL_2 = 12; //inches //10
 
+    public static int TURN_OUT_DRIVE_DEPLOY_VAL_1 = -60; //degrees
+    public static int FORWARD_MOVE_DEPLOY_VAL_1 = 45; //inches
+    public static int TURN_OUT_DRIVE_DEPLOY_VAL_2 = -130; //degrees
+    public static int FORWARD_MOVE_DEPLOY_VAL_2 = 28; //inches //27
+    public static int BACKWARDS_MOVE_DEPLOY_VAL_3 = 12; //inches
+
     public static int FORWARD_MOVE_SAMPLING_VAL = 13; //inches //15
+    public static int FORWARD_MOVE_PUSH_SAMPLING_VAL = 10; //inches //15
     public static int FORWARD_MOVE_MARKER_VAL_EXTRA = 19; //inches
     public static int BACKWARDS_MOVE_SAMPLING_VAL = 6; //inches
-    public static int TURN_LEFT_GOLD_VAL = -33; //degrees
+    public static int TURN_LEFT_GOLD_VAL = -30; //degrees
     public static int TURN_RIGHT_GOLD_VAL = 41; //degrees
+    public static int FORWARD_MOVE_GOLD_CENTER_PUSH_VAL = 18; //inches
+    public static int FORWARD_MOVE_GOLD_SIDE_PUSH_VAL = 20; //inches
 
             //END ROBOT CONFIG CONSTANTS
 
