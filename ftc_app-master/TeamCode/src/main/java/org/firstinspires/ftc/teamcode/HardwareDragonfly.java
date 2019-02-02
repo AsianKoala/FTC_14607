@@ -92,7 +92,7 @@ public class HardwareDragonfly {
     public static int TURN_CENTER_GOLD_MINADJUST = 5; //degrees
 
     public static int TURN_OUT_DRIVE_PARK_VAL_1 = -40; //degrees
-    public static int FORWARD_MOVE_PARK_VAL_1 = 22; //inches //30
+    public static int FORWARD_MOVE_PARK_VAL_1 = 19; //inches //22 before
     public static int TURN_OUT_DRIVE_PARK_VAL_2 = -110; //degrees //-100
     public static int FORWARD_MOVE_PARK_VAL_2 = 12; //inches //10
 
