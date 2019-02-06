@@ -73,7 +73,7 @@ public class HardwareDragonfly {
     public static int LIFT_DOWN_VAL = 0;
     public static int LIFT_MAX_VAL = -28866;
     public static int LIFT_HOOK_VAL = -24000; //-24273
-    public static int LIFT_DETATCH_VAL = -18016;
+    public static int LIFT_DETATCH_VAL = -19500; //-18516; //-19000
     public static int LIFT_CLEAR_VAL = -14000;
 
     public static int CASCADE_IN_VAL = 0;
@@ -104,7 +104,7 @@ public class HardwareDragonfly {
 
     public static int FORWARD_MOVE_SAMPLING_VAL = 13; //inches //15
     public static int FORWARD_MOVE_PUSH_SAMPLING_VAL = 10; //inches //15
-    public static int FORWARD_MOVE_MARKER_VAL_EXTRA = 19; //inches
+    public static int FORWARD_MOVE_MARKER_VAL_EXTRA = 17; //inches //19 before
     public static int BACKWARDS_MOVE_SAMPLING_VAL = 6; //inches
     public static int TURN_LEFT_GOLD_VAL = -30; //degrees
     public static int TURN_RIGHT_GOLD_VAL = 41; //degrees

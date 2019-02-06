@@ -135,7 +135,7 @@ public class DragonflyAutoMarker extends LinearOpMode {
         lowerHangFast();
 
         //turn out of hang
-        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(0.3, -0.3); }
+        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(0.5, -0.5); } //0.3 -0.3
         robot.allStop();
 
         //lift arm to extend cascade
