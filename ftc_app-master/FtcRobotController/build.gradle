@@ -6,8 +6,12 @@ apply plugin: 'com.android.library'
 android {
 
     defaultConfig {
+        //break
         minSdkVersion 19
-        targetSdkVersion 19
+        targetSdkVersion 23
+        //breaking
+        multiDexEnabled true
+        //end
     }
 
     compileSdkVersion 23

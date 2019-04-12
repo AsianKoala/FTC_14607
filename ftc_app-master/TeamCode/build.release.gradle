@@ -12,5 +12,6 @@ dependencies {
     implementation (name: 'tensorflow-lite-0.0.0-nightly', ext:'aar')
     //breaking
     implementation 'com.acmerobotics.dashboard:dashboard:0.2.2'
+    implementation 'com.acmerobotics.roadrunner:core:0.2.6'
     //end
 }
