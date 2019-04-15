@@ -23,13 +23,15 @@ public class DriveConstants {
 
     public static double WHEEL_RADIUS = 2; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 1; // in
+    public static double TRACK_WIDTH = 13.5; //13.8110236; // in
 
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(30.0, 30.0, Math.PI / 2, Math.PI / 2);
+//    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(15.0, 15.0, Math.PI / 4, Math.PI / 4);
 
-    public static double kV = 0;
-    public static double kA = 0;
-    public static double kStatic = 0;
+
+    public static double kV = -0.03264;
+    public static double kA = -0.00086;
+    public static double kStatic = -0.09259;
 
 
     public static double encoderTicksToInches(int ticks) {

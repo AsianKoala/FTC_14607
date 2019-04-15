@@ -70,11 +70,11 @@ public class HardwareDragonfly {
 
     public static int ARM_MARKER_DEPLOY_VAL = 560; //675
 
-    public static int LIFT_DOWN_VAL = 0;
-    public static int LIFT_MAX_VAL = -28866;
-    public static int LIFT_HOOK_VAL = -24000; //-24273
-    public static int LIFT_DETATCH_VAL = -19500; //-18516; //-19000
-    public static int LIFT_CLEAR_VAL = -14000;
+    public static int LIFT_DOWN_VAL = (int)(0 * 3.69230769231);
+    public static int LIFT_MAX_VAL = (int)(-28866 * 3.69230769231);
+    public static int LIFT_HOOK_VAL = (int)(-24000 *3.69230769231); //-24273
+    public static int LIFT_DETATCH_VAL = (int)(-19500 * 3.69230769231); //-18516; //-19000
+    public static int LIFT_CLEAR_VAL = (int)(-14000 *3.69230769231);
 
     public static int CASCADE_IN_VAL = 0;
     public static int CASCADE_MAX_VAL = -4500;

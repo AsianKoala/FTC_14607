@@ -29,6 +29,13 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import java.util.List;
 import java.util.Arrays;
 
+import org.firstinspires.ftc.teamcode.util.LynxOptimizedI2cFactory;
+import org.jetbrains.annotations.NotNull;
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.ExpansionHubMotor;
+import org.openftc.revextensions2.RevBulkData;
+import org.openftc.revextensions2.RevExtensions2;
+
 /**
  * Created by charliewu on 9/20/18.
  */
@@ -36,12 +43,10 @@ import java.util.Arrays;
 @Config
 public class HardwareDragonflyMP extends TankDrive {
     /* Public OpMode members. */
-    public DcMotorEx fl   = null;
-    public DcMotorEx  fr  = null;
-    public DcMotorEx bl   = null;
-    public DcMotorEx  br  = null;
-
-    private List<DcMotorEx> motors, leftMotors, rightMotors;
+    public ExpansionHubMotor fl   = null;
+    public ExpansionHubMotor  fr  = null;
+    public ExpansionHubMotor bl   = null;
+    public ExpansionHubMotor  br  = null;
 
     public DcMotorEx arm   = null;
     public DcMotorEx cascade   = null;
@@ -58,6 +63,9 @@ public class HardwareDragonflyMP extends TankDrive {
     public Servo hookRelease = null;
 
     public BNO055IMU revIMU = null;
+
+    private ExpansionHubEx driveHub;
+    private List<ExpansionHubMotor> motors, leftMotors, rightMotors;
 
 
     //ROBOT CONFIG CONSTANTS
@@ -134,11 +142,30 @@ public class HardwareDragonflyMP extends TankDrive {
     public HardwareDragonflyMP(){
         super(DriveConstants.TRACK_WIDTH);
 
-        constraints = new TankConstraints(DriveConstants.BASE_CONSTRAINTS, DriveConstants.TRACK_WIDTH);
-        follower = new TankPIDVAFollower(this, DISPLACEMENT_PID, CROSS_TRACK_PID,
-                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
+//        constraints = new TankConstraints(DriveConstants.BASE_CONSTRAINTS, DriveConstants.TRACK_WIDTH);
+//        follower = new TankPIDVAFollower(this, DISPLACEMENT_PID, CROSS_TRACK_PID,
+//                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
+//
+////        driveHub = hwMap.get(ExpansionHubEx.class, "driveHub");
+//
+//        motors = Arrays.asList(fl, bl, br, fr);
+//        leftMotors = Arrays.asList(fl, bl);
+//        rightMotors = Arrays.asList(fr, br);
+//
+//        for (ExpansionHubMotor motor : motors) {
+//            // TODO: decide whether or not to use the built-in velocity PID
+//            // if you keep it, then don't tune kStatic or kA
+//            // otherwise, comment out the following line
+//            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        }
+//
+//        // TODO: reverse any motors using DcMotor.setDirection()
+//
+//        // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
+//        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
 
-        motors = Arrays.asList(fl, bl, br, fr);
+
     }
 
     public TrajectoryBuilder trajectoryBuilder() {
@@ -174,31 +201,38 @@ public class HardwareDragonflyMP extends TankDrive {
 
 //    @Override
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
-        for (DcMotorEx motor : motors) {
+        for (ExpansionHubMotor motor : motors) {
             motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
                     coefficients.kP, coefficients.kI, coefficients.kD, 1
             ));
         }
     }
 
+    @NotNull
     @Override
     public List<Double> getWheelPositions() {
         double leftSum = 0, rightSum = 0;
+        RevBulkData bulkData = driveHub.getBulkInputData();
+
+        if (bulkData == null) {
+            return Arrays.asList(0.0, 0.0);
+        }
+
         for (DcMotorEx leftMotor : leftMotors) {
-            leftSum += DriveConstants.encoderTicksToInches(leftMotor.getCurrentPosition());
+            leftSum += DriveConstants.encoderTicksToInches(bulkData.getMotorCurrentPosition(leftMotor));
         }
         for (DcMotorEx rightMotor : rightMotors) {
-            rightSum += DriveConstants.encoderTicksToInches(rightMotor.getCurrentPosition());
+            rightSum += DriveConstants.encoderTicksToInches(bulkData.getMotorCurrentPosition(rightMotor));
         }
         return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
     }
 
     @Override
     public void setMotorPowers(double v, double v1) {
-        for (DcMotorEx leftMotor : leftMotors) {
+        for (ExpansionHubMotor leftMotor : leftMotors) {
             leftMotor.setPower(v);
         }
-        for (DcMotorEx rightMotor : rightMotors) {
+        for (ExpansionHubMotor rightMotor : rightMotors) {
             rightMotor.setPower(v1);
         }
     }
@@ -217,13 +251,16 @@ public class HardwareDragonflyMP extends TankDrive {
         hwMap = ahwMap;
         double sp = 0;
 
+        RevExtensions2.init();
+        driveHub = hwMap.get(ExpansionHubEx.class, "driveHub");
+
 //        sv1 = hwMap.servo.get("servo1");
 
         // Define and Initialize Motors
-        fl   = (DcMotorEx) hwMap.dcMotor.get("fl");
-        fr  = (DcMotorEx) hwMap.dcMotor.get("fr");
-        bl   = (DcMotorEx) hwMap.dcMotor.get("bl");
-        br  = (DcMotorEx) hwMap.dcMotor.get("br");
+        fl   = hwMap.get(ExpansionHubMotor.class, "fl");
+        fr  = hwMap.get(ExpansionHubMotor.class, "fr");
+        bl   = hwMap.get(ExpansionHubMotor.class, "bl");
+        br  = hwMap.get(ExpansionHubMotor.class, "br");
 
         arm   = hwMap.get(DcMotorEx.class, "arm");
         lift   = hwMap.dcMotor.get("lift");
@@ -285,6 +322,33 @@ public class HardwareDragonflyMP extends TankDrive {
 
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
         br.setDirection(DcMotorSimple.Direction.REVERSE);
+//        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+//        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+
+        constraints = new TankConstraints(DriveConstants.BASE_CONSTRAINTS, DriveConstants.TRACK_WIDTH);
+        follower = new TankPIDVAFollower(this, DISPLACEMENT_PID, CROSS_TRACK_PID,
+                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
+
+//        driveHub = hwMap.get(ExpansionHubEx.class, "driveHub");
+
+        motors = Arrays.asList(fl, bl, br, fr);
+        leftMotors = Arrays.asList(fl, bl);
+        rightMotors = Arrays.asList(fr, br);
+
+        for (ExpansionHubMotor motor : motors) {
+            // TODO: decide whether or not to use the built-in velocity PID
+            // if you keep it, then don't tune kStatic or kA
+            // otherwise, comment out the following line
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        // TODO: reverse any motors using DcMotor.setDirection()
+
+        // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
+        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
 
     }
 //

@@ -24,6 +24,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 27
+
+        multiDexEnabled true
     }
 
     compileOptions {
@@ -66,6 +68,7 @@ dependencies {
     implementation('org.nanohttpd:nanohttpd-websocket:2.3.1') {
         exclude module: 'nanohttpd'
     }
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 task androidSourcesJar(type: Jar) {

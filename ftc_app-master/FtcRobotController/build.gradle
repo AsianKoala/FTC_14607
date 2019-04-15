@@ -8,13 +8,13 @@ android {
     defaultConfig {
         //break
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 27
         //breaking
         multiDexEnabled true
         //end
     }
 
-    compileSdkVersion 23
+    compileSdkVersion 27
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -22,10 +22,19 @@ android {
     }
 }
 
+//breaking
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
+}
+//end
+
 repositories {
     flatDir {
         dirs '../libs'
     }
+    //breaking
+    jcenter()
+    //end
 }
 
 //breaking

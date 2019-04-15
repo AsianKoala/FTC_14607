@@ -41,6 +41,9 @@ android {
         minSdkVersion 19
         targetSdkVersion 19
 
+	//breaking
+	multiDexEnabled true
+
         /**
          * We keep the versionCode and versionName of robot controller applications in sync with
          * the master information published in the AndroidManifest.xml file of the FtcRobotController
@@ -99,6 +102,11 @@ android {
         jni.srcDirs = []
         jniLibs.srcDir rootProject.file('libs')
     }
+}
+
+//breaking
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 repositories {

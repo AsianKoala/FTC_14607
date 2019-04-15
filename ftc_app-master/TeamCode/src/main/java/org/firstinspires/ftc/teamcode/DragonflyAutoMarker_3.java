@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(name = "Dragonfly Marker MP Test_0", group = "Dragonfly")
-public class DragonflyAutoMarker_2 extends LinearOpMode {
+@Autonomous(name = "Dragonfly Marker MP Test_1", group = "Dragonfly")
+public class DragonflyAutoMarker_3 extends LinearOpMode {
 
     HardwareDragonflyMP drive = new HardwareDragonflyMP();
     public void runOpMode() throws InterruptedException {
@@ -23,13 +23,7 @@ public class DragonflyAutoMarker_2 extends LinearOpMode {
         drive.init(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder()
-                .splineTo(new Pose2d(20, 20, 0))
-                .waitFor(1)
-                .reverse()
-                .splineTo(new Pose2d(0, 0, 0))
-                .waitFor(1)
-                .reverse()
-                .splineTo(new Pose2d(-20, -20, 90))
+                .forward(10)
                 .build();
 
         waitForStart();

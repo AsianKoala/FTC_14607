@@ -1,5 +1,6 @@
-include ':FtcRobotController'
+include ':FtcRobotController', ':rev-extensions-2'
 include ':TeamCode'
 //breaking
 include ':FtcDashboard'
 //end
+//project(':rev-extensions-2').projectDir = new File('RevExtensions2/rev-extensions-2')

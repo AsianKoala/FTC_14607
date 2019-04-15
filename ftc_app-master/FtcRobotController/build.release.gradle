@@ -7,5 +7,7 @@ dependencies {
     implementation (name:'WirelessP2p-release', ext:'aar')
     //breaking
     implementation 'com.acmerobotics.dashboard:dashboard:0.2.2'
+
+    implementation 'com.android.support:multidex:1.0.3'
     //end
 }
