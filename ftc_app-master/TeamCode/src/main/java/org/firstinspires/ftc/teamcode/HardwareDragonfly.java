@@ -197,8 +197,11 @@ public class HardwareDragonfly {
 
         intake_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        fr.setDirection(DcMotorSimple.Direction.REVERSE);
-        br.setDirection(DcMotorSimple.Direction.REVERSE);
+//        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+//        br.setDirection(DcMotorSimple.Direction.REVERSE);
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
     }
 //

@@ -19,6 +19,8 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.TankDrive;
 import com.acmerobotics.roadrunner.followers.TankPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
+import com.acmerobotics.roadrunner.followers.GVFFollower;
+
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
@@ -142,6 +144,8 @@ public class HardwareDragonflyMP extends TankDrive {
     public HardwareDragonflyMP(){
         super(DriveConstants.TRACK_WIDTH);
 
+//        this.init(hwMap);
+//
 //        constraints = new TankConstraints(DriveConstants.BASE_CONSTRAINTS, DriveConstants.TRACK_WIDTH);
 //        follower = new TankPIDVAFollower(this, DISPLACEMENT_PID, CROSS_TRACK_PID,
 //                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
@@ -163,7 +167,7 @@ public class HardwareDragonflyMP extends TankDrive {
 //        // TODO: reverse any motors using DcMotor.setDirection()
 //
 //        // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-//        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
+//         setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(0,0,0));
 
 
     }
@@ -224,7 +228,8 @@ public class HardwareDragonflyMP extends TankDrive {
         for (DcMotorEx rightMotor : rightMotors) {
             rightSum += DriveConstants.encoderTicksToInches(bulkData.getMotorCurrentPosition(rightMotor));
         }
-        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
+//        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
+        return Arrays.asList(leftSum, rightSum);
     }
 
     @Override
@@ -330,6 +335,9 @@ public class HardwareDragonflyMP extends TankDrive {
         constraints = new TankConstraints(DriveConstants.BASE_CONSTRAINTS, DriveConstants.TRACK_WIDTH);
         follower = new TankPIDVAFollower(this, DISPLACEMENT_PID, CROSS_TRACK_PID,
                 DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
+//        follower = new GVFFollower();
+////                (this, DISPLACEMENT_PID, CROSS_TRACK_PID,
+////                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
 
 //        driveHub = hwMap.get(ExpansionHubEx.class, "driveHub");
 
@@ -342,13 +350,15 @@ public class HardwareDragonflyMP extends TankDrive {
             // if you keep it, then don't tune kStatic or kA
             // otherwise, comment out the following line
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
+//        setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients());
 
     }
 //

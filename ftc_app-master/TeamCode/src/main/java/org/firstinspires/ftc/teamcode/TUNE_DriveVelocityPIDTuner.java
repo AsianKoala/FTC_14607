@@ -54,6 +54,9 @@ public class TUNE_DriveVelocityPIDTuner extends LinearOpMode {
 
         RobotLog.i("Initial motor PID coefficients: " + MOTOR_PID);
 
+        telemetry.addData("start: ", MOTOR_PID);
+        telemetry.update();
+
         NanoClock clock = NanoClock.system();
 
         telemetry.log().add("Ready!");
@@ -78,6 +81,10 @@ public class TUNE_DriveVelocityPIDTuner extends LinearOpMode {
             // update the coefficients if necessary
             if (!pidEquals(currentCoeffs, MOTOR_PID)) {
                 RobotLog.i("Updated motor PID coefficients: " + MOTOR_PID);
+
+                telemetry.addData("updated: ", MOTOR_PID.toString());
+                telemetry.update();
+
                 pidCopy(MOTOR_PID, currentCoeffs);
                 drive.setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_PID);
             }
@@ -113,6 +120,10 @@ public class TUNE_DriveVelocityPIDTuner extends LinearOpMode {
                     telemetry.addData("velocity" + i, syntheticVelocities.get(i));
                     telemetry.addData("error" + i, motionState.getV() - syntheticVelocities.get(i));
                 }
+
+                telemetry.addData("not updated: ", Double.toString(MOTOR_PID.kP)+" "+Double.toString(MOTOR_PID.kI)+" "+Double.toString(MOTOR_PID.kD)+" ");
+                telemetry.addData("wheel positions: ", Double.toString(drive.getWheelPositions().get(0))+" "+Double.toString(drive.getWheelPositions().get(1)));
+
                 telemetry.update();
             }
             lastWheelPositions = wheelPositions;

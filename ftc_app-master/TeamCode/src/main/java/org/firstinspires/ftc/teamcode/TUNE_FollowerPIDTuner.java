@@ -23,13 +23,13 @@ public class TUNE_FollowerPIDTuner extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(-24, -24, 0));
         Trajectory trajectory = drive.trajectoryBuilder()
-                .forward(48)
+                .forward(12)
                 .turn(Math.toRadians(90))
-                .forward(48)
+                .forward(12)
                 .turn(Math.toRadians(90))
-                .forward(48)
+                .forward(12)
                 .turn(Math.toRadians(90))
-                .forward(48)
+                .forward(12)
                 .turn(Math.toRadians(90))
                 .build();
 
