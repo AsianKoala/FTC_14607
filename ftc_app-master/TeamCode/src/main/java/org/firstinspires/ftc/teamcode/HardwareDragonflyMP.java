@@ -86,8 +86,8 @@ public class HardwareDragonflyMP extends TankDrive {
 
     public static int LIFT_DOWN_VAL = 0;
     public static int LIFT_MAX_VAL = -28866;
-    public static int LIFT_HOOK_VAL = -24000; //-24273
-    public static int LIFT_DETATCH_VAL = -19500; //-18516; //-19000
+    public static int LIFT_HOOK_VAL = -2985; //-24273
+    public static int LIFT_DETATCH_VAL = -1792; //-18516; //-19000
     public static int LIFT_CLEAR_VAL = -14000;
 
     public static int CASCADE_IN_VAL = 0;
