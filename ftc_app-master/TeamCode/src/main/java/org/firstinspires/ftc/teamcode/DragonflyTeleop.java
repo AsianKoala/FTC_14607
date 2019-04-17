@@ -72,6 +72,8 @@ public class DragonflyTeleop extends OpMode{
         telemetry.addData("arm ENCODER", robot.arm.getCurrentPosition());
         telemetry.addData("fl ENCODER", robot.fl.getCurrentPosition());
         telemetry.addData("fr ENCODER", robot.fr.getCurrentPosition());
+        telemetry.addData("bl ENCODER", robot.bl.getCurrentPosition());
+        telemetry.addData("br ENCODER", robot.br.getCurrentPosition());
         telemetry.addData("IMU", robot.getHeading());
         //END TELEMETRY
 

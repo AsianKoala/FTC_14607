@@ -23,14 +23,20 @@ public class DragonflyAutoMarker_4 extends LinearOpMode {
         drive.init(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder()
-                .splineTo(new Pose2d(10, 10, 0))
-                .splineTo(new Pose2d(20, 0, -1.5707963267948966))
-                .splineTo(new Pose2d(10, -10, 3.141592653589793))
-                .splineTo(new Pose2d(0, 0, 2.356194490192345))
-                .splineTo(new Pose2d(-10, 10, 3.141592653589793))
-                .splineTo(new Pose2d(-20, 0, 4.71238898038469))
-                .splineTo(new Pose2d(-10, -10, 0))
-                .splineTo(new Pose2d(0, 0, 0.7853981633974483))
+                .turn(Math.toRadians(90))
+                .waitFor(1)
+                .forward(12)
+                .waitFor(1)
+                .turn(Math.toRadians(90))
+                .waitFor(1)
+                .forward(12)
+                .waitFor(1)
+                .turn(Math.toRadians(90))
+                .waitFor(1)
+                .forward(12)
+                .waitFor(1)
+                .turn(Math.toRadians(90))
+                .waitFor(1)
                 .build();
 
         waitForStart();

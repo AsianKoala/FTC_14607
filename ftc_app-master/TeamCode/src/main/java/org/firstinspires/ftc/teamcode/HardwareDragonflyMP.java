@@ -137,6 +137,10 @@ public class HardwareDragonflyMP extends TankDrive {
     //MP settings
     public static PIDCoefficients DISPLACEMENT_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients CROSS_TRACK_PID = new PIDCoefficients(0, 0, 0);
+
+    public static PIDCoefficients STANDARD_PID = new PIDCoefficients(10, 3, 1);
+
+
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
@@ -228,8 +232,8 @@ public class HardwareDragonflyMP extends TankDrive {
         for (DcMotorEx rightMotor : rightMotors) {
             rightSum += DriveConstants.encoderTicksToInches(bulkData.getMotorCurrentPosition(rightMotor));
         }
-//        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
-        return Arrays.asList(leftSum, rightSum);
+        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
+//        return Arrays.asList(leftSum, rightSum);
     }
 
     @Override
@@ -281,8 +285,12 @@ public class HardwareDragonflyMP extends TankDrive {
         markerDeployer = hwMap.servo.get("markerDeployer");
         hookRelease = hwMap.servo.get("hookRelease");
 
-        revIMU = hwMap.get(BNO055IMU.class, "revIMU");
-        revIMU.initialize(new BNO055IMU.Parameters());
+//        revIMU = hwMap.get(BNO055IMU.class, "revIMU");
+//        revIMU.initialize(new BNO055IMU.Parameters());
+        revIMU = LynxOptimizedI2cFactory.createLynxEmbeddedImu(driveHub.getStandardModule(), 0);
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        revIMU.initialize(parameters);
 
         fl.setPower(sp);
         fr.setPower(sp);
@@ -339,8 +347,6 @@ public class HardwareDragonflyMP extends TankDrive {
 ////                (this, DISPLACEMENT_PID, CROSS_TRACK_PID,
 ////                DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic);
 
-//        driveHub = hwMap.get(ExpansionHubEx.class, "driveHub");
-
         motors = Arrays.asList(fl, bl, br, fr);
         leftMotors = Arrays.asList(fl, bl);
         rightMotors = Arrays.asList(fr, br);
@@ -349,8 +355,8 @@ public class HardwareDragonflyMP extends TankDrive {
             // TODO: decide whether or not to use the built-in velocity PID
             // if you keep it, then don't tune kStatic or kA
             // otherwise, comment out the following line
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
@@ -358,7 +364,7 @@ public class HardwareDragonflyMP extends TankDrive {
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-//        setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients());
+        setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, STANDARD_PID);
 
     }
 //
