@@ -57,12 +57,32 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
         Trajectory T_1 = robot.trajectoryBuilder()
                 .forward(robot.FORWARD_MOVE_MARKER_VAL_EXTRA)
-                .waitFor(1)
+                .waitFor(0.5)
                 .build();
 
         Trajectory T_2 = robot.trajectoryBuilder()
                 .back(robot.FORWARD_MOVE_MARKER_VAL_EXTRA-robot.FORWARD_MOVE_SAMPLING_VAL)
-                .waitFor(1)
+                .waitFor(0.5)
+                .build();
+
+        Trajectory T_3 = robot.trajectoryBuilder()
+                .back(robot.FORWARD_MOVE_SAMPLING_VAL)
+                .waitFor(0.5)
+                .build();
+
+        Trajectory T_4 = robot.trajectoryBuilder()
+                .forward(robot.DRIVE_DEPOT_PARK_MOVE_1)
+                .waitFor(0.5)
+                .build();
+
+        Trajectory T_5 = robot.trajectoryBuilder()
+                .forward(robot.DRIVE_DEPOT_PARK_MOVE_2)
+                .waitFor(0.5)
+                .build();
+
+        Trajectory T_6 = robot.trajectoryBuilder()
+                .forward(robot.DRIVE_DEPOT_PARK_MOVE_3)
+                .waitFor(0.5)
                 .build();
 
 
@@ -239,9 +259,6 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
 
-                //stop intake
-                robot.intake_motor.setPower(0);
-
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
                 robot.allStop();
@@ -250,9 +267,9 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 break;
             case 1:
 
-                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_CENTER_GOLD_MINADJUST){ robot.driveLimitless(0.3, -0.3); } //TODO ?
-                robot.allStop();
-                sleep(100);
+//                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_CENTER_GOLD_MINADJUST){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+//                robot.allStop();
+//                sleep(100);
 
                 //extend arm to knock off gold mineral
                 robot.arm.setTargetPosition(robot.ARM_CENTER_GOLD_VAL);
@@ -274,9 +291,6 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
-
-                //stop intake
-                robot.intake_motor.setPower(0);
 
                 break;
             case 2:
@@ -306,9 +320,6 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
 
-                //stop intake
-                robot.intake_motor.setPower(0);
-
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
                 robot.allStop();
@@ -317,17 +328,17 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 break;
         }
 
-        //drive backwards towards lander to score gold mineral
+        //correct heading
         while(opModeIsActive() && robot.getHeading()>globalStartHeading){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
         robot.allStop();
         sleep(100);
 
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
 
-        sleep(500000);
-        //FIRST TEMP STOP ––––––––––––––––––––––––––––––––––––––––––––––––––
-
-
-        moveForward(-0.7, robot.FORWARD_MOVE_SAMPLING_VAL);
+        //drive backwards towards lander to score gold mineral
+        followTrajectory(T_3);
 
         while(opModeIsActive()&& robot.arm.isBusy()) {
         }
@@ -344,6 +355,52 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
         //reset arm position
         robot.arm.setTargetPosition(robot.ARM_PARK_VAL);
         robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+
+        //move out to path to park
+        followTrajectory(T_4);
+
+        //turn out to path to park
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+
+        //move out on path to park
+        followTrajectory(T_5);
+
+        //turn out on path to park
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_2){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_2){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+
+        //extend cascade to park
+        robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
+        robot.cascade.setPower(0.9);
+
+        //move out on path to park
+        followTrajectory(T_6);
+
+        while(opModeIsActive()&& robot.cascade.isBusy()){
+
+        }
+
+        while (opModeIsActive()){ // wait until end of opmode
+            telemetry.addData("Autonomous completed... ", 0);
+        }
+
+
+        sleep(500000);
+        //FIRST TEMP STOP ––––––––––––––––––––––––––––––––––––––––––––––––––
+
+
+
+
+
 
         //turn out to path to park
         while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DRIVE_PARK_VAL_1){ robot.driveLimitless(0.4, -0.4); } //TODO ?
