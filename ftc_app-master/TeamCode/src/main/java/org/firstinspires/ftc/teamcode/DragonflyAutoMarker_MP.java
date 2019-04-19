@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -237,6 +238,9 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.TURN_LEFT_GOLD_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
                 robot.allStop();
                 sleep(100);
+                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_LEFT_GOLD_VAL){ robot.driveLimitless(0.2, -0.2); } //TODO ?
+                robot.allStop();
+                sleep(100);
 
                 //extend arm to knock off gold mineral
                 robot.arm.setTargetPosition(robot.ARM_LEFT_GOLD_VAL);
@@ -254,10 +258,16 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
                 //retract arm to default position
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+                robot.arm.setVelocity(75, AngleUnit.DEGREES);
 
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
+
+                while(opModeIsActive()&& robot.arm.isBusy()) {
+                }
+                while(opModeIsActive()&& robot.cascade.isBusy()){
+                }
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
@@ -287,7 +297,8 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
                 //retract arm to default position
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+                robot.arm.setVelocity(75, AngleUnit.DEGREES);
 
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
@@ -298,10 +309,14 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_RIGHT_GOLD_VAL){ robot.driveLimitless(0.3, -0.3); } //TODO ?
                 robot.allStop();
                 sleep(100);
+                while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.TURN_RIGHT_GOLD_VAL){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+                robot.allStop();
+                sleep(100);
 
                 //extend arm to knock off gold mineral
                 robot.arm.setTargetPosition(robot.ARM_RIGHT_GOLD_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+                robot.arm.setVelocity(75, AngleUnit.DEGREES);
 
                 robot.cascade.setTargetPosition(robot.CASCADE_RIGHT_GOLD_EXTEND_VAL);
                 robot.cascade.setPower(0.9);
@@ -319,6 +334,11 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
                 robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
                 robot.cascade.setPower(0.9);
+
+                while(opModeIsActive()&& robot.arm.isBusy()) {
+                }
+                while(opModeIsActive()&& robot.cascade.isBusy()){
+                }
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?

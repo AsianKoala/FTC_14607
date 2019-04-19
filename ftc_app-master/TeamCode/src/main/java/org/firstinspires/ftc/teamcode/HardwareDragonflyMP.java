@@ -76,28 +76,37 @@ public class HardwareDragonflyMP extends TankDrive {
     public static int ARM_VERTICAL_VAL = 1905;
     public static int ARM_TRANSITION_VAL = 1000; //1200
     public static int ARM_PARK_VAL = 900;
-    public static int ARM_BACK_VAL = 2198;
 
-    public static int ARM_LEFT_GOLD_VAL = 210;
-    public static int ARM_CENTER_GOLD_VAL = 162; //202
-    public static int ARM_RIGHT_GOLD_VAL = 232;
+    public static int ARM_PICK_VAL = 475;
+
+    public static int ARM_LEFT_GOLD_VAL = 232; //210
+    public static int ARM_CENTER_GOLD_VAL = 162; //162
+    public static int ARM_RIGHT_GOLD_VAL = 240; //232
 
     public static int ARM_MARKER_DEPLOY_VAL = 560; //675
 
     public static int LIFT_DOWN_VAL = 0;
     public static int LIFT_MAX_VAL = -28866;
+
+    public static int LIFT_SMALL_LIFT_VAL = -1250;
+    public static int LIFT_FULL_LIFT_VAL = -700;
+
     public static int LIFT_HOOK_VAL = -2985; //-24273
     public static int LIFT_DETATCH_VAL = -1792; //-18516; //-19000
-    public static int LIFT_CLEAR_VAL = -14000;
 
     public static int CASCADE_IN_VAL = 0;
     public static int CASCADE_MAX_VAL = -4500;
     public static int CASCADE_SCORE_DEFAULT_VAL = -555; //-560 540 545
 
+    public static int CASCADE_SCORE_FAR_VAL = -760;
 
-    public static int CASCADE_LEFT_GOLD_EXTEND_VAL = -2200; //2250
-    public static int CASCADE_CENTER_GOLD_EXTEND_VAL = -1900; //-1997
-    public static int CASCADE_RIGHT_GOLD_EXTEND_VAL = -2500; //-2000
+    //TODO: ^^ min values, need tuning at practice fields
+    //start with cascade fully retracted
+
+
+    public static int CASCADE_LEFT_GOLD_EXTEND_VAL = -2500; //-2200
+    public static int CASCADE_CENTER_GOLD_EXTEND_VAL = -1900; //-1900
+    public static int CASCADE_RIGHT_GOLD_EXTEND_VAL = -2700; //-2500
     public static int CASCADE_MARKER_EXTEND_VAL = -4500;
 
     public static int TURN_OUT_DELATCH_VAL = -30; //degrees
@@ -107,9 +116,9 @@ public class HardwareDragonflyMP extends TankDrive {
 
     public static int DRIVE_DEPOT_PARK_MOVE_1 = 12; //inches
     public static int DRIVE_DEPOT_PARK_TURN_1 = -90; //degrees
-    public static int DRIVE_DEPOT_PARK_MOVE_2 = 50; //inches
+    public static int DRIVE_DEPOT_PARK_MOVE_2 = 45; //inches //50
     public static int DRIVE_DEPOT_PARK_TURN_2 = -135; //degrees
-    public static int DRIVE_DEPOT_PARK_MOVE_3 = 12; //inches
+    public static int DRIVE_DEPOT_PARK_MOVE_3 = 5; //inches //12
 
     public static int TURN_OUT_DRIVE_PARK_VAL_1 = -40; //degrees
     public static int FORWARD_MOVE_PARK_VAL_1 = 19; //inches //22 before
@@ -126,8 +135,8 @@ public class HardwareDragonflyMP extends TankDrive {
     public static int FORWARD_MOVE_PUSH_SAMPLING_VAL = 10; //inches //15
     public static int FORWARD_MOVE_MARKER_VAL_EXTRA = 17; //inches //19 before
     public static int BACKWARDS_MOVE_SAMPLING_VAL = 6; //inches
-    public static int TURN_LEFT_GOLD_VAL = -30; //degrees
-    public static int TURN_RIGHT_GOLD_VAL = 41; //degrees
+    public static int TURN_LEFT_GOLD_VAL = -35; //degrees
+    public static int TURN_RIGHT_GOLD_VAL = 42; //degrees
     public static int FORWARD_MOVE_GOLD_CENTER_PUSH_VAL = 18; //inches
     public static int FORWARD_MOVE_GOLD_SIDE_PUSH_VAL = 20; //inches
 
@@ -459,11 +468,17 @@ public class HardwareDragonflyMP extends TankDrive {
 //    }
 
 
-    public void driveLimitless(double left, double right) {
+    public void driveLimitlessTeleop(double left, double right) {
         fl.setVelocity(-left*360*3, AngleUnit.DEGREES);
         fr.setVelocity(-right*360*3, AngleUnit.DEGREES);
         bl.setVelocity(-left*360*3, AngleUnit.DEGREES);
         br.setVelocity(-right*360*3, AngleUnit.DEGREES);
+    }
+    public void driveLimitless(double left, double right) {
+        fl.setPower(left);
+        fr.setPower(right);
+        bl.setPower(left);
+        br.setPower(right);
     }
 
     public void allStop()
