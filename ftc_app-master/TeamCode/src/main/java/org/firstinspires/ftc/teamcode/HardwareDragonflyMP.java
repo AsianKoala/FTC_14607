@@ -460,10 +460,10 @@ public class HardwareDragonflyMP extends TankDrive {
 
 
     public void driveLimitless(double left, double right) {
-        fl.setPower(left);
-        fr.setPower(right);
-        bl.setPower(left);
-        br.setPower(right);
+        fl.setVelocity(-left*360*3, AngleUnit.DEGREES);
+        fr.setVelocity(-right*360*3, AngleUnit.DEGREES);
+        bl.setVelocity(-left*360*3, AngleUnit.DEGREES);
+        br.setVelocity(-right*360*3, AngleUnit.DEGREES);
     }
 
     public void allStop()
