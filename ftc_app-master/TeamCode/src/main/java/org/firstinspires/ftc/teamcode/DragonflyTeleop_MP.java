@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 //test
 @TeleOp(name="Teleop : Dragonfly MP", group="Dragonfly")
 public class DragonflyTeleop_MP extends OpMode{
@@ -162,17 +164,27 @@ public class DragonflyTeleop_MP extends OpMode{
 //        if(!gamepad1.dpad_up && robot.arm.getCurrentPosition() > 0 && armPower > 0) armPower = 0;
 //        if(!gamepad1.dpad_up && robot.arm.getCurrentPosition() < -1577 && armPower < 0) armPower = 0;
         if(robot.arm.isBusy()) {
+
+//
             robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+
+//            robot.arm.setVelocity(200, AngleUnit.DEGREES);
+
+
         }else{
             robot.arm.setPower(0);
+//            robot.arm.setVelocity(0, AngleUnit.DEGREES);
         }
         if(gamepad1.a){
             robot.arm.setTargetPosition(robot.ARM_LOWERED_VAL);
-            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+            robot.arm.setVelocity(300, AngleUnit.DEGREES);
         }
         if(gamepad1.b){
             robot.arm.setTargetPosition(robot.ARM_LEVEL_VAL);
-            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+            robot.arm.setVelocity(300, AngleUnit.DEGREES);
 
             robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
@@ -185,26 +197,36 @@ public class DragonflyTeleop_MP extends OpMode{
         }
         if(gamepad1.y){
             robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
-            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+            robot.arm.setVelocity(300, AngleUnit.DEGREES);
         }
         if(gamepad1.x){
 
-            robot.arm.setTargetPosition(robot.ARM_PICK_VAL);
+            //for easy pickup
+//            robot.arm.setTargetPosition(robot.ARM_PICK_VAL);
+//            robot.arm.setVelocity(300, AngleUnit.DEGREES);
+//
+//            robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.cascade.setTargetPosition(robot.CASCADE_SCORE_FAR_VAL);
+//            robot.cascade.setPower(0.9);
+////            robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
+////            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
 
-            robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.cascade.setTargetPosition(robot.CASCADE_SCORE_FAR_VAL);
-            robot.cascade.setPower(0.9);
-//            robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
+            //for angled deposit
+            robot.arm.setTargetPosition(robot.ARM_VERTICAL_PLUS_VAL);
 //            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+            robot.arm.setVelocity(300, AngleUnit.DEGREES);
         }
 
         if(gamepad1.left_bumper){
             robot.arm.setTargetPosition(robot.arm.getTargetPosition()+50); //ARM INCREMENT UP
-            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.8)));
+//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.8)));
+            robot.arm.setVelocity(150, AngleUnit.DEGREES);
         }
         if(gamepad1.right_bumper){
             robot.arm.setTargetPosition(robot.arm.getTargetPosition()-50); //ARM INCREMENT DOWN
-            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.8)));
+//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.8)));
+            robot.arm.setVelocity(150, AngleUnit.DEGREES);
         }
 
 

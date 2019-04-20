@@ -77,6 +77,8 @@ public class HardwareDragonflyMP extends TankDrive {
     public static int ARM_TRANSITION_VAL = 1000; //1200
     public static int ARM_PARK_VAL = 900;
 
+    public static int ARM_VERTICAL_PLUS_VAL = 1905+200;
+
     public static int ARM_PICK_VAL = 475;
 
     public static int ARM_LEFT_GOLD_VAL = 232; //210
@@ -94,20 +96,20 @@ public class HardwareDragonflyMP extends TankDrive {
     public static int LIFT_HOOK_VAL = -2985; //-24273
     public static int LIFT_DETATCH_VAL = -1792; //-18516; //-19000
 
-    public static int CASCADE_IN_VAL = 0;
-    public static int CASCADE_MAX_VAL = -4500;
-    public static int CASCADE_SCORE_DEFAULT_VAL = -555; //-560 540 545
+    public static int CASCADE_IN_VAL = 0; //0
+    public static int CASCADE_MAX_VAL = -2250; //-4500
+    public static int CASCADE_SCORE_DEFAULT_VAL = -300; //-560 540 545 555 278 was good
 
-    public static int CASCADE_SCORE_FAR_VAL = -760;
+    public static int CASCADE_SCORE_FAR_VAL = -380; //-760
 
     //TODO: ^^ min values, need tuning at practice fields
     //start with cascade fully retracted
 
 
-    public static int CASCADE_LEFT_GOLD_EXTEND_VAL = -2500; //-2200
-    public static int CASCADE_CENTER_GOLD_EXTEND_VAL = -1900; //-1900
-    public static int CASCADE_RIGHT_GOLD_EXTEND_VAL = -2700; //-2500
-    public static int CASCADE_MARKER_EXTEND_VAL = -4500;
+    public static int CASCADE_LEFT_GOLD_EXTEND_VAL = -1250; //-2200 2500
+    public static int CASCADE_CENTER_GOLD_EXTEND_VAL = -950; //-1900
+    public static int CASCADE_RIGHT_GOLD_EXTEND_VAL = -1350; //-2500 2700
+    public static int CASCADE_MARKER_EXTEND_VAL = -2250; //-4500
 
     public static int TURN_OUT_DELATCH_VAL = -30; //degrees
     public static int TURN_OUT_RESET_VAL = 0; //degrees
