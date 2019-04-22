@@ -54,32 +54,32 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
 
         Trajectory T_1 = robot.trajectoryBuilder()
                 .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_1)
-                .waitFor(0.5)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_2 = robot.trajectoryBuilder()
                 .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_2)
-                .waitFor(0.5)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_3 = robot.trajectoryBuilder()
                 .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_3)
-                .waitFor(0.5)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_4 = robot.trajectoryBuilder()
                 .back(robot.DRIVE_DEPOT_CLAIM_MOVE_3)
-                .waitFor(0.5)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_5 = robot.trajectoryBuilder()
                 .back(robot.DRIVE_DEPOT_CLAIM_MOVE_2)
-                .waitFor(0.5)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_6 = robot.trajectoryBuilder()
                 .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_SCORE_ADJ)
-                .waitFor(0.5)
+                .waitFor(0.2)
                 .build();
 
 
@@ -226,9 +226,6 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
         robot.allStop();
         sleep(100);
 
-        //move out on path to drop marker
-        followTrajectory(T_3);
-
         //lift arm to extend cascade
         robot.arm.setTargetPosition(robot.ARM_MARKER_DEPLOY_VAL);
         robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
@@ -240,6 +237,9 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
         robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
         robot.cascade.setPower(0.9);
 
+        //move out on path to drop marker
+        followTrajectory(T_3);
+
         while(opModeIsActive()&& robot.arm.isBusy()) {
         }
 
@@ -248,7 +248,7 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
 
         //drop team marker by spinning intake out
         robot.intake_motor.setPower(0.85);
-        sleep(500); //1000 500
+        sleep(250); //1000 500
 
         if(!robot.cascade.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
             robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -262,7 +262,7 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
         robot.intake_motor.setPower(0);
 
         //lift arm to transition
-        robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
+        robot.arm.setTargetPosition(robot.ARM_MARKER_DEPLOY_VAL);
         robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
         while(opModeIsActive()&& robot.arm.isBusy()) {
         }
@@ -328,16 +328,16 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
 
                 //retract arm to default position
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
-//                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-                robot.arm.setVelocity(75, AngleUnit.DEGREES);
+                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setVelocity(75, AngleUnit.DEGREES);
 
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
@@ -369,9 +369,9 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
 //                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
                 robot.arm.setVelocity(75, AngleUnit.DEGREES);
-
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
 
                 break;
             case 2:
@@ -402,13 +402,13 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
                 robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
 
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
@@ -416,11 +416,6 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
                 sleep(100);
 
                 break;
-        }
-
-        while(opModeIsActive()&& robot.arm.isBusy()) {
-        }
-        while(opModeIsActive()&& robot.cascade.isBusy()){
         }
 
         //correct heading
@@ -439,7 +434,7 @@ public class DragonflyAutoCrater_MP extends LinearOpMode {
 
         //lift arm to extend cascade
         robot.arm.setTargetPosition(robot.ARM_MARKER_DEPLOY_VAL);
-        robot.arm.setVelocity(75, AngleUnit.DEGREES);
+        robot.arm.setVelocity(90, AngleUnit.DEGREES);
 
         //extend cascade to park in crater
         if(!robot.cascade.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
