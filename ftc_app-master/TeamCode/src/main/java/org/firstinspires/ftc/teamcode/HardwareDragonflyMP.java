@@ -98,7 +98,7 @@ public class HardwareDragonflyMP extends TankDrive {
 
     public static int CASCADE_IN_VAL = 0; //0
     public static int CASCADE_MAX_VAL = -2250; //-4500
-    public static int CASCADE_SCORE_DEFAULT_VAL = -300; //-560 540 545 555 278 was good
+    public static int CASCADE_SCORE_DEFAULT_VAL = -350; //-560 540 545 555 278 -300 was good
 
     public static int CASCADE_SCORE_FAR_VAL = -380; //-760
 
@@ -122,16 +122,19 @@ public class HardwareDragonflyMP extends TankDrive {
     public static int DRIVE_DEPOT_PARK_TURN_2 = -135; //degrees
     public static int DRIVE_DEPOT_PARK_MOVE_3 = 5; //inches //12
 
+    //unused
     public static int TURN_OUT_DRIVE_PARK_VAL_1 = -40; //degrees
     public static int FORWARD_MOVE_PARK_VAL_1 = 19; //inches //22 before
     public static int TURN_OUT_DRIVE_PARK_VAL_2 = -110; //degrees //-100
     public static int FORWARD_MOVE_PARK_VAL_2 = 12; //inches //10
+    // end unused
 
-    public static int TURN_OUT_DRIVE_DEPLOY_VAL_1 = -60; //degrees
-    public static int FORWARD_MOVE_DEPLOY_VAL_1 = 45; //inches
-    public static int TURN_OUT_DRIVE_DEPLOY_VAL_2 = -130; //degrees
-    public static int FORWARD_MOVE_DEPLOY_VAL_2 = 28; //inches //27
-    public static int BACKWARDS_MOVE_DEPLOY_VAL_3 = 12; //inches
+    public static int DRIVE_DEPOT_CLAIM_MOVE_1 = 14; //inches
+    public static int DRIVE_DEPOT_CLAIM_TURN_1 = -80; //degrees
+    public static int DRIVE_DEPOT_CLAIM_MOVE_2 = 40; //inches //45
+    public static int DRIVE_DEPOT_CLAIM_TURN_2 = -130; //degrees
+    public static int DRIVE_DEPOT_CLAIM_MOVE_3 = 5; //inches //5 works
+    public static int DRIVE_DEPOT_CLAIM_MOVE_SCORE_ADJ = 3;
 
     public static int FORWARD_MOVE_SAMPLING_VAL = 13; //inches //15
     public static int FORWARD_MOVE_PUSH_SAMPLING_VAL = 10; //inches //15
@@ -471,10 +474,10 @@ public class HardwareDragonflyMP extends TankDrive {
 
 
     public void driveLimitlessTeleop(double left, double right) {
-        fl.setVelocity(-left*360*3, AngleUnit.DEGREES);
-        fr.setVelocity(-right*360*3, AngleUnit.DEGREES);
-        bl.setVelocity(-left*360*3, AngleUnit.DEGREES);
-        br.setVelocity(-right*360*3, AngleUnit.DEGREES);
+        fl.setVelocity(-left*360*3 *4/3, AngleUnit.DEGREES);
+        fr.setVelocity(-right*360*3 *4/3, AngleUnit.DEGREES);
+        bl.setVelocity(-left*360*3 *4/3, AngleUnit.DEGREES);
+        br.setVelocity(-right*360*3 *4/3, AngleUnit.DEGREES);
     }
     public void driveLimitless(double left, double right) {
         fl.setPower(left);

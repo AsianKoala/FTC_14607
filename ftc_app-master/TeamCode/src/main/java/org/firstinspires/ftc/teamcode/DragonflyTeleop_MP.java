@@ -16,6 +16,8 @@ public class DragonflyTeleop_MP extends OpMode{
     double speed_multiplier = 1;
     double intakePower = 0;
     int lift_motor_position;
+
+    boolean intakeSlowMode = false;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -23,7 +25,7 @@ public class DragonflyTeleop_MP extends OpMode{
     public void init() {
         robot.init(hardwareMap);
 //        robot.resetEncoders(); TODO: RESET ARM ENCODERS DEPENDING ON AUTO RUN
-        lift_motor_position = robot.lift.getCurrentPosition();
+//        lift_motor_position = robot.lift.getCurrentPosition();
 //        robot.arm.setTargetPosition(0); //arm stays at previous position
         telemetry.addData("Say", "Hello Driver");
         updateTelemetry(telemetry);
@@ -64,7 +66,7 @@ public class DragonflyTeleop_MP extends OpMode{
         telemetry.addData("gamepad1 RX", gamepad1.right_stick_x);
         telemetry.addData("gamepad1 RY", gamepad1.right_stick_y);
         telemetry.addData("lift ENCODER", robot.lift.getCurrentPosition());
-        telemetry.addData("lift target position var", lift_motor_position);
+//        telemetry.addData("lift target position var", lift_motor_position);
         telemetry.addData("lift actual target", robot.lift.getTargetPosition());
         telemetry.addData("cascade ENCODER", robot.cascade.getCurrentPosition());
         telemetry.addData("arm ENCODER", robot.arm.getCurrentPosition());
@@ -112,8 +114,8 @@ public class DragonflyTeleop_MP extends OpMode{
             rightDrivePower/=1.25;
         }
         if(gamepad2.right_bumper){
-            leftDrivePower = leftDrivePower*1.5;
-            rightDrivePower = rightDrivePower*1.5;
+            leftDrivePower = leftDrivePower*1.5; //1.5
+            rightDrivePower = rightDrivePower*1.5; //1.5
         }
         
         robot.driveLimitlessTeleop((leftDrivePower), (rightDrivePower));
@@ -141,9 +143,14 @@ public class DragonflyTeleop_MP extends OpMode{
         }
         if(Math.abs(gamepad1.right_stick_y) > 0.05){
             intakePower = gamepad1.right_stick_y;
+            intakeSlowMode = false;
         }
 //        intakePower = gamepad1.right_stick_y*0.85;
         if(Math.abs(gamepad1.right_stick_y) < 0.05 && intakePower!=0) intakePower = 0.85; //AUTOMATIC INTAKING
+
+        if(intakeSlowMode == true){
+            intakePower*=0.55; //experimental
+        }
 //        robot.intake.setPower(-intakePower);
         robot.intake_motor.setPower(-intakePower);
 
@@ -189,6 +196,10 @@ public class DragonflyTeleop_MP extends OpMode{
             robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
             robot.cascade.setPower(0.9);
+
+            //experimental
+            intakeSlowMode = true;
+            //end experimental
         }
         if(gamepad1.left_stick_button){
             robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -244,6 +255,9 @@ public class DragonflyTeleop_MP extends OpMode{
             cascadePower = gamepad1.left_stick_y;
             robot.cascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             robot.cascade.setPower(cascadePower);
+
+            intakeSlowMode = false;
+
         }else if(robot.cascade.getMode().equals(DcMotor.RunMode.RUN_WITHOUT_ENCODER)){
             robot.cascade.setPower(cascadePower);
         }
