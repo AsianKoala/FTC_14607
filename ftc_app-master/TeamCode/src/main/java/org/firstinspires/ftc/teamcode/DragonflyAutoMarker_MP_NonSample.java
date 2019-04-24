@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,13 +14,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.List;
 
-@Autonomous(name = "Dragonfly Marker MP", group = "Dragonfly")
+@Autonomous(name = "Dragonfly Marker MP NON SAMPLING", group = "Dragonfly")
 
-public class DragonflyAutoMarker_MP extends LinearOpMode {
+public class DragonflyAutoMarker_MP_NonSample extends LinearOpMode {
     HardwareDragonflyMP robot = new HardwareDragonflyMP();
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -67,7 +63,7 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 .build();
 
         Trajectory T_3 = robot.trajectoryBuilder()
-                .back(robot.FORWARD_MOVE_SAMPLING_VAL)
+                .back(robot.FORWARD_MOVE_SAMPLING_VAL-robot.DRIVE_DEPOT_PARK_MOVE_1)
                 .waitFor(0.5)
                 .build();
 
@@ -231,122 +227,122 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
         //start intake
         robot.intake_motor.setPower(-0.85);
 
-        //switch depending on location of gold mineral
-        switch(goldState){
-            case 0:
-
-                while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.TURN_LEFT_GOLD_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
-                robot.allStop();
-                sleep(100);
-                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_LEFT_GOLD_VAL){ robot.driveLimitless(0.2, -0.2); } //TODO ?
-                robot.allStop();
-                sleep(100);
-
-                //extend arm to knock off gold mineral
-                robot.arm.setTargetPosition(robot.ARM_LEFT_GOLD_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-                robot.cascade.setTargetPosition(robot.CASCADE_LEFT_GOLD_EXTEND_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
-
-                sleep(750); //wait for gold mineral to be collected //1000
-
-                //retract arm to default position
-                robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
-//                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-                robot.arm.setVelocity(75, AngleUnit.DEGREES);
-
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
-
-                //reset turn position
-                while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
-                robot.allStop();
-                sleep(100);
-
-                break;
-            case 1:
-
-//                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_CENTER_GOLD_MINADJUST){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+//        //switch depending on location of gold mineral
+//        switch(goldState){
+//            case 0:
+//
+//                while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.TURN_LEFT_GOLD_VAL){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
 //                robot.allStop();
 //                sleep(100);
-
-                //extend arm to knock off gold mineral
-                robot.arm.setTargetPosition(robot.ARM_CENTER_GOLD_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-                robot.cascade.setTargetPosition(robot.CASCADE_CENTER_GOLD_EXTEND_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
-
-                sleep(750); //wait for gold mineral to be collected
-
-                //retract arm to default position
-                robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
+//                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_LEFT_GOLD_VAL){ robot.driveLimitless(0.2, -0.2); } //TODO ?
+//                robot.allStop();
+//                sleep(100);
+//
+//                //extend arm to knock off gold mineral
+//                robot.arm.setTargetPosition(robot.ARM_LEFT_GOLD_VAL);
 //                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-                robot.arm.setVelocity(75, AngleUnit.DEGREES);
-
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                break;
-            case 2:
-
-                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_RIGHT_GOLD_VAL){ robot.driveLimitless(0.3, -0.3); } //TODO ?
-                robot.allStop();
-                sleep(100);
-                while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.TURN_RIGHT_GOLD_VAL){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
-                robot.allStop();
-                sleep(100);
-
-                //extend arm to knock off gold mineral
-                robot.arm.setTargetPosition(robot.ARM_RIGHT_GOLD_VAL);
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_LEFT_GOLD_EXTEND_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
+//
+//                sleep(750); //wait for gold mineral to be collected //1000
+//
+//                //retract arm to default position
+//                robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
+////                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setVelocity(75, AngleUnit.DEGREES);
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
+//
+//                //reset turn position
+//                while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+//                robot.allStop();
+//                sleep(100);
+//
+//                break;
+//            case 1:
+//
+////                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_CENTER_GOLD_MINADJUST){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+////                robot.allStop();
+////                sleep(100);
+//
+//                //extend arm to knock off gold mineral
+//                robot.arm.setTargetPosition(robot.ARM_CENTER_GOLD_VAL);
 //                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-                robot.arm.setVelocity(75, AngleUnit.DEGREES);
-
-                robot.cascade.setTargetPosition(robot.CASCADE_RIGHT_GOLD_EXTEND_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
-
-                sleep(750); //wait for gold mineral to be collected
-
-                //retract arm to default position
-                robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
-                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
-
-                //reset turn position
-                while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
-                robot.allStop();
-                sleep(100);
-
-                break;
-        }
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_CENTER_GOLD_EXTEND_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
+//
+//                sleep(750); //wait for gold mineral to be collected
+//
+//                //retract arm to default position
+//                robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
+////                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setVelocity(75, AngleUnit.DEGREES);
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                break;
+//            case 2:
+//
+//                while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.TURN_RIGHT_GOLD_VAL){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+//                robot.allStop();
+//                sleep(100);
+//                while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.TURN_RIGHT_GOLD_VAL){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+//                robot.allStop();
+//                sleep(100);
+//
+//                //extend arm to knock off gold mineral
+//                robot.arm.setTargetPosition(robot.ARM_RIGHT_GOLD_VAL);
+////                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setVelocity(75, AngleUnit.DEGREES);
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_RIGHT_GOLD_EXTEND_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
+//
+//                sleep(750); //wait for gold mineral to be collected
+//
+//                //retract arm to default position
+//                robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
+//                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
+//
+//                //reset turn position
+//                while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+//                robot.allStop();
+//                sleep(100);
+//
+//                break;
+//        }
 
         //correct heading
         while(opModeIsActive() && robot.getHeading()>globalStartHeading){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
@@ -360,24 +356,24 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
         //drive backwards towards lander to score gold mineral
         followTrajectory(T_3);
 
-        while(opModeIsActive()&& robot.arm.isBusy()) {
-        }
-        while(opModeIsActive()&& robot.cascade.isBusy()){
-        }
-
-        //tilt arm up to score gold mineral
-        robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
-        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-        while(opModeIsActive()&& robot.arm.isBusy()) {
-        }
-        sleep(500);
-
-        //reset arm position
-        robot.arm.setTargetPosition(robot.ARM_PARK_VAL);
-        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-        //move out to path to park
-        followTrajectory(T_4);
+//        while(opModeIsActive()&& robot.arm.isBusy()) {
+//        }
+//        while(opModeIsActive()&& robot.cascade.isBusy()){
+//        }
+//
+//        //tilt arm up to score gold mineral
+//        robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
+//        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//        while(opModeIsActive()&& robot.arm.isBusy()) {
+//        }
+//        sleep(500);
+//
+//        //reset arm position
+//        robot.arm.setTargetPosition(robot.ARM_PARK_VAL);
+//        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//
+//        //move out to path to park
+//        followTrajectory(T_4);
 
         //turn out to path to park
         while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(-0.3, 0.3); } //TODO ?

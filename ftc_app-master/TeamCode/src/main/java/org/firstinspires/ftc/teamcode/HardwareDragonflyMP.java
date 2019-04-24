@@ -81,7 +81,7 @@ public class HardwareDragonflyMP extends TankDrive {
 
     public static int ARM_PICK_VAL = 475;
 
-    public static int ARM_LEFT_GOLD_VAL = 232; //210
+    public static int ARM_LEFT_GOLD_VAL = 205; //232 too high and 218
     public static int ARM_CENTER_GOLD_VAL = 162; //162
     public static int ARM_RIGHT_GOLD_VAL = 240; //232
 
@@ -90,11 +90,11 @@ public class HardwareDragonflyMP extends TankDrive {
     public static int LIFT_DOWN_VAL = 0;
     public static int LIFT_MAX_VAL = -28866;
 
-    public static int LIFT_SMALL_LIFT_VAL = -1250;
-    public static int LIFT_FULL_LIFT_VAL = -700;
+    public static int LIFT_SMALL_LIFT_VAL = -1250 -233;
+    public static int LIFT_FULL_LIFT_VAL = -700 -233;
 
-    public static int LIFT_HOOK_VAL = -2985; //-24273
-    public static int LIFT_DETATCH_VAL = -1792; //-18516; //-19000
+    public static int LIFT_HOOK_VAL = -3218; //-24273 -2985
+    public static int LIFT_DETATCH_VAL = -1792 -233; //-18516; //-19000
 
     public static int CASCADE_IN_VAL = 0; //0
     public static int CASCADE_MAX_VAL = -2250; //-4500
@@ -117,7 +117,7 @@ public class HardwareDragonflyMP extends TankDrive {
     public static int TURN_CENTER_GOLD_MINADJUST = 5; //degrees
 
     public static int DRIVE_DEPOT_PARK_MOVE_1 = 12; //inches
-    public static int DRIVE_DEPOT_PARK_TURN_1 = -90; //degrees
+    public static int DRIVE_DEPOT_PARK_TURN_1 = -85; //degrees -90 works
     public static int DRIVE_DEPOT_PARK_MOVE_2 = 45; //inches //50
     public static int DRIVE_DEPOT_PARK_TURN_2 = -135; //degrees
     public static int DRIVE_DEPOT_PARK_MOVE_3 = 5; //inches //12
