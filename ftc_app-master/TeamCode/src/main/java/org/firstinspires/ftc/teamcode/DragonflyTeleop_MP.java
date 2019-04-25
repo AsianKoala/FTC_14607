@@ -76,7 +76,9 @@ public class DragonflyTeleop_MP extends OpMode{
         telemetry.addData("br ENCODER", robot.br.getCurrentPosition());
         telemetry.addData("IMU", robot.getHeading());
 
-//        telemetry.addData("current draw of lift: ", robot.);
+        //BREAKING
+        telemetry.addData("current draw of lift: ", robot.lift.getCurrentDraw());
+        //END
 
         //END TELEMETRY
 

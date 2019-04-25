@@ -52,7 +52,7 @@ public class HardwareDragonflyMP extends TankDrive {
 
     public DcMotorEx arm   = null;
     public DcMotorEx cascade   = null;
-    public DcMotor lift   = null;
+    public ExpansionHubMotor lift   = null;
 
     public DcMotor intake_motor = null;
 
@@ -292,7 +292,7 @@ public class HardwareDragonflyMP extends TankDrive {
         br  = hwMap.get(ExpansionHubMotor.class, "br");
 
         arm   = hwMap.get(DcMotorEx.class, "arm");
-        lift   = hwMap.dcMotor.get("lift");
+        lift   = hwMap.get(ExpansionHubMotor.class, "lift");
         cascade   = hwMap.get(DcMotorEx.class, "cascade");
 
         intake = hwMap.crservo.get("intake");

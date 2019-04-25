@@ -100,7 +100,7 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
         long timeOfStart = System.currentTimeMillis();
 
-        int goldState = 1; // 0 = left, 1 = center, 2 = right
+        int goldState = 0; // 0 = left, 1 = center, 2 = right
         if (opModeIsActive()) {
             if (tfod != null) {
                 tfod.activate();
