@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,13 +14,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.List;
 
-@Autonomous(name = "Dragonfly Marker MP", group = "Dragonfly")
+@Autonomous(name = "Dragonfly Crater MP DOWN", group = "Dragonfly")
 
-public class DragonflyAutoMarker_MP extends LinearOpMode {
+public class DragonflyAutoCrater_MP_Down extends LinearOpMode {
     HardwareDragonflyMP robot = new HardwareDragonflyMP();
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -57,33 +53,33 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
         updateTelemetry(telemetry);
 
         Trajectory T_1 = robot.trajectoryBuilder()
-                .forward(robot.FORWARD_MOVE_MARKER_VAL_EXTRA)
-                .waitFor(0.5)
+                .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_1)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_2 = robot.trajectoryBuilder()
-                .back(robot.FORWARD_MOVE_MARKER_VAL_EXTRA-robot.FORWARD_MOVE_SAMPLING_VAL)
-                .waitFor(0.5)
+                .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_2)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_3 = robot.trajectoryBuilder()
-                .back(robot.FORWARD_MOVE_SAMPLING_VAL)
-                .waitFor(0.5)
+                .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_3)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_4 = robot.trajectoryBuilder()
-                .forward(robot.DRIVE_DEPOT_PARK_MOVE_1)
-                .waitFor(0.5)
+                .back(robot.DRIVE_DEPOT_CLAIM_MOVE_3)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_5 = robot.trajectoryBuilder()
-                .forward(robot.DRIVE_DEPOT_PARK_MOVE_2)
-                .waitFor(0.5)
+                .back(robot.DRIVE_DEPOT_CLAIM_MOVE_2)
+                .waitFor(0.2)
                 .build();
 
         Trajectory T_6 = robot.trajectoryBuilder()
-                .forward(robot.DRIVE_DEPOT_PARK_MOVE_3)
-                .waitFor(0.5)
+                .forward(robot.DRIVE_DEPOT_CLAIM_MOVE_SCORE_ADJ)
+                .waitFor(0.2)
                 .build();
 
 
@@ -100,13 +96,46 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
         long timeOfStart = System.currentTimeMillis();
 
+        // detach and lower from hang
+        lowerHangFast();
+
+        //turn out of hang
+        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(-0.5, 0.5); } //0.3 -0.3
+        robot.allStop();
+        sleep(100);
+//        while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(0.3, -0.3); } //0.3 -0.3
+//        robot.allStop();
+//        sleep(100);
+//        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(-0.3, 0.3); } //0.3 -0.3
+//        robot.allStop();
+//        sleep(100);
+//        while(opModeIsActive() && robot.getHeading()<robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(0.2, -0.2); } //0.3 -0.3
+//        robot.allStop();
+//        sleep(100);
+
+        //reset hang mechanism out of the way of the latch
+        resetHangPartial();
+
+        //turn back to face forward
+
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO robot.TURN_OUT_RESET_VAL
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+        robot.allStop();
+        sleep(100);
+//        third turn correction unnecessary
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.2, -0.2); } //TODO ?
+        robot.allStop();
+        sleep(100);
+
         int goldState = 0; // 0 = left, 1 = center, 2 = right
         if (opModeIsActive()) {
             if (tfod != null) {
                 tfod.activate();
             }
             boolean twoObjectsFound = false;
-            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<1500){ // 2.5 second timeout in case phone does not recognize minerals
+            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<2500){ // 2.5 second timeout in case phone does not recognize minerals
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
@@ -163,31 +192,95 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 }
             }}
 
+            boolean twoObjectsFound2 = false;
+            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<2500){ // 2.5 second timeout in case phone does not recognize minerals
+                if (tfod != null) {
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        if (updatedRecognitions.size() == 2) {
+                            twoObjectsFound = true;
+                            telemetry.addData("Yes two objects found: ", updatedRecognitions.size());
+                            boolean silverCenter = false;
+                            boolean silverRight = false;
+                            // telemetry.addData("recognitions", updatedRecognitions.toString());
+                            if(updatedRecognitions.get(0).getLabel().equals(LABEL_SILVER_MINERAL)){
+                                if(updatedRecognitions.get(0).getLeft()<updatedRecognitions.get(1).getLeft()){
+                                    silverRight = true;
+                                }else{
+                                    silverCenter = true;
+                                }
+                            }
+                            if(updatedRecognitions.get(1).getLabel().equals(LABEL_SILVER_MINERAL)){
+                                if(updatedRecognitions.get(1).getLeft()>updatedRecognitions.get(0).getLeft()) {
+                                    silverCenter = true;
+                                }else{
+                                    silverRight = true;
+                                }
+                            }
+
+                            if(silverCenter && silverRight){ // GOLD IS LEFT
+                                telemetry.addData("GOLD: ", "LEFT");
+                                goldState = 0;
+                            }else if(!silverCenter && silverRight){ // GOLD IS CENTER
+                                telemetry.addData("GOLD: ", "CENTER");
+                                goldState = 1;
+                            }else if(silverCenter && !silverRight){ // GOLD IS RIGHT
+                                telemetry.addData("GOLD: ", "RIGHT");
+                                goldState = 2;
+                            }
+                        }else{
+                            telemetry.addData("No two objects found: ", updatedRecognitions.size());
+                            if(updatedRecognitions.size() == 1){
+                                //more than 265 from left is center, less is right
+                                if(updatedRecognitions.get(0).getLabel().equals(LABEL_GOLD_MINERAL)){
+                                    if(updatedRecognitions.get(0).getLeft()>265){
+                                        goldState = 1;
+                                        twoObjectsFound = true;
+                                    }else{
+                                        goldState = 2;
+                                        twoObjectsFound = true;
+                                    }
+                                }
+                                telemetry.addData("gold possible: "+updatedRecognitions.get(0).getLabel(), updatedRecognitions.get(0).getLeft());
+                            }else{
+
+                            }
+                        }
+                        telemetry.update();
+                    }
+                }}
+
         }
         if (tfod != null) {
             tfod.shutdown();
         }
 
-        // detach and lower from hang
-        lowerHangFast();
 
-        //turn out of hang
-        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DELATCH_VAL){ robot.driveLimitless(-0.5, 0.5); } //0.3 -0.3
-        robot.allStop();
+        //move out to path to drop marker
+        followTrajectory(T_1);
 
-        //reset hang mechanism out of the way of the latch
-        resetHangPartial();
-
-        //turn back to face forward
-
-        while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO robot.TURN_OUT_RESET_VAL
+        //turn out to path to drop marker
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_1){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
         robot.allStop();
         sleep(100);
-        while(opModeIsActive() && robot.getHeading()>globalStartHeading){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_1){ robot.driveLimitless(0.3, -0.3); } //TODO ?
         robot.allStop();
         sleep(100);
-//        third turn correction unnecessary
-        while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.2, -0.2); } //TODO ?
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_1){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+        robot.allStop();
+        sleep(100);
+
+        //move out on path to drop marker
+        followTrajectory(T_2);
+
+        //turn out on path to drop marker
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_2){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_2){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_2){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
         robot.allStop();
         sleep(100);
 
@@ -202,8 +295,8 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
         robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
         robot.cascade.setPower(0.9);
 
-        //drive to marker deployment location
-        followTrajectory(T_1);
+        //move out on path to drop marker
+        followTrajectory(T_3);
 
         while(opModeIsActive()&& robot.arm.isBusy()) {
         }
@@ -213,20 +306,55 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
         //drop team marker by spinning intake out
         robot.intake_motor.setPower(0.85);
-        sleep(1000); //1000 500 250
+        sleep(250); //1000 500
 
-        //retract cascade
         if(!robot.cascade.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
             robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         robot.cascade.setTargetPosition(robot.CASCADE_IN_VAL);
         robot.cascade.setPower(0.9);
 
-        //drive to sampling location
-        followTrajectory(T_2);
-
         while(opModeIsActive()&& robot.cascade.isBusy()){
         }
+
+        robot.intake_motor.setPower(0);
+
+        //lift arm to transition
+        robot.arm.setTargetPosition(robot.ARM_MARKER_DEPLOY_VAL);
+        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+        while(opModeIsActive()&& robot.arm.isBusy()) {
+        }
+
+        //move back on path to sample
+        followTrajectory(T_4);
+
+        //turn back on path to sample
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_1){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_1){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_CLAIM_TURN_1){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+
+        //move back on path to sample
+        followTrajectory(T_5);
+
+        //turn back on path to sample
+        while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+        robot.allStop();
+        sleep(100);
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+        robot.allStop();
+        sleep(100);
+
+//        //move forward on path to sample
+        followTrajectory(T_6);
 
         //start intake
         robot.intake_motor.setPower(-0.85);
@@ -258,16 +386,16 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
 
                 //retract arm to default position
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
-//                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-                robot.arm.setVelocity(75, AngleUnit.DEGREES);
+                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//                robot.arm.setVelocity(75, AngleUnit.DEGREES);
 
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
@@ -299,9 +427,9 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
 //                robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
                 robot.arm.setVelocity(75, AngleUnit.DEGREES);
-
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
+//
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
 
                 break;
             case 2:
@@ -332,13 +460,13 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
                 robot.arm.setTargetPosition(robot.ARM_TRANSITION_VAL);
                 robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
 
-                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
-                robot.cascade.setPower(0.9);
-
-                while(opModeIsActive()&& robot.arm.isBusy()) {
-                }
-                while(opModeIsActive()&& robot.cascade.isBusy()){
-                }
+//                robot.cascade.setTargetPosition(robot.CASCADE_SCORE_DEFAULT_VAL);
+//                robot.cascade.setPower(0.9);
+//
+//                while(opModeIsActive()&& robot.arm.isBusy()) {
+//                }
+//                while(opModeIsActive()&& robot.cascade.isBusy()){
+//                }
 
                 //reset turn position
                 while(opModeIsActive() && robot.getHeading()<globalStartHeading){ robot.driveLimitless(0.3, -0.3); } //TODO ?
@@ -357,101 +485,127 @@ public class DragonflyAutoMarker_MP extends LinearOpMode {
         robot.allStop();
         sleep(100);
 
-        //drive backwards towards lander to score gold mineral
-        followTrajectory(T_3);
+        //third correction unnecessary
+        while(opModeIsActive() && robot.getHeading()>globalStartHeading){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
+        robot.allStop();
+        sleep(100);
 
-        while(opModeIsActive()&& robot.arm.isBusy()) {
+        //lift arm to extend cascade
+        robot.arm.setTargetPosition(robot.ARM_MARKER_DEPLOY_VAL);
+        robot.arm.setVelocity(90, AngleUnit.DEGREES);
+
+        //extend cascade to park in crater
+        if(!robot.cascade.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+            robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        while(opModeIsActive()&& robot.cascade.isBusy()){
-        }
-
-        //tilt arm up to score gold mineral
-        robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
-        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-        while(opModeIsActive()&& robot.arm.isBusy()) {
-        }
-        sleep(500);
-
-        //reset arm position
-        robot.arm.setTargetPosition(robot.ARM_PARK_VAL);
-        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-
-        //move out to path to park
-        followTrajectory(T_4);
-
-        //turn out to path to park
-        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
-        robot.allStop();
-        sleep(100);
-        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(0.3, -0.3); } //TODO ?
-        robot.allStop();
-        sleep(100);
-        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(-0.2, 0.2); } //TODO ?
-        robot.allStop();
-        sleep(100);
-
-        //move out on path to park
-        followTrajectory(T_5);
-
-        //turn out on path to park
-        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_2){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
-        robot.allStop();
-        sleep(100);
-        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_2){ robot.driveLimitless(0.3, -0.3); } //TODO ?
-        robot.allStop();
-        sleep(100);
-
-        //extend cascade to park
         robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
         robot.cascade.setPower(0.9);
 
-        //move out on path to park
-        followTrajectory(T_6);
+        while(opModeIsActive()&& robot.arm.isBusy()) {
+        }
 
         while(opModeIsActive()&& robot.cascade.isBusy()){
-
         }
+
 
         while (opModeIsActive()){ // wait until end of opmode
             telemetry.addData("Autonomous completed... ", 0);
         }
-
-
-        sleep(500000);
-        //FIRST TEMP STOP ––––––––––––––––––––––––––––––––––––––––––––––––––
-
-
-
-
-
-
-        //turn out to path to park
-        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DRIVE_PARK_VAL_1){ robot.driveLimitless(0.4, -0.4); } //TODO ?
-        robot.allStop();
-        sleep(100);
-
-        //drive forward to path to park
-        moveForward(0.7, robot.FORWARD_MOVE_PARK_VAL_1);
-
-        //extend cascade to park
-        robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
-        robot.cascade.setPower(0.9);
-
-        //turn out to path to park
-        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DRIVE_PARK_VAL_2){ robot.driveLimitless(0, -0.6); } //TODO ?
-        robot.allStop();
-        sleep(100);
-
-        //drive forward to path to park
-        moveForward(0.7, robot.FORWARD_MOVE_PARK_VAL_2);
-
-        while(opModeIsActive()&& robot.cascade.isBusy()){
-
-        }
-
-        while (opModeIsActive()){ // wait until end of opmode
-            telemetry.addData("Autonomous completed... ", 0);
-        }
+//
+//
+//
+//        //drive backwards towards lander to score gold mineral
+//        followTrajectory(T_2);
+//
+//        while(opModeIsActive()&& robot.arm.isBusy()) {
+//        }
+//        while(opModeIsActive()&& robot.cascade.isBusy()){
+//        }
+//
+//        //tilt arm up to score gold mineral
+//        robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
+//        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//        while(opModeIsActive()&& robot.arm.isBusy()) {
+//        }
+//        sleep(500);
+//
+//        //reset arm position
+//        robot.arm.setTargetPosition(robot.ARM_PARK_VAL);
+//        robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//
+//        //move out to path to park
+//        followTrajectory(T_4);
+//
+//        //turn out to path to park
+//        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+//        robot.allStop();
+//        sleep(100);
+//        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_1){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+//        robot.allStop();
+//        sleep(100);
+//
+//        //move out on path to park
+//        followTrajectory(T_5);
+//
+//        //turn out on path to park
+//        while(opModeIsActive() && robot.getHeading()>globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_2){ robot.driveLimitless(-0.3, 0.3); } //TODO ?
+//        robot.allStop();
+//        sleep(100);
+//        while(opModeIsActive() && robot.getHeading()<globalStartHeading+robot.DRIVE_DEPOT_PARK_TURN_2){ robot.driveLimitless(0.3, -0.3); } //TODO ?
+//        robot.allStop();
+//        sleep(100);
+//
+//        //extend cascade to park
+//        robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
+//        robot.cascade.setPower(0.9);
+//
+//        //move out on path to park
+//        followTrajectory(T_6);
+//
+//        while(opModeIsActive()&& robot.cascade.isBusy()){
+//
+//        }
+//
+//        while (opModeIsActive()){ // wait until end of opmode
+//            telemetry.addData("Autonomous completed... ", 0);
+//        }
+//
+//
+//        sleep(500000);
+//        //FIRST TEMP STOP ––––––––––––––––––––––––––––––––––––––––––––––––––
+//
+//
+//
+//
+//
+//
+//        //turn out to path to park
+//        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DRIVE_PARK_VAL_1){ robot.driveLimitless(0.4, -0.4); } //TODO ?
+//        robot.allStop();
+//        sleep(100);
+//
+//        //drive forward to path to park
+//        moveForward(0.7, robot.FORWARD_MOVE_PARK_VAL_1);
+//
+//        //extend cascade to park
+//        robot.cascade.setTargetPosition(robot.CASCADE_MARKER_EXTEND_VAL);
+//        robot.cascade.setPower(0.9);
+//
+//        //turn out to path to park
+//        while(opModeIsActive() && robot.getHeading()>robot.TURN_OUT_DRIVE_PARK_VAL_2){ robot.driveLimitless(0, -0.6); } //TODO ?
+//        robot.allStop();
+//        sleep(100);
+//
+//        //drive forward to path to park
+//        moveForward(0.7, robot.FORWARD_MOVE_PARK_VAL_2);
+//
+//        while(opModeIsActive()&& robot.cascade.isBusy()){
+//
+//        }
+//
+//        while (opModeIsActive()){ // wait until end of opmode
+//            telemetry.addData("Autonomous completed... ", 0);
+//        }
     }
 
     private void initVuforia() {

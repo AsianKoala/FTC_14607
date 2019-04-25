@@ -217,21 +217,25 @@ public class DragonflyTeleop_MP extends OpMode{
             robot.arm.setVelocity(300, AngleUnit.DEGREES);
         }
         if(gamepad1.x){
-
-            //for easy pickup
-//            robot.arm.setTargetPosition(robot.ARM_PICK_VAL);
-//            robot.arm.setVelocity(300, AngleUnit.DEGREES);
 //
-//            robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.cascade.setTargetPosition(robot.CASCADE_SCORE_FAR_VAL);
-//            robot.cascade.setPower(0.9);
-////            robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
+//            //for easy pickup
+////            robot.arm.setTargetPosition(robot.ARM_PICK_VAL);
+////            robot.arm.setVelocity(300, AngleUnit.DEGREES);
+////
+////            robot.cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////            robot.cascade.setTargetPosition(robot.CASCADE_SCORE_FAR_VAL);
+////            robot.cascade.setPower(0.9);
+//////            robot.arm.setTargetPosition(robot.ARM_BACK_VAL);
+//////            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//
+//            //for angled deposit
+//            robot.arm.setTargetPosition(robot.ARM_VERTICAL_PLUS_VAL);
 ////            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//            robot.arm.setVelocity(300, AngleUnit.DEGREES);
+            robot.arm.setTargetPosition(robot.ARM_VERTICAL_VAL);
+            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
+//            robot.arm.setVelocity(300, AngleUnit.DEGREES);
 
-            //for angled deposit
-            robot.arm.setTargetPosition(robot.ARM_VERTICAL_PLUS_VAL);
-//            robot.arm.setPower(Math.max((Math.abs(robot.arm.getCurrentPosition() - robot.arm.getTargetPosition())) / 100 * (0.2), (0.2)));
-            robot.arm.setVelocity(300, AngleUnit.DEGREES);
         }
 
         if(gamepad1.left_bumper){
