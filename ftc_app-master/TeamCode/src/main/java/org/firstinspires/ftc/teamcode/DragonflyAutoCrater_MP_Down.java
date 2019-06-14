@@ -22,8 +22,9 @@ import java.util.List;
 public class DragonflyAutoCrater_MP_Down extends LinearOpMode {
     HardwareDragonflyMP robot = new HardwareDragonflyMP();
 
-    MasterVision vision;
-    SampleRandomizedPositions goldPosition;
+    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
+    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 
     private static final String VUFORIA_KEY = "AeCc8pP/////AAABmR47b8z1C0g6laofaiYlml5P0gPtRVgPAQS5Q7s5734f4+PCmqPO3TliZJsnQMsIdzZM5kaAyRjD3xugYYzAgSMyuMvE+mPDUnH8YX6D3Msb8GTtGETdN0sFYKdsoB6i4XXz4K81I8Gj9W5aPwSN5X649dJ4QjtsIvCj5s7aIFZJ8R0EnyoVTk3GaNTcX96ew0BDoUnbg2VqwpTj9QZigizg0b7ZuSQI3o4iZ83llYyINsqPnWoLU49TCk3qFxdXrhu5DBRMVXMIm3tnz9bsgG0+flvJIBJua17xCMevpn2BSdRb1SbyM/buoykJ0XYgz4+i2PBnWZZO4iZ1cNgXKvW8ahLem4fMFs7rx5gBwPJJ\n";
 
@@ -40,24 +41,15 @@ public class DragonflyAutoCrater_MP_Down extends LinearOpMode {
 
         robot.lift.setPower(0); // brake lift motor to keep robot hanging in place
 
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;// recommended camera direction
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "webcam");
+        initVuforia();
 
-        telemetry.addData("Say", "parameters set");
-        updateTelemetry(telemetry);
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
 
-        vision = new MasterVision(parameters, hardwareMap, false, MasterVision.TFLiteAlgorithm.INFER_LEFT);
-
-        telemetry.addData("Say", "vision object set");
-        updateTelemetry(telemetry);
-        vision.init();// enables the camera overlay. this will take a couple of seconds
-
-        telemetry.addData("Say", "vision inited");
-        updateTelemetry(telemetry);
-        vision.enable();// enables the tracking algorithms. this might also take a little time
-        telemetry.addData("Say", "vision enabled");
+        telemetry.addData("status", "waiting for start");
         updateTelemetry(telemetry);
 
         Trajectory T_1 = robot.trajectoryBuilder()
@@ -96,11 +88,8 @@ public class DragonflyAutoCrater_MP_Down extends LinearOpMode {
             telemetry.addData("imu val 1: ", -(int)Math.floor(robot.revIMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle));
             telemetry.addData("imu val 2: ", -(int)Math.floor(robot.revIMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle));
             telemetry.addData("imu val 3: ", -(int)Math.floor(robot.revIMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle));
-            goldPosition = vision.getTfLite().getLastKnownSampleOrder();
-            telemetry.addData("goldPosition was", goldPosition);// giving feedback
             telemetry.update();
         }
-
         waitForStart();
 
         int globalStartHeading = robot.getHeading();
@@ -140,29 +129,130 @@ public class DragonflyAutoCrater_MP_Down extends LinearOpMode {
         robot.allStop();
         sleep(100);
 
-        long startwait = System.currentTimeMillis();
-        while(System.currentTimeMillis()-startwait<1000){
+        int goldState = 0; // 0 = left, 1 = center, 2 = right
+        if (opModeIsActive()) {
+            if (tfod != null) {
+                tfod.activate();
+            }
+            boolean twoObjectsFound = false;
+            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<2500){ // 2.5 second timeout in case phone does not recognize minerals
+            if (tfod != null) {
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    if (updatedRecognitions.size() == 2) {
+                        twoObjectsFound = true;
+                        telemetry.addData("Yes two objects found: ", updatedRecognitions.size());
+                        boolean silverCenter = false;
+                        boolean silverRight = false;
+                        // telemetry.addData("recognitions", updatedRecognitions.toString());
+                        if(updatedRecognitions.get(0).getLabel().equals(LABEL_SILVER_MINERAL)){
+                            if(updatedRecognitions.get(0).getLeft()<updatedRecognitions.get(1).getLeft()){
+                                silverRight = true;
+                            }else{
+                                silverCenter = true;
+                            }
+                        }
+                        if(updatedRecognitions.get(1).getLabel().equals(LABEL_SILVER_MINERAL)){
+                            if(updatedRecognitions.get(1).getLeft()>updatedRecognitions.get(0).getLeft()) {
+                                silverCenter = true;
+                            }else{
+                                silverRight = true;
+                            }
+                        }
+
+                        if(silverCenter && silverRight){ // GOLD IS LEFT
+                            telemetry.addData("GOLD: ", "LEFT");
+                            goldState = 0;
+                        }else if(!silverCenter && silverRight){ // GOLD IS CENTER
+                            telemetry.addData("GOLD: ", "CENTER");
+                            goldState = 1;
+                        }else if(silverCenter && !silverRight){ // GOLD IS RIGHT
+                            telemetry.addData("GOLD: ", "RIGHT");
+                            goldState = 2;
+                        }
+                    }else{
+                        telemetry.addData("No two objects found: ", updatedRecognitions.size());
+                        if(updatedRecognitions.size() == 1){
+                            //more than 265 from left is center, less is right
+                            if(updatedRecognitions.get(0).getLabel().equals(LABEL_GOLD_MINERAL)){
+                                if(updatedRecognitions.get(0).getLeft()>265){
+                                    goldState = 1;
+                                    twoObjectsFound = true;
+                                }else{
+                                    goldState = 2;
+                                    twoObjectsFound = true;
+                                }
+                            }
+                            telemetry.addData("gold possible: "+updatedRecognitions.get(0).getLabel(), updatedRecognitions.get(0).getLeft());
+                        }else{
+
+                        }
+                    }
+                    telemetry.update();
+                }
+            }}
+
+            boolean twoObjectsFound2 = false;
+            while(opModeIsActive() && !twoObjectsFound && (System.currentTimeMillis()-timeOfStart)<2500){ // 2.5 second timeout in case phone does not recognize minerals
+                if (tfod != null) {
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        if (updatedRecognitions.size() == 2) {
+                            twoObjectsFound = true;
+                            telemetry.addData("Yes two objects found: ", updatedRecognitions.size());
+                            boolean silverCenter = false;
+                            boolean silverRight = false;
+                            // telemetry.addData("recognitions", updatedRecognitions.toString());
+                            if(updatedRecognitions.get(0).getLabel().equals(LABEL_SILVER_MINERAL)){
+                                if(updatedRecognitions.get(0).getLeft()<updatedRecognitions.get(1).getLeft()){
+                                    silverRight = true;
+                                }else{
+                                    silverCenter = true;
+                                }
+                            }
+                            if(updatedRecognitions.get(1).getLabel().equals(LABEL_SILVER_MINERAL)){
+                                if(updatedRecognitions.get(1).getLeft()>updatedRecognitions.get(0).getLeft()) {
+                                    silverCenter = true;
+                                }else{
+                                    silverRight = true;
+                                }
+                            }
+
+                            if(silverCenter && silverRight){ // GOLD IS LEFT
+                                telemetry.addData("GOLD: ", "LEFT");
+                                goldState = 0;
+                            }else if(!silverCenter && silverRight){ // GOLD IS CENTER
+                                telemetry.addData("GOLD: ", "CENTER");
+                                goldState = 1;
+                            }else if(silverCenter && !silverRight){ // GOLD IS RIGHT
+                                telemetry.addData("GOLD: ", "RIGHT");
+                                goldState = 2;
+                            }
+                        }else{
+                            telemetry.addData("No two objects found: ", updatedRecognitions.size());
+                            if(updatedRecognitions.size() == 1){
+                                //more than 265 from left is center, less is right
+                                if(updatedRecognitions.get(0).getLabel().equals(LABEL_GOLD_MINERAL)){
+                                    if(updatedRecognitions.get(0).getLeft()>265){
+                                        goldState = 1;
+                                        twoObjectsFound = true;
+                                    }else{
+                                        goldState = 2;
+                                        twoObjectsFound = true;
+                                    }
+                                }
+                                telemetry.addData("gold possible: "+updatedRecognitions.get(0).getLabel(), updatedRecognitions.get(0).getLeft());
+                            }else{
+
+                            }
+                        }
+                        telemetry.update();
+                    }
+                }}
 
         }
-
-        vision.disable();
-
-        int goldState = 0; // 0 = left, 1 = center, 2 = right
-
-        goldPosition = vision.getTfLite().getLastKnownSampleOrder();
-
-        vision.shutdown();
-        switch (goldPosition) {
-            case LEFT:
-                goldState = 0;
-                break;
-            case CENTER:
-                goldState = 1;
-                break;
-            case RIGHT:
-                goldState = 2;
-                break;
-
+        if (tfod != null) {
+            tfod.shutdown();
         }
 
 
@@ -525,6 +615,13 @@ public class DragonflyAutoCrater_MP_Down extends LinearOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+    }
 
     public void followTrajectory(Trajectory t) {
         robot.followTrajectory(t);

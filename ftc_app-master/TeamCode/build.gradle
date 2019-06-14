@@ -26,24 +26,4 @@ dependencies {
     compile 'org.openftc:rev-extensions-2:1.1'
     implementation 'com.android.support:multidex:1.0.3'
 }
-
-
-buildscript {
-    ext.kotlinVersion = '1.2.51'
-    repositories {
-        jcenter()
-        google()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-}
 //end
