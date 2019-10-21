@@ -1,0 +1,29 @@
+//
+// build.gradle in TeamCode
+//
+// Most of the definitions for building your module reside in a common, shared
+// file 'build.common.gradle'. Being factored in this way makes it easier to
+// integrate updates to the FTC into your code. If you really need to customize
+// the build definitions, you can place those customizations in this file, but
+// please think carefully as to whether such customizations are really necessary
+// before doing so.
+
+
+// Custom definitions may go here
+
+// Include common definitions from above.
+apply from: '../build.common.gradle'
+
+//defaultConfig {
+//    minSdkVersion 19
+//    targetSdkVersion 27
+//    multiDexEnabled true
+//}
+
+//breaking
+dependencies {
+    //NOTE: this is the correct version, the below screenshot is outdated
+    compile 'org.openftc:rev-extensions-2:1.1'
+    implementation 'com.android.support:multidex:1.0.3'
+}
+//end
