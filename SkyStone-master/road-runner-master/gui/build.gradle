@@ -1,0 +1,60 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detekt_version"
+    }
+}
+
+plugins {
+    id 'kotlin'
+}
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+repositories {
+    jcenter()
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+detekt {
+    toolVersion = detekt_version
+    input = files("src/main/kotlin")
+    filters = ".*/resources/.*,.*/build/.*"
+    config = files("$rootDir/detekt-config.yml")
+}
+
+tasks["detekt"].dependsOn(":custom-detekt-rules:assemble")
+
+shadowJar {
+    baseName = 'road-runner-gui'
+    destinationDir = buildDir
+    classifier = null
+    version = road_runner_version
+    manifest {
+        attributes 'Main-Class': 'com.acmerobotics.roadrunner.gui.Main'
+    }
+}
+
+dependencies {
+    implementation project(':core')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    implementation "org.apache.commons:commons-math3:3.6.1"
+
+    implementation "org.knowm.xchart:xchart:3.5.2"
+
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:$detekt_version"
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-cli:$detekt_version"
+
+    detektPlugins project(':custom-detekt-rules')
+}
