@@ -1,20 +1,20 @@
 package org.firstinspires.ftc.teamcode.xqcS.RobotUtilities;
 
 
-import Debugging.ComputerDebugging;
-import HelperClasses.CurvePoint;
-import ReturnTypes.FloatPoint;
+import org.firstinspires.ftc.teamcode.xqcS.Debugging.ComputerDebugging;
+import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.CurvePoint;
+import org.firstinspires.ftc.teamcode.xqcS.ReturnTypes.FloatPoint;
 import android.util.Log;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcontroller.RobotUtilities.PiecewiseFunction;
-import org.firstinspires.ftc.teamcode.plswork.java.RobotUtilities.MyMath;
-import org.firstinspires.ftc.teamcode.plswork.java.RobotUtilities.SpeedOmeter;
+import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyMath;
+import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.SpeedOmeter;
 import org.opencv.core.Point;
 
 import java.util.ArrayList;
 
-import static RobotUtilities.MovementVars.*;
-import static RobotUtilities.MyPosition.*;
+import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementVars.*;
+import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.*;
 
 public class MovementEssentials {
     public static profileStates state_movement_y_prof = profileStates.gunningIt;
