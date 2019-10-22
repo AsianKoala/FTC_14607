@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcontroller.RobotUtilities.PiecewiseFunction;
 import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyMath;
 import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.SpeedOmeter;
-import org.opencv.core.Point;
+import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Point;
 
 import java.util.ArrayList;
 
@@ -17,15 +17,6 @@ import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementVars.*;
 import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.*;
 
 public class MovementEssentials {
-    public static profileStates state_movement_y_prof = profileStates.gunningIt;
-    public static profileStates state_movement_x_prof = profileStates.gunningIt;
-    public static profileStates state_turning_prof = profileStates.gunningIt;
-
-    public static double movement_y_min = 0.091;
-    public static double movement_x_min = 0.11;
-    public static double movement_turn_min = 0.10;
-
-
     public enum profileStates{
         gunningIt,
         slipping,
@@ -39,6 +30,25 @@ public class MovementEssentials {
         }
     }
 
+    public static profileStates state_movement_y_prof = profileStates.gunningIt;
+    public static profileStates state_movement_x_prof = profileStates.gunningIt;
+    public static profileStates state_turning_prof = profileStates.gunningIt;
+
+    public static double movement_y_min = 0.091;
+    public static double movement_x_min = 0.11;
+    public static double movement_turn_min = 0.10;
+
+
+
+
+    public enum profleStatese {
+        gunningIt,
+    }
+
+
+
+    public void init() {
+    }
     //inits our mini state machines for motion profiling
     public static void initForMove() {
         state_movement_y_prof = profileStates.gunningIt;
@@ -593,6 +603,9 @@ public class MovementEssentials {
             CurvePoint endLine = pathPoints.get(i+1);
 
             //get the intersections with this line
+            /**
+             * If stuff stops working just go to here TODO:
+             */
             ArrayList<Point> intersections =
                     MyMath.lineCircleIntersection(xPos,yPos,followRadius,
                             startLine.x,startLine.y,endLine.x,endLine.y);

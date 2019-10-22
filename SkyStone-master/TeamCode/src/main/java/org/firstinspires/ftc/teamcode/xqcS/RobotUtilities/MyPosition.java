@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.xqcS.RobotUtilities;
 
-import HelperClasses.Robot;
-import org.firstinspires.ftc.teamcode.plswork.java.RobotUtilities.SpeedOmeter;
+import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Robot;
+import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.SpeedOmeter;
 
 public class MyPosition {
 

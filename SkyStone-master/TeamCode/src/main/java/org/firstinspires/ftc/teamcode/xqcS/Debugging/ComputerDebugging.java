@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.xqcS.Debugging;
 
-import HelperClasses.Robot;
-import ReturnTypes.FloatPoint;
+import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Robot;
+import org.firstinspires.ftc.teamcode.xqcS.ReturnTypes.FloatPoint;
 
 import java.text.DecimalFormat;
 
@@ -44,12 +44,12 @@ public class ComputerDebugging {
         messageBuilder.append("%");
 
         //send the collector location
-        sendLine(new FloatPoint(robot.getXPos(),robot.getYPos()),
-                robot.myCollector.getExtensionPosition());
+       // sendLine(new FloatPoint(robot.getXPos(),robot.getYPos()),
+         //       robot.myCollector.getExtensionPosition());
 
         //send the lift location
-        sendLine(new FloatPoint(robot.getXPos(),robot.getYPos()),
-                robot.myLift.getExtensionPosition());
+     //   sendLine(new FloatPoint(robot.getXPos(),robot.getYPos()),
+       //         robot.myLift.getExtensionPosition());
     }
 
     /**

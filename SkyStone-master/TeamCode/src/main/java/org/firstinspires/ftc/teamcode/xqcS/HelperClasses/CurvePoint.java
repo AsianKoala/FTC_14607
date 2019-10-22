@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.xqcS.HelperClasses;
 
+import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Point;
 
 /**
  * CurvePoint is a class used with the followCurve function in MovementEssentials.
@@ -55,6 +56,8 @@ public class CurvePoint {
     public Point toPoint(){
         return new Point(x,y);
     }
+
+
     public void setPoint(Point p){
         x = p.x;
         y = p.y;

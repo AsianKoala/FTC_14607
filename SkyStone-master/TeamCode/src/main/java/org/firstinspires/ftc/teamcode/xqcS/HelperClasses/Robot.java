@@ -19,7 +19,6 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.Range;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcontroller.RobotUtilities.PiecewiseFunction;
-import org.firstinspires.ftc.robotcontroller.Vision.FtcRobotControllerVisionActivity;
 import org.openftc.revextensions2.*;
 //import teamcode.Auto1;
 
