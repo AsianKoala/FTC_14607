@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.xqcS.HelperClasses;
 
-import Debugging.ComputerDebugging;
-import ReturnTypes.FloatPoint;
-import RobotUtilities.MovementEssentials;
-import RobotUtilities.MyPosition;
+import org.firstinspires.ftc.teamcode.xqcS.Debugging.ComputerDebugging;
+import org.firstinspires.ftc.teamcode.xqcS.ReturnTypes.FloatPoint;
+import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementEssentials;
+import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition;
 import android.os.SystemClock;
 
 import java.util.ArrayList;
 
-import static RobotUtilities.MyPosition.worldAngle_rad;
-import static RobotUtilities.MyPosition.worldXPosition;
-import static RobotUtilities.MyPosition.worldYPosition;
-import static org.firstinspires.ftc.robotcontroller.Vision.FtcRobotControllerVisionActivity.*;
+import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.worldAngle_rad;
+import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.worldXPosition;
+import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.worldYPosition;
+//import static org.firstinspires.ftc.robotcontroller.Vision.FtcRobotControllerVisionActivity.*;
 
 /**
  * Auto is used by autonomous opmodes
@@ -232,84 +232,5 @@ public class Auto extends Robot {
      * Allows the user to move the auto samples
      */
     public void ControlSampleLocations() {
-        double shiftAmount = 10;
-        double modifyingXAmount = 0;
-
-        /*
-         * If we are pressing right or left, shift the sample location
-         */
-        if(ButtonPress.isGamepad1_dpad_right_pressed()){
-            modifyingXAmount = shiftAmount;
-        }
-        if(ButtonPress.isGamepad1_dpad_left_pressed()){
-            modifyingXAmount = -shiftAmount;
-        }
-
-
-
-        /*
-         * Apply the modification
-         */
-        if(currModifyingSample == 0){
-            setSample1X(getSample1X() + modifyingXAmount);
-        }else{
-            if(currModifyingSample == 1){
-                setSample2X(getSample2X() + modifyingXAmount);
-            }else{
-                if(currModifyingSample == 2){
-                    setSample3X(getSample3X() + modifyingXAmount);
-                }
-            }
-        }
-
-        //modify up and down
-        if(ButtonPress.isGamepad1_dpad_down_pressed()){
-            if(currModifyingSample == 0){
-                setSample1Y(getSample1Y() + shiftAmount);
-            }else{
-                if(currModifyingSample == 1){
-                    setSample2Y(getSample2Y() + shiftAmount);
-                }else{
-                    if(currModifyingSample == 2){
-                        setSample3Y(getSample3Y() + shiftAmount);
-                    }
-                }
-            }
-        }
-        if(ButtonPress.isGamepad1_dpad_up_pressed()){
-            if(currModifyingSample == 0){
-                setSample1Y(getSample1Y() - shiftAmount);
-            }else{
-                if(currModifyingSample == 1){
-                    setSample2Y(getSample2Y() - shiftAmount);
-                }else{
-                    if(currModifyingSample == 2){
-                        setSample3Y(getSample3Y() - shiftAmount);
-                    }
-                }
-            }
-        }
-
-
-
-
-        telemetry.addLine("Sample1: " + getSample1X() + " s2: " + getSample2X() + " s3: " + getSample3X());
-        telemetry.addLine("SampleY: " + getSample1Y());
-
-
-
-
-        /*
-         * This will change which sample we are modifying
-         */
-        if(ButtonPress.isGamepad1_right_bumper_pressed()){
-            currModifyingSample ++;
-            if(currModifyingSample > 2){currModifyingSample = 0;}
-        }
-        if(ButtonPress.isGamepad1_left_bumper_pressed()){
-            currModifyingSample --;
-            if(currModifyingSample < 0){currModifyingSample = 2;}
-        }
     }
-
 }

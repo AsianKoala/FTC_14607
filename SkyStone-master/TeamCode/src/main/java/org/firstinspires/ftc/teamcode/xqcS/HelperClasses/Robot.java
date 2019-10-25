@@ -676,12 +676,12 @@ public class Robot extends TunableOpMode {
             double angleToGo = MyPosition.subtractAngles(targetAngleToTarget,angleToTarget);
 
             double deltaRadius = getDeltaRadiusForFeeding();
-            if(deltaRadius > -25 && myAutoFeeder.isOkToOrbit()
+     /*       if(deltaRadius > -25 && myAutoFeeder.isOkToOrbit()
                     && AutoFeeder.numAutoFeeds > 0){
                 //straif if we are not at the 45 degree target angle
                 orbitAmount = -0.6 * Range.clip(angleToGo
                         / Math.toRadians(20.0),-1,1);
-            }
+            }*/
 
         }
 
@@ -1126,63 +1126,7 @@ public class Robot extends TunableOpMode {
      * Gets all the data from the expansion hub in one command to increase loop times
      */
     public void getRevBulkData() {
-//        boolean needToPollMaster = !AutoFeeder.canPollMasterAtLowerRate ||
-//            currTimeMillis-lastUpdateMasterTime > 300;
-//        if(needToPollMaster){
-        RevBulkData newDataMaster;
-        try{
-            newDataMaster = revMaster.getBulkInputData();
-            if(newDataMaster != null){
-                revExpansionMasterBulkData = newDataMaster;
-            }
-        }catch(Exception e){
-            //don't set anything if we get an exception
-        }
-        lastUpdateMasterTime = currTimeMillis;
-
-//        }
-
-
-        /*
-            We don't always need to poll the slave rev hub if we know the collector and lift
-            are not moving
-         */
-        boolean needToPollSlave = Math.abs(myCollector.getExtensionMotorPower()) > 0 ||
-                Math.abs(hangMechanism.getCurrentPower()) > 0 ||
-                Math.abs(myCollector.getExtensionCurrentSpeedPercent()) > 0.05 ||
-                currTimeMillis - lastUpdateSlaveTime > 400;
-
-        if(needToPollSlave){
-            RevBulkData newDataSlave;
-            try{
-                newDataSlave = revSlave.getBulkInputData();
-                if(newDataSlave != null){
-                    revExpansionSlaveBulkData = newDataSlave;
-                }
-            }catch(Exception e){
-                //don't set anything if we get an exception
-            }
-            lastUpdateSlaveTime = currTimeMillis;
-        }
-
-
-
-        /////NOW WE HAVE THE BULK DATA BUT WE NEED TO SET THE MOTOR POSITIONS/////
-        for(RevMotor revMotor : allMotors){
-            if(revMotor == null){continue;}
-            if(revMotor.isMaster){
-                if(revExpansionMasterBulkData != null){
-                    revMotor.setEncoderReading(
-                            revExpansionMasterBulkData.getMotorCurrentPosition(revMotor.myMotor));
-                }
-            }else{
-                if(revExpansionSlaveBulkData != null){
-                    revMotor.setEncoderReading(
-                            revExpansionSlaveBulkData.getMotorCurrentPosition(revMotor.myMotor));
-                }
-            }
-        }
-
+//
     }
 
     /**
@@ -1190,9 +1134,9 @@ public class Robot extends TunableOpMode {
      */
     private void giveOtherModulePositionData() {
         //set the FtcRobotControllerVisionActivity's world angle so it can calculate the crater angle
-        FtcRobotControllerVisionActivity.worldAngle_rad = getAngle_rad();
-        FtcRobotControllerVisionActivity.worldXPosition = getXPos();
-        FtcRobotControllerVisionActivity.worldYPosition = getYPos();
+       // FtcRobotControllerVisionActivity.worldAngle_rad = getAngle_rad();
+        //FtcRobotControllerVisionActivity.worldXPosition = getXPos();
+        //FtcRobotControllerVisionActivity.worldYPosition = getYPos();
     }
 }
 

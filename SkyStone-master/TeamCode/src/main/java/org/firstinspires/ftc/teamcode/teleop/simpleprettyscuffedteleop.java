@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.HouseFly_Hardware;
 
 @TeleOp(name = "not that scuffed :P jk sucks", group = "")
 public class simpleprettyscuffedteleop extends OpMode {
