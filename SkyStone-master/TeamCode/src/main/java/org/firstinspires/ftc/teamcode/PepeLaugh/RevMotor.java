@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.PepeLaugh;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Auto;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Auto;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 /**

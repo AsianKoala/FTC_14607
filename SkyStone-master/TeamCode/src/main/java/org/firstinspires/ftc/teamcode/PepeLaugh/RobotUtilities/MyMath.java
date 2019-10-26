@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities;
 
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Point;
-import org.firstinspires.ftc.teamcode.xqcS.ReturnTypes.FloatPoint;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Point;
+import org.firstinspires.ftc.teamcode.PepeLaugh.ReturnTypes.FloatPoint;
 
 import java.util.ArrayList;
 

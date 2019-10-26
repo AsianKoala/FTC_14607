@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.PepeLaugh.Debugging;
 
 
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Robot;
-import org.firstinspires.ftc.teamcode.xqcS.ReturnTypes.FloatPoint;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Robot;
+import org.firstinspires.ftc.teamcode.PepeLaugh.ReturnTypes.FloatPoint;
 
 public class ComputerDebuggingTcp {
     private static TcpServer tcpServer;

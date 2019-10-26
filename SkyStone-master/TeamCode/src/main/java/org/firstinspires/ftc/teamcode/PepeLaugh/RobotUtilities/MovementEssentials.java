@@ -4,16 +4,16 @@ package org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities;
 import android.util.Log;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcontroller.RobotUtilities.PiecewiseFunction;
-import org.firstinspires.ftc.teamcode.xqcS.Debugging.ComputerDebugging;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.CurvePoint;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Point;
-import org.firstinspires.ftc.teamcode.xqcS.ReturnTypes.FloatPoint;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.SpeedOmeter;
+import org.firstinspires.ftc.teamcode.PepeLaugh.Debugging.ComputerDebugging;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.CurvePoint;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Point;
+import org.firstinspires.ftc.teamcode.PepeLaugh.ReturnTypes.FloatPoint;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.SpeedOmeter;
 
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementVars.*;
-import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.*;
+import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementVars.*;
+import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MyPosition.*;
 
 public class MovementEssentials {
     public enum profileStates{

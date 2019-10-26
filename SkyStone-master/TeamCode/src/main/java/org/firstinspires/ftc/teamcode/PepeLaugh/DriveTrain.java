@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.PepeLaugh;
 
 import android.os.SystemClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.teamcode.xqcS.Hardware.RevMotor;
+import org.firstinspires.ftc.teamcode.PepeLaugh.Hardware.RevMotor;
 
-import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementVars.*;
+import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementVars.*;
 
 public class DriveTrain {
         public RevMotor topLeft;

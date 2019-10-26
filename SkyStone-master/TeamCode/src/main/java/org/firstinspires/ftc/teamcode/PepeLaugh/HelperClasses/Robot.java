@@ -22,8 +22,8 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementVars.*;
-import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.*;
+import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementVars.*;
+import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MyPosition.*;
 
 //import teamcode.Auto1;
 
