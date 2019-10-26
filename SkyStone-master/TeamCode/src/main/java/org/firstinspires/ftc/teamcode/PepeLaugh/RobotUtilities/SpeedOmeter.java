@@ -40,7 +40,7 @@ public class SpeedOmeter {
             double speedY = yDistTraveled / elapsedTime;
             double speedX = xDistTraveled / elapsedTime;
 
-            if(speedY < 200 && speedX < 200){//I can assure you our robot can't go 200 m/s
+            if(speedY < 200 && speedX < 200){ //I can assure you our robot can't go 200 m/s,
                 currSpeedY = speedY;
                 currSpeedX = speedX;
             }
