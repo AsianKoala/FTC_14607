@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities;
 
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Robot;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.SpeedOmeter;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Robot;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.SpeedOmeter;
 
 public class MyPosition {
 

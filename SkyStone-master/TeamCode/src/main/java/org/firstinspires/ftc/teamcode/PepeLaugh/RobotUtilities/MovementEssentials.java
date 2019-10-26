@@ -489,10 +489,9 @@ public class MovementEssentials {
 
         //get the angle of this line
         double lineAngle = Math.atan2(secondPoint.y - firstPoint.y,secondPoint.x - firstPoint.x);
-        //get this line's length
+        //get this line's length, hypot is just simplified distance equation
         double lineLength = Math.hypot(secondPoint.x - firstPoint.x,secondPoint.y - firstPoint.y);
-        //extend the line by 1.5 pointLengths so that we can still point to it when we
-        //are at the end
+        //extend the line by 1.5 pointLengths so that we can still point to it when we are at the end
         double extendedLineLength = lineLength + distance;
 
         CurvePoint extended = new CurvePoint(secondPoint);
@@ -532,7 +531,7 @@ public class MovementEssentials {
      * @return
      */
     public static pointWithIndex clipToPath(ArrayList<CurvePoint> pathPoints, double xPos, double yPos){
-        double closestClippedDistance = 10000000;//start this off rediculously high
+        double closestClippedDistance = 10000000;//start this off superduperhigh
 
         //this is the index of the closest clipped distance
         //(index of the fist point on the line, not the second)

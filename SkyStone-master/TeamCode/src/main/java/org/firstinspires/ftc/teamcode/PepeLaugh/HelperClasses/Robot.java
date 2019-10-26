@@ -3,33 +3,25 @@ package org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses;
 import android.os.SystemClock;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import org.openftc.revextensions2.RevBulkData;
 import com.qualcomm.robotcore.util.Range;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcontroller.RobotUtilities.PiecewiseFunction;
-import org.firstinspires.ftc.teamcode.xqcS.Debugging.ComputerDebugging;
-import org.firstinspires.ftc.teamcode.xqcS.Debugging.TimeProfiler;
-import org.firstinspires.ftc.teamcode.xqcS.FieldStats.Field;
-import org.firstinspires.ftc.teamcode.xqcS.Globals.Globals;
-import org.firstinspires.ftc.teamcode.xqcS.Hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.xqcS.Hardware.LoadingSensors;
-import org.firstinspires.ftc.teamcode.xqcS.Hardware.RevMotor;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Auto;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.ButtonPress;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.CollectingLocation;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.CurvePoint;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementEssentials;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementEssentials.movementResult;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.SpeedOmeter;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.TelemetryAdvanced;
+import org.firstinspires.ftc.teamcode.PepeLaugh.Debugging.ComputerDebugging;
+import org.firstinspires.ftc.teamcode.PepeLaugh.Debugging.TimeProfiler;
+import org.firstinspires.ftc.teamcode.PepeLaugh.Hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.PepeLaugh.Hardware.RevMotor;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Auto;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.ButtonPress;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MyPosition;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.SpeedOmeter;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.TelemetryAdvanced;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementEssentials.pointAngle;
 import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementVars.*;
 import static org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition.*;
 
@@ -64,10 +56,6 @@ public class Robot extends TunableOpMode {
     //use this to format decimals lol
     public DecimalFormat df = new DecimalFormat("#.00");
     private DriveTrain myDriveTrain;
-    public LoadingSensors myLoadingSensors;
-
-//    public PitScannerInterface myPitScannerInterface;
-
 
     public static TelemetryAdvanced m_telemetry;
 
@@ -141,7 +129,6 @@ public class Robot extends TunableOpMode {
 
 
         //get the bulk data if you want to calibrate stuff
-        getRevBulkData();
 
     }
 
@@ -149,21 +136,16 @@ public class Robot extends TunableOpMode {
     public void init_loop(){
 //        giveCppFieldData();
         currTimeMillis = SystemClock.uptimeMillis();
-        getRevBulkData();
 
 
         giveButtonPressStuff();
         currTimeMillis = SystemClock.uptimeMillis();
 
 
-        giveOtherModulePositionData();
 
 
         //draw the robot on the computer if we are usingComputer
-        if(usingComputer){
-            ComputerDebugging.sendRobotLocation(this);
-            ComputerDebugging.markEndOfUpdate();
-        }
+
     }
 
 
@@ -174,7 +156,7 @@ public class Robot extends TunableOpMode {
         for(int i = 0; i < 2 ; i ++){
             MyPosition.initialize(myDriveTrain.topRight.getCurrentPosition(),
                     myDriveTrain.topLeft.getCurrentPosition(),
-                    myDriveTrain.bottomLeft.getCurrentPosition(),this);
+                    myDriveTrain.bottomLeft.getCurrentPosition(), this);
         }
     }
 
@@ -222,14 +204,12 @@ public class Robot extends TunableOpMode {
         RevMotor.markEndUpdate();//mark the end of an update for the rev motor class
         tp1.markStart();
         //get all the bulk data
-        getRevBulkData();
         tp1.markEnd();
 
         long timeAfter = SystemClock.uptimeMillis();
         telemetry.addData("Bulk data time: ", (timeAfter-timeBefore));
 
         //update the computer if we are debugging
-        updateComputerIfUsingComputer();
 
 
 
@@ -273,7 +253,6 @@ public class Robot extends TunableOpMode {
 
 
         tp6.markStart();
-        updateLoadingSensorsIfNecessary();
         tp6.markEnd();
 
         //display the readings of the loading sensors for debugging
@@ -300,7 +279,6 @@ public class Robot extends TunableOpMode {
 
 
         //tell the FtcRobotControllerVisionActivity the robot position
-        giveOtherModulePositionData();
         tp8.markEnd();
 
 
@@ -320,67 +298,6 @@ public class Robot extends TunableOpMode {
     /**
      * Sees if we need to update the loading sensors and updates them if so
      */
-    private void updateLoadingSensorsIfNecessary() {
-    }
-
-
-    /**
-     * Use this to tune stuff
-     */
-    private void tuneRandomThings() {
-        //AutoFeeder.secondsPredictionRetractCollector = getDouble("prediction");
-      //  AutoFeeder.retractCollectorFastPower = getDouble("fastPower");
-       // AutoFeeder.collectorPositionModePower = getDouble("slowPower");
-    }
-
-    /**
-     * This method send's data to the computer for debugging if enabled
-     */
-    private void updateComputerIfUsingComputer() {
- /*       //only do this if usingComputer = true
-        if(usingComputer){
-            ComputerDebugging.markEndOfUpdate();
-            //send back to the computer the debug info
-            ComputerDebugging.sendRobotLocation(this);
-//            for(int i = 0; i < FtcRobotControllerVisionActivity.numMinerals; i ++){
-//                if(FtcRobotControllerVisionActivity.xPositions[i] > 0 &&
-//                        FtcRobotControllerVisionActivity.yPositions[i] > 0){
-//
-//                    ComputerDebugging.sendKeyPoint(new FloatPoint(FtcRobotControllerVisionActivity.xPositions[i],
-//                            FtcRobotControllerVisionActivity.yPositions[i]));
-//                }
-//            }
-        }*/
-    }
-
-
-    /**
-     * Use this to tune random things
-     */
-    private void tuneServoPositionsWithTuner() {
-//        myLift.DUMP_SERVO_ACTIVATED = getDouble("tuneServo1");
-//        myLift.DUMP_SERVO_GOING_UP = getDouble("tuneServo2");
-//        myLift.DUMP_SERVO_ZERO = getDouble("tuneServo3");
-//        myCollector.TILT_RETRACTED_POS = getDouble("Collector Retracted");
-//        myCollector.TILT_ACTIVATED_POS = getDouble("Collector Activated");
-//
-//        AutoFeeder.collectorRetractionPosition = getDouble("extensionRetraction");
-
-
-//        myCollector.TILT_PERCENT_ALL_THE_WAY_IN = getDouble("tuneServo4");
-
-
-//        myLift.RELEASE_SERVO_RELEASED = getDouble("releasedPosition");
-//        myLift.RELEASE_SERVO_UNRELEASED = getDouble("unreleasedPosition");
-
-//        if(gamepad1.dpad_left){
-//            myLift.unreleaseMinerals();
-//        }
-//        if(gamepad1.dpad_right){
-//            myLift.releaseMinerals();
-//        }
-    }
-
 
     public void stop(){
 
@@ -469,475 +386,16 @@ public class Robot extends TunableOpMode {
     }
 
 
-
-/*    //these are the feeding positions from the crater side
-    public static double craterAutoFeedDistance = 92.614;
-    public static double craterTargetX = 175 + 15 - 1.5;
-    public static double craterTargetY = 165.5-2;
-
-    //these are the feeding position for the depot side
-    public static double depotAutoFeedDistance = 93;
-    public static double depotTargetX = 195;
-    public static double depotTargetY = 165.5;
-
-
-    public static double rpFarmTargetX = Field.FIELD_LENGTH - craterTargetX;
-    public static double rpFarmTargetY = Field.FIELD_LENGTH - craterTargetY;
-    public static double rpFarmDistance = craterAutoFeedDistance + 3;
-
-
-    //how far away from the feed target the robot will go to
-    public static double autoFeedDistance = craterAutoFeedDistance;
-    //x position of the target feeding location
-    public static double feedTargetX = craterTargetX;
-    //y position of the target feeding location
-    public static double feedTargetY = craterTargetY;
-
-    //use this to orbit while auto feeding
-    public static double orbitAmount = 0;*/
-
-
     /**
-     * This changes if we are feeding from the crater or from somewhere else (cubes only p much)
-     * @param crater a boolean that is true if we are feeding from the crater
-     */
-
-
-
-
-    /**
-     * This will orbit the robot to make a target angle with the lander (standard is 30 degrees)
-     * this only occurs while driving to auto feed
-     * @param angle the target angle the robot should make with the feeding target
-     */
-    public void orbitToAngleWhileFeeding(double angle){
-        //First, this is where we will be orbiting around
-        double xCenter = feedTargetX;
-        double yCenter = feedTargetY;
-
-        //the absolute angle to the target feeding location (but we want to point 180 degrees from this)
-        double angleToTarget = Math.atan2(yCenter-getYPos(),xCenter-getXPos());
-
-        //calculate the delta angleToGo
-        double angleToGo = MyPosition.subtractAngles(angleToTarget,angle);
-        //straif if we are not at the target angle
-        orbitAmount = 0.3 * Range.clip(angleToGo / Math.toRadians(10.0),-1,1);
-    }
-
-
-    /**
-     * Returns how far off we are from our target radius in the feeding
-     * @return the delta from the target auto feed radius
-     */
-    public double getDeltaRadiusForFeeding(){
-        //calculate how far we currently are from the target
-        double currentRadius = Math.hypot(feedTargetX-worldXPosition,
-                feedTargetY-worldYPosition);
-
-        //this is the target radius that we want to be
-        double targetRadius = autoFeedDistance;
-
-        //so calculate the delta that we have to go
-        return targetRadius-currentRadius;
-    }
-
-    /**
-     * This will change the target based on where we are feeding from ei the cube location
-     * @param cube int from 0 to 2 of cube
+     *
+     * TODO:
+     * VERY IMPORTANT *****
+     * GLUTEN FREE HAS A REALLY GOOD CODE SAMPLE ON FOLLOWING POINT CURVES, SUCH AS THE CURVE THAT GOT THEM TO THE FEEDING POSITION FOR AUTO LAST YEAR
+     * IF YOU NEED HELP PLEASE LOOK AT THAT
+     * ***
      * @return
      */
-    public boolean driveToAutoFeed(int cube){
-        if(cube == 0){
-            feedTargetX += 0;
-            feedTargetY += 0;
-            autoFeedDistance -= 0.75;
-        }
-        if(cube == 1){
-            //feed a little bit closer for the middle cube
-            autoFeedDistance -= 0.75;
-            feedTargetY -= 0;
-        }
 
-
-        if(cube == 2){
-            autoFeedDistance -= 3.29;//feed even closer for the right
-            feedTargetY -= 2;
-
-            //First, this is where we will be orbiting around
-            double xCenter = feedTargetX;
-            double yCenter = feedTargetY;
-
-            //the absolute angle to the target feeding location (but we want to point 180 degrees from this)
-            double angleToTarget = Math.atan2(yCenter-getYPos(),xCenter-getXPos());
-
-            //we want it to be 45 degrees to the target
-            double targetAngleToTarget = Math.toRadians(25);
-            //calculate the delta angleToGo
-            double angleToGo = MyPosition.subtractAngles(targetAngleToTarget,angleToTarget);
-
-            double deltaRadius = getDeltaRadiusForFeeding();
-     /*       if(deltaRadius > -25 && myAutoFeeder.isOkToOrbit()
-                    && AutoFeeder.numAutoFeeds > 0){
-                //straif if we are not at the 45 degree target angle
-                orbitAmount = -0.6 * Range.clip(angleToGo
-                        / Math.toRadians(20.0),-1,1);
-            }*/
-
-        }
-
-        boolean done = driveToAutoFeed();
-        if(cube == 0){
-            feedTargetX -= 0;
-            feedTargetY -= 0;
-            autoFeedDistance += 0.75;
-
-        }
-        if(cube == 1){
-            autoFeedDistance += 0.75;
-            feedTargetY += 0;
-        }
-        if(cube == 2){
-            autoFeedDistance += 3.29;
-            feedTargetY += 2;
-
-        }
-        return done;
-    }
-
-
-    public static double targetAutoFeedAngle = Math.toRadians(30);
-
-
-    /**
-     * The I term to not get stuck in turning to target
-     */
-    private double autoFeedAngleErrorSum = 0;
-
-    /**
-     * Call this before auto feeding this resets the error sum
-     */
-    public void initAutoFeed(){
-        autoFeedAngleErrorSum = 0;
-    }
-
-
-
-
-
-
-    /**
-     * This moves the robot to be a fixed radius from the feeder and turns towards it
-     * but also straifs to get to an optimal position
-     */
-    public boolean driveToAutoFeed(){
-        //First, this is where we will be orbiting around
-        double xCenter = feedTargetX;
-        double yCenter = feedTargetY;
-
-        //the absolute angle to the target feeding location (but we want to point 180 degrees from this)
-        double angleToTarget = Math.atan2(yCenter-getYPos(),xCenter-getXPos());
-
-        //we want it to be 45 degrees to the target
-        double targetAngleToTarget = targetAutoFeedAngle;//Math.toRadians(30);
-        //calculate the delta angleToGo
-        double angleToGo = MyPosition.subtractAngles(targetAngleToTarget,angleToTarget);
-        //straif if we are not at the 45 degree target angle
-        double straifPower = 0.3 * Range.clip(angleToGo / Math.toRadians(10.0),-1,1);
-
-        /*
-         * CALL ORBIT MODE
-         */
-        double deltaRadius = orbitModeFeeder(orbitAmount);//orbitModeFeeder(-straifPower);
-
-        boolean wasOrbiting = Math.abs(orbitAmount) > 0.1;
-        orbitAmount = 0;//stop ....for next time
-
-//        movement_x = MovementEssentials.minPower(movement_x,MovementEssentials.movement_x_min);
-//        movement_y = MovementEssentials.minPower(movement_y,MovementEssentials.movement_y_min);
-
-//        movement_y = MovementEssentials.minPower(movement_y,MovementEssentials.movement_y_min);
-
-
-        /**
-         * Now we have to deal with termination so re-calculate relative point angle
-         */
-
-        //subtract 180 to get where we want to point
-        double angleToPoint = subtractAngles(angleToTarget,Math.toRadians(180));
-        //now that we know what absolute angle to point to, we calculate how close we are to it
-        double relativePointAngle = AngleWrap(angleToPoint-worldAngle_rad);
-
-
-
-
-
-        return Math.abs(deltaRadius) < 5 &&
-                Math.abs(relativePointAngle) < Math.toRadians(1.5)
-                && !wasOrbiting;//&&Math.abs(angleToGo) < Math.toRadians(15)
-    }
-
-
-
-
-    private CurvePoint startAutoCollect;
-    /**NEED TO CALL THIS BEFORE AUTO COLLECT */
-    public void initAutoCollect(){
-        MovementEssentials.initCurve();
-
-        //create the first curve point which is where the robot was at the start of the curve
-        startAutoCollect = new CurvePoint(getXPos(),getYPos(),
-                0,0,0,0,0);
-    }
-
-    /**
-     * DRIVES TO THE NEXT COLLECTING LOCATION
-     * @param collectingLocation - holds information about where and how we want to go
-     * @param distAwayFromCrater
-     * @param approachDistance
-     * @return
-     */
-    public boolean driveToAutoCollect(CollectingLocation collectingLocation, double distAwayFromCrater, double approachDistance) {
-        ArrayList<CurvePoint> allCurvePoints = new ArrayList<>();
-        allCurvePoints.add(startAutoCollect);
-
-
-
-        //the approximate angle we are collecting from relative to the crater
-        double angleFrom = (Globals.isCrater() ? -135 : 45);
-        /**
-         * This is where the final target is, which is slightly outside the crater
-         */
-        double xFinal = (-Math.cos(Math.toRadians(angleFrom)) * distAwayFromCrater)
-                + collectingLocation.xApproach;
-        double yFinal = (-Math.sin(Math.toRadians(angleFrom)) * distAwayFromCrater)
-                + collectingLocation.yApproach;
-
-
-        /**
-         * Now we want an approaching point so that we can arrive at a better angle.
-         * We know the second point is where we want to point to
-         */
-        //since slope is tan(angle), we can get the angle with atan (just absolute value for now)
-        double collectAngle = collectingLocation.getAngle();
-
-
-        //use negative since and cosine since we want the point to be before the last point
-        double xApproach = (-Math.cos(collectAngle) * (approachDistance))+xFinal;
-        double yApproach = (-Math.sin(collectAngle) * (approachDistance))+yFinal;
-
-
-
-
-        double xFirst = (startAutoCollect.x + xApproach)/2;
-        double yFirst = (startAutoCollect.y + yApproach)/2;
-        double xSecond = (xFinal + xApproach)/2;
-        double ySecond = (yFinal + yApproach)/2;
-
-
-
-
-
-        //add the first point, which is half way between the start and the approach
-        allCurvePoints.add(new CurvePoint(xFirst,yFirst,
-                1.0, 1.0,17,50,
-                Math.toRadians(60),0.0));
-
-
-        //the second is halfway between the final and the approach
-        allCurvePoints.add(new CurvePoint(xSecond,ySecond,
-                1.0, 1.0,17,50,
-                Math.toRadians(60),0.0));
-
-
-        //this is the final destination, a little bit spaced away from the crater
-        allCurvePoints.add(new CurvePoint(xFinal,yFinal,
-                1.0,1.0,17,50,
-                Math.toRadians(60),0));
-
-
-        MovementEssentials.followCurve(allCurvePoints,Math.toRadians(90),false);
-
-
-
-        double distanceToFinal = Math.hypot(getXPos()-xFinal,getYPos()-yFinal);
-        if(distanceToFinal < 60){
-            movementResult r = pointAngle(Math.atan2(collectingLocation.pointLocationY-getYPos(),
-                    collectingLocation.pointLocationX-getXPos()),1.0,Math.toRadians(40));
-
-//            double scaleMovement = 1.0- Range.clip(Math.abs(r.turnDelta_rad)/Math.toRadians(30),
-//                    0,0.6);
-//            movement_x *= scaleMovement;
-//            movement_y *= scaleMovement;
-
-            return Math.abs(r.turnDelta_rad) < Math.toRadians(10) && distanceToFinal <= 30;
-
-        }
-        return false;//we are not done yet
-    }
-
-
-
-
-    public double currRelativePointAngleAutoFeed = 0;
-    /**
-     * This will orbit the robot around the target position of the feeder so that the feeder
-     * will end up in the same position but the user can still move the robot in a circle
-     * @param xPower
-     */
-    public double orbitModeFeeder(double xPower){
-        //First, this is where we will be orbiting around
-        double xCenter = feedTargetX;
-        double yCenter = feedTargetY;
-
-        //the absolute angle to the target feeding location (but we want to point 180 degrees from this)
-        double angleToTarget = Math.atan2(yCenter-getYPos(),xCenter-getXPos());
-        //subtract 180 to get where we want to point
-        double angleToPoint = subtractAngles(angleToTarget,Math.toRadians(180));
-        //now that we know what absolute angle to point to, we calculate how close we are to it
-        double relativePointAngle = AngleWrap(angleToPoint-worldAngle_rad);
-        currRelativePointAngleAutoFeed = relativePointAngle;//save this for people
-
-        if(Math.abs(SpeedOmeter.getDegPerSecond()) < 15){
-            //increment the error sum
-            autoFeedAngleErrorSum += (relativePointAngle/Math.toRadians(3.5))
-                    * elapsedMillisThisUpdate/1000.0;
-        }else{
-            autoFeedAngleErrorSum = 0;
-        }
-
-
-        //get the current speed
-        double currentSpeedY = Math.abs(SpeedOmeter.getSpeedY());
-        //get the current angular speed
-        double currentSpeedRad = Math.abs(SpeedOmeter.getRadPerSecond());
-
-        //we will increase our dampening by 2x if we are going 50 cm p second
-        double increaseDampeningPosition = 1 + currentSpeedY/50.0;
-        //faster we are currently moving, the more angle deceleration
-        double increaseDampeningAngle = 1 + currentSpeedRad/Math.toRadians(600);
-
-
-
-
-        //so calculate the delta radius that we have to go
-        double deltaRadius = getDeltaRadiusForFeeding();
-
-        //NOW let's assume that going forwards will increase our radius
-        //(we are pretty close to the target angle)
-        if(Math.abs(relativePointAngle) < Math.toRadians(30)){
-
-            //adjust for how fast we are currently moving
-            double deltaWithSpeed = deltaRadius - SpeedOmeter.currSlipDistanceY();
-
-            double maxYPower = 0.8;//maximum thrust allowed to use in y dimension
-
-            double deceleration = 12 * increaseDampeningPosition;
-
-            double moveTowardsAmount = Range.clip((deltaWithSpeed / deceleration)
-                    *maxYPower,-maxYPower,maxYPower);
-            moveTowardsAmount = MovementEssentials.minPower(moveTowardsAmount,MovementEssentials.movement_y_min);
-            moveTowardsAmount *= Range.clip(Math.abs(deltaWithSpeed)/5,0,1);
-
-
-            movement_y = Math.cos(relativePointAngle) * moveTowardsAmount;
-            movement_x = -Math.sin(relativePointAngle) * moveTowardsAmount;
-
-
-
-        }
-        //movement_x controlled by the user directly
-        movement_x += xPower;
-
-
-        /** NOW TO POINT USING MOVEMENT_TURN*/
-        //how many radians required to go from point_speed to 0
-        double decelerationRadians = Math.toRadians(25);
-
-        //max turn speed
-        double point_speed = 0.8;
-
-        //minimum turning power allowed. this is going to be a bit more than usual because of load
-        double minTurnPower = MovementEssentials.movement_turn_min * 1.3;
-
-        //also multiply the min turning power allowed
-//        minTurnPower *= 1.0 + Math.abs(movement_x) * 2.0;
-        //also multiply the movement_y
-//        movement_y *= 1.0 + Math.abs(movement_x) * 3.0;
-
-        //point ahead of time if we are moving
-        relativePointAngle -= (movement_x / 0.3) * Math.toRadians(4);
-
-
-
-
-        //adjust for angular velocity now
-        double velocityAdjustedRelativePointAngle =
-                AngleWrap(relativePointAngle-SpeedOmeter.currSlipAngle() * 0.7);
-
-
-
-
-        //Scale down the relative angle by decelerationRadians and multiply by point speed
-        double turnSpeed = (velocityAdjustedRelativePointAngle/decelerationRadians)*point_speed;
-        //now just clip the result to be in range
-        movement_turn = Range.clip(turnSpeed,-point_speed,point_speed);
-
-
-        //min power the turn speed
-        movement_turn = MovementEssentials.minPower(movement_turn,minTurnPower);
-
-        movement_turn += Range.clip(autoFeedAngleErrorSum,-1,1) * 0.2;
-
-
-        //smooths down the last bit to finally settle on an angle
-        movement_turn *= Range.clip(Math.abs(relativePointAngle)/
-                Math.toRadians(1.5 * (increaseDampeningAngle + (increaseDampeningPosition-1.0))),0,1);
-
-
-
-
-
-
-
-        return deltaRadius;
-    }
-
-
-
-
-
-
-
-
-
-
-
-    //Reports the numbers of our location for debugging
-    public void reportPositionData(){
-        telemetry.addLine("xPos: "+ df.format(worldXPosition) +
-                " yPos: " + df.format(worldYPosition) +
-                " Rot: " + df.format(Math.toDegrees(MyPosition.worldAngle_rad)));
-
-
-        telemetry.addLine("error new: " + Math.hypot(worldXPosition,worldYPosition));
-
-//        telemetry.addLine("\nAdjusted: \n" +"xPos: "+ df.format(worldXPosition-137) +
-//                " yPos: " + df.format(worldYPosition-137) +
-//                " Rot: " + df.format(Math.toDegrees(subtractAngles(MyPosition.worldAngle_rad,Math.toRadians(-135)))) + "\n");
-    }
-    public void DrawVirtualField() {
-        for(int i = 0; i < m_telemetry.size_y; i ++){
-            telemetry.addLine(m_telemetry.getLine(i)
-                    .replace(" ","  "));
-//                    .replace("r", "█")
-//                    .replace("+", "▓")
-//                    .replace("|", "▒")
-//                    .replace("-", "░")
-//                    .replace(" ","╰"));
-//            telemetry.addLine(m_telemetry.getLine(i));
-        }
-        telemetry.addLine("zoom:" + zoom);
-    }
 
 
     public double getXPos(){
@@ -954,77 +412,6 @@ public class Robot extends TunableOpMode {
     }
 
 
-
-
-    //VIRTUAL FIELD VARIABLES//
-    public static double center_x = 0.5;
-    public static double center_y = -0.5;
-    public static double zoom = 1;
-    long lastZoomVirtualFieldTime = 0;
-
-
-    public double getZoomVirtualField(){
-        return zoom;
-    }
-
-
-    public void zoomInVirtualField(){
-        long currTime = SystemClock.uptimeMillis();
-        double elapsedSeconds = ((double) currTime- lastZoomVirtualFieldTime)/1000.0;
-        lastZoomVirtualFieldTime = currTime;
-        //return if this is the first time in a while we have pushed this button
-        if(elapsedSeconds > 0.2){return;}
-
-        //it will take 1 second to zoom in 2x
-        zoom *= 1 + elapsedSeconds;
-    }
-    //you can also manually set a zoom
-    public void zoomVirtualField(double amount){
-        zoom = amount;
-    }
-    public void zoomOutVirtualField(){
-        long currTime = SystemClock.uptimeMillis();
-
-        double elapsedSeconds = ((double) currTime- lastZoomVirtualFieldTime)/1000.0;
-        lastZoomVirtualFieldTime = currTime;
-        if(elapsedSeconds > 0.2){return;}
-        zoom *= 1 - elapsedSeconds;
-    }
-
-    public void followRobotVirtualField(){
-        center_x = worldXPosition/FIELD_LENGTH;
-        center_y = worldYPosition/FIELD_LENGTH;
-        center_y -= 1.0;
-    }
-
-    /**
-     * Pans on the virtual field
-     * @param amount the x amount of pan
-     */
-    public static void panXVirtualField(double amount){ center_x += amount; }
-    public static void panYVirtualField(double amount){
-        center_y += amount;
-    }
-
-
-    /**
-     * Passes the robot location, zoom and center data to the C++ telemetry class for drawing
-     */
-    public void giveCppFieldData(){
-        m_telemetry.clear();
-        m_telemetry.drawField(center_x,center_y,zoom);
-        m_telemetry.drawRobot(worldXPosition, worldYPosition, MyPosition.worldAngle_rad);
-    }
-
-
-
-
-    private long lastUpdateSlaveTime = 0;
-    private long lastUpdateMasterTime = 0;
-
-    /**
-     * Gets all the data from the expansion hub in one command to increase loop times
-     */
 
 }
 

@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses;
 
 import android.os.SystemClock;
-import org.firstinspires.ftc.teamcode.xqcS.Debugging.ComputerDebugging;
-import org.firstinspires.ftc.teamcode.xqcS.HelperClasses.Robot;
-import org.firstinspires.ftc.teamcode.xqcS.ReturnTypes.FloatPoint;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MovementEssentials;
-import org.firstinspires.ftc.teamcode.xqcS.RobotUtilities.MyPosition;
+import org.firstinspires.ftc.teamcode.PepeLaugh.Debugging.ComputerDebugging;
+import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Robot;
+import org.firstinspires.ftc.teamcode.PepeLaugh.ReturnTypes.FloatPoint;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementEssentials;
+import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MyPosition;
 
 import java.util.ArrayList;
 
