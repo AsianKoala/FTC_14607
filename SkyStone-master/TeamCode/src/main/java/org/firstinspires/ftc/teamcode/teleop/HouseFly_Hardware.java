@@ -42,29 +42,23 @@ public class HouseFly_Hardware {
     public DcMotor backRight = null;
     public DcMotor frontRight = null;
     public DcMotor backLeft = null;
-    public BNO055IMU imu = null;
 
-    //numbers
-    public static double xSpeed = 0;
-    public static double ySpeed = 0;
-    public static double turnSpeed = 0;
-    public static double worldXPosition;
-    public static double worldYPosition;
-    public static double worldAngle_rad;
-    public double getXPos(){
-        return worldXPosition;
-    }
+    public DcMotor succysucky = null; // intake 2
+    public DcMotor suckysuccy = null; // intake 1
 
-    public double getYPos(){
-        return worldYPosition;
-    }
-    public double getWorldAngle_rad() {
-        return worldAngle_rad;
-    }
+    public DcMotor verticalLeftEncoder = null;
+    public DcMotor verticalRightEncoder = null;
+    public DcMotor horizontalEncoder = null;
+    
+    
+    public BNO055IMU imu = null; // we're going to use this for calibration and thats basically it lul
+
+    // numbers here
+
+    public static final double triggerThreshold = 0.25;
+    public static final double COUNTS_PER_INCH = 307.699557;
 
 
-    //last update time
-    private long lastUpdateTime = 0;
 
     // Local OpMode members
     HardwareMap hwMap = null;
@@ -83,6 +77,11 @@ public class HouseFly_Hardware {
         backLeft = hwMap.dcMotor.get("bl");
         frontRight = hwMap.dcMotor.get("fr");
         backRight = hwMap.dcMotor.get("br");
+        succysucky = hwMap.dcMotor.get("succysucky");
+        suckysuccy = hwMap.dcMotor.get("suckysuccy");
+        verticalLeftEncoder = hwMap.dcMotor.get("verticalLeftEncoder");
+        verticalRightEncoder = hwMap.dcMotor.get("verticalRightEncoder");
+        horizontalEncoder = hwMap.dcMotor.get("horizontalEncoder");
 
         imu = hwMap.get(BNO055IMU.class, "revIMU");
         imu.initialize(new BNO055IMU.Parameters());
@@ -91,6 +90,8 @@ public class HouseFly_Hardware {
         frontLeft.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
+        suckysuccy.setPower(0);
+        succysucky.setPower(0);
 
 
         // set motor settings
@@ -99,7 +100,9 @@ public class HouseFly_Hardware {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//adsadasd
+        succysucky.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        suckysuccy.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -107,6 +110,7 @@ public class HouseFly_Hardware {
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
+        suckysuccy.setDirection(DcMotor.Direction.REVERSE);
 
     }
 //
@@ -144,16 +148,38 @@ public class HouseFly_Hardware {
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
+    }
 
+    public void stomach(double power) {
+        succysucky.setPower(power);
+        suckysuccy.setPower(power);
+    }
+
+    public void vomit() {
+        stomach(-1);
+    }
+
+    public void suck() {
+        stomach(1);
+    }
+
+    public void pauseStomach() {
+        stomach(0);
+    }
+
+
+
+    public void driveLimitless(double left, double right) {
+        frontLeft.setPower(left);
+        frontRight.setPower(right);
+        backLeft.setPower(left);
+        backRight.setPower(right);
     }
 
     public int getHeading(){
         return -(int)Math.floor(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle);
     }
 
-    public double getDoubleHeading() {
-        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
-    }
 
 
 

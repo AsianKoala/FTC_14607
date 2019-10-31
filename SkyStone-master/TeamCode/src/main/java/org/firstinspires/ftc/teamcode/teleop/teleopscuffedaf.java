@@ -2,25 +2,28 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.WizardsOdometryTutorial.OdometryGlobalCoordinatePosition;
+
+import static org.firstinspires.ftc.teamcode.teleop.HouseFly_Hardware.COUNTS_PER_INCH;
+import static org.firstinspires.ftc.teamcode.teleop.HouseFly_Hardware.triggerThreshold;
 
 //test
 @TeleOp(name="lastYearKindaScuffedIguessIdK", group="Dragonfly")
-public class teleopscuffedaf extends OpMode{
+public class teleopscuffedaf extends OpMode {
 
     HouseFly_Hardware robot = new HouseFly_Hardware();
+
+    OdometryGlobalCoordinatePosition globalPositionUpdate;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
+
     @Override
     public void init() {
         robot.init(hardwareMap);
-//        robot.resetEncoders(); TODO: RESET ARM ENCODERS DEPENDING ON AUTO RUN
+//        robot.resetEncoders();
         telemetry.addData("Say", "Hello Driver");
-        updateTelemetry(telemetry);
-    }
-
-    public void init_loop() {
-        telemetry.addData("status", "loop test... waiting for start");
         updateTelemetry(telemetry);
     }
 
@@ -29,17 +32,15 @@ public class teleopscuffedaf extends OpMode{
      */
     @Override
     public void start() {
+        globalPositionUpdate = new OdometryGlobalCoordinatePosition(robot.verticalLeftEncoder, robot.verticalRightEncoder, robot.verticalRightEncoder, COUNTS_PER_INCH, 75);
+        Thread positionThread = new Thread(globalPositionUpdate);
+        positionThread.start();
+
+        globalPositionUpdate.reverseRightEncoder();
+        globalPositionUpdate.reverseNormalEncoder();
     }
 
-    //DRIVE EXPO
-    public static double expo(double driveVal){
-        if (driveVal>0) {
-            return (0.75*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(100*driveVal/56.03234, 2.711895)))-0.301))/100;//0.5*(0.0004*(Math.pow((driveVal-50), 3))+50);//Math.pow(2, driveVal / 15.02) - 1;
-        }else {
-            return -(0.75*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(-100*driveVal/56.03234, 2.711895)))-0.301))/100;//-0.5*(0.0004*(Math.pow((-driveVal-50), 3))+50);
-        }
-    }
-    //END DRIVE EXPO
+
 
     @Override
     public void loop() {
@@ -49,7 +50,16 @@ public class teleopscuffedaf extends OpMode{
         }
 
         // START TELEMETRY
+        telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
+        telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
+        telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
 
+        telemetry.addData("Vertical left encoder position", robot.verticalLeftEncoder.getCurrentPosition());
+        telemetry.addData("Vertical right encoder position", robot.verticalRightEncoder.getCurrentPosition());
+        telemetry.addData("horizontal encoder position", robot.horizontalEncoder.getCurrentPosition());
+
+        telemetry.addData("Thread Active", .isAlive());
+        telemetry.update();
         //END TELEMETRY
 
 
@@ -92,7 +102,30 @@ public class teleopscuffedaf extends OpMode{
             leftDrivePower = leftDrivePower*1.5;
             rightDrivePower = rightDrivePower*1.5;
         }
-        //END DRIVE CODE
+
+        robot.driveLimitless((leftDrivePower), (rightDrivePower));
+
+
+        /**
+         * END OF DRIVE CODE
+         * OTHER CODE STARTS HERE
+         */
+
+        if (gamepad1.right_trigger > triggerThreshold) {
+            robot.vomit();
+        } else {
+            robot.pauseStomach();
+        }
+
+        if(gamepad1.left_trigger > triggerThreshold) {
+            robot.suck();
+        } else {
+            robot.pauseStomach();
+        }
+
+
+
+
 
 
         //START ADDITIONAL TELEMETRY
@@ -109,5 +142,22 @@ public class teleopscuffedaf extends OpMode{
         telemetry.addData("stopping", 0);
         telemetry.update();
     }
+
+
+
+
+
+
+
+    //DRIVE EXPO
+    public static double expo(double driveVal){
+        if (driveVal>0) {
+            return (0.75*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(100*driveVal/56.03234, 2.711895)))-0.301))/100;//0.5*(0.0004*(Math.pow((driveVal-50), 3))+50);//Math.pow(2, driveVal / 15.02) - 1;
+        }else {
+            return -(0.75*((121.3416 + (0.301205 - 121.3416)/(1 + Math.pow(-100*driveVal/56.03234, 2.711895)))-0.301))/100;//-0.5*(0.0004*(Math.pow((-driveVal-50), 3))+50);
+        }
+    }
+    //END DRIVE EXPO
+
 
 }
