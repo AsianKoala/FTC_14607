@@ -58,7 +58,7 @@ public class teleopscuffedaf extends OpMode {
         telemetry.addData("Vertical right encoder position", robot.verticalRightEncoder.getCurrentPosition());
         telemetry.addData("horizontal encoder position", robot.horizontalEncoder.getCurrentPosition());
 
-        telemetry.addData("Thread Active", .isAlive());
+        //telemetry.addData("Thread Active", .isAlive());
         telemetry.update();
         //END TELEMETRY
 
