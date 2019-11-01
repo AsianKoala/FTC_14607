@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.PepeLaugh.Hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Auto;
-import org.openftc.revextensions2.ExpansionHubMotor;
+import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubMotor;
 
 /**
  * This class holds a motor object and encoder readings of a motor

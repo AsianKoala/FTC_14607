@@ -21,8 +21,6 @@
 
 package org.firstinspires.ftc.teamcode.revextensions2;
 
-import org.firstinspires.ftc.teamcode.revextensions2.RE2Exception;
-
 class RevBulkDataException extends org.firstinspires.ftc.teamcode.revextensions2.RE2Exception
 {
     RevBulkDataException(){}

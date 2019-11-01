@@ -2,10 +2,11 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.teleop.Hardware.HouseFly_Hardware;
 import org.firstinspires.ftc.teamcode.teleop.odometry.OdometryGlobalCoordinatePosition;
 
-import static org.firstinspires.ftc.teamcode.teleop.HouseFly_Hardware.COUNTS_PER_INCH;
-import static org.firstinspires.ftc.teamcode.teleop.HouseFly_Hardware.triggerThreshold;
+import static org.firstinspires.ftc.teamcode.teleop.Hardware.HouseFly_Hardware.COUNTS_PER_INCH;
+import static org.firstinspires.ftc.teamcode.teleop.Hardware.HouseFly_Hardware.triggerThreshold;
 
 //test
 @TeleOp(name="lastYearKindaScuffedIguessIdK", group="Dragonfly")

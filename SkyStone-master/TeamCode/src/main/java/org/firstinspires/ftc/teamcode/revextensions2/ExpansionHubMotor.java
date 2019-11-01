@@ -24,9 +24,6 @@ package org.firstinspires.ftc.teamcode.revextensions2;
 import com.qualcomm.hardware.lynx.LynxController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubEx.CurrentDrawUnits;
-import org.openftc.revextensions2.Utils;
 
 /**
  * Extends a DcMotorImplEx to provide access to new features.
@@ -34,7 +31,7 @@ import org.openftc.revextensions2.Utils;
  */
 public class ExpansionHubMotor extends DcMotorImplEx
 {
-    private org.openftc.revextensions2.ExpansionHubEx expansionHubEx;
+    private OpenLynxController controller;
 
     /*
      * Don't use this constructor in user-code; this object will be
@@ -43,7 +40,7 @@ public class ExpansionHubMotor extends DcMotorImplEx
     ExpansionHubMotor(DcMotor motor)
     {
         super(motor.getController(), motor.getPortNumber(), motor.getDirection(), motor.getMotorType());
-        expansionHubEx = new ExpansionHubEx(org.openftc.revextensions2.Utils.getLynxFromController((LynxController) motor.getController()));
+        this.controller = new OpenLynxController((LynxController) motor.getController());
     }
 
     /**
@@ -51,9 +48,9 @@ public class ExpansionHubMotor extends DcMotorImplEx
      *
      * @return the current draw in milliamps
      */
-    public double getCurrentDraw(CurrentDrawUnits units)
+    public double getCurrentDraw()
     {
-        return expansionHubEx.getMotorCurrentDraw(units, getPortNumber());
+        return controller.getEnhancedLynxModule().getMotorCurrentDraw(getPortNumber());
     }
 
     /***
@@ -63,7 +60,7 @@ public class ExpansionHubMotor extends DcMotorImplEx
      */
     public boolean isBridgeOverTemp()
     {
-        return expansionHubEx.isMotorBridgeOverTemp(getPortNumber());
+        return controller.getEnhancedLynxModule().isMotorBridgeOverTemp(getPortNumber());
     }
 
     /***
@@ -75,6 +72,6 @@ public class ExpansionHubMotor extends DcMotorImplEx
     @Deprecated
     public boolean hasLostCounts()
     {
-        return expansionHubEx.hasMotorLostCounts(getPortNumber());
+        return controller.getEnhancedLynxModule().hasMotorLostCounts(getPortNumber());
     }
 }

@@ -1,4 +1,3 @@
-package org.firstinspires.ftc.teamcode.revextensions2;
 /*
  * Copyright (c) 2018 OpenFTC Team
  *
@@ -20,26 +19,13 @@ package org.firstinspires.ftc.teamcode.revextensions2;
  * SOFTWARE.
  */
 
+package org.firstinspires.ftc.teamcode.revextensions2;
 
-import com.qualcomm.hardware.lynx.LynxAnalogInputController;
-import com.qualcomm.hardware.lynx.LynxController;
-import com.qualcomm.hardware.lynx.LynxDcMotorController;
-import com.qualcomm.hardware.lynx.LynxDigitalChannelController;
-import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.lynx.*;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.AnalogInputController;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
-import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
+import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-
 import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
-import org.firstinspires.ftc.teamcode.revextensions2.RE2Exception;
-import org.firstinspires.ftc.teamcode.revextensions2.RevBulkDataException;
-import org.firstinspires.ftc.teamcode.revextensions2.Utils;
 
 import java.lang.reflect.Field;
 
@@ -270,17 +256,17 @@ public class RevBulkData
         }
         catch (Exception e)
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RE2Exception("Failed to reflect on AnalogInput! Please report this as an issue on the GitHub repository.");
+            throw new RevBulkDataException("Failed to reflect on AnalogInput!");
         }
 
         if(!(controller instanceof LynxAnalogInputController))
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RevBulkDataException(String.format("AnalogInput %s is not attached to a Lynx module!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(input)));
+            throw new RevBulkDataException(String.format("AnalogInput %s is not attached to a Lynx module!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(input)));
         }
 
         if(!validateLynxController((LynxController) controller))
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RevBulkDataException(String.format("AnalogInput %s is attached to a different Lynx module than the one that this bulk command was issued to!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(input)));
+            throw new RevBulkDataException(String.format("AnalogInput %s is attached to a different Lynx module than the one that this bulk command was issued to!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(input)));
         }
 
         return getAnalogInputValue(port);
@@ -332,17 +318,17 @@ public class RevBulkData
         }
         catch (Exception e)
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RE2Exception("Failed to reflect on DigitalChannelImpl! Please report this as an issue on the GitHub repository.");
+            throw new RevBulkDataException("Failed to reflect on DigitalChannelImpl!");
         }
 
         if(!(controller instanceof LynxDigitalChannelController))
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RevBulkDataException(String.format("DigitalChannel %s is not attached to a Lynx module!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(digitalChannel)));
+            throw new RevBulkDataException(String.format("DigitalChannel %s is not attached to a Lynx module!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(digitalChannel)));
         }
 
         if(!validateLynxController((LynxController) controller))
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RevBulkDataException(String.format("DigitalChannel %s is attached to a different Lynx module than the one that this bulk command was issued to!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(digitalChannel)));
+            throw new RevBulkDataException(String.format("DigitalChannel %s is attached to a different Lynx module than the one that this bulk command was issued to!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(digitalChannel)));
         }
 
         return getDigitalInputState(port);
@@ -365,14 +351,14 @@ public class RevBulkData
         // Is this motor attached to a Lynx module?
         if(!(motor.getController() instanceof LynxDcMotorController))
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RevBulkDataException(String.format("Motor %s is not attached to a Lynx module!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(motor)));
+            throw new RevBulkDataException(String.format("Motor %s is not attached to a Lynx module!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(motor)));
         }
 
         // Is this motor attached to a different Lynx module than the one
         // that this packet came from?
         if(!validateLynxController((LynxController) motor.getController()))
         {
-            throw new org.firstinspires.ftc.teamcode.revextensions2.RevBulkDataException(String.format("Motor %s is attached to a different Lynx module than the one that this bulk command was issued to!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(motor)));
+            throw new RevBulkDataException(String.format("Motor %s is attached to a different Lynx module than the one that this bulk command was issued to!", org.firstinspires.ftc.teamcode.revextensions2.Utils.getHwMapName(motor)));
         }
     }
 
@@ -387,7 +373,7 @@ public class RevBulkData
      */
     private boolean validateLynxController(LynxController controller)
     {
-        return validateLynxModule(org.firstinspires.ftc.teamcode.revextensions2.Utils.getLynxFromController(controller));
+        return validateLynxModule(new OpenLynxController(controller).getLynxModule());
     }
 
     /***
