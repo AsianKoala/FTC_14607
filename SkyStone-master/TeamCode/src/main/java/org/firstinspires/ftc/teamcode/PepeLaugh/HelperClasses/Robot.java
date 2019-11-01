@@ -82,7 +82,7 @@ public class Robot extends TunableOpMode {
         Auto.masterMotorScale = 1.0;
         currTimeMillis = SystemClock.uptimeMillis();
         //we need to call this to initialize the extra features of rev
-     //   RevExtensions2.init();
+        RevExtensions2.init();
 
 
         //get the two expansion hubs themselves

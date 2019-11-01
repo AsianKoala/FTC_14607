@@ -118,6 +118,7 @@ public class MyOdometryOpmode extends LinearOpMode {
      * @param speed robot's speed
      * @return the y vector
      */
+
     private double calculateY(double desiredAngle, double speed) {
         return Math.cos(Math.toRadians(desiredAngle)) * speed;
     }
