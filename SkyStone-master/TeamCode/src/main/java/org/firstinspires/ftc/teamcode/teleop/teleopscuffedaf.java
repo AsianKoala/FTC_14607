@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.WizardsOdometryTutorial.OdometryGlobalCoordinatePosition;
+import org.firstinspires.ftc.teamcode.teleop.odometry.OdometryGlobalCoordinatePosition;
 
 import static org.firstinspires.ftc.teamcode.teleop.HouseFly_Hardware.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.teleop.HouseFly_Hardware.triggerThreshold;
@@ -27,12 +27,14 @@ public class teleopscuffedaf extends OpMode {
         updateTelemetry(telemetry);
     }
 
+
     /*
      * Code to run ONCE when the driver hits PLAY
      */
+
     @Override
     public void start() {
-        globalPositionUpdate = new OdometryGlobalCoordinatePosition(robot.verticalLeftEncoder, robot.verticalRightEncoder, robot.verticalRightEncoder, COUNTS_PER_INCH, 75);
+        globalPositionUpdate = new OdometryGlobalCoordinatePosition(robot.verticalLeftEncoder, robot.verticalRightEncoder, robot.horizontalEncoder, COUNTS_PER_INCH, 75);
         Thread positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
 
