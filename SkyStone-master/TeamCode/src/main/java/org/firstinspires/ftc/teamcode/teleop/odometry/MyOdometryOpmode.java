@@ -66,7 +66,7 @@ public class MyOdometryOpmode extends LinearOpMode {
      * @param speed robot's speed
      * @return the x vector
      */
-    private double calculateX(double desiredAngle, double speed) {
+    private double xPower(double desiredAngle, double speed) {
         return Math.sin(Math.toRadians(desiredAngle)) * speed;
     }
 
@@ -77,7 +77,7 @@ public class MyOdometryOpmode extends LinearOpMode {
      * @return the y vector
      */
 
-    private double calculateY(double desiredAngle, double speed) {
+    private double yPower(double desiredAngle, double speed) {
         return Math.cos(Math.toRadians(desiredAngle)) * speed;
     }
 }
