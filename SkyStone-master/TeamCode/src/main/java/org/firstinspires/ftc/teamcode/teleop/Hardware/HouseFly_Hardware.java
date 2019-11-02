@@ -105,7 +105,35 @@ public class HouseFly_Hardware {
         succysucky.setPower(0);
 
 
-        // set motor settings
+        // motor runmode settings
+
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        succysucky.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        suckysuccy.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        succysucky.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        suckysuccy.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // odometry runmode settings
+
+        verticalLeftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        verticalRightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        horizontalEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        verticalLeftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        verticalRightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        horizontalEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+
+
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -114,13 +142,10 @@ public class HouseFly_Hardware {
         succysucky.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         suckysuccy.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
+
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
         suckysuccy.setDirection(DcMotor.Direction.REVERSE);
 
     }
