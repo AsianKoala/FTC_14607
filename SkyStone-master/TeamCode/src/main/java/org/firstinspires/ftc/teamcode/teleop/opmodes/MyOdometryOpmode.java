@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop.odometry;
+package org.firstinspires.ftc.teamcode.teleop.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -66,6 +66,7 @@ public class MyOdometryOpmode extends LinearOpMode {
      * @param speed robot's speed
      * @return the x vector
      */
+
     private double xPower(double desiredAngle, double speed) {
         return Math.sin(Math.toRadians(desiredAngle)) * speed;
     }
