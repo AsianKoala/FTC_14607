@@ -39,8 +39,7 @@ import org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars;
 import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 
 /**
- *  Created on 9/17 by Neil M
- *  Updated 9/17
+ *  Created on 9/17
  */
 
 
