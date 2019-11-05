@@ -27,7 +27,12 @@ public class Intake {
         this.leftSuck = leftSuck;
         this.rightSuck = rightSuck;
 
-        //
+        setIntakePower(0);
+
+        update();
+
+
+
     }
 
     private double intakeMotorCurrentPower = 0.0;
@@ -54,7 +59,7 @@ public class Intake {
      * This is called every update and will set the roller power automatically
      */
 
-    public void handleIntakeStates() {
+    public void HandleIntakeStates() {
         if(intakeState == intakeStates.off) {
             setIntakePower(0);
         }
@@ -65,6 +70,7 @@ public class Intake {
             setIntakePower(COLLECTER_BACKWARDS_SPEED);
         }
     }
+
 
     /** Turns on intake */
     public void turnOnIntake() { intakeState = intakeStates.forwards; }
@@ -77,11 +83,14 @@ public class Intake {
         intakeState = intakeStates.off;
     }
 
+
     private double intakeMotorLastPower = 0;
     private long lastUpdateTime = 0;
 
     public void update() {
-
+        HandleIntakeStates();
+        leftSuck.setPower(intakeMotorCurrentPower);
+        rightSuck.setPower(intakeMotorCurrentPower);
     }
 
 
