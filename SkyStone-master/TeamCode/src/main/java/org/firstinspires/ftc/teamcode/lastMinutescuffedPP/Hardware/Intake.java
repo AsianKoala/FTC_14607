@@ -19,9 +19,6 @@ public class Intake {
 
         // reverse one of the motors TODO: TEST TO SEE WHICH ONE ACTUALLY NEEDS REVERSING
 
-
-        rightSuck.setDirection(DcMotorSimple.Direction.REVERSE);
-
         // link the hardware up
         this.myRobot = myRobot;
         this.leftSuck = leftSuck;
@@ -90,7 +87,7 @@ public class Intake {
     public void update() {
         HandleIntakeStates();
         leftSuck.setPower(intakeMotorCurrentPower);
-        rightSuck.setPower(intakeMotorCurrentPower);
+        rightSuck.setPower(intakeMotorCurrentPower * -1);
     }
 
 
