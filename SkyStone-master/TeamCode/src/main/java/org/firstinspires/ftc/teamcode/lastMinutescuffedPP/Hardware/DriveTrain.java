@@ -4,7 +4,9 @@ import android.os.SystemClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.*;
 
-
+/**
+ * THIS CLASS IS FINISHED
+ */
 public class DriveTrain {
     public RevMotor topLeft;
     public RevMotor topRight;
@@ -34,7 +36,6 @@ public class DriveTrain {
 
     private long lastUpdateTime = 0;
 
-
     public void ApplyMovement() {
         /**
          * This makes it so we don't constantly update the robot movement like every second, which would lead to lag
@@ -49,6 +50,12 @@ public class DriveTrain {
         double bl_power_raw = movement_y-movement_turn- movement_x*1.5;
         double br_power_raw = -movement_y-movement_turn-movement_x*1.5;
         double tr_power_raw = -movement_y-movement_turn+movement_x*1.5;
+
+
+
+
+
+
 
         //find the maximum of the powers
         double maxRawPower = Math.abs(tl_power_raw);

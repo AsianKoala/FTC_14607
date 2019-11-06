@@ -65,6 +65,11 @@ public class MyPosition {
         return angle;
     }
 
+    public static double subtractAngles(double angle1, double angle2){
+        return AngleWrap(angle1-angle2);
+    }
+
+
 
     /**
      * Updates our position on the field using the change from the encoders

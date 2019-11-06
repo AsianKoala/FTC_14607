@@ -1,21 +1,35 @@
-package org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities;
+package org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement;
 
 
 import android.util.Log;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcontroller.RobotUtilities.PiecewiseFunction;
-import org.firstinspires.ftc.teamcode.PepeLaugh.Debugging.ComputerDebugging;
-import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.CurvePoint;
-import org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses.Point;
-import org.firstinspires.ftc.teamcode.PepeLaugh.ReturnTypes.FloatPoint;
-import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.SpeedOmeter;
-
+import org.firstinspires.ftc.teamcode.lastMinutescuffedPP.util.MyMath;
+import org.opencv.core.Point;
 import java.util.ArrayList;
-
-import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementVars.*;
-import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MyPosition.*;
+import org.firstinspires.ftc.teamcode.lastMinutescuffedPP.HelperClasses.CurvePoint;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.movement_turn;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.movement_x;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.movement_y;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.AngleWrap;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.worldAngle_rad;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.worldXPosition;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.worldYPosition;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.AngleWrap;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.worldAngle_rad;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.worldXPosition;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MyPosition.worldYPosition;
 
 public class MovementEssentials {
+    public static profileStates state_movement_y_prof = profileStates.gunningIt;
+    public static profileStates state_movement_x_prof = profileStates.gunningIt;
+    public static profileStates state_turning_prof = profileStates.gunningIt;
+
+    public static double movement_y_min = 0.091;
+    public static double movement_x_min = 0.11;
+    public static double movement_turn_min = 0.10;
+
+
     public enum profileStates{
         gunningIt,
         slipping,
@@ -29,25 +43,6 @@ public class MovementEssentials {
         }
     }
 
-    public static profileStates state_movement_y_prof = profileStates.gunningIt;
-    public static profileStates state_movement_x_prof = profileStates.gunningIt;
-    public static profileStates state_turning_prof = profileStates.gunningIt;
-
-    public static double movement_y_min = 0.091;
-    public static double movement_x_min = 0.11;
-    public static double movement_turn_min = 0.10;
-
-
-
-
-    public enum profleStatese {
-        gunningIt,
-    }
-
-
-
-    public void init() {
-    }
     //inits our mini state machines for motion profiling
     public static void initForMove() {
         state_movement_y_prof = profileStates.gunningIt;
@@ -68,6 +63,8 @@ public class MovementEssentials {
                     "                    " +
                     "                    ";
     public static PiecewiseFunction turnCurve = new PiecewiseFunction(turnCurveVisual);
+
+
 
 
 
@@ -113,6 +110,8 @@ public class MovementEssentials {
                 state_movement_x_prof = state_movement_x_prof.next();
             }
         }
+
+
         if(state_movement_x_prof == profileStates.slipping){
             movement_x_power = 0;
             if(Math.abs(SpeedOmeter.getSpeedY()) < 0.03){
@@ -132,6 +131,7 @@ public class MovementEssentials {
             if(Math.abs(rad_to_target) < Math.abs(SpeedOmeter.currSlipAngle() * 1.2) || Math.abs(rad_to_target) < Math.toRadians(3.0)){
                 state_turning_prof = state_turning_prof.next();
             }
+
         }
         if(state_turning_prof == profileStates.slipping){
             if(Math.abs(SpeedOmeter.getDegPerSecond()) < 60){
@@ -161,8 +161,6 @@ public class MovementEssentials {
         }
     }
 
-
-
     /**
      * Goes as fast as possible to a position
      * @param targetX
@@ -175,7 +173,6 @@ public class MovementEssentials {
      * @param stop
      * @return
      */
-
     //point_angle is the relative point angle. 90 means face towards it
     public static movementResult gunToPosition(double targetX, double targetY,double point_angle,
                                                double movement_speed, double point_speed,
@@ -387,12 +384,6 @@ public class MovementEssentials {
      */
     public static boolean followCurve(ArrayList<CurvePoint> allPoints, double followAngle, boolean allowSkipping){
 
-        for(int i = 0; i < allPoints.size()-1; i ++){
-            ComputerDebugging.sendLine(new FloatPoint(allPoints.get(i).x,allPoints.get(i).y),
-                    new FloatPoint(allPoints.get(i+1).x,allPoints.get(i+1).y));
-        }
-
-
 
         //now we will extend the last line so that the pointing looks smooth at the end
         ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
@@ -434,13 +425,6 @@ public class MovementEssentials {
 
             followMe.setPoint(allPoints.get(allPoints.size()-1).toPoint());
         }
-
-
-
-        ComputerDebugging.sendKeyPoint(new FloatPoint(pointToMe.x,pointToMe.y));
-        ComputerDebugging.sendKeyPoint(new FloatPoint(followMe.x,followMe.y));
-
-
 
 
 
@@ -486,9 +470,10 @@ public class MovementEssentials {
 
         //get the angle of this line
         double lineAngle = Math.atan2(secondPoint.y - firstPoint.y,secondPoint.x - firstPoint.x);
-        //get this line's length, hypot is just simplified distance equation
+        //get this line's length
         double lineLength = Math.hypot(secondPoint.x - firstPoint.x,secondPoint.y - firstPoint.y);
-        //extend the line by 1.5 pointLengths so that we can still point to it when we are at the end
+        //extend the line by 1.5 pointLengths so that we can still point to it when we
+        //are at the end
         double extendedLineLength = lineLength + distance;
 
         CurvePoint extended = new CurvePoint(secondPoint);
@@ -528,7 +513,7 @@ public class MovementEssentials {
      * @return
      */
     public static pointWithIndex clipToPath(ArrayList<CurvePoint> pathPoints, double xPos, double yPos){
-        double closestClippedDistance = 10000000;//start this off superduperhigh
+        double closestClippedDistance = 10000000;//start this off rediculously high
 
         //this is the index of the closest clipped distance
         //(index of the fist point on the line, not the second)
@@ -599,9 +584,6 @@ public class MovementEssentials {
             CurvePoint endLine = pathPoints.get(i+1);
 
             //get the intersections with this line
-            /**
-             * If stuff stops working just go to here TODO:
-             */
             ArrayList<Point> intersections =
                     MyMath.lineCircleIntersection(xPos,yPos,followRadius,
                             startLine.x,startLine.y,endLine.x,endLine.y);

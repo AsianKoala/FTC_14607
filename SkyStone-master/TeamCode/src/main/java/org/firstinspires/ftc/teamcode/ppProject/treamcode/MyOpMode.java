@@ -19,6 +19,7 @@ public class MyOpMode extends OpMode {
         allPoints.add(new CurvePoint(280,0,1,1,20, Math.toRadians(50),1.0));
         followCurve(allPoints, Math.toRadians(90));
 
+
       // RobotMovement.goToPosition(358/2,358/2,0.5,Math.toRadians(90),0.3);
 
     }
