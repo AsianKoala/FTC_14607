@@ -75,13 +75,6 @@ public class MyPosition {
         return angle;
     }
 
-
-
-
-
-
-
-
     /**
      * Updates our position on the field using the change from the encoders
      */

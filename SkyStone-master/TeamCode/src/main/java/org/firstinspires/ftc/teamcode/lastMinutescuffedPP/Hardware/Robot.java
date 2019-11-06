@@ -100,4 +100,8 @@ public class Robot extends TunableOpMode {
         myIntake.update();
     }
 
+    @Override
+    public void start() {
+    }
+
 }
