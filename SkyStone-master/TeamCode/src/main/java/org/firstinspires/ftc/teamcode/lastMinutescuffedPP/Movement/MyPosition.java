@@ -46,7 +46,7 @@ public class MyPosition {
     }
 
     public static void update() {
-
+        PositioningCalculations();
     }
 
 
@@ -69,8 +69,6 @@ public class MyPosition {
         return AngleWrap(angle1-angle2);
     }
 
-
-
     /**
      * Updates our position on the field using the change from the encoders
      */
@@ -83,7 +81,8 @@ public class MyPosition {
         // compute how much "wheel" data has changed
         double leftDelta = wheelLeftCurrent - encoderLeftLast;
         double rightDelta = wheelRightCurrent - encoderRightLast;
-        double auxDelta = auxCurrent - auxEncoder;
+       // aux will be our horizontal movement,
+        double auxDelta;
 
 
         // get distance traveled using the movement scaling

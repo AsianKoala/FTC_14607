@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Hardware;
 
 import android.os.SystemClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.*;
+
+import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementVars.*;
+//import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.*;
 
 /**
  * THIS CLASS IS FINISHED
@@ -50,8 +52,6 @@ public class DriveTrain {
         double bl_power_raw = movement_y-movement_turn- movement_x*1.5;
         double br_power_raw = -movement_y-movement_turn-movement_x*1.5;
         double tr_power_raw = -movement_y-movement_turn+movement_x*1.5;
-
-
 
 
 

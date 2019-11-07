@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement;
+/*package org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement;
 
 import org.firstinspires.ftc.teamcode.ppProject.company.ComputerDebugging;
 import org.firstinspires.ftc.teamcode.lastMinutescuffedPP.HelperClasses.FloatPoint;
@@ -130,7 +130,7 @@ public class RobotMovement {
         return followMe;
     }
 
-    public static void followCurve (ArrayList<CurvePoint> allPoints, double followAngle) {
+    public static void followCurve  (ArrayList<CurvePoint> allPoints, double followAngle) {
         for(int i = 0; i < allPoints.size() - 1; i++) {
             ComputerDebugging.sendLine(new FloatPoint(allPoints.get(i).x, allPoints.get(i).y),
                     new FloatPoint(allPoints.get(i+1).x, allPoints.get(i+1).y));
@@ -145,3 +145,4 @@ public class RobotMovement {
     }
 
 }
+*/
