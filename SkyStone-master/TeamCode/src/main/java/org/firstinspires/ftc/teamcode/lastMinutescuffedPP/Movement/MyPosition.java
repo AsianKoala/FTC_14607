@@ -8,21 +8,27 @@ public class MyPosition {
     public static Robot myRobot;
 
 
-    public static double encoderLeftLast = 0.0;
-    public static double encoderRightLast = 0.0;
+    public static double encoderFrontLeftLast = 0.0;
+    public static double encoderBackLeftLast = 0.0;
+    public static double encoderFrontRightLast = 0.0;
+    public static double encoderBackRightLast = 0.0;
     public static double auxEncoder = 0.0;
 
     public static double worldXPosition = 0.0;
     public static double worldYPosition = 0.0;
     public static double worldAngle_rad = 0.0;
+    public static double worldAngle = 0.0;
 
-    public static double currPos_l = 0.0;
-    public static double currPos_r = 0.0;
+
+    public static double currPos_tL = 0.0;
+    public static double currPos_tR = 0.0;
+    public static double currPos_bL = 0.0;
+    public static double currPos_bR = 0.0;
     public static double currPos_a = 0.0;
 
 
     // to read angle in absolute manner
-    public static double rightEncoderInitialReading = 0.0;
+    public static double frontLeftEncoderInitialReading = 0.0;
     public static double leftEncoderInitialReading = 0.0;
     public static double lastResetAngle = 0.0;
 
@@ -30,18 +36,22 @@ public class MyPosition {
     public static double currentTravelYDistance = 0.0;
 
 
-    public static void initialize(double l, double r, double a, Robot myRobot) {
+    public static void initialize(double tL, double bL, double tR, double bR, Robot myRobot) {
         MyPosition.myRobot = myRobot;
-        currPos_l = l;
-        currPos_r = r;
-        currPos_a = a;
+        currPos_tL = tL;
+        currPos_bL = bL;
+        currPos_tR = tR;
+        currPos_bR = bR;
+
         update();
     }
 
-    public static void giveMePositions(double l, double r,double a) {
-        currPos_l = l;
-        currPos_r = r;
-        currPos_a = a;
+    public static void giveMePositions(double tL, double bL, double tR, double bR, double wa) {
+        currPos_tL = tL;
+        currPos_bL = bL;
+        currPos_tR = tR;
+        currPos_bR = bR;
+        worldAngle = wa;
         update();
     }
 
@@ -73,26 +83,22 @@ public class MyPosition {
      * Updates our position on the field using the change from the encoders
      */
     public static void PositioningCalculations(){
-        double wheelLeftCurrent = -currPos_l;
-        double wheelRightCurrent = currPos_r;
-        double auxCurrent = currPos_a;
+        double frontLeftCurrent = currPos_tL;
+        double frontRightCurrent = currPos_tR;
+        double backLeftCurrent = currPos_bL;
+        double backRightCurrent = currPos_bR;
 
 
-        // compute how much "wheel" data has changed
-        double leftDelta = wheelLeftCurrent - encoderLeftLast;
-        double rightDelta = wheelRightCurrent - encoderRightLast;
-       // aux will be our horizontal movement,
-        double auxDelta;
+        // get deltas
+        double frontLeftDelta = frontLeftCurrent - encoderFrontLeftLast;
+        double frontRightDelta = frontRightCurrent - encoderFrontRightLast;
+        double backLeftDelta = backLeftCurrent - encoderBackLeftLast;
+        double backRightDelta = backRightCurrent - encoderBackRightLast;
 
 
-        // get distance traveled using the movement scaling
-
-
-
-        double rightTotal = currPos_r - rightEncoderInitialReading;
-        double leftTotal = -(currPos_l-leftEncoderInitialReading);
-
+        //get how much our angle has changed
         double worldAngleLast = worldAngle_rad;
+        double angleIncrement = AngleWrap(worldAngle - worldAngleLast);
 
 
     }

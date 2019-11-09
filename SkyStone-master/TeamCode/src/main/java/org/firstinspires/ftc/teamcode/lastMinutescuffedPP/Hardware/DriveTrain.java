@@ -49,6 +49,16 @@ public class DriveTrain {
         return (double)(topRight.getCurrentPosition() + bottomRight.getCurrentPosition())/2;
     }
 
+    /**
+     * so since we arent using odometry afaik we cant track position of the robot after it strafes, so that sucks
+     * this will probably cause a shitload of errors with movement but you know idc
+     * well i do care
+     * its more like having odometry is pretty important/the only damn way we can use the r OMEGALUL bot
+     * @return
+     */
+
+
+
     public void ApplyMovement() {
         /**
          * This makes it so we don't constantly update the robot movement like every second, which would lead to lag

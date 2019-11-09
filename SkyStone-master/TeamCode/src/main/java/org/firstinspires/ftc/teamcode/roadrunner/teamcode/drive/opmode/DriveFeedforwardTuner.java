@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMe
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LoggingUtil;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.getMaxRpm;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.rpmToVelocity;
+import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.getMaxRpm;
+import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.rpmToVelocity;
 
 /*
  * Op mode for computing kV, kStatic, and kA from various drive routines. For the curious, here's an

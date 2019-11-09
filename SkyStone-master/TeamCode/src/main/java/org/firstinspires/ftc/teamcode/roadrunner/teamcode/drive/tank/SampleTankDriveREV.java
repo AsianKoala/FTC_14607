@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxModuleUtil;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
 
 /*
  * Simple tank drive hardware implementation for REV hardware. If your hardware configuration
