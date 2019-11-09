@@ -15,7 +15,7 @@ dependencies {
 //Thanks for using https://jar-download.com
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.9.6'
 //Thanks for using https://jar-download.com
-
+    implementation 'com.github.dogecv:dogecv:2020.4-alpha'
 
 
 }
