@@ -18,9 +18,8 @@ public class DriveConstants {
      * navigate to https://192.168.49.1:8080/dash). Make sure to save the values here after you
      * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
      */
-    private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
-    private static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
+
+    private static final double TICKS_PER_REV = 537.6;
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -32,7 +31,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 2;
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 1;
+    public static double TRACK_WIDTH = 1; // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -41,7 +40,7 @@ public class DriveConstants {
      * empirically tuned.
      */
     public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
-    public static double kA = 0;
+    public static double kA = 0; // we can leave this tuff untied
     public static double kStatic = 0;
 
     /*
@@ -52,7 +51,7 @@ public class DriveConstants {
      * acceleration values are required, and the jerk values are optional (setting a jerk of 0.0
      * forces acceleration-limited profiling).
      */
-    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
+    public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints( // TODO: CHANGE THESE
             30.0, 30.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
@@ -67,6 +66,6 @@ public class DriveConstants {
     }
 
     public static double getMaxRpm() {
-        return MOTOR_CONFIG.getMaxRPM();
+        return 312;
     }
 }
