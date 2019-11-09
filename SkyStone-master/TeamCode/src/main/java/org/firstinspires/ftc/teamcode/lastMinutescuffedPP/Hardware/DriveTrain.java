@@ -83,7 +83,7 @@ public class DriveTrain {
         tl_power_raw *= scaleDownAmount;
         bl_power_raw *= scaleDownAmount;
         br_power_raw *= scaleDownAmount;
-        tr_power_raw *= scaleDownAmount;
+        tr_power_raw *= scaleDownAmount;//test for commit to my old branch
 
 
         //now we can set the powers ONLY IF THEY HAVE CHANGED TO AVOID SPAMMING USB COMMUNICATIONS
