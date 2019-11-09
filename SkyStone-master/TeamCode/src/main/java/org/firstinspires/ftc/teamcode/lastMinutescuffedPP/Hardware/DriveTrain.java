@@ -4,8 +4,7 @@ import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementVars.*;
-//import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.*;
+import static org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Movement.MovementVars.*;
 
 /**
  * THIS CLASS IS FINISHED
