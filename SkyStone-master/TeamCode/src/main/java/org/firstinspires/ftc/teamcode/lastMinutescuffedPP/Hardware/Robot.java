@@ -72,17 +72,17 @@ public class Robot extends TunableOpMode {
 
 
         // get all drive train motors and map them out, and add them to the all motor array list
-        RevMotor tl = new RevMotor((ExpansionHubMotor) hardwareMap.get("motorTL"),true);
-        RevMotor tr = new RevMotor((ExpansionHubMotor) hardwareMap.get("motorTR"),true);
-        RevMotor bl = new RevMotor((ExpansionHubMotor) hardwareMap.get("motorBL"),true);
-        RevMotor br = new RevMotor((ExpansionHubMotor) hardwareMap.get("motorBR"),true);
+        RevMotor tl = new RevMotor((ExpansionHubMotor) hardwareMap.get("TL"),true);
+        RevMotor tr = new RevMotor((ExpansionHubMotor) hardwareMap.get("TR"),true);
+        RevMotor bl = new RevMotor((ExpansionHubMotor) hardwareMap.get("BL"),true);
+        RevMotor br = new RevMotor((ExpansionHubMotor) hardwareMap.get("BR"),true);
         //add them to all motors
         allMotors.add(tl);
         allMotors.add(tr);
         allMotors.add(bl);
         allMotors.add(br);
         //now we can initialize the myDriveTrain
-        myDriveTrain = new DriveTrain(tl, tr, bl, br);
+        myDriveTrain = new DriveTrain(tl, tr, bl, br, imu);
 
 
         // now we add our intake
@@ -112,6 +112,10 @@ public class Robot extends TunableOpMode {
 
     @Override
     public void start() {
+        for(int i=0; i<2; i++) {
+          //  MyPosition.initialize(myDriveTrain.getCurrentAvgLeft(), myDriveTrain.getCurrentAvgRight()
+         //   , myDriveTrain, );
+        }
     }
 
     @Override

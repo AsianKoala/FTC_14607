@@ -17,6 +17,6 @@ public class DebuggingTest extends DebuggingOpMode {
         allPoints.add(new CurvePoint(220,180,1,1,20, Math.toRadians(50),1.0));
         allPoints.add(new CurvePoint(280,100,1,1,20, Math.toRadians(50),1.0));
         allPoints.add(new CurvePoint(280,0,1,1,20, Math.toRadians(50),1.0));
-        followCurve(allPoints, Math.PI/2);
+       // followCurve(allPoints, Math.PI/2);
     }
 }

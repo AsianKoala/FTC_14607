@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.lastMinutescuffedPP.util;
 
 import org.firstinspires.ftc.teamcode.lastMinutescuffedPP.HelperClasses.CurvePoint;
 import org.firstinspires.ftc.teamcode.lastMinutescuffedPP.HelperClasses.FloatPoint;
-import org.opencv.core.Point;
+import org.firstinspires.ftc.teamcode.lastMinutescuffedPP.HelperClasses.Point;
 
 import java.util.ArrayList;
 
@@ -10,6 +10,18 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 public class MyMath {
+    public static final double TICKS_PER_REV = 537.6;
+    public static final double WHEEL_RADIUS = 2;
+    public static final double GEAR_RATIO = 1;
+
+
+    public static double encoderTicksToInches(int ticks) {
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    }
+
+    public static double inchesToTicks(int inches) {
+        return (inches * TICKS_PER_REV) / (WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO);
+    }
 
     /**
      * Takes intersection of two lines defined by one point and their slopes

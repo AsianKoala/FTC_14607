@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Hardware;
 
 import android.os.SystemClock;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import static org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MovementVars.*;
@@ -14,14 +15,15 @@ public class DriveTrain {
     public RevMotor topRight;
     public RevMotor bottomLeft;
     public RevMotor bottomRight;
-    
-    
-    
-    public DriveTrain(RevMotor tl, RevMotor tr, RevMotor bl, RevMotor br) {
+    public BNO055IMU imu;
+
+
+    public DriveTrain(RevMotor tl, RevMotor tr, RevMotor bl, RevMotor br, BNO055IMU imuwu) {
         topLeft = tl;
         topRight = tr;
         bottomRight = bl;
         bottomRight = br;
+        imu = imuwu;
         
         /** since we're using motors with encoders we have to set this to using encoders */
         // TODO: ONCE WE GET ODOMETRY SET CHANGE THIS STUFF
@@ -34,9 +36,19 @@ public class DriveTrain {
         topRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bottomLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bottomRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // TODO: CHANGE THIS AFTER COMP PLEASE
     }
 
     private long lastUpdateTime = 0;
+
+    public double getCurrentAvgLeft() {
+        return (double)(topLeft.getCurrentPosition() + bottomLeft.getCurrentPosition())/2;
+    }
+
+    public double getCurrentAvgRight() {
+        return (double)(topRight.getCurrentPosition() + bottomRight.getCurrentPosition())/2;
+    }
 
     public void ApplyMovement() {
         /**
