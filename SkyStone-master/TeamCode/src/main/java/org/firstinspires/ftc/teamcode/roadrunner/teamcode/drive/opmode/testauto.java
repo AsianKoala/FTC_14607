@@ -21,7 +21,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 @Autonomous(name = "testauto", group = "idk")
 public class testauto extends LinearOpMode {
 
-    SKYSTONEPOS skystonepos;
+    private SKYSTONEPOS skystonepos;
     private enum SKYSTONEPOS {
         left,
         middle,
@@ -83,12 +83,7 @@ public class testauto extends LinearOpMode {
 
     @Override public void runOpMode() {
 
-        Robot drive = new Robot(hardwareMap);
-
-
-
-
-
+        Robot robot = new Robot(hardwareMap);
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
