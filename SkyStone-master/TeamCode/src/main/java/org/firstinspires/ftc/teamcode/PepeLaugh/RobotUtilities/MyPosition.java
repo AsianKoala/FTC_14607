@@ -75,13 +75,6 @@ public class MyPosition {
         return angle;
     }
 
-
-
-
-
-
-
-
     /**
      * Updates our position on the field using the change from the encoders
      */
@@ -103,6 +96,7 @@ public class MyPosition {
 
         //get how much our angle has changed
         double angleIncrement = (wheelLeftDelta-wheelRightDelta)*turnScalingFactor/100000.0;
+        // why not
         myRobot.telemetry.addLine("Angle increment is " +
                 (angleIncrement > 0 ? "POSITIVE" : "NEGATIVE"));
 
@@ -129,8 +123,7 @@ public class MyPosition {
         myRobot.telemetry.addLine("aux wheel: " + (wheelAuxCurrent*auxScalingFactor/1000.0));
 
 
-        //if angleIncrement is > 0 we can use steven's dumb stupid and stupid well you know the point
-        //equations because he is dumb
+        //if angleIncrement is > 0 PEPEGA CLAP
         if(Math.abs(angleIncrement) > 0){
             //gets the radius of the turn we are in
             double radiusOfMovement = (wheelRightDeltaScale+wheelLeftDeltaScale)/(2*angleIncrement);

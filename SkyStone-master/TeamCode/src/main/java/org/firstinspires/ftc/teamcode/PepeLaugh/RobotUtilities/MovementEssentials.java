@@ -71,8 +71,6 @@ public class MovementEssentials {
 
 
 
-
-
     public static void goToPosition(double targetX, double targetY, double point_angle, double movement_speed, double point_speed) {
         //get our distance away from the point
         double distanceToPoint = Math.sqrt(Math.pow(targetX-worldXPosition,2) + Math.pow(targetY-worldYPosition,2));
@@ -134,7 +132,6 @@ public class MovementEssentials {
             if(Math.abs(rad_to_target) < Math.abs(SpeedOmeter.currSlipAngle() * 1.2) || Math.abs(rad_to_target) < Math.toRadians(3.0)){
                 state_turning_prof = state_turning_prof.next();
             }
-
         }
         if(state_turning_prof == profileStates.slipping){
             if(Math.abs(SpeedOmeter.getDegPerSecond()) < 60){

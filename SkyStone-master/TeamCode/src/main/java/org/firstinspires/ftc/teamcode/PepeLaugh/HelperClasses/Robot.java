@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.PepeLaugh.HelperClasses;
 import android.os.SystemClock;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
-import org.openftc.revextensions2.RevBulkData;
+import org.firstinspires.ftc.teamcode.revextensions2.RevBulkData;
 import com.qualcomm.robotcore.util.Range;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcontroller.RobotUtilities.PiecewiseFunction;
@@ -16,8 +16,9 @@ import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.ButtonPress;
 import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.MyPosition;
 import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.SpeedOmeter;
 import org.firstinspires.ftc.teamcode.PepeLaugh.RobotUtilities.TelemetryAdvanced;
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubMotor;
+import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
+import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubMotor;
+import org.firstinspires.ftc.teamcode.revextensions2.RevExtensions2;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class Robot extends TunableOpMode {
         Auto.masterMotorScale = 1.0;
         currTimeMillis = SystemClock.uptimeMillis();
         //we need to call this to initialize the extra features of rev
-     //   RevExtensions2.init();
+
 
 
         //get the two expansion hubs themselves

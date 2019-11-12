@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.PepeLaugh.Hardware;
+package org.firstinspires.ftc.teamcode.lastMinutescuffedPP.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -7,6 +7,10 @@ import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubMotor;
 
 /**
  * This class holds a motor object and encoder readings of a motor
+ *
+ * Its better than dcmotor cause has more stuff basically
+ * yes
+ *
  */
 public class RevMotor {
 
