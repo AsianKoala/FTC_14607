@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive;
 //import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -54,6 +55,11 @@ public class DriveConstants {
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints( // TODO: CHANGE THESE
             30.0, 30.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+    );
+
+    public static MecanumConstraints MECANUM_CONSTRAINTS = new MecanumConstraints(
+            BASE_CONSTRAINTS,
+            TRACK_WIDTH
     );
 
 

@@ -3,10 +3,7 @@ package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum;
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.BNO055IMUUtil;
@@ -14,6 +11,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxOptimizedI2cFactory;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
+import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
@@ -26,32 +24,20 @@ import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveCons
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
  * trajectory following performance with moderate additional complexity.
  */
-public class Robot extends SampleMecanumDriveBase {
+public class HouseFly extends SampleMecanumDriveBase {
     private ExpansionHubEx master, slave;
+    private Intake myIntake;
     private ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
     private ArrayList<ExpansionHubMotor> driveMotors = new ArrayList<>();
     private ArrayList<ExpansionHubMotor> leftMotors = new ArrayList<>();
     private ArrayList<ExpansionHubMotor> otherMotors = new ArrayList<>();
     private ExpansionHubMotor leftIntake, rightIntake;
+    private ExpansionHubServo leftSlam, rightSlam;
 
     private BNO055IMU imu;
 
-    public Robot(HardwareMap hardwareMap) {
+    public HouseFly(HardwareMap hardwareMap) {
         super();
-
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
-
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        // for simplicity, we assume that the desired IMU and drive motors are on the same hub
-        // if your motors are split between hubs, **you will need to add another bulk read**
-        master = hardwareMap.get(ExpansionHubEx.class, "master");
-        slave = hardwareMap.get(ExpansionHubEx.class, "follower");
-        imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(master.getStandardModule(), 0);
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
-
-
 
         driveMotors.add(frontLeft);
         driveMotors.add(frontRight);
@@ -60,10 +46,29 @@ public class Robot extends SampleMecanumDriveBase {
         otherMotors.add(leftIntake);
         otherMotors.add(rightIntake);
 
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+
+
+
+
+
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+
+        master = hardwareMap.get(ExpansionHubEx.class, "master");
+        slave = hardwareMap.get(ExpansionHubEx.class, "follower");
+
+
+
+        imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(master.getStandardModule(), 0);
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+
+
+
+
 
         frontLeft = hardwareMap.get(ExpansionHubMotor.class, "frontLeft");
         backLeft = hardwareMap.get(ExpansionHubMotor.class, "backLeft");
@@ -71,6 +76,8 @@ public class Robot extends SampleMecanumDriveBase {
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
         leftIntake = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
         rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSLam");
+        rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
 
 
 
@@ -82,15 +89,27 @@ public class Robot extends SampleMecanumDriveBase {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
+        for (ExpansionHubMotor motor: otherMotors) {
+            // set intakes to without encoders for speed
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
         // TODO: reverse any motors using DcMotor.setDirection()
         for(ExpansionHubMotor expansionHubMotor : leftMotors) {
             expansionHubMotor.setDirection(DcMotor.Direction.REVERSE);
         }
+
+        // REVERSE LEFT INTKAE
+        leftIntake.setDirection(DcMotor.Direction.REVERSE);
+
+
+
+
+
+
         // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
         // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
-        setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients());
-        // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(0,0,0));
     }
 
     @Override
@@ -121,9 +140,14 @@ public class Robot extends SampleMecanumDriveBase {
         }
 
         List<Double> wheelPositions = new ArrayList<>();
-        for (ExpansionHubMotor motor : driveMotors) {
+    /*    for (ExpansionHubMotor motor : driveMotors) {
             wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motor)));
-        }
+        }*/
+    // TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE THIS TO PORTN NUMBER
+    wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(1)));
+    wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(2)));
+    wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(1)));
+    wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(2)));
         return wheelPositions;
     }
 

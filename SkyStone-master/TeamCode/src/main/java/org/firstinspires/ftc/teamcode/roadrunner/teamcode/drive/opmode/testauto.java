@@ -1,13 +1,31 @@
 package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.opmode;
 
 
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.path.Path;
+import com.acmerobotics.roadrunner.path.PathBuilder;
+import com.acmerobotics.roadrunner.path.QuinticSpline;
+import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
+import com.acmerobotics.roadrunner.path.heading.SplineInterpolator;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryGenerator;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.Robot;
+import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.HouseFly;
+import static java.lang.Math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +101,7 @@ public class testauto extends LinearOpMode {
 
     @Override public void runOpMode() {
 
-        Robot drive = new Robot(hardwareMap);
+        HouseFly drive = new HouseFly(hardwareMap);
 
 
 
@@ -303,12 +321,16 @@ public class testauto extends LinearOpMode {
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
                 double xPosition = translation.get(0);
-                if(xPosition < 0) {
+                if(xPosition < -3) {
                     skystonepos = SKYSTONEPOS.left;
                 }
 
-                else {
+                else if(xPosition < 3)  {
                     skystonepos = SKYSTONEPOS.middle;
+                }
+
+                else {
+                    skystonepos = SKYSTONEPOS.right;
                 }
 
                 // express the rotation of the robot in degrees.
@@ -326,17 +348,28 @@ public class testauto extends LinearOpMode {
         targetsSkyStone.deactivate();
 
         /**
-         * the jucie starts here
+         * the  starts here
          */
 
+        PIDCoefficients translationPID = new PIDCoefficients(5,0,0);
+        PIDCoefficients headingPID = new PIDCoefficients(2,0,0);
+        HolonomicPIDVAFollower follower = new HolonomicPIDVAFollower(translationPID, translationPID, headingPID);
+
+        MecanumConstraints constraints = DriveConstants.MECANUM_CONSTRAINTS;
+        drive.setPoseEstimate(new Pose2d(-36,48, toRadians(90)));
+        Pose2d leftSS = new Pose2d(-24,24);
+
+
+        SplineInterpolator INTERP_TO_LEFT_SS = new SplineInterpolator(
+                toRadians(90),
+                toRadians(180)
+        );
 
 
 
-
-
-
-
-
+        Trajectory TRAJ_TO_LEFT_SS = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstants.MECANUM_CONSTRAINTS)
+                .splineTo(leftSS, INTERP_TO_LEFT_SS)
+                .build();
 
 
 
