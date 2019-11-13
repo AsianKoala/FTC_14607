@@ -24,6 +24,7 @@ import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveCons
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
  * trajectory following performance with moderate additional complexity.
  */
+
 public class HouseFly extends SampleMecanumDriveBase {
     private ExpansionHubEx master, slave;
     private Intake myIntake;
@@ -43,6 +44,8 @@ public class HouseFly extends SampleMecanumDriveBase {
         driveMotors.add(frontRight);
         driveMotors.add(backLeft);
         driveMotors.add(backRight);
+        leftMotors.add(frontLeft);
+        leftMotors.add(backLeft);
         otherMotors.add(leftIntake);
         otherMotors.add(rightIntake);
 
@@ -81,10 +84,12 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
 
+
+
+
+
+
         for (ExpansionHubMotor motor : driveMotors) {
-            // TODO: decide whether or not to use the built-in velocity PID
-            // if you keep it, then don't tune kStatic or kA
-            // otherwise, comment out the following line
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
@@ -94,7 +99,6 @@ public class HouseFly extends SampleMecanumDriveBase {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
         for(ExpansionHubMotor expansionHubMotor : leftMotors) {
             expansionHubMotor.setDirection(DcMotor.Direction.REVERSE);
         }
@@ -104,12 +108,21 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
 
+        myIntake = new Intake(this, leftIntake, rightIntake, leftSlam, rightSlam);
+        myIntake.turnOffIntake();
 
-
-
-        // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
         setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(0,0,0));
+    }
+    public void intakeOn() {
+        myIntake.turnOnIntake();
+    }
+
+    public void intakeOff() {
+        myIntake.turnOffIntake();
+    }
+
+    public void intakeReversed() {
+        myIntake.turnOnReverseIntake();
     }
 
     @Override
