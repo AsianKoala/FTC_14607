@@ -108,7 +108,7 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
 
-        myIntake = new Intake(this, leftIntake, rightIntake, leftSlam, rightSlam);
+        myIntake = new Intake(this, leftIntake, rightIntake);
         myIntake.turnOffIntake();
 
         setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(0,0,0));

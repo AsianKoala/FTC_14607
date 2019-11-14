@@ -8,20 +8,16 @@ public class Intake {
     private HouseFly robot;
     private ExpansionHubMotor leftIntake;
     private ExpansionHubMotor rightIntake;
-    private ExpansionHubServo leftSlam;
-    private ExpansionHubServo rightSlam;
 
-    public Intake(HouseFly robot, ExpansionHubMotor leftIntake, ExpansionHubMotor rightIntake, ExpansionHubServo leftSlam, ExpansionHubServo rightSlam) {
+    public Intake(HouseFly robot, ExpansionHubMotor leftIntake, ExpansionHubMotor rightIntake) {
 
         this.robot = robot;
         this.leftIntake = leftIntake;
         this.rightIntake = rightIntake;
-        this.leftSlam = leftSlam;
-        this.rightSlam = rightSlam;
 
         // set intake power 0
+        turnOffIntake();
         // limit servo movement
-
 
     }
 
