@@ -449,18 +449,8 @@ public class testauto extends LinearOpMode {
 
     }
 
-
-
-    public void turnOnIntake() {
-        robot.turnOnIntake();
-    }
-
-    public void turnOffIntake() {
-        robot.turnOffIntake();
-    }
-
-    public void reverseIntake() {
-        robot.reverseIntake();
+    public void getIntakeEncoder() {
+        telemetry.addLine("urdumb");
     }
 
 
@@ -489,7 +479,9 @@ public class testauto extends LinearOpMode {
         }
 
         else {
-
+            readyOuttake();
+            readyGrip();
+            grip();
         }
     }
 
@@ -498,10 +490,26 @@ public class testauto extends LinearOpMode {
         sleep(300);
     }
 
+    public void readyGrip() {
+        robot.grip();
+        sleep(100);
+    }
+
     public void grip() {
         robot.grip();
         sleep(100);
     }
+
+
+    /**
+     *
+     *
+     *
+     *
+     *
+     *
+     *  now we can start on the methods for turning since damn roadrunner removed damn turning fcuking shit
+     */
 
 
 
