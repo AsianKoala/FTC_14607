@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum;
 
 
 import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.ExpansionHubServo;
 
 public class Intake {
-    private HouseFly robot;
+    private DriveBase robot;
     private ExpansionHubMotor leftIntake;
     private ExpansionHubMotor rightIntake;
 
-    public Intake(HouseFly robot, ExpansionHubMotor leftIntake, ExpansionHubMotor rightIntake) {
+    public Intake(DriveBase robot, ExpansionHubMotor leftIntake, ExpansionHubMotor rightIntake) {
 
         this.robot = robot;
         this.leftIntake = leftIntake;

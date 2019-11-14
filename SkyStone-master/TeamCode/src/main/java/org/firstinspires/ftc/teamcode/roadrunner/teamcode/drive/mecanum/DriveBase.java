@@ -25,19 +25,15 @@ import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveCons
  * trajectory following performance with moderate additional complexity.
  */
 
-public class HouseFly extends SampleMecanumDriveBase {
+public class DriveBase extends SampleMecanumDriveBase {
     private ExpansionHubEx master, slave;
-    private Intake myIntake;
     private ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
     private ArrayList<ExpansionHubMotor> driveMotors = new ArrayList<>();
     private ArrayList<ExpansionHubMotor> leftMotors = new ArrayList<>();
-    private ArrayList<ExpansionHubMotor> otherMotors = new ArrayList<>();
-    private ExpansionHubMotor leftIntake, rightIntake;
-    private ExpansionHubServo leftSlam, rightSlam;
 
     private BNO055IMU imu;
 
-    public HouseFly(HardwareMap hardwareMap) {
+    public DriveBase(HardwareMap hardwareMap) {
         super();
 
         driveMotors.add(frontLeft);
@@ -46,12 +42,6 @@ public class HouseFly extends SampleMecanumDriveBase {
         driveMotors.add(backRight);
         leftMotors.add(frontLeft);
         leftMotors.add(backLeft);
-        otherMotors.add(leftIntake);
-        otherMotors.add(rightIntake);
-
-
-
-
 
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -77,15 +67,6 @@ public class HouseFly extends SampleMecanumDriveBase {
         backLeft = hardwareMap.get(ExpansionHubMotor.class, "backLeft");
         backRight = hardwareMap.get(ExpansionHubMotor.class, "backRight");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
-        leftIntake = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
-        rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
-        leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSLam");
-        rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
-
-
-
-
-
 
 
 
