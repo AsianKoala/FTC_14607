@@ -25,15 +25,44 @@ import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveCons
  * trajectory following performance with moderate additional complexity.
  */
 
-public class DriveBase extends SampleMecanumDriveBase {
+public class HouseFly extends SampleMecanumDriveBase {
     private ExpansionHubEx master, slave;
     private ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
+    private ExpansionHubMotor intakeLeft, intakeRight;
+    private ExpansionHubServo leftSlam, rightSlam;
+    private ExpansionHubServo outtake;
+    private ExpansionHubServo gripper;
+
+
+
     private ArrayList<ExpansionHubMotor> driveMotors = new ArrayList<>();
     private ArrayList<ExpansionHubMotor> leftMotors = new ArrayList<>();
+    private ArrayList<ExpansionHubMotor> rightMotors = new ArrayList<>();
+    private ArrayList<ExpansionHubMotor> intakeMotors = new ArrayList<>();
 
     private BNO055IMU imu;
 
-    public DriveBase(HardwareMap hardwareMap) {
+
+    /**
+     * variable declaration
+     */
+
+    private final double leftReload = 90;
+    private final double rightReload = 90;
+    private final double leftDown = 180;
+    private final double rightDown = 0;
+    private final double outtakeOutPosition = 180;
+    private final double outtakeReadyPosition = 0;
+    private final double gripperOnPosition = 0;
+    private final double gripperOffPosition = 180;
+
+
+
+
+
+
+
+    public HouseFly(HardwareMap hardwareMap) {
         super();
 
         driveMotors.add(frontLeft);
@@ -42,27 +71,39 @@ public class DriveBase extends SampleMecanumDriveBase {
         driveMotors.add(backRight);
         leftMotors.add(frontLeft);
         leftMotors.add(backLeft);
-
+        rightMotors.add(frontRight);
+        rightMotors.add(backRight);
+        intakeMotors.add(intakeLeft);
+        intakeMotors.add(intakeRight);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
 
+        // map hubs so that we can get bulk data
         master = hardwareMap.get(ExpansionHubEx.class, "master");
         slave = hardwareMap.get(ExpansionHubEx.class, "follower");
 
 
-
+        // init imu
         imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(master.getStandardModule(), 0);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+
+
 
         frontLeft = hardwareMap.get(ExpansionHubMotor.class, "frontLeft");
         backLeft = hardwareMap.get(ExpansionHubMotor.class, "backLeft");
         backRight = hardwareMap.get(ExpansionHubMotor.class, "backRight");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
+        intakeLeft = hardwareMap.get(ExpansionHubMotor.class, "intakeLeft");
+        intakeRight = hardwareMap.get(ExpansionHubMotor.class, "intakeRight");
+        leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
+        rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
+        outtake = hardwareMap.get(ExpansionHubServo.class, "uttake");
+        gripper = hardwareMap.get(ExpansionHubServo.class, "gripper");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
 
 
@@ -71,11 +112,16 @@ public class DriveBase extends SampleMecanumDriveBase {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-
-
         for(ExpansionHubMotor expansionHubMotor : leftMotors) {
             expansionHubMotor.setDirection(DcMotor.Direction.REVERSE);
         }
+
+        for(ExpansionHubMotor expansionHubMotor : intakeMotors) {
+            expansionHubMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        intakeLeft.setDirection(DcMotor.Direction.REVERSE);
+
 
         setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(0,0,0));
     }
@@ -97,8 +143,8 @@ public class DriveBase extends SampleMecanumDriveBase {
 
 
 
-   // @NonNull
-  //  @Override
+    @NonNull
+    @Override
     public List<Double> getWheelPositions() {
         RevBulkData bulkData = master.getBulkInputData();
         RevBulkData bulkData2 = slave.getBulkInputData();
@@ -111,15 +157,15 @@ public class DriveBase extends SampleMecanumDriveBase {
     /*    for (ExpansionHubMotor motor : driveMotors) {
             wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motor)));
         }*/
-    // TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE THIS TO PORTN NUMBER
-    wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(1)));
-    wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(2)));
-    wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(1)));
-    wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(2)));
+        // TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE THIS TO PORTN NUMBER
+        wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(1)));
+        wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(2)));
+        wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(1)));
+        wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(2)));
         return wheelPositions;
     }
 
-  // TODO: ADD 2 BULK READS SINCE WE HAVE THE DRIVE MOTORS SPLIT UP
+    // TODO: ADD 2 BULK READS SINCE WE HAVE THE DRIVE MOTORS SPLIT UP
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
@@ -133,4 +179,72 @@ public class DriveBase extends SampleMecanumDriveBase {
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
     }
+
+
+    /**
+     *
+     * add other controls here
+     */
+
+
+    public boolean isIntakeBusy() {
+        return intakeLeft.isBusy();
+    }
+
+    public void turnOnIntake() {
+        intakeLeft.setPower(1);
+        intakeRight.setPower(1);
+    }
+
+    public void turnOffIntake() {
+        intakeRight.setPower(0);
+        intakeLeft.setPower(0);
+    }
+
+    public void reverseIntake() {
+        intakeLeft.setPower(-1);
+        intakeRight.setPower(-1);
+    }
+
+
+
+
+    public void grabFoundation() {
+        leftSlam.setPosition(leftDown);
+        rightSlam.setPosition(rightDown);
+    }
+
+    public void reload() {
+        leftSlam.setPosition(leftReload);
+        rightSlam.setPosition(rightReload);
+    }
+
+
+
+    public boolean isOuttakeReady() {
+        return outtake.getPosition() == outtakeReadyPosition;
+    }
+
+    public boolean isGripperReady() {
+        return gripper.getPosition() == gripperOffPosition;
+    }
+
+
+    public void vomit() {
+        outtake.setPosition(outtakeOutPosition);
+    }
+
+    public void readyPosition() {
+        outtake.setPosition(outtakeReadyPosition);
+    }
+
+    public void grip() {
+        gripper.setPosition(gripperOnPosition);
+    }
+
+    public void dontGrip() {
+        gripper.setPosition(gripperOffPosition);
+    }
+
+
 }

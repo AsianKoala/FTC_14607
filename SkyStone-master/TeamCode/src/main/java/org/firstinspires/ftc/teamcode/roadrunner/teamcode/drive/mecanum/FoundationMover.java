@@ -20,26 +20,13 @@ public class FoundationMover {
         // set servo pos to ready position
     }
 
-
-    MOVER_STATES moverStates = MOVER_STATES.READY;
-
-    private enum MOVER_STATES {
-        READY,
-        UNLOAD
+    public void slam() {
+        leftFoundationMover.setPosition(1);
+        rightFoundationMover.setPosition(1);
     }
 
-    private double servoPosition = 0.0;
-
-    private void handleMovement() {
-        if(moverStates == MOVER_STATES.READY) {
-            servoPosition = 1.0;
-        }
-
-        if(moverStates == MOVER_STATES.UNLOAD) {
-            servoPosition = 0.0;
-        }
+    public void ready() {
+        leftFoundationMover.setPosition(0);
+        rightFoundationMover.setPosition(0);
     }
-
-
-
 }

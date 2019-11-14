@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.DriveBase;
+import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.HouseFly;
 
 import static java.lang.Math.*;
 
@@ -90,11 +91,11 @@ public class testauto extends LinearOpMode {
     private float phoneXRotate = 0;
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
+    HouseFly robot = new HouseFly(hardwareMap);
 
     @Override
     public void runOpMode() {
 
-        DriveBase drive = new DriveBase(hardwareMap);
 
 
         /**
@@ -124,14 +125,14 @@ public class testauto extends LinearOpMode {
         HolonomicPIDVAFollower follower = new HolonomicPIDVAFollower(translationPID, translationPID, headingPID);
 
         MecanumConstraints constraints = DriveConstants.MECANUM_CONSTRAINTS;
-        drive.setPoseEstimate(new Pose2d(-36, 48, toRadians(90)));
+        robot.setPoseEstimate(new Pose2d(-36, 48, toRadians(90)));
 
 
-        Trajectory TO_LEFT_SS = new TrajectoryBuilder(drive.getPoseEstimate(), constraints)
+        Trajectory TO_LEFT_SS = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
                 .splineTo(new Pose2d(48, 24, toRadians(-90)))
                 .build();
 
-        Trajectory TO_FOUNDATION_PULL = new TrajectoryBuilder(drive.getPoseEstimate(), constraints)
+        Trajectory TO_FOUNDATION_PULL = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
                 .splineTo(new Pose2d(48, 65, toRadians(270)))
                 .build();
 
@@ -140,12 +141,12 @@ public class testauto extends LinearOpMode {
                 .splineTo(new Pose2d(-48, 24, toRadians(-150)))
                 .build();
 
-        Trajectory TO_FOUNDATION_2ND_TIME = new TrajectoryBuilder(drive.getPoseEstimate(), constraints)
+        Trajectory TO_FOUNDATION_2ND_TIME = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
                 .splineTo(new Pose2d(26, 60, toRadians(180)))
                 .build();
 
 
-        Trajectory TO_MID = new TrajectoryBuilder(drive.getPoseEstimate(), constraints)
+        Trajectory TO_MID = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
                 .lineTo(new Vector2d(0, 60))
                 .build();
 
@@ -415,36 +416,94 @@ public class testauto extends LinearOpMode {
          *
          */
 
-        drive.intakeOn();
+       // drive.intakeOn();
         follower.followTrajectory(TO_LEFT_SS);
-        drive.intakeOff();
+        ///drive.intakeOff();
 
-        while(follower.isFollowing()) {   DriveSignal signal = follower.update(drive.getPoseEstimate()); }
+        while(follower.isFollowing()) {   DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
         follower.followTrajectory(TO_FOUNDATION_PULL);
-        while(follower.isFollowing()) { DriveSignal signal = follower.update(drive.getPoseEstimate()); }
+        while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
         // pull
         //rotate
         //place
 
-        drive.intakeOn();
+  //      drive.intakeOn();
 
         follower.followTrajectory(TO_RIGHT_SS);
-        while(follower.isFollowing()) { DriveSignal signal = follower.update(drive.getPoseEstimate()); }
+        while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
-        drive.intakeOff();
+ //       drive.intakeOff();
         follower.followTrajectory(TO_FOUNDATION_2ND_TIME);
-        while(follower.isFollowing()) { DriveSignal signal = follower.update(drive.getPoseEstimate()); }
+        while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
         // turn
         // put
 
         follower.followTrajectory(TO_MID);
         while(follower.isFollowing()) {
-            DriveSignal signal = follower.update(drive.getPoseEstimate());
+            DriveSignal signal = follower.update(robot.getPoseEstimate());
         }
 
-// eeee// work
+
     }
+
+
+
+    public void turnOnIntake() {
+        robot.turnOnIntake();
+    }
+
+    public void turnOffIntake() {
+        robot.turnOffIntake();
+    }
+
+    public void reverseIntake() {
+        robot.reverseIntake();
+    }
+
+
+
+
+
+    public void grabFoundation() {
+        robot.grabFoundation();
+        sleep(200);
+    }
+
+    public void stopGrabbingFoundation() {
+        robot.reload();
+        sleep(200);
+    }
+
+
+
+
+
+
+
+    public void grabBlock() {
+        if(robot.isOuttakeReady() && robot.isGripperReady()) {
+            grip();
+        }
+
+        else {
+
+        }
+    }
+
+    public void readyOuttake() {
+        robot.readyPosition();
+        sleep(300);
+    }
+
+    public void grip() {
+        robot.grip();
+        sleep(100);
+    }
+
+
+
+
 }
