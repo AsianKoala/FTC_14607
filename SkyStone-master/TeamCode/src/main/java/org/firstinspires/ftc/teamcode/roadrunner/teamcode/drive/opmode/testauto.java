@@ -485,33 +485,43 @@ public class testauto extends LinearOpMode {
 
 
 
-
-
-    public void gripPlaceReload() {
+    public void placeBlock() {
         if(robot.isOuttakeReady() && robot.isGripperReady()) {
             grip();
-            place();
-            readyGrip();
-            readyOuttake();
+            outtakeToOutPosition();
+            dontGrip();
+            fullyReloadOuttake();
+        }
+
+        else if(!robot.isOuttakeReady() && robot.isGripperReady()) {
+
+        }
+
+        else if(robot.isOuttakeReady() && !robot.isGripperReady()) {
+
         }
 
         else {
-            readyOuttake();
-            readyGrip();
-            grip();
-            place();
-            readyGrip();
-            readyOuttake();
+
         }
     }
 
-    private void place() {
-        robot.vomit();
+
+
+
+
+    private void fullyReloadOuttake() {
+        readyOuttake();
+        dontGrip();
+    }
+
+    private void outtakeToOutPosition() {
+        robot.outtakeToOutPosition();
         sleep(500);
     }
 
     private void readyOuttake() {
-        robot.readyPosition();
+        robot.readyOuttake();
         sleep(300);
     }
 

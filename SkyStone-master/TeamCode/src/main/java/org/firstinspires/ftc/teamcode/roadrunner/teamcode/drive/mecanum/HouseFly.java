@@ -230,7 +230,7 @@ public class HouseFly extends SampleMecanumDriveBase {
     }
 
 
-    public void outtakeOutPosition() {
+    public void outtakeToOutPosition() {
         outtake.setPosition(outtakeOutPosition);
     }
 
