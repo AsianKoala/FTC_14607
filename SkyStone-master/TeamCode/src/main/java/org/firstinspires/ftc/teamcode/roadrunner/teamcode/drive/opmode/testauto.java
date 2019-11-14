@@ -386,6 +386,12 @@ public class testauto extends LinearOpMode {
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
 
+
+
+
+
+
+
         /**
          * AUTO STARTS HERE
          * AUTO STARTS HERE
@@ -416,29 +422,32 @@ public class testauto extends LinearOpMode {
          *
          */
 
-       // drive.intakeOn();
+        robot.turnOnIntake();
+
         follower.followTrajectory(TO_LEFT_SS);
-        ///drive.intakeOff();
+
+        robot.turnOffIntake();
+        grabBlock();
 
         while(follower.isFollowing()) {   DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
         follower.followTrajectory(TO_FOUNDATION_PULL);
         while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
-        // pull
-        //rotate
-        //place
 
-  //      drive.intakeOn();
+
+        robot.turnOnIntake();
 
         follower.followTrajectory(TO_RIGHT_SS);
         while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
- //       drive.intakeOff();
+        robot.turnOffIntake();
+
+
         follower.followTrajectory(TO_FOUNDATION_2ND_TIME);
         while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
-        // turn
+
         // put
 
         follower.followTrajectory(TO_MID);
@@ -446,8 +455,13 @@ public class testauto extends LinearOpMode {
             DriveSignal signal = follower.update(robot.getPoseEstimate());
         }
 
+        robot.turn();
+
 
     }
+
+
+
 
     public void getIntakeEncoder() {
         telemetry.addLine("urdumb");
@@ -473,45 +487,42 @@ public class testauto extends LinearOpMode {
 
 
 
-    public void grabBlock() {
+    public void gripPlaceReload() {
         if(robot.isOuttakeReady() && robot.isGripperReady()) {
             grip();
+            place();
+            readyGrip();
+            readyOuttake();
         }
 
         else {
             readyOuttake();
             readyGrip();
             grip();
+            place();
+            readyGrip();
+            readyOuttake();
         }
     }
 
-    public void readyOuttake() {
+    private void place() {
+        robot.vomit();
+        sleep(500);
+    }
+
+    private void readyOuttake() {
         robot.readyPosition();
         sleep(300);
     }
 
-    public void readyGrip() {
-        robot.grip();
+    private void dontGrip() {
+        robot.dontGrip();
         sleep(100);
     }
 
-    public void grip() {
+    private void grip() {
         robot.grip();
         sleep(100);
     }
-
-
-    /**
-     *
-     *
-     *
-     *
-     *
-     *
-     *  now we can start on the methods for turning since damn roadrunner removed damn turning fcuking shit
-     */
-
-
-
 
 }
