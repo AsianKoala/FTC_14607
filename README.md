@@ -30,5 +30,5 @@ __
 
 the alpha/beta thing was a joke i do not condone any hate against beta males like me__
 
-follow me on twitch twitch.tv/asianK0ala
+follow me on twitch https://twitch.tv/asianK0ala
 
