@@ -32,6 +32,7 @@ public class HouseFly extends SampleMecanumDriveBase {
     private ExpansionHubServo leftSlam, rightSlam;
     private ExpansionHubServo outtake;
     private ExpansionHubServo gripper;
+    private ExpansionHubServo flipper;
 
 
 
@@ -47,15 +48,16 @@ public class HouseFly extends SampleMecanumDriveBase {
      * variable declaration
      */
 
-    private final double leftReload = 90;
-    private final double rightReload = 90;
-    private final double leftDown = 180;
+    private final double leftReload = 0.5;
+    private final double rightReload = 0.5;
+    private final double leftDown = 1;
     private final double rightDown = 0;
-    private final double outtakeOutPosition = 180;
+    private final double outtakeOutPosition = 1;
     private final double outtakeReadyPosition = 0;
     private final double gripperOnPosition = 0;
-    private final double gripperOffPosition = 180;
-
+    private final double gripperOffPosition = 1;
+    private final double flipperFlipPosition = 1;
+    private final double flipperReadyPosition = 0;
 
 
 
@@ -101,8 +103,9 @@ public class HouseFly extends SampleMecanumDriveBase {
         intakeRight = hardwareMap.get(ExpansionHubMotor.class, "intakeRight");
         leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
         rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
-        outtake = hardwareMap.get(ExpansionHubServo.class, "uttake");
+        outtake = hardwareMap.get(ExpansionHubServo.class, "outtake");
         gripper = hardwareMap.get(ExpansionHubServo.class, "gripper");
+        flipper = hardwareMap.get(ExpansionHubServo.class, "flipper");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
 
@@ -184,23 +187,46 @@ public class HouseFly extends SampleMecanumDriveBase {
     /**
      *
      * add other controls here
+     *
+     *
      */
 
 
-    public boolean isIntakeBusy() {
-        return intakeLeft.isBusy();
-    }
+    /*
 
+
+
+    intake controls
+
+
+
+     */
+
+
+    /**
+     * @return whether or not the intake motors are busy
+     */
+    public boolean intakeBusy() { return intakeLeft.isBusy() || intakeRight.isBusy();}
+
+    /**
+     * turns on intake
+     */
     public void turnOnIntake() {
         intakeLeft.setPower(1);
         intakeRight.setPower(1);
     }
 
+    /**
+     * turns off intake
+     */
     public void turnOffIntake() {
         intakeRight.setPower(0);
         intakeLeft.setPower(0);
     }
 
+    /**
+     * reverses intake
+     */
     public void reverseIntake() {
         intakeLeft.setPower(-1);
         intakeRight.setPower(-1);
@@ -209,11 +235,29 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
 
+
+
+
+    /*
+
+
+
+    foundation grabber
+
+
+     */
+
+    /**
+     * moves servos down to grab foundation
+     */
     public void grabFoundation() {
         leftSlam.setPosition(leftDown);
         rightSlam.setPosition(rightDown);
     }
 
+    /**
+     * moves foundation mover servos back to ready
+     */
     public void reload() {
         leftSlam.setPosition(leftReload);
         rightSlam.setPosition(rightReload);
@@ -221,30 +265,88 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
 
+
+
+
+    /*
+
+
+    outtake, gripper, and flipper
+
+
+     */
+
+
+    /**
+     * @return whether or not the outtake is in position to load block
+     */
     public boolean isOuttakeReady() {
         return outtake.getPosition() == outtakeReadyPosition;
     }
 
+    /**
+     * @return whether or not the gripper is open and ready to grip
+     */
     public boolean isGripperReady() {
         return gripper.getPosition() == gripperOffPosition;
     }
 
-
+    /**
+     * moves the outtake to outtake position
+     */
     public void outtakeToOutPosition() {
         outtake.setPosition(outtakeOutPosition);
     }
 
+    /**
+     * moves outtake to ready position
+     */
     public void readyOuttake() {
         outtake.setPosition(outtakeReadyPosition);
     }
 
+
+
+
+
+
+    /**
+     * grips block
+     */
     public void grip() {
         gripper.setPosition(gripperOnPosition);
     }
 
-    public void dontGrip() {
+    /**
+     * ungrips
+     */
+    public void unGrip() {
         gripper.setPosition(gripperOffPosition);
     }
 
+
+
+
+
+
+    public boolean isFlipperReady() {
+        return flipper.getPosition() == flipperReadyPosition;
+    }
+
+
+    /**
+     * flip
+     */
+    public void flip() {
+        flipper.setPosition(flipperFlipPosition);
+    }
+
+
+    /**
+     * ready position
+     */
+    public void readyFlip() {
+        flipper.setPosition(flipperReadyPosition);
+    }
 
 }

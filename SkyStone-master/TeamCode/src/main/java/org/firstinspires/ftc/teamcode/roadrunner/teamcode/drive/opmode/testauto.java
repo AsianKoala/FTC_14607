@@ -427,7 +427,7 @@ public class testauto extends LinearOpMode {
         follower.followTrajectory(TO_LEFT_SS);
 
         robot.turnOffIntake();
-        grabBlock();
+       /// grabBlock();
 
         while(follower.isFollowing()) {   DriveSignal signal = follower.update(robot.getPoseEstimate()); }
 
@@ -455,84 +455,45 @@ public class testauto extends LinearOpMode {
             DriveSignal signal = follower.update(robot.getPoseEstimate());
         }
 
-        robot.turn();
+        robot.turn(toRadians(90));
 
 
     }
 
 
-
+    /**
+     * special methods specifically for autonomous
+     */
 
     public void getIntakeEncoder() {
         telemetry.addLine("urdumb");
     }
 
 
-
-
-
-    public void grabFoundation() {
-        robot.grabFoundation();
-        sleep(200);
-    }
-
-    public void stopGrabbingFoundation() {
-        robot.reload();
-        sleep(200);
-    }
-
-
-
-
-
-    public void placeBlock() {
-        if(robot.isOuttakeReady() && robot.isGripperReady()) {
-            grip();
-            outtakeToOutPosition();
-            dontGrip();
-            fullyReloadOuttake();
+    public void cycleReady() {
+        if(!robot.isOuttakeReady()) {
+            robot.readyOuttake();
+            sleep(100);
         }
 
-        else if(!robot.isOuttakeReady() && robot.isGripperReady()) {
-
+        if(!robot.isGripperReady()) {
+            robot.unGrip();
+            sleep(100);
         }
 
-        else if(robot.isOuttakeReady() && !robot.isGripperReady()) {
-
-        }
-
-        else {
-
+        if(!robot.isFlipperReady()) {
+            robot.readyFlip();
+            sleep(100);
         }
     }
 
 
+    public void cycle() {
+        cycleReady();
 
 
 
-    private void fullyReloadOuttake() {
-        readyOuttake();
-        dontGrip();
-    }
 
-    private void outtakeToOutPosition() {
-        robot.outtakeToOutPosition();
-        sleep(500);
-    }
-
-    private void readyOuttake() {
-        robot.readyOuttake();
-        sleep(300);
-    }
-
-    private void dontGrip() {
-        robot.dontGrip();
-        sleep(100);
-    }
-
-    private void grip() {
-        robot.grip();
-        sleep(100);
     }
 
 }
