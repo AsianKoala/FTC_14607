@@ -125,18 +125,18 @@ public class testauto extends LinearOpMode {
         HolonomicPIDVAFollower follower = new HolonomicPIDVAFollower(translationPID, translationPID, headingPID);
 
         MecanumConstraints constraints = DriveConstants.MECANUM_CONSTRAINTS;
-        robot.setPoseEstimate(new Pose2d(-36, 48, toRadians(90)));
+        robot.setPoseEstimate(new Pose2d(-36, 48, toRadians(270)));
 
 
-        Trajectory TO_LEFT_SS = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+        Trajectory TO_FOUNDATION = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
                 .splineTo(new Pose2d(48, 24, toRadians(-90)))
                 .build();
 
-        Trajectory TO_FOUNDATION_PULL = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+        Trajectory TO_PULL = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
                 .splineTo(new Pose2d(48, 65, toRadians(270)))
                 .build();
 
-        Trajectory TO_RIGHT_SS = new TrajectoryBuilder(new Pose2d(48, 65, toRadians(270)), constraints)
+        Trajectory TO_OTHER_LEFT_SS = new TrajectoryBuilder(new Pose2d(48, 65, toRadians(270)), constraints)
                 .strafeTo(new Vector2d(24, 65))
                 .splineTo(new Pose2d(-48, 24, toRadians(-150)))
                 .build();
@@ -149,6 +149,21 @@ public class testauto extends LinearOpMode {
         Trajectory TO_MID = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
                 .lineTo(new Vector2d(0, 60))
                 .build();
+
+
+
+        Trajectory TO_MIDDLE_SS = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .splineTo(new Pose2d(-30,22,toRadians(200)))
+                .build();
+
+        Trajectory GET_MIDDLE_SS = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .forward(12)
+                .build();
+
+        Trajectory TO_FOUNDATION = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .setReversed(true)
+                .splineTo()
+
 
 
 
@@ -422,42 +437,53 @@ public class testauto extends LinearOpMode {
          *
          */
 
-        robot.turnOnIntake();
+        switch(skystonepos) {
+            case left:
+            robot.turnOnIntake();
 
-        follower.followTrajectory(TO_LEFT_SS);
+            follower.followTrajectory(TO_LEFT_SS);
 
-        robot.turnOffIntake();
-       /// grabBlock();
+            robot.turnOffIntake();
 
-        while(follower.isFollowing()) {   DriveSignal signal = follower.update(robot.getPoseEstimate()); }
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
 
-        follower.followTrajectory(TO_FOUNDATION_PULL);
-        while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
-
-
-
-        robot.turnOnIntake();
-
-        follower.followTrajectory(TO_RIGHT_SS);
-        while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
-
-        robot.turnOffIntake();
+            follower.followTrajectory(TO_FOUNDATION_PULL);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
 
 
-        follower.followTrajectory(TO_FOUNDATION_2ND_TIME);
-        while(follower.isFollowing()) { DriveSignal signal = follower.update(robot.getPoseEstimate()); }
+            robot.turnOnIntake();
+
+            follower.followTrajectory(TO_RIGHT_SS);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
+
+            robot.turnOffIntake();
 
 
-        // put
+            follower.followTrajectory(TO_FOUNDATION_2ND_TIME);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
 
-        follower.followTrajectory(TO_MID);
-        while(follower.isFollowing()) {
-            DriveSignal signal = follower.update(robot.getPoseEstimate());
+
+            // put
+
+            follower.followTrajectory(TO_MID);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
+
+            robot.turn(toRadians(90));
+
+
+            case middle :
+
         }
-
-        robot.turn(toRadians(90));
-
-
     }
 
 
@@ -490,10 +516,14 @@ public class testauto extends LinearOpMode {
 
     public void cycle() {
         cycleReady();
-
-
-
-
+        robot.grip();
+        sleep(100);
+        robot.outtakeToOutPosition();
+        sleep(100);
+        robot.flip();
+        sleep(100);
+        robot.unGrip();
+        cycleReady();
     }
 
 }
