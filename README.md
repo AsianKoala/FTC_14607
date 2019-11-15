@@ -1,11 +1,34 @@
 # FTC_14607
 
-master branch - beta male code ( stable )
+master branch - beta unchad code ( stable, 9/10 times just clone this one)__
  
-neil branch - alpha male code ( newest )
+neil branch - alpha chad code ( newest/the one that i like to test stuff on)__
 
-backup branch - supa beta ( code releases )
+backup branch - super beta unchad code (i commit to this like end of day)__
 
-pid branch - pid project by kari over the summer
+any other branch - irrelevant__
 
-any other branch - irrelevant
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+__
+
+the alpha/beta thing was a joke i do not condone any hate against beta males like me__
+
+follow me on twitch https://twitch.tv/asianK0ala
+
