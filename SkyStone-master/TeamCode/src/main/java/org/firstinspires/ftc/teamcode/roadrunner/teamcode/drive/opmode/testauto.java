@@ -1,13 +1,24 @@
 package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.opmode;
 
 
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.*;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.Robot;
+import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.DriveBase;
+import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.HouseFly;
+
+import static java.lang.Math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +33,12 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class testauto extends LinearOpMode {
 
     SKYSTONEPOS skystonepos;
+
     private enum SKYSTONEPOS {
         left,
         middle,
         right
-    }//e
-
+    }
 
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
@@ -37,7 +48,7 @@ public class testauto extends LinearOpMode {
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final boolean PHONE_IS_PORTRAIT = false;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -56,8 +67,8 @@ public class testauto extends LinearOpMode {
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -71,20 +82,87 @@ public class testauto extends LinearOpMode {
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
-    private static final float quadField  = 36 * mmPerInch;
+    private static final float quadField = 36 * mmPerInch;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
     private boolean targetVisible = false;
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
+    private float phoneXRotate = 0;
+    private float phoneYRotate = 0;
+    private float phoneZRotate = 0;
+    HouseFly robot = new HouseFly(hardwareMap);
 
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
 
-        Robot drive = new Robot(hardwareMap);
 
+
+        /**
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         * ROADUNNER SHITT
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         */
+
+
+        PIDCoefficients translationPID = new PIDCoefficients(5, 0, 0);
+        PIDCoefficients headingPID = new PIDCoefficients(2, 0, 0);
+        HolonomicPIDVAFollower follower = new HolonomicPIDVAFollower(translationPID, translationPID, headingPID);
+
+        MecanumConstraints constraints = DriveConstants.MECANUM_CONSTRAINTS;
+        robot.setPoseEstimate(new Pose2d(-36, 48, toRadians(270)));
+
+
+        Trajectory TO_FOUNDATION = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .splineTo(new Pose2d(48, 24, toRadians(-90)))
+                .build();
+
+        Trajectory TO_PULL = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .splineTo(new Pose2d(48, 65, toRadians(270)))
+                .build();
+
+        Trajectory TO_OTHER_LEFT_SS = new TrajectoryBuilder(new Pose2d(48, 65, toRadians(270)), constraints)
+                .strafeTo(new Vector2d(24, 65))
+                .splineTo(new Pose2d(-48, 24, toRadians(-150)))
+                .build();
+
+        Trajectory TO_FOUNDATION_2ND_TIME = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .splineTo(new Pose2d(26, 60, toRadians(180)))
+                .build();
+
+
+        Trajectory TO_MID = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .lineTo(new Vector2d(0, 60))
+                .build();
+
+
+
+        Trajectory TO_MIDDLE_SS = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .splineTo(new Pose2d(-30,22,toRadians(200)))
+                .build();
+
+        Trajectory GET_MIDDLE_SS = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .forward(12)
+                .build();
+
+        Trajectory TO_FOUNDATION = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
+                .setReversed(true)
+                .splineTo()
 
 
 
@@ -101,7 +179,7 @@ public class testauto extends LinearOpMode {
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection   = CAMERA_CHOICE;
+        parameters.cameraDirection = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -194,7 +272,7 @@ public class testauto extends LinearOpMode {
 
         front1.setLocation(OpenGLMatrix
                 .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
         front2.setLocation(OpenGLMatrix
                 .translation(-halfField, quadField, mmTargetHeight)
@@ -210,7 +288,7 @@ public class testauto extends LinearOpMode {
 
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         rear2.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
@@ -239,14 +317,14 @@ public class testauto extends LinearOpMode {
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
         if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
+            phoneXRotate = 90;
         }
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -263,22 +341,21 @@ public class testauto extends LinearOpMode {
         // CONSEQUENTLY do not put any driving commands in this loop.
         // To restore the normal opmode structure, just un-comment the following line:
 
-         //waitForStart();
+        //waitForStart();
 
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
-
         targetsSkyStone.activate();
         while (!isStarted()) {
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
             for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
 
-                    if(trackable.getName().equals("Stone Target")) {
+                    if (trackable.getName().equals("Stone Target")) {
                         telemetry.addLine("Skystone detected");
                     }
 
@@ -286,7 +363,7 @@ public class testauto extends LinearOpMode {
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
                     // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
                         lastLocation = robotLocationTransform;
                     }
@@ -303,19 +380,18 @@ public class testauto extends LinearOpMode {
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
                 double xPosition = translation.get(0);
-                if(xPosition < 0) {
+                if (xPosition < -3) {
                     skystonepos = SKYSTONEPOS.left;
-                }
-
-                else {
+                } else if (xPosition < 3) {
                     skystonepos = SKYSTONEPOS.middle;
+                } else {
+                    skystonepos = SKYSTONEPOS.right;
                 }
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-            }
-            else {
+            } else {
                 telemetry.addData("Visible Target", "none");
                 skystonepos = SKYSTONEPOS.right;
             }
@@ -325,21 +401,129 @@ public class testauto extends LinearOpMode {
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
 
+
+
+
+
+
+
         /**
-         * the jucie starts here
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HEREAUTO STARTS HEREAUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HEREAUTO STARTS HERE
+         * AUTO STARTS HEREAUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HEREAUTO STARTS HEREAUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HEREAUTO STARTS HEREAUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         * AUTO STARTS HERE
+         *
+         *
+         *
          */
 
+        switch(skystonepos) {
+            case left:
+            robot.turnOnIntake();
+
+            follower.followTrajectory(TO_LEFT_SS);
+
+            robot.turnOffIntake();
+
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
+
+            follower.followTrajectory(TO_FOUNDATION_PULL);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
 
 
+            robot.turnOnIntake();
+
+            follower.followTrajectory(TO_RIGHT_SS);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
+
+            robot.turnOffIntake();
 
 
+            follower.followTrajectory(TO_FOUNDATION_2ND_TIME);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
 
 
+            // put
+
+            follower.followTrajectory(TO_MID);
+            while (follower.isFollowing()) {
+                DriveSignal signal = follower.update(robot.getPoseEstimate());
+            }
+
+            robot.turn(toRadians(90));
 
 
+            case middle :
 
-
-
-
+        }
     }
+
+
+    /**
+     * special methods specifically for autonomous
+     */
+
+    public void getIntakeEncoder() {
+        telemetry.addLine("urdumb");
+    }
+
+
+    public void cycleReady() {
+        if(!robot.isOuttakeReady()) {
+            robot.readyOuttake();
+            sleep(100);
+        }
+
+        if(!robot.isGripperReady()) {
+            robot.unGrip();
+            sleep(100);
+        }
+
+        if(!robot.isFlipperReady()) {
+            robot.readyFlip();
+            sleep(100);
+        }
+    }
+
+
+    public void cycle() {
+        cycleReady();
+        robot.grip();
+        sleep(100);
+        robot.outtakeToOutPosition();
+        sleep(100);
+        robot.flip();
+        sleep(100);
+        robot.unGrip();
+        cycleReady();
+    }
+
 }
