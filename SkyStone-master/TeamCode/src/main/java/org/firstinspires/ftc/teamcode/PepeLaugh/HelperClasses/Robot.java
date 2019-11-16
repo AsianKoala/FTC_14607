@@ -387,15 +387,6 @@ public class Robot extends TunableOpMode {
     }
 
 
-    /**
-     *
-     * TODO:
-     * VERY IMPORTANT *****
-     * GLUTEN FREE HAS A REALLY GOOD CODE SAMPLE ON FOLLOWING POINT CURVES, SUCH AS THE CURVE THAT GOT THEM TO THE FEEDING POSITION FOR AUTO LAST YEAR
-     * IF YOU NEED HELP PLEASE LOOK AT THAT
-     * ***
-     * @return
-     */
 
 
 
