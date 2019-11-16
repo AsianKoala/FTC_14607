@@ -26,7 +26,7 @@ public class testauto extends LinearOpMode {
         left,
         middle,
         right
-    }
+    }//e
 
 
 
