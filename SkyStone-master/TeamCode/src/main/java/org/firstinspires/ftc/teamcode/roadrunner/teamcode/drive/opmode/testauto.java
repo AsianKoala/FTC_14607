@@ -148,8 +148,7 @@ public class testauto extends LinearOpMode {
 
             // turn
 
-            TrajectoryBuilder TO_SECOND_SKYSTONE = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
-                    .fo
+
 
         }
 
