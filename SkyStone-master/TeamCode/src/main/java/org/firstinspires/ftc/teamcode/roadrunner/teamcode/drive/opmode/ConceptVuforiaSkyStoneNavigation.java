@@ -1,24 +1,41 @@
+/* Copyright (c) 2019 FIRST. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted (subject to the limitations in the disclaimer below) provided that
+ * the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list
+ * of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this
+ * list of conditions and the following disclaimer in the documentation and/or
+ * other materials provided with the distribution.
+ *
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or
+ * promote products derived from this software without specific prior written permission.
+ *
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.opmode;
 
-
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.drive.DriveSignal;
-import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.*;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.DriveBase;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.HouseFly;
-
-import static java.lang.Math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,17 +46,40 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@Autonomous(name = "testauto", group = "idk")
-public class testauto extends LinearOpMode {
+/**
+ * This 2019-2020 OpMode illustrates the basics of using the Vuforia localizer to determine
+ * positioning and orientation of robot on the SKYSTONE FTC field.
+ * The code is structured as a LinearOpMode
+ *
+ * When images are located, Vuforia is able to determine the position and orientation of the
+ * image relative to the camera.  This sample code then combines that information with a
+ * knowledge of where the target images are on the field, to determine the location of the camera.
+ *
+ * From the Audience perspective, the Red Alliance station is on the right and the
+ * Blue Alliance Station is on the left.
 
-    SKYSTONEPOS skystonepos;
+ * Eight perimeter targets are distributed evenly around the four perimeter walls
+ * Four Bridge targets are located on the bridge uprights.
+ * Refer to the Field Setup manual for more specific location details
+ *
+ * A final calculation then uses the location of the camera on the robot to determine the
+ * robot's location and orientation on the field.
+ *
+ * @see VuforiaLocalizer
+ * @see VuforiaTrackableDefaultListener
+ * see  skystone/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
+ *
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
+ *
+ * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
+ * is explained below.
+ */
 
-    private enum SKYSTONEPOS {
-        left,
-        middle,
-        right
-    }
 
+@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
+
+public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
@@ -48,7 +88,7 @@ public class testauto extends LinearOpMode {
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false;
+    private static final boolean PHONE_IS_PORTRAIT = false  ;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -67,8 +107,8 @@ public class testauto extends LinearOpMode {
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    private static final float mmPerInch = 25.4f;
-    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch        = 25.4f;
+    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -82,78 +122,22 @@ public class testauto extends LinearOpMode {
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
-    private static final float quadField = 36 * mmPerInch;
+    private static final float quadField  = 36 * mmPerInch;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
     private boolean targetVisible = false;
-    private float phoneXRotate = 0;
-    private float phoneYRotate = 0;
-    private float phoneZRotate = 0;
-    HouseFly robot = new HouseFly(hardwareMap);
+    private float phoneXRotate    = 0;
+    private float phoneYRotate    = 0;
+    private float phoneZRotate    = 0;
 
-    @Override
-    public void runOpMode() {
-
-
-
-        /**
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         * ROADUNNER SHITT
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
+    @Override public void runOpMode() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
+         * If no camera monitor is desired, use the parameter-less constructor instead (commented out below).
          */
-
-
-        PIDCoefficients translationPID = new PIDCoefficients(5, 0, 0);
-        PIDCoefficients headingPID = new PIDCoefficients(2, 0, 0);
-        HolonomicPIDVAFollower follower = new HolonomicPIDVAFollower(translationPID, translationPID, headingPID);
-
-        final MecanumConstraints constraints = DriveConstants.MECANUM_CONSTRAINTS;
-        robot.setPoseEstimate(new Pose2d(-36, 48, toRadians(270)));
-
-        /**
-         * left skystone trajecs
-         */
-
-        class LEFT_TRAJECS {
-
-            Trajectory TO_FIRST_SKYSTONE = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
-                    .splineTo(new Pose2d(-24, 22, toRadians(205)))
-                    .setReversed(true)
-                    .splineTo(new Pose2d(48, 22, toRadians(91)))
-                    .build();
-
-
-            // place, turn, grab
-
-            Trajectory PULL_FOUNDATION = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
-                    .back(40)
-                    .build();
-
-            // turn
-
-            TrajectoryBuilder TO_SECOND_SKYSTONE = new TrajectoryBuilder(robot.getPoseEstimate(), constraints)
-                    .fo
-
-        }
-
-
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -365,105 +349,18 @@ public class testauto extends LinearOpMode {
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
-                double xPosition = translation.get(0);
-                if (xPosition < -3) {
-                    skystonepos = SKYSTONEPOS.left;
-                } else if (xPosition < 3) {
-                    skystonepos = SKYSTONEPOS.middle;
-                } else {
-                    skystonepos = SKYSTONEPOS.right;
-                }
+
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
             } else {
                 telemetry.addData("Visible Target", "none");
-                skystonepos = SKYSTONEPOS.right;
             }
             telemetry.update();
         }
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
-
-
-
-
-
-
-
-        /**
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HEREAUTO STARTS HEREAUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HEREAUTO STARTS HERE
-         * AUTO STARTS HEREAUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HEREAUTO STARTS HEREAUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HEREAUTO STARTS HEREAUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         * AUTO STARTS HERE
-         *
-         *
-         *
-         */
-
-
     }
-
-
-    /**
-     * special methods specifically for autonomous
-     */
-
-    public void getIntakeEncoder() {
-        telemetry.addLine("urdumb");
-    }
-
-
-    public void cycleReady() {
-        if(!robot.isOuttakeReady()) {
-            robot.readyOuttake();
-            sleep(100);
-        }
-
-        if(!robot.isGripperReady()) {
-            robot.unGrip();
-            sleep(100);
-        }
-
-        if(!robot.isFlipperReady()) {
-            robot.readyFlip();
-            sleep(100);
-        }
-    }
-
-
-    public void cycle() {
-        cycleReady();
-        robot.grip();
-        sleep(100);
-        robot.outtakeToOutPosition();
-        sleep(100);
-        robot.flip();
-        sleep(100);
-        robot.unGrip();
-        cycleReady();
-    }
-
 }
