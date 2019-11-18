@@ -19,13 +19,9 @@ public class HouseFlyTeleop extends OpMode {
     private DcMotor rightIntake;
     private DcMotor leftSlide;
     private DcMotor rightSlide;
-    private Servo flipper, gripper, outtake, leftSlam, rightSlam;
+    //private Servo flipper, gripper, outtake, leftSlam, rightSlam;
 
 
-
-    private double movement_x;
-    private double movement_y;
-    private double movement_turn;
 
     // TODO: EDIT THIS SUTFF
     private double flipperFlipPosition = 1;
@@ -50,12 +46,12 @@ public class HouseFlyTeleop extends OpMode {
         leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
 
-        gripper = hardwareMap.get(Servo.class, "gripper");
+  /*      gripper = hardwareMap.get(Servo.class, "gripper");
         flipper = hardwareMap.get(Servo.class, "flipper");
         outtake = hardwareMap.get(Servo.class, "outtake");
         leftSlam = hardwareMap.get(Servo.class, "leftSlam");
         rightSlam = hardwareMap.get(Servo.class, "rightSlam");
-
+*/
 
 
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -70,21 +66,51 @@ public class HouseFlyTeleop extends OpMode {
     public void loop() {
         //Drive motor control
 
-        leftIntake.setPower(gamepad2.left_stick_y);
-        rightIntake.setPower(-gamepad2.left_stick_y);
+
+        if(gamepad2.left_bumper) {
+            rightIntake.setPower(-1);
+            leftIntake.setPower(-1);
+        }
+
+        else if(gamepad2.right_bumper) {
+            rightIntake.setPower(1);
+            leftIntake.setPower(-1);
+        }
+
+        else {
+            rightIntake.setPower(0);
+            leftIntake.setPower(0);
+        }
+
         leftSlide.setPower(-gamepad2.right_stick_y);
         rightSlide.setPower(-gamepad2.right_stick_y);
 
 
+        double motorPower;
+        if(gamepad1.left_bumper) {
+            motorPower = 0.5;
+        }
+
+        else if(gamepad1.right_bumper) {
+            motorPower = 0.25;
+        }
+
+        else {
+            motorPower = 1;
+        }
 
 
-        double threshold = 0.157;
+
+        /*
+        drive motor powers
+         */
+        double threshold = 0.157; // deadzone
         if(Math.abs(gamepad1.left_stick_y) > threshold || Math.abs(gamepad1.left_stick_x) > threshold || Math.abs(gamepad1.right_stick_x) > threshold)
         {
-            rightFront.setPower(((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + -gamepad1.right_stick_x);
-            leftRear.setPower(((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + gamepad1.right_stick_x);
-            leftFront.setPower(((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + gamepad1.right_stick_x);
-            rightRear.setPower(((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + -gamepad1.right_stick_x);
+            rightFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
+            leftRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            leftFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            rightRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
         }
 
         else
@@ -96,6 +122,5 @@ public class HouseFlyTeleop extends OpMode {
         }
 
     }
-
 }
 

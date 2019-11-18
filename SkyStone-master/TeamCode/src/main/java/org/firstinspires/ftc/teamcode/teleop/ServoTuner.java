@@ -4,14 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+import static org.firstinspires.ftc.teamcode.teleop.ServoGlobals.*;
 
 @TeleOp
 public class ServoTuner extends OpMode {
 
     private Servo flipper,gripper,outtake;
 
-    public double flipperReadyPosition, gripperReadyPosition, outtakeReadyPosition = 0;
-    public double flipperFlipPosition, gripperGripPosition, outtakeOutPosition = 0;
     public boolean wantRealtime=true;
     public boolean wantReadyPos = false;
 
@@ -69,7 +68,7 @@ public class ServoTuner extends OpMode {
          * 'yes
          */
 
-        if(gamepad1.left_bumper) flipperReadyPosition -=5;
+        if(gamepad1.left_bumper) flipperFlipPosition -=5;
         if(gamepad1.right_bumper) flipperReadyPosition +=5;
         if(gamepad1.left_trigger > 0.25) gripperReadyPosition -=5;
         if(gamepad1.right_trigger > 0.25) gripperReadyPosition +=5;
@@ -92,8 +91,15 @@ public class ServoTuner extends OpMode {
 
 
 
-        // called every loop to update pos
 
+
+
+
+
+
+
+
+        // called every loop to update pos
         if(wantRealtime) {
             /**
              * decides whether or not we want to update the servos to ready pos or on pos
@@ -108,13 +114,24 @@ public class ServoTuner extends OpMode {
              */
             if(gamepad1.x) {
                 updateReady();
+                wantReadyPos = true;
             }
-
-            if(gamepad2.y){
+            if(gamepad2.y) {
                 updateOn();
+                wantReadyPos = false;
             }
         }
 
+
+        telemetry.addData("flipper ready position", flipperReadyPosition);
+        telemetry.addData("gripper ready position", gripperReadyPosition);
+        telemetry.addData("outtake ready position", outtakeReadyPosition);
+        telemetry.addData("flipper flip position", flipperFlipPosition);
+        telemetry.addData("gripper grip position", gripperGripPosition);
+        telemetry.addData("outtake out position", outtakeOutPosition);
+        telemetry.addData("want realtime", wantRealtime);
+        telemetry.addData("want ready pos", wantReadyPos);
+        telemetry.update();
 
     }
 
