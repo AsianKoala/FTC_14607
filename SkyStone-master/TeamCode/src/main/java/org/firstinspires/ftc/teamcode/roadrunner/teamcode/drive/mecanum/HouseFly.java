@@ -13,13 +13,13 @@ import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
-import static org.firstinspires.ftc.teamcode.teleop.ServoGlobals.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.teleop.ServoGlobals.*;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
@@ -300,6 +300,36 @@ public class HouseFly extends SampleMecanumDriveBase {
         return outtake.getPosition() == outtakeOutPosition;
     }
 
+    public boolean isOuttakeReady() { return outtake.getPosition() == outtakeReadyPosition;}
+
+
+
+
+    public void cycle() {
+        grip();
+        pause(100);
+        outtakeOut();
+        pause(50);
+        flip();
+        pause(250);
+        gripReady();
+        pause(100);
+        reload();
+        pause(250);
+    }
+
+    public void reload() {
+        if(isOuttaked()) { outtakeReady(); }
+        if(isGripped()) { gripReady(); }
+        if(isFlipperFlipped()) { flipReady(); }
+    }
+
+
+    public void pause(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ignored) {}
+    }
 
 
 }
