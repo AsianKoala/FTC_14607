@@ -13,6 +13,7 @@ import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
+import static org.firstinspires.ftc.teamcode.teleop.ServoGlobals.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,19 +48,6 @@ public class HouseFly extends SampleMecanumDriveBase {
     /**
      * variable declaration
      */
-
-    private final double leftReload = 0.5;
-    private final double rightReload = 0.5;
-    private final double leftDown = 1;
-    private final double rightDown = 0;
-    private final double outtakeOutPosition = 1;
-    private final double outtakeReadyPosition = 0;
-    private final double gripperOnPosition = 0;
-    private final double gripperOffPosition = 1;
-    private final double flipperFlipPosition = 1;
-    private final double flipperReadyPosition = 0;
-
-
 
 
 
@@ -233,122 +221,85 @@ public class HouseFly extends SampleMecanumDriveBase {
     }
 
 
-
-
-
-
-
-    /*
-
-
-
-    foundation grabber
-
-
-     */
-
     /**
-     * moves servos down to grab foundation
+     * foundation movement controls
+     *
+     *
+     *
+     *
+     *
      */
+
     public void grabFoundation() {
-        leftSlam.setPosition(leftDown);
-        rightSlam.setPosition(rightDown);
+        leftSlam.setPosition(foundationGrabberGrabPosition);
+        rightSlam.setPosition(1 - foundationGrabberGrabPosition);
     }
 
-    /**
-     * moves foundation mover servos back to ready
-     */
-    public void reload() {
-        leftSlam.setPosition(leftReload);
-        rightSlam.setPosition(rightReload);
+    public void ungrabFoundation() {
+        leftSlam.setPosition(foundationGrabberReadyPosition);
+        rightSlam.setPosition(foundationGrabberReadyPosition);
     }
-
-
-
-
-
-
-    /*
-
-
-    outtake, gripper, and flipper
-
-
-     */
 
 
     /**
-     * @return whether or not the outtake is in position to load block
+     *
+     *
+     * flipper movement controls
      */
-    public boolean isOuttakeReady() {
-        return outtake.getPosition() == outtakeReadyPosition;
+
+    public void flip() {
+        flipper.setPosition(flipperFlipPosition);
     }
 
-    /**
-     * @return whether or not the gripper is open and ready to grip
-     */
-    public boolean isGripperReady() {
-        return gripper.getPosition() == gripperOffPosition;
+    public void flipReady() {
+        flipper.setPosition(flipperReadyPosition);
     }
-
-    /**
-     * moves the outtake to outtake position
-     */
-    public void outtakeToOutPosition() {
-        outtake.setPosition(outtakeOutPosition);
-    }
-
-    /**
-     * moves outtake to ready position
-     */
-    public void readyOuttake() {
-        outtake.setPosition(outtakeReadyPosition);
-    }
-
-
-
-
-
-
-
-
-    /**
-     * grips block
-     */
-    public void grip() {
-        gripper.setPosition(gripperOnPosition);
-    }
-
-    /**
-     * ungrips
-     */
-    public void unGrip() {
-        gripper.setPosition(gripperOffPosition);
-    }
-
-
-
-
-
 
     public boolean isFlipperReady() {
         return flipper.getPosition() == flipperReadyPosition;
     }
 
-
-    /**
-     * flip
-     */
-    public void flip() {
-        flipper.setPosition(flipperFlipPosition);
+    public boolean isFlipperFlipped() {
+        return flipper.getPortNumber() == flipperFlipPosition;
     }
 
 
     /**
-     * ready position
+     * gripper controls
      */
-    public void readyFlip() {
-        flipper.setPosition(flipperReadyPosition);
+
+    public void grip() {
+        gripper.setPosition(gripperGripPosition);
     }
+
+    public void gripReady() {
+        gripper.setPosition(gripperReadyPosition);
+    }
+
+    public boolean isGripReady() {
+        return gripper.getPosition() == gripperReadyPosition;
+    }
+
+    public boolean isGripped() {
+        return gripper.getPosition() == gripperGripPosition;
+    }
+
+    /**
+     * outtake movement controls
+     */
+
+    public void outtakeOut() {
+        outtake.setPosition(outtakeOutPosition);
+    }
+
+    public void outtakeReady() {
+        outtake.setPosition(outtakeReadyPosition);
+    }
+
+    public boolean isOuttaked() {
+        return outtake.getPosition() == outtakeOutPosition;
+    }
+
+
 
 }

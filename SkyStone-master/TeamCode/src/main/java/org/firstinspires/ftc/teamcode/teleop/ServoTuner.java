@@ -9,7 +9,7 @@ import static org.firstinspires.ftc.teamcode.teleop.ServoGlobals.*;
 @TeleOp
 public class ServoTuner extends OpMode {
 
-    private Servo flipper,gripper,outtake;
+    private Servo flipper,gripper,outtake, leftFoundationGrabber, rightFoundationGrabber;
 
     public boolean wantRealtime=true;
     public boolean wantReadyPos = false;
@@ -74,14 +74,18 @@ public class ServoTuner extends OpMode {
         if(gamepad1.right_trigger > 0.25) gripperReadyPosition +=5;
         if(gamepad1.dpad_left) outtakeReadyPosition -= 5;
         if(gamepad1.dpad_right) outtakeReadyPosition +=5;
+        if(gamepad1.dpad_up) foundationGrabberReadyPosition -= 5;
+        if(gamepad1.dpad_down) foundationGrabberReadyPosition += 5;
 
 
-        if(gamepad1.left_bumper) flipperFlipPosition -=5;
-        if(gamepad1.right_bumper) flipperFlipPosition +=5;
-        if(gamepad1.left_trigger > 0.25) gripperGripPosition -=5;
-        if(gamepad1.right_trigger > 0.25) gripperGripPosition +=5;
-        if(gamepad1.dpad_left) outtakeOutPosition -= 5;
-        if(gamepad1.dpad_right) outtakeOutPosition +=5;
+        if(gamepad2.left_bumper) flipperFlipPosition -=5;
+        if(gamepad2.right_bumper) flipperFlipPosition +=5;
+        if(gamepad2.left_trigger > 0.25) gripperGripPosition -=5;
+        if(gamepad2.right_trigger > 0.25) gripperGripPosition +=5;
+        if(gamepad2.dpad_left) outtakeOutPosition -= 5;
+        if(gamepad2.dpad_right) outtakeOutPosition +=5;
+        if(gamepad2.dpad_up) foundationGrabberGrabPosition -= 5;
+        if(gamepad2.dpad_down) foundationGrabberGrabPosition += 5;
 
 
 
@@ -126,26 +130,34 @@ public class ServoTuner extends OpMode {
         telemetry.addData("flipper ready position", flipperReadyPosition);
         telemetry.addData("gripper ready position", gripperReadyPosition);
         telemetry.addData("outtake ready position", outtakeReadyPosition);
+        telemetry.addData("foundation left ready position", foundationGrabberReadyPosition);
+        telemetry.addData("foundation right ready position", 1 - foundationGrabberReadyPosition);
         telemetry.addData("flipper flip position", flipperFlipPosition);
         telemetry.addData("gripper grip position", gripperGripPosition);
         telemetry.addData("outtake out position", outtakeOutPosition);
+        telemetry.addData("foundation left down position", foundationGrabberGrabPosition);
+        telemetry.addData("foundation right down position", 1 - foundationGrabberGrabPosition);
         telemetry.addData("want realtime", wantRealtime);
         telemetry.addData("want ready pos", wantReadyPos);
         telemetry.update();
 
     }
 
-    public void updateReady() {
+    private void updateReady() {
         flipper.setPosition(flipperReadyPosition);
         gripper.setPosition(gripperReadyPosition);
         outtake.setPosition(outtakeReadyPosition);
+        leftFoundationGrabber.setPosition(foundationGrabberReadyPosition);
+        rightFoundationGrabber.setPosition(1 - foundationGrabberReadyPosition);
         sleep(250);
     }
 
-    public void updateOn() {
+    private void updateOn() {
         flipper.setPosition(flipperFlipPosition);
         gripper.setPosition(gripperGripPosition);
         outtake.setPosition(outtakeOutPosition);
+        leftFoundationGrabber.setPosition(foundationGrabberGrabPosition);
+        rightFoundationGrabber.setPosition(1 - foundationGrabberReadyPosition);
         sleep(250);
     }
 
@@ -157,6 +169,9 @@ public class ServoTuner extends OpMode {
      * def not what we're doing
      * dont worry it works
      * kappa
+     *
+     * edit next day neil : we aren't anymore since we didn't read over the LinearOpMode api clearly
+     * retardo clap
      * @param milliseconds
      */
     public final void sleep(long milliseconds) {
