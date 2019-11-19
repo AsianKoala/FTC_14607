@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.teleop.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 @TeleOp(name = "basiceleopdrve")
@@ -81,6 +78,9 @@ public class HouseFlyTeleop extends OpMode {
             rightIntake.setPower(0);
             leftIntake.setPower(0);
         }
+
+
+
 
         leftSlide.setPower(-gamepad2.right_stick_y);
         rightSlide.setPower(-gamepad2.right_stick_y);
