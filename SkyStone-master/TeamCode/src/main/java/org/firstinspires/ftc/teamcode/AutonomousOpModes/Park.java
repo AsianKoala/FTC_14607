@@ -26,5 +26,8 @@ public class Park extends LinearOpMode {
     public void runOpMode() {
         robot.setMotorPowers(0.5,0.5,0.5,0.5);
         sleep(100);
+        robot.setMotorPowers(0,0,0,0);
+        sleep(200);
+        requestOpModeStop();
     }
 }

@@ -21,12 +21,12 @@ public class HouseFlyTeleop extends OpMode {
 
 
     // TODO: EDIT THIS SUTFF
-    private double flipperFlipPosition = 1;
-    private double flipperReadyPosition = 0;
-    private double gripperGripPosition = 1;
-    private double gripperReadyPosition = 0.5;
-    private double outtakeOutPosition = 0;
-    private double outtakeReadyPosition = 1;
+    private final double flipperHome = 0.71;
+    private final double flipperOut = 0.049;
+    private final double rotaterHome = 0.279;
+    private final double rotaterOut = 0.95;
+    private final double gripperHome = 0.41;
+    private final double gripperGrip = 0.215;
 
 
 
@@ -64,6 +64,9 @@ public class HouseFlyTeleop extends OpMode {
         //Drive motor control
 
 
+        leftIntake.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x );
+        rightIntake.setPower(-gamepad1.left_stick_y - -gamepad1.left_stick_x);
+
         if(gamepad2.left_bumper) {
             rightIntake.setPower(-1);
             leftIntake.setPower(-1);
@@ -71,7 +74,7 @@ public class HouseFlyTeleop extends OpMode {
 
         else if(gamepad2.right_bumper) {
             rightIntake.setPower(1);
-            leftIntake.setPower(-1);
+            leftIntake.setPower(-.1);
         }
 
         else {

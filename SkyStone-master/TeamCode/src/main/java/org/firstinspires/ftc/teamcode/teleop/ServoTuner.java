@@ -21,6 +21,8 @@ public class ServoTuner extends OpMode {
         flipper = hardwareMap.get(Servo.class, "flipper");
         gripper = hardwareMap.get(Servo.class, "gripper");
         outtake = hardwareMap.get(Servo.class, "outtake");
+        leftFoundationGrabber = hardwareMap.get(Servo.class, "leftSlam");
+        rightFoundationGrabber = hardwareMap.get(Servo.class, "rightSlam");
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ServoTuner extends OpMode {
          * 'yes
          */
 
-        if(gamepad1.left_bumper) flipperFlipPosition -=5;
+        if(gamepad1.left_bumper) flipperReadyPosition -=5;
         if(gamepad1.right_bumper) flipperReadyPosition +=5;
         if(gamepad1.left_trigger > 0.25) gripperReadyPosition -=5;
         if(gamepad1.right_trigger > 0.25) gripperReadyPosition +=5;
@@ -88,43 +90,12 @@ public class ServoTuner extends OpMode {
         if(gamepad2.dpad_down) foundationGrabberGrabPosition += 5;
 
 
+        /**
+         * positions the thingsi
+         */
+        updateOn();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // called every loop to update pos
-        if(wantRealtime) {
-            /**
-             * decides whether or not we want to update the servos to ready pos or on pos
-             */
-            if(wantReadyPos) updateReady();
-            else updateOn();
-        }
-
-        else {
-            /**
-             * only updates position when gamepad1.x (ready pos) or gamepad2.x (onpos) is pressed
-             */
-            if(gamepad1.x) {
-                updateReady();
-                wantReadyPos = true;
-            }
-            if(gamepad2.y) {
-                updateOn();
-                wantReadyPos = false;
-            }
-        }
 
 
         telemetry.addData("flipper ready position", flipperReadyPosition);
@@ -172,7 +143,7 @@ public class ServoTuner extends OpMode {
      *
      * edit next day neil : we aren't anymore since we didn't read over the LinearOpMode api clearly
      * retardo clap
-     * @param milliseconds
+     * @param milliseconds e
      */
     public final void sleep(long milliseconds) {
         try {
