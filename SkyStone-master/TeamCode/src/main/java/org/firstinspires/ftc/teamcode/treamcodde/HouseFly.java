@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.treamcodde.teleop.ServoGlobals.*;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
@@ -30,9 +29,10 @@ import static org.firstinspires.ftc.teamcode.treamcodde.teleop.ServoGlobals.*;
 public class HouseFly extends SampleMecanumDriveBase {
     private ExpansionHubEx master, slave;
     private ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
-    private ExpansionHubMotor intakeLeft, intakeRight;
+    private ExpansionHubMotor leftIntake, rightIntake;
+    private ExpansionHubMotor leftSlide, rightSlide; // tfw when you dont have to worry about this bs cause charlie is coding teleop
     private ExpansionHubServo leftSlam, rightSlam;
-    private ExpansionHubServo outtake;
+    private ExpansionHubServo rotater;
     private ExpansionHubServo gripper;
     private ExpansionHubServo flipper;
 
@@ -42,6 +42,7 @@ public class HouseFly extends SampleMecanumDriveBase {
     private ArrayList<ExpansionHubMotor> leftMotors = new ArrayList<>();
     private ArrayList<ExpansionHubMotor> rightMotors = new ArrayList<>();
     private ArrayList<ExpansionHubMotor> intakeMotors = new ArrayList<>();
+    private ArrayList<ExpansionHubMotor> slideMotors = new ArrayList<>();
 
     private BNO055IMU imu;
 
@@ -73,8 +74,10 @@ public class HouseFly extends SampleMecanumDriveBase {
         leftMotors.add(backLeft);
         rightMotors.add(frontRight);
         rightMotors.add(backRight);
-        intakeMotors.add(intakeLeft);
-        intakeMotors.add(intakeRight);
+        intakeMotors.add(leftIntake);
+        intakeMotors.add(rightIntake);
+        slideMotors.add(leftSlide);
+        slideMotors.add(rightSlide);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -97,11 +100,14 @@ public class HouseFly extends SampleMecanumDriveBase {
         backLeft = hardwareMap.get(ExpansionHubMotor.class, "backLeft");
         backRight = hardwareMap.get(ExpansionHubMotor.class, "backRight");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
-        intakeLeft = hardwareMap.get(ExpansionHubMotor.class, "intakeLeft");
-        intakeRight = hardwareMap.get(ExpansionHubMotor.class, "intakeRight");
+        leftIntake = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
+        rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightMotor");
+        
         leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
         rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
-        outtake = hardwareMap.get(ExpansionHubServo.class, "outtake");
+        rotater = hardwareMap.get(ExpansionHubServo.class, "rotater");
         gripper = hardwareMap.get(ExpansionHubServo.class, "gripper");
         flipper = hardwareMap.get(ExpansionHubServo.class, "flipper");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -121,11 +127,17 @@ public class HouseFly extends SampleMecanumDriveBase {
             expansionHubMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
-        intakeLeft.setDirection(DcMotor.Direction.REVERSE);
+        leftIntake.setDirection(DcMotor.Direction.REVERSE);
+        leftSlide.setDirection(DcMotor.Direction.REVERSE);
 
 
+        // TODO: edit this value to tuned PD 
         setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(0,0,0));
     }
+    
+    
+    
+    
 
     @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
@@ -155,18 +167,16 @@ public class HouseFly extends SampleMecanumDriveBase {
         }
 
         List<Double> wheelPositions = new ArrayList<>();
-    /*    for (ExpansionHubMotor motor : driveMotors) {
-            wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motor)));
-        }*/
-        // TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE THIS TO PORTN NUMBER
+
+
+        wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(0)));
         wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(1)));
-        wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(2)));
+        wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(0)));
         wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(1)));
-        wheelPositions.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(2)));
         return wheelPositions;
     }
+    
 
-    // TODO: ADD 2 BULK READS SINCE WE HAVE THE DRIVE MOTORS SPLIT UP
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
@@ -180,7 +190,31 @@ public class HouseFly extends SampleMecanumDriveBase {
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
     }
+    
+    
+    public double getClippedHeading() {
+        return AngleWrap(imu.getAngularOrientation().firstAngle);
+    }
+    
+    
+    
+    
+    public double AngleWrap(double rad) {
+        while(rad > Math.PI * 2) {
+            rad -= Math.PI * 2;
+        }
+        
+        return rad;
+    }
 
+    
+    
+
+    
+    
+    
+    
+    
 
     /**
      *
@@ -204,50 +238,32 @@ public class HouseFly extends SampleMecanumDriveBase {
     /**
      * @return whether or not the intake motors are busy
      */
-    public boolean intakeBusy() { return intakeLeft.isBusy() || intakeRight.isBusy();}
+    public boolean intakeBusy() { return leftIntake.isBusy() || rightIntake.isBusy();}
 
-    /**
-     * turns on intake
-     */
-    public void turnOnIntake() {
-        intakeLeft.setPower(1);
-        intakeRight.setPower(1);
+    public void setIntakePowers(double leftIntakePower, double rightIntakePower) { 
+        leftIntake.setPower(leftIntakePower);
+        rightIntake.setPower(rightIntakePower);
     }
 
-    /**
-     * turns off intake
-     */
-    public void turnOffIntake() {
-        intakeRight.setPower(0);
-        intakeLeft.setPower(0);
-    }
 
-    /**
-     * reverses intake
-     */
-    public void reverseIntake() {
-        intakeLeft.setPower(-1);
-        intakeRight.setPower(-1);
-    }
+    public void stopIntake() { setIntakePowers(0,0);}
 
 
     /**
      * foundation movement controls
      *
-     *
-     *
-     *
+
      *
      */
 
     public void grabFoundation() {
-        leftSlam.setPosition(foundationGrabberGrabPosition);
-        rightSlam.setPosition(1 - foundationGrabberGrabPosition);
+        leftSlam.setPosition(0.75);
+        rightSlam.setPosition(0.25);
     }
 
     public void ungrabFoundation() {
-        leftSlam.setPosition(foundationGrabberReadyPosition);
-        rightSlam.setPosition(foundationGrabberReadyPosition);
+        leftSlam.setPosition(0);
+        rightSlam.setPosition(0);
     }
 
 
@@ -258,19 +274,19 @@ public class HouseFly extends SampleMecanumDriveBase {
      */
 
     public void flip() {
-        flipper.setPosition(flipperFlipPosition);
+        flipper.setPosition(flipperOut);
     }
 
     public void flipReady() {
-        flipper.setPosition(flipperReadyPosition);
+        flipper.setPosition(flipperHome);
     }
 
     public boolean isFlipperReady() {
-        return flipper.getPosition() == flipperReadyPosition;
+        return flipper.getPosition() == flipperHome;
     }
 
     public boolean isFlipperFlipped() {
-        return flipper.getPortNumber() == flipperFlipPosition;
+        return flipper.getPortNumber() == flipperOut;
     }
 
 
@@ -279,60 +295,44 @@ public class HouseFly extends SampleMecanumDriveBase {
      */
 
     public void grip() {
-        gripper.setPosition(gripperGripPosition);
+        gripper.setPosition(gripperGrip);
     }
 
     public void gripReady() {
-        gripper.setPosition(gripperReadyPosition);
+        gripper.setPosition(gripperHome);
     }
 
     public boolean isGripReady() {
-        return gripper.getPosition() == gripperReadyPosition;
+        return gripper.getPosition() == gripperHome;
     }
 
     public boolean isGripped() {
-        return gripper.getPosition() == gripperGripPosition;
+        return gripper.getPosition() == gripperGrip;
     }
 
     /**
-     * outtake movement controls
+     * rotater movement controls
      */
 
-    public void outtakeOut() {
-        outtake.setPosition(outtakeOutPosition);
+    public void rotaterOut() {
+        rotater.setPosition(rotaterOut);
     }
 
-    public void outtakeReady() {
-        outtake.setPosition(outtakeReadyPosition);
+    public void rotaterReady() {
+        rotater.setPosition(rotaterHome);
     }
 
     public boolean isOuttaked() {
-        return outtake.getPosition() == outtakeOutPosition;
+        return rotater.getPosition() == rotaterOut;
     }
 
-    public boolean isOuttakeReady() { return outtake.getPosition() == outtakeReadyPosition;}
+    public boolean isOuttakeReady() { return rotater.getPosition() == rotaterHome;}
 
 
 
 
-    public void cycle() {
-        grip();
-        pause(100);
-        outtakeOut();
-        pause(50);
-        flip();
-        pause(250);
-        gripReady();
-        pause(100);
-        reload();
-        pause(250);
-    }
 
-    public void reload() {
-        if(isOuttaked()) { outtakeReady(); }
-        if(isGripped()) { gripReady(); }
-        if(isFlipperFlipped()) { flipReady(); }
-    }
+
 
 
     public void pause(long ms) {

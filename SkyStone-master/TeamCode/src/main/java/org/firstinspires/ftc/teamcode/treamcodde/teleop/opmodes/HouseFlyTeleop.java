@@ -3,45 +3,58 @@ package org.firstinspires.ftc.teamcode.treamcodde.teleop.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.teamcode.ppProject.company.Robot;
+import org.firstinspires.ftc.teamcode.treamcodde.HouseFly;
 
 
 @TeleOp(name = "basiceleopdrve")
 public class HouseFlyTeleop extends OpMode {
 
-    private DcMotor leftFront;
-    private DcMotor rightFront;
-    private DcMotor leftRear;
-    private DcMotor rightRear;
-    private DcMotor leftIntake;
-    private DcMotor rightIntake;
-    private DcMotor leftSlide;
-    private DcMotor rightSlide;
-    //private Servo flipper, gripper, outtake, leftSlam, rightSlam;
+    private HouseFly robot;
 
+    /**
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * charlie theres a ton of errors so can you fix them if I haven't fixedf them already
+     * srry its like 1.5 am
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
     @Override
     public void init() {
 
-        leftFront = hardwareMap.get(DcMotor.class, "FL");
-        leftRear = hardwareMap.get(DcMotor.class, "BL");
-        rightRear = hardwareMap.get(DcMotor.class, "FR");
-        rightFront = hardwareMap.get(DcMotor.class, "BR");
-        leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");
-        rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");
-        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
 
-  /*      gripper = hardwareMap.get(Servo.class, "gripper");
-        flipper = hardwareMap.get(Servo.class, "flipper");
-        outtake = hardwareMap.get(Servo.class, "outtake");
-        leftSlam = hardwareMap.get(Servo.class, "leftSlam");
-        rightSlam = hardwareMap.get(Servo.class, "rightSlam");
-*/
+        robot = new HouseFly(hardwareMap);
 
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
-        rightIntake.setDirection(DcMotor.Direction.REVERSE);
-        leftSlide.setDirection(DcMotor.Direction.REVERSE);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -51,8 +64,8 @@ public class HouseFlyTeleop extends OpMode {
         //Drive motor control
 
 
-        leftIntake.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x );
-        rightIntake.setPower(-gamepad1.left_stick_y - -gamepad1.left_stick_x);
+        robot.leftIntake.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x );
+        robot.rightIntake.setPower(-gamepad1.left_stick_y - -gamepad1.left_stick_x);
 
         if(gamepad2.left_bumper) {
             rightIntake.setPower(-1);
