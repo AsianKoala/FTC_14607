@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.treamcodde.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
-import static org.firstinspires.ftc.teamcode.teleop.ServoGlobals.*;
+import static org.firstinspires.ftc.teamcode.treamcodde.teleop.ServoGlobals.*;
 
 @TeleOp
 public class ServoTuner extends OpMode {

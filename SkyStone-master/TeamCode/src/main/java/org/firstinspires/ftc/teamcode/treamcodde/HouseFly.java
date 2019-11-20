@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum;
+package org.firstinspires.ftc.teamcode.treamcodde;
 
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxModuleUtil;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.teleop.ServoGlobals.*;
+import static org.firstinspires.ftc.teamcode.treamcodde.teleop.ServoGlobals.*;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
@@ -48,6 +49,15 @@ public class HouseFly extends SampleMecanumDriveBase {
     /**
      * variable declaration
      */
+
+
+    public final double flipperHome = 0.71;
+    public final double flipperOut = 0.049;
+    public final double rotaterHome = 0.279;
+    public final double rotaterOut = 0.95;
+    public final double gripperHome = 0.41;
+    public final double gripperGrip = 0.215;
+
 
 
 

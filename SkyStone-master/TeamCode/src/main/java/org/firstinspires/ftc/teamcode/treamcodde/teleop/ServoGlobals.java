@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.treamcodde.teleop;
 
 public class ServoGlobals {
     public static double flipperReadyPosition, gripperReadyPosition, outtakeReadyPosition = 0;

@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.teleop.odometry;
+package org.firstinspires.ftc.teamcode.treamcodde.teleop.odometry;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import org.firstinspires.ftc.teamcode.teleop.odometry.OdometryGlobalCoordinatePosition;
 
 /**
  *  * Example OpMode that runs the GlobalCoordinatePosition thread and accesses the (x, y, theta) coordinate values

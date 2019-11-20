@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop.opmodes;
+package org.firstinspires.ftc.teamcode.treamcodde.teleop.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -17,19 +17,6 @@ public class HouseFlyTeleop extends OpMode {
     private DcMotor leftSlide;
     private DcMotor rightSlide;
     //private Servo flipper, gripper, outtake, leftSlam, rightSlam;
-
-
-
-    // TODO: EDIT THIS SUTFF
-    private final double flipperHome = 0.71;
-    private final double flipperOut = 0.049;
-    private final double rotaterHome = 0.279;
-    private final double rotaterOut = 0.95;
-    private final double gripperHome = 0.41;
-    private final double gripperGrip = 0.215;
-
-
-
 
     @Override
     public void init() {
