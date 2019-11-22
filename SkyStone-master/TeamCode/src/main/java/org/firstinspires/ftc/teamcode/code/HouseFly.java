@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.treamcodde;
+package org.firstinspires.ftc.teamcode.code;
 
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -27,14 +27,21 @@ import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveCons
  */
 
 public class HouseFly extends SampleMecanumDriveBase {
-    private ExpansionHubEx master, slave;
-    private ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
-    private ExpansionHubMotor leftIntake, rightIntake;
-    private ExpansionHubMotor leftSlide, rightSlide; // tfw when you dont have to worry about this bs cause charlie is coding teleop
-    private ExpansionHubServo leftSlam, rightSlam;
-    private ExpansionHubServo rotater;
-    private ExpansionHubServo gripper;
-    private ExpansionHubServo flipper;
+    public ExpansionHubEx master, slave;
+    public ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
+    public ExpansionHubMotor leftIntake, rightIntake;
+
+    public final double flipperHome = 0.71;
+    public final double flipperOut = 0.049;
+    public final double rotaterHome = 0.279;
+    public final double rotaterOut = 0.95;
+    public final double gripperHome = 0.41;
+    public final double gripperGrip = 0.215;
+    public ExpansionHubMotor leftSlide, rightSlide; // tfw when you dont have to worry about this bs cause charlie is coding teleop
+    public ExpansionHubServo leftSlam, rightSlam;
+    public ExpansionHubServo rotater;
+    public ExpansionHubServo gripper;
+    public ExpansionHubServo flipper;
 
 
 
@@ -52,13 +59,6 @@ public class HouseFly extends SampleMecanumDriveBase {
      */
 
 
-    public final double flipperHome = 0.71;
-    public final double flipperOut = 0.049;
-    public final double rotaterHome = 0.279;
-    public final double rotaterOut = 0.95;
-    public final double gripperHome = 0.41;
-    public final double gripperGrip = 0.215;
-
 
 
 
@@ -66,20 +66,9 @@ public class HouseFly extends SampleMecanumDriveBase {
     public HouseFly(HardwareMap hardwareMap) {
         super();
 
-        driveMotors.add(frontLeft);
-        driveMotors.add(frontRight);
-        driveMotors.add(backLeft);
-        driveMotors.add(backRight);
-        leftMotors.add(frontLeft);
-        leftMotors.add(backLeft);
-        rightMotors.add(frontRight);
-        rightMotors.add(backRight);
-        intakeMotors.add(leftIntake);
-        intakeMotors.add(rightIntake);
-        slideMotors.add(leftSlide);
-        slideMotors.add(rightSlide);
 
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+    //    LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
 
         // map hubs so that we can get bulk data
@@ -96,15 +85,15 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
 
-        frontLeft = hardwareMap.get(ExpansionHubMotor.class, "frontLeft");
-        backLeft = hardwareMap.get(ExpansionHubMotor.class, "backLeft");
-        backRight = hardwareMap.get(ExpansionHubMotor.class, "backRight");
-        frontRight = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
+        frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
+        backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
+        backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
+        frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
         leftIntake = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
         rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
         leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
-        rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightMotor");
-        
+        rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
+
         leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
         rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
         rotater = hardwareMap.get(ExpansionHubServo.class, "rotater");
@@ -131,13 +120,27 @@ public class HouseFly extends SampleMecanumDriveBase {
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
 
 
-        // TODO: edit this value to tuned PD 
+        // TODO: edit this value to tuned PD
         setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDCoefficients(0,0,0));
+
+
+        driveMotors.add(frontLeft);
+        driveMotors.add(frontRight);
+        driveMotors.add(backLeft);
+        driveMotors.add(backRight);
+        leftMotors.add(frontLeft);
+        leftMotors.add(backLeft);
+        rightMotors.add(frontRight);
+        rightMotors.add(backRight);
+        intakeMotors.add(leftIntake);
+        intakeMotors.add(rightIntake);
+        slideMotors.add(leftSlide);
+        slideMotors.add(rightSlide);
     }
-    
-    
-    
-    
+
+
+
+
 
     @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
