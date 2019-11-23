@@ -24,8 +24,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@Autonomous(name = "Blue Auto", group = "Firefly")
-public class BlueAuto extends LinearOpMode {
+@Autonomous(name = "Park Auto", group = "Firefly")
+public class Park extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
@@ -108,47 +108,11 @@ public class BlueAuto extends LinearOpMode {
 
         sleep(500);
 
-        xPower = -0.5;
-        yPower = 0;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(1000);
-
-        xPower = 0;
-        yPower = 0.5;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(1000);
-
-        xPower = 0;
-        yPower = 0;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(1000);
-
-
-        grabFoundation();
-        sleep(2000);
-
-        xPower = 0;
-        yPower = -0.5;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(3000);
-
-        ungrabFoundation();
-
-        xPower = 0;
-        yPower = 0;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(1000);
-
         xPower = 0.5;
         yPower = 0;
         zPower = 0;
         driveMecanum(xPower, yPower, zPower);
-        sleep(3000);
+        sleep(1000);
 
         xPower = 0;
         yPower = 0;
