@@ -6,6 +6,7 @@ package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
         import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
         import com.qualcomm.robotcore.hardware.DcMotor;
         import com.qualcomm.robotcore.hardware.Servo;
+        import org.opencv.core.Mat;
 
 
 @TeleOp(name = "basiceleopdrve")
@@ -39,6 +40,12 @@ public class HouseFlyTeleop extends OpMode {
     private final double rotaterOut = 0.95;
     private final double gripperHome = 0.41;
     private final double gripperGrip = 0.22;
+    private final double slideExtentPos = 800;
+
+    private double oldLeftSlidePos = 0;
+    private double oldRightSlidePos = 0;
+    private double newLeftSlidePos = 0;
+    private double newRightSlidePos = 0;
 
 
 
@@ -68,6 +75,9 @@ public class HouseFlyTeleop extends OpMode {
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
 
+
+        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -77,7 +87,49 @@ public class HouseFlyTeleop extends OpMode {
 
     // run until the end of the match (driver presses STOP)
     public void loop() {
-        //Drive motor control
+
+
+
+        if(gamepad2.left_bumper) {
+            oldLeftSlidePos = leftSlide.getCurrentPosition();
+            oldRightSlidePos = rightSlide.getCurrentPosition();
+            newLeftSlidePos = 50;
+            newRightSlidePos = 50;
+        }
+
+        if(gamepad2.right_bumper) {
+            oldLeftSlidePos = leftSlide.getCurrentPosition();
+            oldRightSlidePos = rightSlide.getCurrentPosition();
+            newLeftSlidePos = 0;
+            newRightSlidePos = 0;
+        }
+
+        if(gamepad2.right_stick_button) {
+            newLeftSlidePos = oldLeftSlidePos;
+            newRightSlidePos = oldRightSlidePos;
+        }
+
+        double increment = gamepad2.right_stick_y * 50;
+
+        if(Math.abs(increment) > 5) {
+            newLeftSlidePos = oldLeftSlidePos + increment;
+            newRightSlidePos = oldRightSlidePos + increment;
+        }
+
+
+
+        //only apply motor power newPos changed a bit
+
+        if(Math.abs(newLeftSlidePos - leftSlide.getCurrentPosition()) > 10 || Math.abs(newRightSlidePos - rightSlide.getCurrentPosition()) > 10) {
+            leftSlide.setTargetPosition((int)(newLeftSlidePos));
+            rightSlide.setTargetPosition((int)(newLeftSlidePos));
+            leftSlide.setPower(1);
+            rightSlide.setPower(1);
+        }
+
+
+
+
 
 
         double leftIntakePower = gamepad2.left_stick_y - gamepad2.left_stick_x;
@@ -90,50 +142,6 @@ public class HouseFlyTeleop extends OpMode {
             rightIntake.setPower( 0.5 * rightIntakePower);
         }
 
-
-
-
-        leftSlide.setPower(-gamepad2.right_stick_y);
-        rightSlide.setPower(-gamepad2.right_stick_y);
-
-
-        double motorPower;
-        if(gamepad1.left_bumper) {
-            motorPower = 0.5;
-        }
-
-        else if(gamepad1.right_bumper) {
-            motorPower = 0.25;
-        }
-
-        else {
-            motorPower = 1;
-        }
-
-
-        /*
-        drive motor powers
-         */
-        double threshold = 0.157; // deadzone
-        if(Math.abs(gamepad1.left_stick_y) > threshold || Math.abs(gamepad1.left_stick_x) > threshold || Math.abs(gamepad1.right_stick_x) > threshold)
-        {
-            rightFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
-            leftRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + gamepad1.right_stick_x));
-            leftFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + gamepad1.right_stick_x));
-            rightRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
-        }
-
-        else
-        {
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            leftRear.setPower(0);
-            rightRear.setPower(0);
-        }
-
-
-        leftSlide.setPower(-gamepad2.right_stick_y);
-        rightSlide.setPower(-gamepad2.right_stick_y);
 
         // flipper arm control
         if(gamepad2.right_trigger > 0.5) {
@@ -162,6 +170,66 @@ public class HouseFlyTeleop extends OpMode {
         if(gamepad2.y) {
             gripReady();
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // drive speed control
+
+        double motorPower;
+        if(gamepad1.left_bumper) {
+            motorPower = 0.5;
+        }
+
+        else if(gamepad1.right_bumper) {
+            motorPower = 0.25;
+        }
+
+        else {
+            motorPower = 1;
+        }
+
+
+
+
+        /*
+        drive motor powers
+         */
+        double threshold = 0.157; // deadzone
+        if(Math.abs(gamepad1.left_stick_y) > threshold || Math.abs(gamepad1.left_stick_x) > threshold || Math.abs(gamepad1.right_stick_x) > threshold)
+        {
+            rightFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
+            leftRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            leftFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            rightRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
+        }
+
+        else
+        {
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftRear.setPower(0);
+            rightRear.setPower(0);
+        }
+
+
+        leftSlide.setPower(-gamepad2.right_stick_y);
+        rightSlide.setPower(-gamepad2.right_stick_y);
+
+
 
 
         telemetry.addData("flipper pos", flipper.getPosition());

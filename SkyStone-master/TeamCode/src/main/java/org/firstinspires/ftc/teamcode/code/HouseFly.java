@@ -116,6 +116,13 @@ public class HouseFly extends SampleMecanumDriveBase {
             expansionHubMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
+
+        // TODO: charlie change this to what you want
+        for(ExpansionHubMotor expansionHubMotor : slideMotors) {
+            expansionHubMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //expansionHubMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
         leftIntake.setDirection(DcMotor.Direction.REVERSE);
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
 
@@ -194,13 +201,16 @@ public class HouseFly extends SampleMecanumDriveBase {
         return imu.getAngularOrientation().firstAngle;
     }
     
-    
-    public double getClippedHeading() {
+
+
+
+
+
+
+    public double getWrappedHeading() {
         return AngleWrap(imu.getAngularOrientation().firstAngle);
     }
-    
-    
-    
+
     
     public double AngleWrap(double rad) {
         while(rad > Math.PI * 2) {
@@ -238,9 +248,7 @@ public class HouseFly extends SampleMecanumDriveBase {
      */
 
 
-    /**
-     * @return whether or not the intake motors are busy
-     */
+
     public boolean intakeBusy() { return leftIntake.isBusy() || rightIntake.isBusy();}
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) { 
@@ -248,8 +256,53 @@ public class HouseFly extends SampleMecanumDriveBase {
         rightIntake.setPower(rightIntakePower);
     }
 
+    public double getLeftIntakePower() {
+        return leftIntake.getPower();
+    }
+
+    public double getRightIntakePower() {
+        return rightIntake.getPower();
+    }
+
 
     public void stopIntake() { setIntakePowers(0,0);}
+
+
+    /**
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * slide controls
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**
@@ -325,11 +378,11 @@ public class HouseFly extends SampleMecanumDriveBase {
         rotater.setPosition(rotaterHome);
     }
 
-    public boolean isOuttaked() {
+    public boolean isRotated() {
         return rotater.getPosition() == rotaterOut;
     }
 
-    public boolean isOuttakeReady() { return rotater.getPosition() == rotaterHome;}
+    public boolean isRotaterHome() { return rotater.getPosition() == rotaterHome;}
 
 
 
