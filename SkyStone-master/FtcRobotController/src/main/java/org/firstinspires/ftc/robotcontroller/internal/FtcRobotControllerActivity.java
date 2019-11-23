@@ -124,7 +124,7 @@ import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
 import org.firstinspires.ftc.robotserver.internal.programmingmode.ProgrammingModeManager;
 import org.firstinspires.inspection.RcInspectionActivity;
-import com.acmerobotics.dashboard.FtcDashboard;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 

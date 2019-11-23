@@ -29,7 +29,7 @@ public class TrackWidthTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveREV drive = new SampleMecanumDriveREV(hardwareMap);
+        HouseFly drive = new HouseFly(hardwareMap);
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
 
