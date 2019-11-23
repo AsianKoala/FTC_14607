@@ -5,27 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.RobotLog;
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.*;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
-@Autonomous(name = "Blue Auto", group = "Firefly")
-public class BlueAuto extends LinearOpMode {
+@Autonomous(name = "Red Auto", group = "Firefly")
+public class RedAuto extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
@@ -108,7 +94,7 @@ public class BlueAuto extends LinearOpMode {
 
         sleep(500);
 
-        xPower = -0.5;
+        xPower = 0.5;
         yPower = 0;
         zPower = 0;
         driveMecanum(xPower, yPower, zPower);
@@ -144,7 +130,7 @@ public class BlueAuto extends LinearOpMode {
         driveMecanum(xPower, yPower, zPower);
         sleep(1000);
 
-        xPower = 0.5;
+        xPower = -0.5;
         yPower = 0;
         zPower = 0;
         driveMecanum(xPower, yPower, zPower);
