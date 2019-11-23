@@ -28,8 +28,8 @@ public class HouseFlyTeleop extends OpMode {
     private DcMotor rightRear;
     private DcMotor leftIntake;
     private DcMotor rightIntake;
-    private DcMotor leftSlide;
-    private DcMotor rightSlide;
+    private DcMotorEx leftSlide;
+    private DcMotorEx rightSlide;
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
 
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
@@ -43,7 +43,7 @@ public class HouseFlyTeleop extends OpMode {
     private final double rotaterHome = 0.279;
     private final double rotaterOut = 0.95;
     private final double gripperHome = 0.41;
-    private final double gripperGrip = 0.15;
+    private final double gripperGrip = 0.2;
 
     private double oldSlideLeft = 0;
     private double oldSlideRight = 0;
@@ -61,8 +61,8 @@ public class HouseFlyTeleop extends OpMode {
         rightFront = hardwareMap.get(DcMotor.class, "BR");
         leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");
         rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");
-        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
+        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
+        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
 
         gripper = hardwareMap.get(Servo.class, "gripper");
         flipper = hardwareMap.get(Servo.class, "flipper");
@@ -91,6 +91,7 @@ public class HouseFlyTeleop extends OpMode {
         driveMotors.add(leftFront);
         driveMotors.add(rightFront);
         driveMotors.add(rightRear);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -105,6 +106,18 @@ public class HouseFlyTeleop extends OpMode {
          */
 
 
+
+//        if(gamepad2.right_stick_button) {
+//            newSlideLeft = oldSlideLeft;
+//            newSlideRight = oldSlideRight;
+//        }
+
+        double increment = gamepad2.right_stick_y * 100;
+
+        if(Math.abs(increment) > 25) {
+            newSlideLeft = leftSlide.getCurrentPosition() + increment;
+            newSlideRight = rightSlide.getCurrentPosition() + increment;
+        }
         if(gamepad2.x) {
             oldSlideLeft = leftSlide.getCurrentPosition();
             oldSlideRight = rightSlide.getCurrentPosition();
@@ -117,18 +130,6 @@ public class HouseFlyTeleop extends OpMode {
             oldSlideRight = rightSlide.getCurrentPosition();
             newSlideLeft = 25;
             newSlideRight = 25;
-        }
-
-        if(gamepad2.right_stick_button) {
-            newSlideLeft = oldSlideLeft;
-            newSlideRight = oldSlideRight;
-        }
-
-        double increment = -gamepad2.right_stick_y * 100;
-
-        if(Math.abs(increment) > 25) {
-            newSlideLeft = leftSlide.getCurrentPosition() + increment;
-            newSlideRight = rightSlide.getCurrentPosition() + increment;
         }
 
         if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
@@ -161,8 +162,8 @@ public class HouseFlyTeleop extends OpMode {
             leftIntake.setPower(0);
             rightIntake.setPower(0);
         }else {
-            leftIntake.setPower( 0.5 * leftIntakePower);
-            rightIntake.setPower( 0.5 * rightIntakePower);
+            leftIntake.setPower( 0.5 * -leftIntakePower);
+            rightIntake.setPower( 0.5 * -rightIntakePower);
         }
 
 
@@ -278,6 +279,7 @@ public class HouseFlyTeleop extends OpMode {
     /**
      * @return whether or not the intake motors are busy
      */
+
     public boolean intakeBusy() { return leftIntake.isBusy() || rightIntake.isBusy();}
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
