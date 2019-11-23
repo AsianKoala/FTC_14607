@@ -121,15 +121,15 @@ public class HouseFlyTeleop extends OpMode {
         if(gamepad2.x) {
             oldSlideLeft = leftSlide.getCurrentPosition();
             oldSlideRight = rightSlide.getCurrentPosition();
-            newSlideLeft = 200;
-            newSlideRight = 200;
+            newSlideLeft = -25;
+            newSlideRight = -25;
         }
 
         if(gamepad2.b) {
             oldSlideLeft = leftSlide.getCurrentPosition();
             oldSlideRight = rightSlide.getCurrentPosition();
-            newSlideLeft = 25;
-            newSlideRight = 25;
+            newSlideLeft = -25.0/2;
+            newSlideRight = -25.0/2;
         }
 
         if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
@@ -218,6 +218,10 @@ public class HouseFlyTeleop extends OpMode {
 
         if(gamepad2.dpad_down) {
             flipper.setPosition(.6);
+        }
+
+        if(gamepad2.dpad_up) {
+            flipper.setPosition((0.6+0.95)/2);
         }
 
         if(gamepad2.right_trigger > 0.5) {

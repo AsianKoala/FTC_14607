@@ -1,7 +1,10 @@
-package org.firstinspires.ftc.teamcode.code;
+package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
@@ -10,8 +13,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMecanumDriveREVOptimized;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +39,8 @@ public class BlueAuto extends LinearOpMode {
     private DcMotor rightRear;
     private DcMotor leftIntake;
     private DcMotor rightIntake;
-    private DcMotorEx leftSlide;
-    private DcMotorEx rightSlide;
+    private DcMotor leftSlide;
+    private DcMotor rightSlide;
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
 
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
@@ -116,10 +118,17 @@ public class BlueAuto extends LinearOpMode {
         yPower = 0.5;
         zPower = 0;
         driveMecanum(xPower, yPower, zPower);
-        sleep(2000);
+        sleep(1000);
+
+        xPower = 0;
+        yPower = 0;
+        zPower = 0;
+        driveMecanum(xPower, yPower, zPower);
+        sleep(1000);
+
 
         grabFoundation();
-        sleep(1000);
+        sleep(2000);
 
         xPower = 0;
         yPower = -0.5;
@@ -136,19 +145,20 @@ public class BlueAuto extends LinearOpMode {
         sleep(500);
 
     }
-    public void driveMecanum(xPower, yPower, zPower) {
-        rightFront.setPower(motorPower * (((-yPower) + (xPower)) + -zPower));
-        leftRear.setPower(motorPower * (((-yPower) + (-xPower)) + zPower));
-        leftFront.setPower(motorPower * (((-yPower) + (xPower)) + zPower));
-        rightRear.setPower(motorPower * (((-yPower) + (-xPower)) + -zPower));
+    public void driveMecanum(double xPower,double yPower,double  zPower) {
+        yPower = -yPower;
+        rightFront.setPower(1 * (((-yPower) + (xPower)) + -zPower));
+        leftRear.setPower(1 * (((-yPower) + (-xPower)) + zPower));
+        leftFront.setPower(1 * (((-yPower) + (xPower)) + zPower));
+        rightRear.setPower(1 * (((-yPower) + (-xPower)) + -zPower));
     }
 
-    public void ungrabFoundation() {
+    public void grabFoundation() {
         leftSlam.setPosition(0.9);
         rightSlam.setPosition(0.1);
     }
 
-    public void grabFoundation() {
+    public void ungrabFoundation() {
         leftSlam.setPosition(0.1);
         rightSlam.setPosition(0.9);
     }
