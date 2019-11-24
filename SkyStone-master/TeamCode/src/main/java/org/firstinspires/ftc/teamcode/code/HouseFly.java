@@ -37,7 +37,7 @@ public class HouseFly extends SampleMecanumDriveBase {
     public final double rotaterOut = 0.95;
     public final double gripperHome = 0.41;
     public final double gripperGrip = 0.215;
-    public ExpansionHubMotor leftSlide, rightSlide; // tfw when you dont have to worry about this bs cause charlie is coding teleop
+    public ExpansionHubMotor leftSlide, rightSlide; // tfw when you dont have to worry about this bs cause charlie is coding teleop edit: rip
     public ExpansionHubServo leftSlam, rightSlam;
     public ExpansionHubServo rotater;
     public ExpansionHubServo gripper;
