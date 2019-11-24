@@ -1,5 +1,3 @@
-
-
 package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
 
         import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -7,6 +5,8 @@ package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
         import com.qualcomm.robotcore.hardware.DcMotor;
         import com.qualcomm.robotcore.hardware.Servo;
         import org.opencv.core.Mat;
+
+        import java.util.ArrayList;
 
 
 @TeleOp(name = "basiceleopdrve")
@@ -29,6 +29,7 @@ public class HouseFlyTeleop extends OpMode {
     private DcMotor leftSlide;
     private DcMotor rightSlide;
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
+    private ArrayList<DcMotor> driveMotors = new ArrayList<>();
 
 
 
@@ -68,6 +69,11 @@ public class HouseFlyTeleop extends OpMode {
         leftSlam = hardwareMap.get(Servo.class, "leftSlam");
         rightSlam = hardwareMap.get(Servo.class, "rightSlam");
 
+        driveMotors.add(leftFront);
+        driveMotors.add(leftRear);
+        driveMotors.add(rightFront);
+        driveMotors.add(rightRear);
+
 
 
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -75,6 +81,12 @@ public class HouseFlyTeleop extends OpMode {
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
 
+        // i am speed
+        // i am brake
+        for(DcMotor dcMotor : driveMotors) {
+            dcMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            dcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
 
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -126,6 +138,12 @@ public class HouseFlyTeleop extends OpMode {
             leftSlide.setPower(1);
             rightSlide.setPower(1);
         }
+
+        else {
+            leftSlide.setPower(0);
+            rightSlide.setPower(0);
+        }
+
 
 
 
