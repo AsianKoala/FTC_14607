@@ -1,17 +1,31 @@
-package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
+package org.firstinspires.ftc.teamcode.code.Auto.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.RobotLog;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.*;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
 
 import java.util.ArrayList;
+import java.util.List;
 
-@Autonomous(name = "Red Auto", group = "Firefly")
-public class RedAuto extends LinearOpMode {
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
+@Autonomous(name = "Park Auto", group = "Firefly")
+public class Park extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
@@ -99,42 +113,6 @@ public class RedAuto extends LinearOpMode {
         zPower = 0;
         driveMecanum(xPower, yPower, zPower);
         sleep(1000);
-
-        xPower = 0;
-        yPower = 0.5;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(1000);
-
-        xPower = 0;
-        yPower = 0;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(1000);
-
-
-        grabFoundation();
-        sleep(2000);
-
-        xPower = 0;
-        yPower = -0.5;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(3000);
-
-        ungrabFoundation();
-
-        xPower = 0;
-        yPower = 0;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(1000);
-
-        xPower = -0.5;
-        yPower = 0;
-        zPower = 0;
-        driveMecanum(xPower, yPower, zPower);
-        sleep(2600);
 
         xPower = 0;
         yPower = 0;

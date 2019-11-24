@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
+package org.firstinspires.ftc.teamcode.code.Auto.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,8 +24,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@Autonomous(name = "Park Auto", group = "Firefly")
-public class Park extends LinearOpMode {
+@Autonomous(name = "Blue Auto", group = "Firefly")
+public class BlueAuto extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
@@ -108,11 +108,47 @@ public class Park extends LinearOpMode {
 
         sleep(500);
 
-        xPower = 0.5;
+        xPower = -0.5;
         yPower = 0;
         zPower = 0;
         driveMecanum(xPower, yPower, zPower);
         sleep(1000);
+
+        xPower = 0;
+        yPower = 0.5;
+        zPower = 0;
+        driveMecanum(xPower, yPower, zPower);
+        sleep(1000);
+
+        xPower = 0;
+        yPower = 0;
+        zPower = 0;
+        driveMecanum(xPower, yPower, zPower);
+        sleep(1000);
+
+
+        grabFoundation();
+        sleep(2000);
+
+        xPower = 0;
+        yPower = -0.5;
+        zPower = 0;
+        driveMecanum(xPower, yPower, zPower);
+        sleep(3000);
+
+        ungrabFoundation();
+
+        xPower = 0;
+        yPower = 0;
+        zPower = 0;
+        driveMecanum(xPower, yPower, zPower);
+        sleep(1000);
+
+        xPower = 0.5;
+        yPower = 0;
+        zPower = 0;
+        driveMecanum(xPower, yPower, zPower);
+        sleep(2600);
 
         xPower = 0;
         yPower = 0;
