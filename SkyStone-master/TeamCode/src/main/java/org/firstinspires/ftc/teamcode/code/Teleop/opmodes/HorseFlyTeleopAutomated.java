@@ -298,6 +298,7 @@ public class HorseFlyTeleopAutomated extends OpMode {
                 {
                     newSlideLeft = leftSlide.getCurrentPosition() + liftIncrement;
                     newSlideRight = rightSlide.getCurrentPosition() + liftIncrement;
+                    time = System.currentTimeMillis();
                     count++;
                 }
                 break;
@@ -315,7 +316,6 @@ public class HorseFlyTeleopAutomated extends OpMode {
                 if(System.currentTimeMillis() - time >= toBackTime)
                 {
                     rotaterOut();
-                    time = System.currentTimeMillis();
                     count = 0;
                 }
                 break;
