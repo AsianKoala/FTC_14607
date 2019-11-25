@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.ArrayList;
 
 
-@TeleOp(name = "hosrefly automated")
-public class HorseFlyTeleopAutomated extends OpMode {
+@TeleOp(name = "copy of automatedteleop")
+public class CopyOfTeleop extends OpMode {
 
     /**
      * LIST OF TODOS
@@ -32,8 +32,6 @@ public class HorseFlyTeleopAutomated extends OpMode {
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
 
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
-
-
 
     private long time = 0;
     private int count = 0;
@@ -104,6 +102,9 @@ public class HorseFlyTeleopAutomated extends OpMode {
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        leftSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,2,0));
+        rightSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,2,0));
+
 
 
         driveMotors.add(leftRear);
@@ -117,8 +118,6 @@ public class HorseFlyTeleopAutomated extends OpMode {
 
     // run until the end of the match (driver presses STOP)
     public void loop() {
-
-
 
 
         /**
@@ -247,7 +246,7 @@ public class HorseFlyTeleopAutomated extends OpMode {
         //BACK IN
         if(gamepad2.dpad_right)
         {
-            counter = 1;
+            counter = 0;
         }
 
 
@@ -257,17 +256,24 @@ public class HorseFlyTeleopAutomated extends OpMode {
 
         switch(counter)
         {
-                //task 1: lift up
+            //task 1: lift up
+
+            case 0:
+                gripper.setPosition(gripperHome);
+                chime = System.currentTimeMillis();
+                counter++;
+
             case 1:
-                    gripper.setPosition(gripperGrip);
+                if(System.currentTimeMillis() - chime >= 100) {
                     newSlideLeft = liftIncrementer;
                     newSlideRight = liftIncrementer;
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
+                    leftSlide.setTargetPosition((int) (newSlideLeft));
+                    rightSlide.setTargetPosition((int) (newSlideRight));
                     leftSlide.setPower(1);
                     rightSlide.setPower(1);
                     chime = System.currentTimeMillis();
                     counter++;
+                }
 
                 break;
             //task 3: flip back
@@ -303,7 +309,7 @@ public class HorseFlyTeleopAutomated extends OpMode {
                     gripper.setPosition(gripperHome);
                 }
 
-                counter = 0;
+                counter = -1;
                 break;
         }
 
@@ -343,15 +349,15 @@ public class HorseFlyTeleopAutomated extends OpMode {
 
                 break;
 
-        /*    case 4:
+            case 4:
                 if(System.currentTimeMillis() - time >= 100) {
                     flipper.setPosition(flipperBetweenBetween);
                     time = System.currentTimeMillis();
                     count++;
-                }*/
+                }
 
             //rotate around
-            case 4:
+            case 5:
                 if(System.currentTimeMillis() - time >= toBackTime)
                 {
                     rotaterOut();

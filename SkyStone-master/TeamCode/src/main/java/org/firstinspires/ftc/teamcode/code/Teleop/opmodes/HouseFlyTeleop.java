@@ -4,9 +4,7 @@ package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
 
 import java.util.ArrayList;
 
@@ -40,6 +38,7 @@ public class HouseFlyTeleop extends OpMode {
     private final double flipperHome =  0.95;
     private final double flipperOut = 0.25;
     private final double flipperBetween = (flipperHome + flipperOut)/2;
+    private final double flipperBetweenBetween = (flipperBetween + flipperOut)/2;
     private final double rotaterHome = 0.279;
     private final double rotaterOut = 0.95;
     private final double gripperHome = 0.41;
@@ -85,6 +84,7 @@ public class HouseFlyTeleop extends OpMode {
         rightSlide.setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
 
         driveMotors.add(leftRear);
@@ -143,7 +143,6 @@ public class HouseFlyTeleop extends OpMode {
             leftSlide.setPower(0);
             rightSlide.setPower(0);
         }
-
 
 
 
@@ -221,7 +220,7 @@ public class HouseFlyTeleop extends OpMode {
         }
 
         if(gamepad2.dpad_up) {
-            flipper.setPosition((0.6+0.95)/2);
+            flipper.setPosition((0.25+0.95)/2);
         }
 
         if(gamepad2.right_trigger > 0.5) {
@@ -336,7 +335,7 @@ public class HouseFlyTeleop extends OpMode {
     }
 
     public boolean isFlipperFlipped() {
-        return flipper.getPortNumber() == flipperOut;
+        return flipper.getPosition() == flipperOut;
     }
 
 
