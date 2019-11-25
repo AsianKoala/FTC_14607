@@ -4,14 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.code.Firefly;
 
 import java.util.ArrayList;
 
 
-@TeleOp(name = "copy of automatedteleop")
-public class CopyOfTeleop extends OpMode {
+@TeleOp(name = "hosrefly automated")
+public class BugFlyTeleop extends OpMode {
 
     /**
      * LIST OF TODOS
@@ -21,17 +21,9 @@ public class CopyOfTeleop extends OpMode {
      * TODO: add more stuff that makes it easier for driver to drive
      */
 
-    private DcMotor leftFront;
-    private DcMotor rightFront;
-    private DcMotor leftRear;
-    private DcMotor rightRear;
-    private DcMotor leftIntake;
-    private DcMotor rightIntake;
-    private DcMotorEx leftSlide;
-    private DcMotorEx rightSlide;
-    private Servo flipper, gripper, rotater, leftSlam, rightSlam;
+    private Firefly robot;
 
-    private ArrayList<DcMotor> driveMotors = new ArrayList<>();
+
 
     private long time = 0;
     private int count = 0;
@@ -50,17 +42,6 @@ public class CopyOfTeleop extends OpMode {
     private final int liftIncrementer = -500;
 
 
-
-
-    private final double flipperHome =  0.95;
-    private final double flipperOut = 0.25;
-    private final double flipperBetween = (flipperHome + flipperOut)/2;
-    private final double flipperBetweenBetween = (flipperBetween + flipperOut)/2;
-    private final double rotaterHome = 0.279;
-    private final double rotaterOut = 0.95;
-    private final double gripperHome = 0.41;
-    private final double gripperGrip = 0.2;
-
     private double oldSlideLeft = 0;
     private double oldSlideRight = 0;
     private double newSlideLeft = 0;
@@ -71,46 +52,7 @@ public class CopyOfTeleop extends OpMode {
     @Override
     public void init() {
 
-        leftFront = hardwareMap.get(DcMotor.class, "FL");
-        leftRear = hardwareMap.get(DcMotor.class, "BL");
-        rightRear = hardwareMap.get(DcMotor.class, "FR");
-        rightFront = hardwareMap.get(DcMotor.class, "BR");
-        leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");
-        rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");
-        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
-
-        gripper = hardwareMap.get(Servo.class, "gripper");
-        flipper = hardwareMap.get(Servo.class, "flipper");
-        rotater = hardwareMap.get(Servo.class, "rotater");
-        leftSlam = hardwareMap.get(Servo.class, "leftSlam");
-        rightSlam = hardwareMap.get(Servo.class, "rightSlam");
-
-
-
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
-        rightIntake.setDirection(DcMotor.Direction.REVERSE);
-        leftSlide.setDirection(DcMotor.Direction.REVERSE);
-
-
-
-
-
-        leftSlide.setTargetPosition(0);
-        rightSlide.setTargetPosition(0);
-        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,2,0));
-        rightSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,2,0));
-
-
-
-        driveMotors.add(leftRear);
-        driveMotors.add(leftFront);
-        driveMotors.add(rightFront);
-        driveMotors.add(rightRear);
+        robot = new Firefly(hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -118,6 +60,7 @@ public class CopyOfTeleop extends OpMode {
 
     // run until the end of the match (driver presses STOP)
     public void loop() {
+
 
 
         /**
@@ -129,11 +72,11 @@ public class CopyOfTeleop extends OpMode {
         double leftIntakePower = gamepad2.left_stick_y - gamepad2.left_stick_x;
         double rightIntakePower = gamepad2.left_stick_y + gamepad2.left_stick_x;
         if(Math.abs(leftIntakePower) < 0.1 || Math.abs(rightIntakePower) < 0.1) {
-            leftIntake.setPower(0);
-            rightIntake.setPower(0);
+            robot.leftIntake.setPower(0);
+            robot.rightIntake.setPower(0);
         }else {
-            leftIntake.setPower( 0.5 * -leftIntakePower);
-            rightIntake.setPower( 0.5 * -rightIntakePower);
+            robot.leftIntake.setPower( 0.5 * -leftIntakePower);
+            robot.rightIntake.setPower( 0.5 * -rightIntakePower);
         }
 
 
@@ -160,18 +103,18 @@ public class CopyOfTeleop extends OpMode {
         double threshold = 0.157; // deadzone
         if(Math.abs(gamepad1.left_stick_y) > threshold || Math.abs(gamepad1.left_stick_x) > threshold || Math.abs(gamepad1.right_stick_x) > threshold)
         {
-            rightFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
-            leftRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + gamepad1.right_stick_x));
-            leftFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + gamepad1.right_stick_x));
-            rightRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
+            robot.frontRight.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
+            robot.backLeft.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            robot.frontLeft.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            robot.backRight.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
         }
 
         else
         {
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            leftRear.setPower(0);
-            rightRear.setPower(0);
+            robot.frontLeft.setPower(0);
+            robot.frontRight.setPower(0);
+            robot.backLeft.setPower(0);
+            robot.backRight.setPower(0);
         }
 
 
@@ -246,7 +189,7 @@ public class CopyOfTeleop extends OpMode {
         //BACK IN
         if(gamepad2.dpad_right)
         {
-            counter = 0;
+            counter = 1;
         }
 
 
@@ -256,24 +199,17 @@ public class CopyOfTeleop extends OpMode {
 
         switch(counter)
         {
-            //task 1: lift up
-
-            case 0:
-                gripper.setPosition(gripperHome);
-                chime = System.currentTimeMillis();
-                counter++;
-
+                //task 1: lift up
             case 1:
-                if(System.currentTimeMillis() - chime >= 100) {
+                    gripper.setPosition(gripperGrip);
                     newSlideLeft = liftIncrementer;
                     newSlideRight = liftIncrementer;
-                    leftSlide.setTargetPosition((int) (newSlideLeft));
-                    rightSlide.setTargetPosition((int) (newSlideRight));
+                    leftSlide.setTargetPosition((int)(newSlideLeft));
+                    rightSlide.setTargetPosition((int)(newSlideRight));
                     leftSlide.setPower(1);
                     rightSlide.setPower(1);
                     chime = System.currentTimeMillis();
                     counter++;
-                }
 
                 break;
             //task 3: flip back
@@ -309,7 +245,7 @@ public class CopyOfTeleop extends OpMode {
                     gripper.setPosition(gripperHome);
                 }
 
-                counter = -1;
+                counter = 0;
                 break;
         }
 
@@ -349,15 +285,15 @@ public class CopyOfTeleop extends OpMode {
 
                 break;
 
-            case 4:
+        /*    case 4:
                 if(System.currentTimeMillis() - time >= 100) {
                     flipper.setPosition(flipperBetweenBetween);
                     time = System.currentTimeMillis();
                     count++;
-                }
+                }*/
 
             //rotate around
-            case 5:
+            case 4:
                 if(System.currentTimeMillis() - time >= toBackTime)
                 {
                     rotaterOut();
