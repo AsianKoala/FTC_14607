@@ -82,7 +82,6 @@ public class BugFlyTeleop extends OpMode {
 
         /**
          *
-         *
          * DRIVE MOTORS CONTROL
          *
          */
@@ -127,22 +126,22 @@ public class BugFlyTeleop extends OpMode {
 
 
 
-        // flipper arm control
+        // robot.flipper arm control
 
         if(gamepad2.dpad_down) {
-            flipper.setPosition(.6);
+            robot.flipBetween();
         }
 
         if(gamepad2.dpad_up) {
-            flipper.setPosition((0.25+0.95)/2);
+            robot.flipBetween();
         }
 
         if(gamepad2.right_trigger > 0.5) {
-            flipper.setPosition(0.95);
+            robot.flipHome();
         }
 
         if(gamepad2.left_trigger > 0.5) {
-            flipper.setPosition(0.25);
+            robot.flipOut();
         }
 
 
@@ -150,23 +149,23 @@ public class BugFlyTeleop extends OpMode {
 
 
 
-        // rotater arm control
+        // robot.rotater arm control
         if(gamepad2.left_bumper) {
-            rotaterOut();
+            robot.rotateOut();
         }
         if(gamepad2.right_bumper) {
-            rotaterReady();
+            robot.rotaterHome();
         }
 
 
 
 
-        // gripper arm control
+        // robot.gripper arm control
         if(gamepad2.a) {
-            grip();
+            robot.grip();
         }
         if(gamepad2.y) {
-            gripReady();
+            robot.unGrip();
         }
 
 
@@ -174,11 +173,11 @@ public class BugFlyTeleop extends OpMode {
 
         //foundation mover control
         if(gamepad1.a) {
-            grabFoundation();
+            robot.grabFoundation();
         }
 
         if(gamepad1.b) {
-            ungrabFoundation();
+            robot.unGrabFoundation();
         }
 
         // AUTOMATED FLIP
@@ -201,13 +200,13 @@ public class BugFlyTeleop extends OpMode {
         {
                 //task 1: lift up
             case 1:
-                    gripper.setPosition(gripperGrip);
+                    robot.grip();
                     newSlideLeft = liftIncrementer;
                     newSlideRight = liftIncrementer;
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
-                    leftSlide.setPower(1);
-                    rightSlide.setPower(1);
+                    robot.leftSlide.setTargetPosition((int)(newSlideLeft));
+                    robot.rightSlide.setTargetPosition((int)(newSlideRight));
+                    robot.leftSlide.setPower(1);
+                    robot.rightSlide.setPower(1);
                     chime = System.currentTimeMillis();
                     counter++;
 
@@ -216,7 +215,7 @@ public class BugFlyTeleop extends OpMode {
             case 2:
                 if(System.currentTimeMillis() - chime >= toLiftTimeTo)
                 {
-                    flipper.setPosition(0.95);
+                    robot.flipper.setPosition(0.95);
                     chime = System.currentTimeMillis();
                     counter++;
                 }
@@ -226,15 +225,15 @@ public class BugFlyTeleop extends OpMode {
             case 3:
                 if(System.currentTimeMillis() - chime >= toBackTimeTo)
                 {
-                    rotaterReady();
+                    robot.rotaterHome();
                     counter++;
                 }
                 break;
             case 4:
-                leftSlide.setTargetPosition((int)(-25.0/2));
-                rightSlide.setTargetPosition((int)(-25.0/2));
-                leftSlide.setPower(0.75);
-                rightSlide.setPower(0.75);
+                robot.leftSlide.setTargetPosition((int)(-25.0/2));
+                robot.rightSlide.setTargetPosition((int)(-25.0/2));
+                robot.leftSlide.setPower(0.75);
+                robot.rightSlide.setPower(0.75);
                 chime = System.currentTimeMillis();
                 counter++;
                 break;
@@ -242,7 +241,7 @@ public class BugFlyTeleop extends OpMode {
             // grip to home
             case 5:
                 if(System.currentTimeMillis() - chime >= 500) {
-                    gripper.setPosition(gripperHome);
+                    robot.gripper.setPosition(robot.gripperHome);
                 }
 
                 counter = 0;
@@ -256,7 +255,7 @@ public class BugFlyTeleop extends OpMode {
         {
             //task 1: flip to center
             case 1:
-                flipper.setPosition(0.6);
+                robot.flipper.setPosition(0.6);
                 time = System.currentTimeMillis();
                 count++;
                 break;
@@ -266,10 +265,10 @@ public class BugFlyTeleop extends OpMode {
                 {
                     newSlideLeft = liftIncrement;
                     newSlideRight = liftIncrement;
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
-                    leftSlide.setPower(1);
-                    rightSlide.setPower(1);
+                    robot.leftSlide.setTargetPosition((int)(newSlideLeft));
+                    robot.rightSlide.setTargetPosition((int)(newSlideRight));
+                    robot.leftSlide.setPower(1);
+                    robot.rightSlide.setPower(1);
                     time = System.currentTimeMillis();
                     count++;
                 }
@@ -278,7 +277,7 @@ public class BugFlyTeleop extends OpMode {
             case 3:
                 if(System.currentTimeMillis() - time >= liftTime)
                 {
-                    flipper.setPosition(0.25);
+                    robot.flipper.setPosition(0.25);
                     time = System.currentTimeMillis();
                     count++;
                 }
@@ -287,7 +286,7 @@ public class BugFlyTeleop extends OpMode {
 
         /*    case 4:
                 if(System.currentTimeMillis() - time >= 100) {
-                    flipper.setPosition(flipperBetweenBetween);
+                    robot.flipper.setPosition(robot.flipperBetweenBetween);
                     time = System.currentTimeMillis();
                     count++;
                 }*/
@@ -296,7 +295,7 @@ public class BugFlyTeleop extends OpMode {
             case 4:
                 if(System.currentTimeMillis() - time >= toBackTime)
                 {
-                    rotaterOut();
+                    robot.rotateOut();
                     count = 0;
                 }
                 break;
@@ -310,147 +309,43 @@ public class BugFlyTeleop extends OpMode {
         double increment = gamepad2.right_stick_y * 100;
 
         if(Math.abs(increment) > 25) {
-            newSlideLeft = leftSlide.getCurrentPosition() + increment;
-            newSlideRight = rightSlide.getCurrentPosition() + increment;
+            newSlideLeft = robot.leftSlide.getCurrentPosition() + increment;
+            newSlideRight = robot.rightSlide.getCurrentPosition() + increment;
         }
         if(gamepad2.x) {
-            oldSlideLeft = leftSlide.getCurrentPosition();
-            oldSlideRight = rightSlide.getCurrentPosition();
+            oldSlideLeft = robot.leftSlide.getCurrentPosition();
+            oldSlideRight = robot.rightSlide.getCurrentPosition();
             newSlideLeft = -25;
             newSlideRight = -25;
         }
 
         if(gamepad2.b) {
-            oldSlideLeft = leftSlide.getCurrentPosition();
-            oldSlideRight = rightSlide.getCurrentPosition();
+            oldSlideLeft = robot.leftSlide.getCurrentPosition();
+            oldSlideRight = robot.rightSlide.getCurrentPosition();
             newSlideLeft = -25.0/2;
             newSlideRight = -25.0/2;
         }
 
-        if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
-            leftSlide.setTargetPosition((int)(newSlideLeft));
-            rightSlide.setTargetPosition((int)(newSlideRight));
-            leftSlide.setPower(1);
-            rightSlide.setPower(1);
+        if(Math.abs(newSlideLeft - robot.leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - robot.rightSlide.getCurrentPosition()) > 10) {
+            robot.leftSlide.setTargetPosition((int)(newSlideLeft));
+            robot.rightSlide.setTargetPosition((int)(newSlideRight));
+            robot.leftSlide.setPower(1);
+            robot.rightSlide.setPower(1);
         }
 
         else {
-            leftSlide.setPower(0);
-            rightSlide.setPower(0);
+            robot.leftSlide.setPower(0);
+            robot.rightSlide.setPower(0);
         }
 
 
-        telemetry.addData("flipper pos", flipper.getPosition());
-        telemetry.addData("gripper pos", gripper.getPosition());
-        telemetry.addData("rotater pos", rotater.getPosition());
-        telemetry.addData("left slide pos", leftSlide.getCurrentPosition());
-        telemetry.addData("right slide pos", rightSlide.getCurrentPosition());
-        telemetry.addData("left slide pid coefffs", leftSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
-        telemetry.addData("right slide pid coeffs", rightSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
+        telemetry.addData("robot.flipper pos", robot.flipper.getPosition());
+        telemetry.addData("robot.gripper pos", robot.gripper.getPosition());
+        telemetry.addData("robot.rotater pos", robot.rotater.getPosition());
+        telemetry.addData("left slide pos", robot.leftSlide.getCurrentPosition());
+        telemetry.addData("right slide pos", robot.rightSlide.getCurrentPosition());
+        telemetry.addData("left slide pid coefffs", robot.leftSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
+        telemetry.addData("right slide pid coeffs", robot.rightSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
 
     }
-
-
-
-
-    /**
-     * @return whether or not the intake motors are busy
-     */
-
-    public boolean intakeBusy() {
-        return leftIntake.isBusy() || rightIntake.isBusy();}
-
-    public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
-        leftIntake.setPower(leftIntakePower);
-        rightIntake.setPower(rightIntakePower);
-    }
-
-
-    public void stopIntake() { setIntakePowers(0,0);}
-
-
-    /**
-     * foundation movement controls
-     *
-     *
-     */
-
-    public void grabFoundation() {
-        leftSlam.setPosition(0.9);
-        rightSlam.setPosition(0.1);
-    }
-
-    public void ungrabFoundation() {
-        leftSlam.setPosition(0.1);
-        rightSlam.setPosition(0.9);
-    }
-
-
-    /**
-     *
-     *
-     * flipper movement controls
-     */
-
-    public void flip() {
-        flipper.setPosition(flipperOut);
-    }
-
-    public void flipReady() {
-        flipper.setPosition(flipperHome);
-    }
-
-    public void flipMid() {
-        flipper.setPosition(flipperBetween);}
-
-
-    public boolean isFlipperReady() {
-        return flipper.getPosition() == flipperHome;
-    }
-
-    public boolean isFlipperFlipped() {
-        return flipper.getPortNumber() == flipperOut;
-    }
-
-
-
-    /**
-     * gripper controls
-     */
-
-    public void grip() {
-        gripper.setPosition(gripperGrip);
-    }
-
-    public void gripReady() {
-        gripper.setPosition(gripperHome);
-    }
-
-    public boolean isGripReady() {
-        return gripper.getPosition() == gripperHome;
-    }
-
-    public boolean isGripped() {
-        return gripper.getPosition() == gripperGrip;
-    }
-
-    /**
-     * rotater movement controls
-     */
-
-    public void rotaterOut() {
-        rotater.setPosition(rotaterOut);
-    }
-
-    public void rotaterReady() {
-        rotater.setPosition(rotaterHome);
-    }
-
-    public boolean isOuttaked() {
-        return rotater.getPosition() == rotaterOut;
-    }
-
-    public boolean isOuttakeReady() {
-        return rotater.getPosition() == rotaterHome;}
-
 }

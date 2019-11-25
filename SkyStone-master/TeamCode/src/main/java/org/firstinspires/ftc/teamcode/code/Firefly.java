@@ -130,8 +130,8 @@ public class Firefly extends SampleMecanumDriveBase {
          * Increase the I gain until it brings you to the setpoint with the number of oscillations desired
          * (normally zero but a quicker response can be had if you don't mind a couple oscillations of overshoot)
          */
-        leftSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0,0,0,0));
-
+        leftSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,0,0));
+        rightSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,0,0));
 
         leftIntake.setMode(ExpansionHubMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightIntake.setMode(ExpansionHubMotor.RunMode.RUN_WITHOUT_ENCODER);
