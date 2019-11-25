@@ -93,7 +93,6 @@ public class HouseFly extends SampleMecanumDriveBase {
         rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
         leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
         rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
-
         leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
         rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
         rotater = hardwareMap.get(ExpansionHubServo.class, "rotater");
