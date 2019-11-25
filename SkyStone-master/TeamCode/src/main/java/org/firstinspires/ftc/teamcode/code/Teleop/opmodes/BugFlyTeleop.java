@@ -52,7 +52,7 @@ public class BugFlyTeleop extends OpMode {
     @Override
     public void init() {
 
-        robot = new Firefly(hardwareMap);
+        robot = new Firefly(hardwareMap, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -96,7 +96,7 @@ public class BugFlyTeleop extends OpMode {
         }
 
         else {
-            motorPower = 1;
+            motorPower = 0.8;
         }
 
         double threshold = 0.157; // deadzone

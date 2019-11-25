@@ -53,7 +53,7 @@ public class Firefly extends SampleMecanumDriveBase {
 
 
 
-    public Firefly(HardwareMap hardwareMap) {
+    public Firefly(HardwareMap hardwareMap, DcMotor.RunMode driveRunMode) {
         super();
 
 
@@ -107,7 +107,7 @@ public class Firefly extends SampleMecanumDriveBase {
 
 
         for(ExpansionHubMotor motor : driveMotors) {
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setMode(driveRunMode);
         }
 
         for(ExpansionHubMotor motor : leftMotors) {
@@ -296,23 +296,23 @@ public class Firefly extends SampleMecanumDriveBase {
      * @param movementSpeed movementSpeed towards targetPose
      */
     public void goToPosition(Pose2d pose, double movementSpeed, double allowableError) {
-        double distanceToXTarget = pose.getX() - this.getPoseEstimate().getX();
-        double distanceToYTarget = pose.getY() - this.getPoseEstimate().getY();
+        double distanceToXTarget = pose.getX() - getPoseEstimate().getY();
+        double distanceToYTarget = pose.getY() - getPoseEstimate().getY();
         double distanceToTarget = Math.hypot(distanceToXTarget, distanceToYTarget);
 
         while(distanceToTarget > allowableError) {
              distanceToTarget = Math.hypot(distanceToXTarget, distanceToYTarget);
-             distanceToXTarget = pose.getX() - this.getPoseEstimate().getX();
-             distanceToYTarget = pose.getY() - this.getPoseEstimate().getY();
+             distanceToXTarget = pose.getX() - getPoseEstimate().getX();
+             distanceToYTarget = pose.getY() - getPoseEstimate().getY();
 
             double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
 
             double robotXComponent = calculateX(robotMovementAngle, movementSpeed);
             double robotYComponent = calculateY(robotMovementAngle, movementSpeed);
-            double pivotCorrection = pose.getHeading() - this.getPoseEstimate().getHeading();
+            double pivotCorrection = pose.getHeading() - getPoseEstimate().getHeading();
             driveMecanum(robotXComponent, robotYComponent, pivotCorrection);
 
-            this.update();
+            update();
         }
     }
 
@@ -323,6 +323,10 @@ public class Firefly extends SampleMecanumDriveBase {
 
     public double calculateY(double desiredAngle, double speed) {
         return Math.cos(Math.toRadians(desiredAngle) * speed);
+    }
+
+    public void stop() {
+        setMotorPowers(0,0,0,0);
     }
 
 
