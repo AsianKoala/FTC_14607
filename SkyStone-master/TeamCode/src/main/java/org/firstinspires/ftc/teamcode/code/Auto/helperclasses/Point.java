@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.Auto.opmodes;
+package org.firstinspires.ftc.teamcode.code.Auto.helperclasses;
 
 //javadoc:Point_
 public class Point {

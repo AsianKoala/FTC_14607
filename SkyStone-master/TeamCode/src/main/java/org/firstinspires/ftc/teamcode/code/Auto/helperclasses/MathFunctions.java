@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.Auto.opmodes;
-
-import org.firstinspires.ftc.teamcode.code.Auto.opmodes.Point;
+package org.firstinspires.ftc.teamcode.code.Auto.helperclasses;
 
 import java.util.ArrayList;
 

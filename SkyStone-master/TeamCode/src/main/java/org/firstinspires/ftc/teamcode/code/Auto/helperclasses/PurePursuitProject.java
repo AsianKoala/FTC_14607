@@ -1,14 +1,13 @@
-package org.firstinspires.ftc.teamcode.code.Auto.opmodes;
+package org.firstinspires.ftc.teamcode.code.Auto.helperclasses;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.code.Firefly;
-import org.firstinspires.ftc.teamcode.code.Auto.opmodes.Point;
 
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions.AngleWrap;
-import static org.firstinspires.ftc.teamcode.code.Auto.opmodes.MathFunctions.*;
+import static org.firstinspires.ftc.teamcode.code.Auto.helperclasses.MathFunctions.*;
 
 public class PurePursuitProject {
 
