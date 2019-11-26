@@ -26,6 +26,7 @@ import static RobotUtilities.MyPosition.worldAngle_rad;
  * This class extends Extension because it is an extension, but is specific to the collector.
  * We use the rev PIDs, not manual ones
  */
+
 public class Collector extends Extension{
     //link to the main robot
     private Robot myRobot;
