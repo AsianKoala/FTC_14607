@@ -32,7 +32,7 @@ public class DriveTrain {
         }
     }
 
-
+    // teleop control: -gamepad1.leftstick.y + gamepad1.leftstick.x + gamepad1.rightstick.x
     public void driveMecanum(double xPower,double yPower,double zPower) {
         frontRight.setPower(1 * (yPower + xPower + -zPower));
         backLeft.setPower(1 * (yPower + -xPower + zPower));
@@ -40,8 +40,9 @@ public class DriveTrain {
         backRight.setPower(1 * (yPower + -xPower + -zPower));
     }
 
-    public void driveMecanum(Pose2d pose, double powerMultiplier) {
+    public void teleopControl(Pose2d joystickPowers) {
 
     }
+
 
 }
