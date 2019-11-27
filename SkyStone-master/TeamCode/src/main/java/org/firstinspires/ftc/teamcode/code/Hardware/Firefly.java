@@ -17,6 +17,8 @@ import java.util.ArrayList;
 public class Firefly extends TunableOpMode {
 
     // rev objects
+    RevBulkData masterData; // right hub
+    RevBulkData slaveData; // left hub
     private ExpansionHubEx master;
     private ExpansionHubEx slave;
     private BNO055IMU imu;
@@ -91,8 +93,14 @@ public class Firefly extends TunableOpMode {
         mySlide.setDebugging(false);
 
 
+
+
+
         mySlide.update();
+
         myIntake.update();
+
+        getRevBulkData();
 
     }
 
@@ -100,16 +108,152 @@ public class Firefly extends TunableOpMode {
     @Override
     public void init_loop() {
         currTimeMillis = SystemClock.uptimeMillis();
-
+        getRevBulkData();
         mySlide.update();
     }
 
 
     @Override
-    public void loop() {
+    public void start() {
 
     }
 
+    /**
+     * these are used as debugging loop time checks
+     */
+
+    private TimeProfiler tp1 = new TimeProfiler(1000);
+    private TimeProfiler tp2 = new TimeProfiler(1000);
+    private TimeProfiler tp3 = new TimeProfiler(1000);
+    private TimeProfiler tp4 = new TimeProfiler(1000);
+    private TimeProfiler tp5 = new TimeProfiler(1000);
+    private TimeProfiler tp6 = new TimeProfiler(1000);
+    private TimeProfiler tp7 = new TimeProfiler(1000);
+    private TimeProfiler tp8 = new TimeProfiler(1000);
+
+
+    /**
+     * time of last loop update in millis
+     */
+    private long lastLoopTime = 0;
+
+    /**
+     * amount of time elapsed this update in millis
+     */
+    public int elapsedMillisThisUpdate = 0;
+
+
+
+    private TimeProfiler timeProfiler = new TimeProfiler(300);
+    public static double updatesPerSecond = 1000;
+
+    @Override
+    public void loop() {
+        /**
+         * most of this stuff is just state machine updating + telemetry
+         */
+        timeProfiler.markEnd();
+        timeProfiler.markStart();
+
+
+        updatesPerSecond = 1000/timeProfiler.getAverageTimePerUpdateMillis();
+        telemetry.addLine("UPS: " + updatesPerSecond);
+
+        long timeBeforeDataRead = System.currentTimeMillis();
+        tp1.markStart();
+        getRevBulkData();
+        tp1.markEnd();
+
+        long timeAfterDataRead = System.currentTimeMillis();
+        telemetry.addData("Bulk data time", timeAfterDataRead);
+
+
+        currTimeMillis = SystemClock.uptimeMillis();
+        elapsedMillisThisUpdate = (int)(currTimeMillis - lastLoopTime);
+        lastLoopTime = currTimeMillis;
+
+
+        // now updating the state machines starts
+
+        // intake update
+        tp2.markStart();
+        myIntake.update();
+        tp2.markEnd();
+
+
+        // slide update
+        tp3.markStart();
+        mySlide.update();
+        tp3.markEnd();
+
+
+        telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
+
+
+    }
+
+
+    /**
+     * teleop user control
+      */
+    public void teleopDrivetrainControl() {
+        double scale = 0.8;
+        if(gamepad1.left_bumper) {
+            scale = 0.5;
+        }
+        if(gamepad1.right_bumper) {
+            scale = 0.25;
+        }
+        myDriveTrain.driveMecanum(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, true, scale);
+    }
+
+
+
+
+
+    /**
+     * gets all the data from the expansion hubs in one command
+     */
+    public void getRevBulkData() {
+        RevBulkData newMasterData;
+
+        try {
+            newMasterData = master.getBulkInputData();
+            if(newMasterData != null) {
+                masterData = newMasterData;
+            }
+        }
+        catch(Exception e) {
+            // dont do anything if we get exception
+        }
+
+
+        RevBulkData newSlaveData;
+
+        try {
+            newSlaveData = slave.getBulkInputData();
+            if(newSlaveData != null) {
+                slaveData = newSlaveData;
+            }
+        }
+
+        catch(Exception e) {}
+    }
+
+
+    public double getLeftSlideCurrentPosition() {
+        return slaveData.getMotorCurrentPosition(3);
+    }
+
+    public double getRightSlideCurrentPosition() {
+        return masterData.getMotorCurrentPosition(3);
+    }
+
+    public double getCurrentIntakeVelocty() {
+        return (masterData.getMotorVelocity(2) + slaveData.getMotorVelocity(2))/2.0;
+    }
 
 
 }

@@ -157,12 +157,12 @@ public class DriveTrain extends SampleMecanumDriveBase {
      * @param turnPower
      * @param teleopControl
      */
-    public void driveMecanum(double xPower,double yPower,double turnPower, boolean teleopControl) {
+    public void driveMecanum(double xPower,double yPower,double turnPower, boolean teleopControl, double multiplier) {
         yPower *=1;
-        frontRight.setPower(1 * (yPower + xPower + -turnPower));
-        backLeft.setPower(1 * (yPower + -xPower + turnPower));
-        frontLeft.setPower(1 * (yPower + xPower+ turnPower));
-        backRight.setPower(1 * (yPower + -xPower + -turnPower));
+        frontRight.setPower(multiplier * (yPower + xPower + -turnPower));
+        backLeft.setPower(multiplier * (yPower + -xPower + turnPower));
+        frontLeft.setPower(multiplier * (yPower + xPower+ turnPower));
+        backRight.setPower(multiplier * (yPower + -xPower + -turnPower));
     }
 
 }
