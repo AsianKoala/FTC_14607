@@ -38,6 +38,9 @@ public class DriveTrain extends SampleMecanumDriveBase {
         this.frontRight = frontRight;
         this.backLeft = backLeft;
         this.backRight = backRight;
+        this.master = master;
+        this.slave = slave;
+        this.imu = imu;
 
         allMotors.add(frontLeft);
         allMotors.add(frontRight);
