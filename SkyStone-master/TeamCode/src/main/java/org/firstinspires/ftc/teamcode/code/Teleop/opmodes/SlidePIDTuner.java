@@ -21,6 +21,7 @@ public class SlidePIDTuner extends TunableOpMode {
         ExpansionHubMotor rightSlideMotor = ((ExpansionHubMotor) hardwareMap.get("rightSlide"));
 
         mySlide = new Slide(leftSlideMotor, rightSlideMotor);
+        mySlide.setDebugging(true);
     }
 
 
@@ -31,20 +32,35 @@ public class SlidePIDTuner extends TunableOpMode {
         d = getInt("d");
 
 
-        PIDCoefficients coefficients = new PIDCoefficients(p,i,d);
-
-        mySlide.setPIDCoeffs(coefficients);
-
-        if(gamepad1.left_bumper) mySlide.setTargetPosition(-500);
-        if(gamepad1.right_bumper) mySlide.setTargetPosition(0);
+        mySlide.setPIDCoeffs(p,i,d);
 
 
 
-        mySlide.setPower(1);
+        double increment = gamepad2.right_stick_y * 100;
+        if(Math.abs(increment) > 25) {
+            mySlide.manualMovement(increment, true);
+        }
+
+        if(gamepad2.x) {
+            mySlide.goPsuedohome();
+        }
+
+        if(gamepad2.b) {
+            mySlide.goHome();
+        }
 
 
-        telemetry.addData("PID COEFFS", coefficients.toString());
+
+
+        mySlide.update();
+
+
+
+        telemetry.addData("P:  ", p);
+        telemetry.addData("I:  ", i);
+        telemetry.addData("D   ", d);
         telemetry.addData("left slide position", mySlide.leftSlide.getCurrentPosition());
         telemetry.addData("right slide position", mySlide.rightSlide.getCurrentPosition());
+        telemetry.addData("target position", mySlide.getNewPosition());
     }
 }
