@@ -77,11 +77,32 @@ public class Firefly extends TunableOpMode {
         // construct intake
 
         ExpansionHubMotor leftIntake = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
-        ExpansionHubMotor rightIntak = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        ExpansionHubMotor rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
 
+        myIntake = new Intake(leftIntake, rightIntake);
+
+
+
+        ExpansionHubMotor leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
+        ExpansionHubMotor rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
+
+        mySlide = new Slide(leftSlide, rightSlide);
+
+        mySlide.setDebugging(false);
+
+
+        mySlide.update();
+        myIntake.update();
 
     }
 
+
+    @Override
+    public void init_loop() {
+        currTimeMillis = SystemClock.uptimeMillis();
+
+        mySlide.update();
+    }
 
 
     @Override
