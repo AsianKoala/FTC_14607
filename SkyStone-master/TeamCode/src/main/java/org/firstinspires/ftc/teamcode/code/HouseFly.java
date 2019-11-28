@@ -18,7 +18,7 @@ import org.openftc.revextensions2.RevBulkData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
 import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
 
 /*
@@ -31,12 +31,7 @@ public class HouseFly extends SampleMecanumDriveBase {
     public ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
     public ExpansionHubMotor leftIntake, rightIntake;
 
-    public final double flipperHome = 0.71;
-    public final double flipperOut = 0.049;
-    public final double rotaterHome = 0.279;
-    public final double rotaterOut = 0.95;
-    public final double gripperHome = 0.41;
-    public final double gripperGrip = 0.215;
+
     public ExpansionHubMotor leftSlide, rightSlide; // tfw when you dont have to worry about this bs cause charlie is coding teleop edit: rip
     public ExpansionHubServo leftSlam, rightSlam;
     public ExpansionHubServo rotater;
@@ -219,48 +214,12 @@ public class HouseFly extends SampleMecanumDriveBase {
         return rad;
     }
 
-    
-    
+    public boolean intakeBusy() {
+        return leftIntake.isBusy() || rightIntake.isBusy();}
 
-    
-    
-    
-    
-    
-
-    /**
-     *
-     * add other controls here
-     *
-     *
-     */
-
-
-    /*
-
-
-
-    intake controls
-
-
-
-     */
-
-
-
-    public boolean intakeBusy() { return leftIntake.isBusy() || rightIntake.isBusy();}
-
-    public void setIntakePowers(double leftIntakePower, double rightIntakePower) { 
+    public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
         leftIntake.setPower(leftIntakePower);
         rightIntake.setPower(rightIntakePower);
-    }
-
-    public double getLeftIntakePower() {
-        return leftIntake.getPower();
-    }
-
-    public double getRightIntakePower() {
-        return rightIntake.getPower();
     }
 
 
@@ -268,57 +227,19 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
     /**
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     * slide controls
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
      * foundation movement controls
      *
-
      *
      */
 
     public void grabFoundation() {
-        leftSlam.setPosition(0.75);
-        rightSlam.setPosition(0.25);
+        leftSlam.setPosition(0.9);
+        rightSlam.setPosition(0.1);
     }
 
     public void ungrabFoundation() {
-        leftSlam.setPosition(0);
-        rightSlam.setPosition(0);
+        leftSlam.setPosition(0.1);
+        rightSlam.setPosition(0.9);
     }
 
 
@@ -328,20 +249,20 @@ public class HouseFly extends SampleMecanumDriveBase {
      * flipper movement controls
      */
 
-    public void flip() {
+    public void flipOut() {
         flipper.setPosition(flipperOut);
     }
 
-    public void flipReady() {
+    public void flipHome() {
         flipper.setPosition(flipperHome);
     }
 
-    public boolean isFlipperReady() {
-        return flipper.getPosition() == flipperHome;
+    public void flipBetween() {
+        flipper.setPosition(flipperBetween);
     }
 
-    public boolean isFlipperFlipped() {
-        return flipper.getPortNumber() == flipperOut;
+    public void flipBetweenBetween() {
+        flipper.setPosition(flipperBetweenBetween);
     }
 
 
@@ -353,17 +274,10 @@ public class HouseFly extends SampleMecanumDriveBase {
         gripper.setPosition(gripperGrip);
     }
 
-    public void gripReady() {
+    public void gripHome() {
         gripper.setPosition(gripperHome);
     }
 
-    public boolean isGripReady() {
-        return gripper.getPosition() == gripperHome;
-    }
-
-    public boolean isGripped() {
-        return gripper.getPosition() == gripperGrip;
-    }
 
     /**
      * rotater movement controls
@@ -373,27 +287,8 @@ public class HouseFly extends SampleMecanumDriveBase {
         rotater.setPosition(rotaterOut);
     }
 
-    public void rotaterReady() {
+    public void rotaterHome() {
         rotater.setPosition(rotaterHome);
-    }
-
-    public boolean isRotated() {
-        return rotater.getPosition() == rotaterOut;
-    }
-
-    public boolean isRotaterHome() { return rotater.getPosition() == rotaterHome;}
-
-
-
-
-
-
-
-
-    public void pause(long ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException ignored) {}
     }
 
 

@@ -4,10 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.code.Hardware.Firefly;
+import org.firstinspires.ftc.teamcode.code.HouseFly;
+import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
 
 
 @TeleOp(name = "Big Kahuna Experimental")
-public class BugFlyTeleop extends OpMode {
+public class Bugflyexperimental extends OpMode {
 
     /**
      * LIST OF TODOS
@@ -17,7 +19,7 @@ public class BugFlyTeleop extends OpMode {
      * TODO: add more stuff that makes it easier for driver to drive
      */
 
-    private Firefly robot;
+    private HouseFly robot;
 
 
 
@@ -48,14 +50,14 @@ public class BugFlyTeleop extends OpMode {
     @Override
     public void init() {
 
-        robot = new Firefly(hardwareMap, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot = new HouseFly(hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         //Homes Outtake during Initialization
         robot.flipHome();
         robot.rotaterHome();
-        robot.gripper.setPosition(robot.gripperHome);
+        robot.gripper.setPosition(gripperHome);
     }
 
     // run until the end of the match (driver presses STOP)
@@ -151,7 +153,7 @@ public class BugFlyTeleop extends OpMode {
 
         // robot.rotater arm control
         if(gamepad2.left_bumper) {
-            robot.rotateOut();
+            robot.rotaterOut();
         }
         if(gamepad2.right_bumper) {
             robot.rotaterHome();
@@ -165,7 +167,7 @@ public class BugFlyTeleop extends OpMode {
             robot.grip();
         }
         if(gamepad2.y) {
-            robot.unGrip();
+            robot.gripHome();
         }
 
 
@@ -177,7 +179,7 @@ public class BugFlyTeleop extends OpMode {
         }
 
         if(gamepad1.b) {
-            robot.unGrabFoundation();
+            robot.ungrabFoundation();
         }
 
         // AUTOMATED FLIP
@@ -241,18 +243,18 @@ public class BugFlyTeleop extends OpMode {
             // grip to home
             case 5:
                 if(System.currentTimeMillis() - chime >= 500) {
-                    robot.gripper.setPosition(robot.gripperHome);
+                    robot.gripper.setPosition(gripperHome);
                 }
                 counter++;
                 break;
             case 6:
-                oldSlideLeft = leftSlide.getCurrentPosition();
-                oldSlideRight = rightSlide.getCurrentPosition();
+                oldSlideLeft = robot.leftSlide.getCurrentPosition();
+                oldSlideRight = robot.rightSlide.getCurrentPosition();
                 newSlideLeft = -25.0/2;
                 newSlideRight = -25.0/2;
                 robot.flipHome();
                 robot.rotaterHome();
-                robot.gripper.setPosition(robot.gripperHome);
+                robot.gripper.setPosition(gripperHome);
                 counter = 0;
                 break;
         }
@@ -304,7 +306,7 @@ public class BugFlyTeleop extends OpMode {
             case 4:
                 if(System.currentTimeMillis() - time >= toBackTime)
                 {
-                    robot.rotateOut();
+                    robot.rotaterOut();
                     count = 0;
                 }
                 break;
