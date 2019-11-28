@@ -110,13 +110,6 @@ public class HorseFlyTeleopExperimental extends OpMode {
         driveMotors.add(leftFront);
         driveMotors.add(rightFront);
         driveMotors.add(rightRear);
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-    }
-
-    // run until the end of the match (driver presses STOP)
-    public void loop() {
         /*
          * HOME THE FLIP AND GRIP SERVO
          *
@@ -124,6 +117,13 @@ public class HorseFlyTeleopExperimental extends OpMode {
          flipReady();
          rotaterReady();
          gripReady();
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+    }
+
+    // run until the end of the match (driver presses STOP)
+    public void loop() {
+        
 
 
         /**
