@@ -8,8 +8,8 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 import java.util.ArrayList;
 
 public class Intake {
-    public ExpansionHubMotor leftIntake;
-    public ExpansionHubMotor rightIntake;
+    private ExpansionHubMotor leftIntake;
+    private ExpansionHubMotor rightIntake;
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
 
     private final double maxSpeed = 0.75;

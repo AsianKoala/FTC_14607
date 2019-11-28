@@ -7,8 +7,8 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 import java.util.ArrayList;
 
 public class Slide {
-    public ExpansionHubMotor leftSlide;
-    public ExpansionHubMotor rightSlide;
+    private ExpansionHubMotor leftSlide;
+    private ExpansionHubMotor rightSlide;
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
     public static double P, I, D;
     private PIDCoefficients coeffs = new PIDCoefficients(P,I,D);
@@ -55,6 +55,14 @@ public class Slide {
     public double getNewPosition() {
         return newPosition;
     }
+
+    public double getLeftSlidePosition() {
+        return leftSlide.getCurrentPosition();
+    }
+
+    public double getRightSlidePosition() {
+        return rightSlide.getCurrentPosition();
+    }
     public void setPIDCoeffs(double p, double i, double d) {
         P = p;
         I = i;
@@ -88,6 +96,8 @@ public class Slide {
         else {
             setTargetPosition(newPosition);
         }
+
+        states = STATES.CUSTOM;
     }
     
 
@@ -115,7 +125,8 @@ public class Slide {
 
     public void update() {
 
-        if (Math.abs(leftSlide.getCurrentPosition() - newPosition) > 10 && Math.abs(rightSlide.getCurrentPosition() - newPosition) > 10) {
+        if (Math.abs(leftSlide.getCurrentPosition() - newPosition) > 10 || Math.abs(rightSlide.getCurrentPosition() - newPosition) > 10) {
+
             if (isDebugging) {
                 applyPIDCoeffs();
             }
@@ -128,8 +139,10 @@ public class Slide {
             rightSlide.setPower(1);
         }
 
-        leftSlide.setPower(0);
-        rightSlide.setPower(0);
+        else {
+            leftSlide.setPower(0);
+            rightSlide.setPower(0);
+        }
     }
 
 }

@@ -214,8 +214,13 @@ public class HouseFly extends SampleMecanumDriveBase {
         return rad;
     }
 
-    public boolean intakeBusy() {
-        return leftIntake.isBusy() || rightIntake.isBusy();}
+
+
+    /**
+     * @return whether or not the intake motors are busy
+     */
+
+    public boolean intakeBusy() {return leftIntake.isBusy() || rightIntake.isBusy();}
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
         leftIntake.setPower(leftIntakePower);
@@ -228,8 +233,6 @@ public class HouseFly extends SampleMecanumDriveBase {
 
     /**
      * foundation movement controls
-     *
-     *
      */
 
     public void grabFoundation() {
@@ -244,8 +247,6 @@ public class HouseFly extends SampleMecanumDriveBase {
 
 
     /**
-     *
-     *
      * flipper movement controls
      */
 
@@ -253,31 +254,37 @@ public class HouseFly extends SampleMecanumDriveBase {
         flipper.setPosition(flipperOut);
     }
 
-    public void flipHome() {
+    public void flipReady() {
         flipper.setPosition(flipperHome);
     }
 
-    public void flipBetween() {
-        flipper.setPosition(flipperBetween);
+    public void flipMid() { flipper.setPosition(flipperBetween);}
+
+    public boolean isFlipperReady() {
+        return flipper.getPosition() == flipperHome;
     }
 
-    public void flipBetweenBetween() {
-        flipper.setPosition(flipperBetweenBetween);
+    public boolean isFlipperFlipped() {
+        return flipper.getPortNumber() == flipperOut;
     }
-
-
     /**
      * gripper controls
      */
-
     public void grip() {
         gripper.setPosition(gripperGrip);
     }
 
-    public void gripHome() {
+    public void gripReady() {
         gripper.setPosition(gripperHome);
     }
 
+    public boolean isGripReady() {
+        return gripper.getPosition() == gripperHome;
+    }
+
+    public boolean isGripped() {
+        return gripper.getPosition() == gripperGrip;
+    }
 
     /**
      * rotater movement controls
@@ -287,9 +294,14 @@ public class HouseFly extends SampleMecanumDriveBase {
         rotater.setPosition(rotaterOut);
     }
 
-    public void rotaterHome() {
+    public void rotaterReady() {
         rotater.setPosition(rotaterHome);
     }
 
+    public boolean isOuttaked() {
+        return rotater.getPosition() == rotaterOut;
+    }
+
+    public boolean isOuttakeReady() {  return rotater.getPosition() == rotaterHome;}
 
 }

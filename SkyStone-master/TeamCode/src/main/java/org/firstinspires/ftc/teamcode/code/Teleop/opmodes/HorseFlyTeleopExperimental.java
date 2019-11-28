@@ -1,16 +1,17 @@
 package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
 //BASED OFF OF AUTOMATED TELEOP DOES NOT ACCOUNT FOR NEW RESTRUCTURING
+// ok thanks boi
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
 import java.util.ArrayList;
 
 
-@TeleOp(name = "hosrefly automated")
+@TeleOp(name = "experimental teleop")
 public class HorseFlyTeleopExperimental extends OpMode {
 
     /**
@@ -35,39 +36,16 @@ public class HorseFlyTeleopExperimental extends OpMode {
 
 
 
-    private long time = 0;
-    private int count = 0;
-
-    private long chime = 0;
-    private int counter = 0;
-
-    private final long toMidTime = 450;
-    private final long liftTime = 200;
-    private final long toBackTime = 750;
-
-    private final long toLiftTimeTo = 400;
-    private final long toBackTimeTo = 700;
-
-    private final int liftIncrement = -200;
-    private final int liftIncrementer = -500;
-
-
-
-
-    private final double flipperHome =  0.95;
-    private final double flipperOut = 0.25;
-    private final double flipperBetween = (flipperHome + flipperOut)/2;
-    private final double flipperBetweenBetween = (flipperBetween + flipperOut)/2;
-    private final double rotaterHome = 0.279;
-    private final double rotaterOut = 0.95;
-    private final double gripperHome = 0.41;
-    private final double gripperGrip = 0.2;
-
     private double oldSlideLeft = 0;
     private double oldSlideRight = 0;
     private double newSlideLeft = 0;
     private double newSlideRight = 0;
 
+    public static long time = 0;
+    public static int count = 0;
+
+    public static long chime = 0;
+    public static int counter = 0;
 
 
     @Override

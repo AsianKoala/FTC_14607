@@ -6,6 +6,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
+import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.lang.reflect.Array;
@@ -30,6 +31,7 @@ public class Firefly extends TunableOpMode {
     // create hardware objects
     public Slide mySlide;
     public Intake myIntake;
+    public Outtake myOuttake;
     private DriveTrain myDriveTrain;
 
 
@@ -93,11 +95,19 @@ public class Firefly extends TunableOpMode {
         mySlide.setDebugging(false);
 
 
+        ExpansionHubServo leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
+        ExpansionHubServo rightSlam = hardwareMap.get(ExpansionHubServo.class, "rightSlam");
+        ExpansionHubServo rotater = hardwareMap.get(ExpansionHubServo.class, "rotater");
+        ExpansionHubServo flipper = hardwareMap.get(ExpansionHubServo.class, "flipper");
+        ExpansionHubServo gripper = hardwareMap.get(ExpansionHubServo.class, "gripper");
+
+        myOuttake = new Outtake(rotater, flipper, gripper, leftSlam, rightSlam);
 
 
 
+        myOuttake.init();
+        myOuttake.update();
         mySlide.update();
-
         myIntake.update();
 
         getRevBulkData();
@@ -165,7 +175,7 @@ public class Firefly extends TunableOpMode {
         tp1.markEnd();
 
         long timeAfterDataRead = System.currentTimeMillis();
-        telemetry.addData("Bulk data time", timeAfterDataRead);
+        telemetry.addData("Bulk data read time", timeAfterDataRead);
 
 
         currTimeMillis = SystemClock.uptimeMillis();
@@ -195,9 +205,12 @@ public class Firefly extends TunableOpMode {
     }
 
 
+
+
+
     /**
      * teleop user control
-      */
+     */
     public void teleopDrivetrainControl() {
         double scale = 0.8;
         if(gamepad1.left_bumper) {
@@ -208,9 +221,6 @@ public class Firefly extends TunableOpMode {
         }
         myDriveTrain.driveMecanum(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, true, scale);
     }
-
-
-
 
 
     /**

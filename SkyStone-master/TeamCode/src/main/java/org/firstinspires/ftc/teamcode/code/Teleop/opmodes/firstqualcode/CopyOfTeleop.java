@@ -1,16 +1,17 @@
-
-
-package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
+package org.firstinspires.ftc.teamcode.code.Teleop.opmodes.firstqualcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.ArrayList;
 
 
-@TeleOp(name = "basiceleopdrve")
-public class HouseFlyTeleop extends OpMode {
+@TeleOp(name = "copy of automatedteleop")
+public class CopyOfTeleop extends OpMode {
 
     /**
      * LIST OF TODOS
@@ -31,6 +32,22 @@ public class HouseFlyTeleop extends OpMode {
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
 
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
+
+    private long time = 0;
+    private int count = 0;
+
+    private long chime = 0;
+    private int counter = 0;
+
+    private final long toMidTime = 450;
+    private final long liftTime = 200;
+    private final long toBackTime = 750;
+
+    private final long toLiftTimeTo = 400;
+    private final long toBackTimeTo = 700;
+
+    private final int liftIncrement = -200;
+    private final int liftIncrementer = -500;
 
 
 
@@ -85,6 +102,9 @@ public class HouseFlyTeleop extends OpMode {
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        leftSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,2,0));
+        rightSlide.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(5,0,2,0));
+
 
 
         driveMotors.add(leftRear);
@@ -98,55 +118,6 @@ public class HouseFlyTeleop extends OpMode {
 
     // run until the end of the match (driver presses STOP)
     public void loop() {
-
-        /**
-         *
-         * SLIED CONTROL
-         *
-         */
-
-
-
-//        if(gamepad2.right_stick_button) {
-//            newSlideLeft = oldSlideLeft;
-//            newSlideRight = oldSlideRight;
-//        }
-
-        double increment = gamepad2.right_stick_y * 100;
-
-        if(Math.abs(increment) > 25) {
-            newSlideLeft = leftSlide.getCurrentPosition() + increment;
-            newSlideRight = rightSlide.getCurrentPosition() + increment;
-        }
-        if(gamepad2.x) {
-            oldSlideLeft = leftSlide.getCurrentPosition();
-            oldSlideRight = rightSlide.getCurrentPosition();
-            newSlideLeft = -25;
-            newSlideRight = -25;
-        }
-
-        if(gamepad2.b) {
-            oldSlideLeft = leftSlide.getCurrentPosition();
-            oldSlideRight = rightSlide.getCurrentPosition();
-            newSlideLeft = -25.0/2;
-            newSlideRight = -25.0/2;
-        }
-
-        if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
-            leftSlide.setTargetPosition((int)(newSlideLeft));
-            rightSlide.setTargetPosition((int)(newSlideRight));
-            leftSlide.setPower(1);
-            rightSlide.setPower(1);
-        }
-
-        else {
-            leftSlide.setPower(0);
-            rightSlide.setPower(0);
-        }
-
-
-
-
 
 
         /**
@@ -267,12 +238,179 @@ public class HouseFlyTeleop extends OpMode {
             ungrabFoundation();
         }
 
+        // AUTOMATED FLIP
+        if(gamepad2.dpad_left) {
+            count = 1;
+        }
+
+        //BACK IN
+        if(gamepad2.dpad_right)
+        {
+            counter = 0;
+        }
+
+
+
+
+
+
+        switch(counter)
+        {
+            //task 1: lift up
+
+            case 0:
+                gripper.setPosition(gripperHome);
+                chime = System.currentTimeMillis();
+                counter++;
+
+            case 1:
+                if(System.currentTimeMillis() - chime >= 100) {
+                    newSlideLeft = liftIncrementer;
+                    newSlideRight = liftIncrementer;
+                    leftSlide.setTargetPosition((int) (newSlideLeft));
+                    rightSlide.setTargetPosition((int) (newSlideRight));
+                    leftSlide.setPower(1);
+                    rightSlide.setPower(1);
+                    chime = System.currentTimeMillis();
+                    counter++;
+                }
+
+                break;
+            //task 3: flip back
+            case 2:
+                if(System.currentTimeMillis() - chime >= toLiftTimeTo)
+                {
+                    flipper.setPosition(0.95);
+                    chime = System.currentTimeMillis();
+                    counter++;
+                }
+
+                break;
+            //rotate around
+            case 3:
+                if(System.currentTimeMillis() - chime >= toBackTimeTo)
+                {
+                    rotaterReady();
+                    counter++;
+                }
+                break;
+            case 4:
+                leftSlide.setTargetPosition((int)(-25.0/2));
+                rightSlide.setTargetPosition((int)(-25.0/2));
+                leftSlide.setPower(0.75);
+                rightSlide.setPower(0.75);
+                chime = System.currentTimeMillis();
+                counter++;
+                break;
+
+            // grip to home
+            case 5:
+                if(System.currentTimeMillis() - chime >= 500) {
+                    gripper.setPosition(gripperHome);
+                }
+
+                counter = -1;
+                break;
+        }
+
+
+
+
+        switch(count)
+        {
+            //task 1: flip to center
+            case 1:
+                flipper.setPosition(0.6);
+                time = System.currentTimeMillis();
+                count++;
+                break;
+            //task 2: lift up
+            case 2:
+                if(System.currentTimeMillis() - time >= toMidTime)
+                {
+                    newSlideLeft = liftIncrement;
+                    newSlideRight = liftIncrement;
+                    leftSlide.setTargetPosition((int)(newSlideLeft));
+                    rightSlide.setTargetPosition((int)(newSlideRight));
+                    leftSlide.setPower(1);
+                    rightSlide.setPower(1);
+                    time = System.currentTimeMillis();
+                    count++;
+                }
+                break;
+            //task 3: flip back
+            case 3:
+                if(System.currentTimeMillis() - time >= liftTime)
+                {
+                    flipper.setPosition(0.25);
+                    time = System.currentTimeMillis();
+                    count++;
+                }
+
+                break;
+
+            case 4:
+                if(System.currentTimeMillis() - time >= 100) {
+                    flipper.setPosition(flipperBetweenBetween);
+                    time = System.currentTimeMillis();
+                    count++;
+                }
+
+            //rotate around
+            case 5:
+                if(System.currentTimeMillis() - time >= toBackTime)
+                {
+                    rotaterOut();
+                    count = 0;
+                }
+                break;
+        }
+
+
+        /**
+         * slide powers here
+         */
+
+        double increment = gamepad2.right_stick_y * 100;
+
+        if(Math.abs(increment) > 25) {
+            newSlideLeft = leftSlide.getCurrentPosition() + increment;
+            newSlideRight = rightSlide.getCurrentPosition() + increment;
+        }
+        if(gamepad2.x) {
+            oldSlideLeft = leftSlide.getCurrentPosition();
+            oldSlideRight = rightSlide.getCurrentPosition();
+            newSlideLeft = -25;
+            newSlideRight = -25;
+        }
+
+        if(gamepad2.b) {
+            oldSlideLeft = leftSlide.getCurrentPosition();
+            oldSlideRight = rightSlide.getCurrentPosition();
+            newSlideLeft = -25.0/2;
+            newSlideRight = -25.0/2;
+        }
+
+        if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
+            leftSlide.setTargetPosition((int)(newSlideLeft));
+            rightSlide.setTargetPosition((int)(newSlideRight));
+            leftSlide.setPower(1);
+            rightSlide.setPower(1);
+        }
+
+        else {
+            leftSlide.setPower(0);
+            rightSlide.setPower(0);
+        }
+
 
         telemetry.addData("flipper pos", flipper.getPosition());
         telemetry.addData("gripper pos", gripper.getPosition());
         telemetry.addData("rotater pos", rotater.getPosition());
         telemetry.addData("left slide pos", leftSlide.getCurrentPosition());
         telemetry.addData("right slide pos", rightSlide.getCurrentPosition());
+        telemetry.addData("left slide pid coefffs", leftSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
+        telemetry.addData("right slide pid coeffs", rightSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
 
     }
 
@@ -283,7 +421,8 @@ public class HouseFlyTeleop extends OpMode {
      * @return whether or not the intake motors are busy
      */
 
-    public boolean intakeBusy() { return leftIntake.isBusy() || rightIntake.isBusy();}
+    public boolean intakeBusy() {
+        return leftIntake.isBusy() || rightIntake.isBusy();}
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
         leftIntake.setPower(leftIntakePower);
@@ -297,7 +436,6 @@ public class HouseFlyTeleop extends OpMode {
     /**
      * foundation movement controls
      *
-
      *
      */
 
@@ -335,7 +473,7 @@ public class HouseFlyTeleop extends OpMode {
     }
 
     public boolean isFlipperFlipped() {
-        return flipper.getPosition() == flipperOut;
+        return flipper.getPortNumber() == flipperOut;
     }
 
 
@@ -376,6 +514,7 @@ public class HouseFlyTeleop extends OpMode {
         return rotater.getPosition() == rotaterOut;
     }
 
-    public boolean isOuttakeReady() { return rotater.getPosition() == rotaterHome;}
+    public boolean isOuttakeReady() {
+        return rotater.getPosition() == rotaterHome;}
 
 }

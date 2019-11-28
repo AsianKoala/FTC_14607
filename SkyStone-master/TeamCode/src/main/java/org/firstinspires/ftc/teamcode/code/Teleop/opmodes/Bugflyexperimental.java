@@ -55,8 +55,8 @@ public class Bugflyexperimental extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         //Homes Outtake during Initialization
-        robot.flipHome();
-        robot.rotaterHome();
+        robot.flipReady();
+        robot.rotaterReady();
         robot.gripper.setPosition(gripperHome);
     }
 
@@ -131,15 +131,15 @@ public class Bugflyexperimental extends OpMode {
         // robot.flipper arm control
 
         if(gamepad2.dpad_down) {
-            robot.flipBetween();
+            robot.flipMid();
         }
 
         if(gamepad2.dpad_up) {
-            robot.flipBetween();
+            robot.flipMid();
         }
 
         if(gamepad2.right_trigger > 0.5) {
-            robot.flipHome();
+            robot.flipReady();
         }
 
         if(gamepad2.left_trigger > 0.5) {
@@ -156,7 +156,7 @@ public class Bugflyexperimental extends OpMode {
             robot.rotaterOut();
         }
         if(gamepad2.right_bumper) {
-            robot.rotaterHome();
+            robot.rotaterReady();
         }
 
 
@@ -167,7 +167,7 @@ public class Bugflyexperimental extends OpMode {
             robot.grip();
         }
         if(gamepad2.y) {
-            robot.gripHome();
+            robot.gripReady();
         }
 
 
@@ -227,7 +227,7 @@ public class Bugflyexperimental extends OpMode {
             case 3:
                 if(System.currentTimeMillis() - chime >= toBackTimeTo)
                 {
-                    robot.rotaterHome();
+                    robot.rotaterReady();
                     counter++;
                 }
                 break;
@@ -252,8 +252,8 @@ public class Bugflyexperimental extends OpMode {
                 oldSlideRight = robot.rightSlide.getCurrentPosition();
                 newSlideLeft = -25.0/2;
                 newSlideRight = -25.0/2;
-                robot.flipHome();
-                robot.rotaterHome();
+                robot.flipReady();
+                robot.rotaterReady();
                 robot.gripper.setPosition(gripperHome);
                 counter = 0;
                 break;

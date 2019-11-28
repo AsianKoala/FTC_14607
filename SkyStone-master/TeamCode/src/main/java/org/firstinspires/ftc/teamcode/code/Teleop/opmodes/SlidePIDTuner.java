@@ -59,8 +59,8 @@ public class SlidePIDTuner extends TunableOpMode {
         telemetry.addData("P:  ", p);
         telemetry.addData("I:  ", i);
         telemetry.addData("D   ", d);
-        telemetry.addData("left slide position", mySlide.leftSlide.getCurrentPosition());
-        telemetry.addData("right slide position", mySlide.rightSlide.getCurrentPosition());
+        telemetry.addData("left slide position", mySlide.getLeftSlidePosition());
+        telemetry.addData("right slide position", mySlide.getRightSlidePosition());
         telemetry.addData("target position", mySlide.getNewPosition());
     }
 }
