@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.code.Hardware;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
 
 import android.os.SystemClock;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -9,7 +8,6 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**

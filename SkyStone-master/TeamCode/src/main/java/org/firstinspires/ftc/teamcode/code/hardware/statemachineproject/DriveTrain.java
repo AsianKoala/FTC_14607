@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.code.Hardware;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
 
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;

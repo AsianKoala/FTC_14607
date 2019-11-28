@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.code.Hardware.Firefly;
-import org.firstinspires.ftc.teamcode.code.Hardware.TimeProfiler;
-import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Firefly;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.TimeProfiler;
 
 @TeleOp(name = "new test teleop", group = "teleop")
 public class FireflyTeleop extends Firefly {

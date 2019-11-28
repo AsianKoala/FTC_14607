@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.code.Hardware;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.openftc.revextensions2.ExpansionHubMotor;

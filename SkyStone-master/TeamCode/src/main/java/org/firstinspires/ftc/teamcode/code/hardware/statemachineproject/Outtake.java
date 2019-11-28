@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.Hardware;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
 
 import org.openftc.revextensions2.ExpansionHubServo;
 import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;

@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.code.Teleop.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
-import org.firstinspires.ftc.teamcode.code.Hardware.Slide;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Slide;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 @TeleOp
