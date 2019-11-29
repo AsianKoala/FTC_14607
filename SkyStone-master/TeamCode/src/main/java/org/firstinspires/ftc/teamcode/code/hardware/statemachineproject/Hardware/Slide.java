@@ -6,17 +6,20 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;
 
-public class    Slide {
+public class Slide {
     private ExpansionHubMotor leftSlide;
     private ExpansionHubMotor rightSlide;
+
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
     public static double P, I, D;
     private PIDCoefficients coeffs = new PIDCoefficients(P,I,D);
+
     private boolean isDebugging = true;
-    private double newPosition;
+    private int newPosition;
+    private int oldPosition;
 
     STATES states = STATES.HOME;
-    enum STATES {
+    private enum STATES {
         PSEUDOHOME,
         HOME,
         CUSTOM,
@@ -55,11 +58,11 @@ public class    Slide {
         return newPosition;
     }
 
-    public double getLeftSlidePosition() {
+    public int getLeftSlidePosition() {
         return leftSlide.getCurrentPosition();
     }
 
-    public double getRightSlidePosition() {
+    public int getRightSlidePosition() {
         return rightSlide.getCurrentPosition();
     }
     public void setPIDCoeffs(double p, double i, double d) {
@@ -79,7 +82,7 @@ public class    Slide {
 
 
 
-    private void setTargetPosition(double newPosition) {
+    private void setTargetPosition(int newPosition) {
         this.newPosition = newPosition;
     }
 
@@ -87,7 +90,7 @@ public class    Slide {
     public void goPsuedohome() { states = STATES.PSEUDOHOME;}
     public void goOut() { states = STATES.OUT;}
   
-    public void manualMovement(double newPosition, boolean isIncremental) {
+    public void manualMovement(int newPosition, boolean isIncremental) {
         if(isIncremental){
             setTargetPosition(leftSlide.getCurrentPosition() + newPosition);
         }
@@ -98,13 +101,18 @@ public class    Slide {
 
         states = STATES.CUSTOM;
     }
+
+
+    private void recordOldPos() {
+        oldPosition = getLeftSlidePosition();
+    }
     
 
 
 
     private void HandleMovements() {
         if(states == STATES.HOME) {
-            setTargetPosition(12.5);
+            setTargetPosition(13);
         }
 
         if(states == STATES.PSEUDOHOME) {
@@ -130,8 +138,8 @@ public class    Slide {
                 applyPIDCoeffs();
             }
 
-            leftSlide.setTargetPosition((int) newPosition);
-            rightSlide.setTargetPosition((int) newPosition);
+            leftSlide.setTargetPosition( newPosition);
+            rightSlide.setTargetPosition( newPosition);
 
 
             leftSlide.setPower(1);

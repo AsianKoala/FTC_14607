@@ -43,6 +43,9 @@ public class FireflyTeleop extends Firefly {
     private TimeProfiler tp3 = new TimeProfiler(1000);
     private TimeProfiler tp4 = new TimeProfiler(1000);
     private TimeProfiler tp5 = new TimeProfiler(1000);
+    private TimeProfiler tp6 = new TimeProfiler(1000);
+    private TimeProfiler tp7 = new TimeProfiler(1000);
+    private TimeProfiler tp8 = new TimeProfiler(1000);
 
     @Override
     public void loop() {
@@ -73,6 +76,21 @@ public class FireflyTeleop extends Firefly {
         tp5.markEnd();
 
 
+        tp6.markStart();
+        flipperControl();
+        tp6.markEnd();
+
+
+        tp7.markStart();
+        gripperControl();
+        tp7.markEnd();
+
+
+        tp8.markStart();
+        rotaterControl();
+        tp8.markEnd();
+
+
 
 
         telemetry.addLine("-------------- FIREFLY TELEOP TELEMETRY -----------------");
@@ -81,8 +99,57 @@ public class FireflyTeleop extends Firefly {
         telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 4: " + tp4.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 5: " + tp5.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
 
     }
+
+
+
+
+
+
+    private void flipperControl() {
+        if(gamepad2.dpad_down) {
+            myOuttake.flipMid();
+        }
+
+        if(gamepad2.dpad_up) {
+            myOuttake.flipMid();
+        }
+
+        if(gamepad2.right_trigger > 0.5) {
+            myOuttake.flipReady();
+        }
+
+        if(gamepad2.left_trigger > 0.5) {
+            myOuttake.flipOut();
+        }
+    }
+
+
+    private void gripperControl() {
+        if(gamepad2.a) {
+            myOuttake.grip();
+        }
+
+        if(gamepad2.y) {
+            myOuttake.gripReady();
+        }
+    }
+
+
+    private void rotaterControl() {
+        if(gamepad2.left_bumper) {
+            myOuttake.rotaterOut();
+        }
+
+        if(gamepad2.right_bumper) {
+            myOuttake.rotaterReady();
+        }
+    }
+
 
 
 
@@ -105,7 +172,7 @@ public class FireflyTeleop extends Firefly {
 
         double increment = gamepad2.right_stick_y * 100;
 
-        if(Math.abs(increment) > 25) { mySlide.manualMovement(increment, true); }
+        if(Math.abs(increment) > 25) { mySlide.manualMovement((int)increment, true); }
         if(gamepad2.x) { mySlide.goPsuedohome(); }
         if(gamepad2.b) { mySlide.goHome(); }
 
@@ -195,7 +262,6 @@ public class FireflyTeleop extends Firefly {
                 counter = 0;
                 break;
         }
-
     }
 
 

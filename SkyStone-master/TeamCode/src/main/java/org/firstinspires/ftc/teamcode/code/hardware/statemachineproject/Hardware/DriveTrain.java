@@ -182,6 +182,8 @@ public class DriveTrain extends SampleMecanumDriveBase {
     }
 
 
+
+
  @SuppressLint("DefaultLocale")
     private String mecanumPowers() {
         return String.format(
@@ -201,7 +203,7 @@ public class DriveTrain extends SampleMecanumDriveBase {
      * but we do for teleop so slap this shit in here
      */
 
-    public void update() {
+    public void updatee() {
         driveMecanum(movementX, movementY, movementTurn); // the robot will only move if we change movementX, movementY, or movementTurn
         updatePoseEstimate();
         robot.addSpace();
