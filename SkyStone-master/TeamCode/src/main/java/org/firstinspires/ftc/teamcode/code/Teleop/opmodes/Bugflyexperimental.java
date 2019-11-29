@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.code.hardware.roadrunner.HouseFly;
-import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
+import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 
 
 @TeleOp(name = "Big Kahuna Experimental")

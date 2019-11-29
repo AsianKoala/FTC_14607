@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxOptimizedI2cFactory;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -18,7 +17,7 @@ import org.openftc.revextensions2.RevBulkData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
+import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
 
 /*

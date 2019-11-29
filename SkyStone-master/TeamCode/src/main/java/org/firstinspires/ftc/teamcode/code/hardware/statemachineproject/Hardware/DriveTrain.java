@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
@@ -8,15 +8,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxOptimizedI2cFactory;
-import org.jetbrains.annotations.NotNull;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
-import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
+import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +31,7 @@ public class DriveTrain extends SampleMecanumDriveBase {
     public ExpansionHubMotor backLeft;
     public ExpansionHubMotor backRight;
     private BNO055IMU imu;
+    private boolean isDebugging = false;
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
     
     private Firefly robot;
@@ -136,12 +137,6 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
 
 
-
-
-
-
-
-
     /**
      *
      * @param xPower  x translation of robot; gamepad1.leftstick.x during teleop
@@ -160,16 +155,31 @@ public class DriveTrain extends SampleMecanumDriveBase {
         allPowers.add(rawBL);
         allPowers.add(rawBR);
 
+        double scaleAmt;
         double biggestPower = rawFL;
+
+        // see if biggest power is > 1 for any reason
         for(Double currPower : allPowers) {
-            if(biggestPower > currPower) {
+            if(biggestPower > 1.0) {
                 biggestPower = currPower;
+                scaleAmt = 1.0/biggestPower;
             }
         }
+
+        int i = 0;
+        for(ExpansionHubMotor motor : allMotors) {
+            motor.setPower(allPowers.get(i));
+            i++;
+        }
+
 
     }
     
 
+
+    public void setDebugging(boolean debugging) {
+        isDebugging = debugging;
+    }
 
 
  @SuppressLint("DefaultLocale")
@@ -192,10 +202,15 @@ public class DriveTrain extends SampleMecanumDriveBase {
      */
 
     public void update() {
-        driveMecanum(movementX, movementY, movementTurn);
-        robot.telemetry.addLine(mecanumPowers());
+        driveMecanum(movementX, movementY, movementTurn); // the robot will only move if we change movementX, movementY, or movementTurn
+
+        robot.addSpace();
+        robot.telemetry.addLine("-------- drivetrain telem ---------");
+        if (isDebugging) {
+            robot.telemetry.addLine(mecanumPowers());
+            robot.telemetry.addData("movement x var", movementX);
+            robot.telemetry.addData("movement y var", movementY);
+            robot.telemetry.addData("movement turn var", movementTurn);
+        }
     }
-
-
-
 }

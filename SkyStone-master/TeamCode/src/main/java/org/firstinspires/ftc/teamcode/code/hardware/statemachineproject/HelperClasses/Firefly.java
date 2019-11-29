@@ -1,16 +1,21 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses;
 
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Intake;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Outtake;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Slide;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
 
+
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
+import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 
 /**
  * this is the base state machine used for teleop and auto
@@ -83,7 +88,7 @@ public class Firefly extends TunableOpMode {
         ExpansionHubMotor leftIntake = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
         ExpansionHubMotor rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
 
-        myIntake = new Intake(leftIntake, rightIntake);
+        myIntake = new Intake(this, leftIntake, rightIntake);
 
 
 
@@ -101,7 +106,7 @@ public class Firefly extends TunableOpMode {
         ExpansionHubServo flipper = hardwareMap.get(ExpansionHubServo.class, "flipper");
         ExpansionHubServo gripper = hardwareMap.get(ExpansionHubServo.class, "gripper");
 
-        myOuttake = new Outtake(rotater, flipper, gripper, leftSlam, rightSlam);
+        myOuttake = new Outtake(this, rotater, flipper, gripper, leftSlam, rightSlam);
 
 
 
@@ -199,11 +204,20 @@ public class Firefly extends TunableOpMode {
         tp3.markEnd();
 
 
+        // drivetrain update
+        tp4.markStart();
+        myDriveTrain.update();
+        tp4.markEnd();
+
+
+
+
+
 
         telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
-
+        telemetry.addLine("profiler 4 " + tp4.getAverageTimePerUpdateMillis());
 
     }
 
@@ -215,7 +229,7 @@ public class Firefly extends TunableOpMode {
      * teleop user control
      */
     public void teleopDrivetrainControl() {
-        double scale = 0.8; // btich im not changing this to 0
+        double scale = 0.8; // btich im not changing this to 1
         if(gamepad1.left_bumper) {
             scale = 0.5;
         }
@@ -261,25 +275,23 @@ public class Firefly extends TunableOpMode {
     }
 
 
-    public double getLeftSlideCurrentPosition() {
-        return slaveData.getMotorCurrentPosition(3);
-    }
-
-    public double getRightSlideCurrentPosition() {
-        return masterData.getMotorCurrentPosition(3);
-    }
-
-    public double getCurrentIntakeVelocty() {
-        return (masterData.getMotorVelocity(2) + slaveData.getMotorVelocity(2))/2.0;
-    }
-
-
-
-
-
 
     public void tuneSlidePID() {
+        double p = getInt("P");
+        double i = getInt("I");
+        double d = getInt("D");
 
+        mySlide.setPIDCoeffs(p,i,d);
+        mySlide.setDebugging(true);
+    }
+
+
+    public void debugMode() {
+
+    }
+
+    public void addSpace() {
+        telemetry.addLine("");
     }
 
 

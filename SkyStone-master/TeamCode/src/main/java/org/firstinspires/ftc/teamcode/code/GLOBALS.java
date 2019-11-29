@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.code;
 
-public class GLOBALCONSTANTS {
+public class GLOBALS {
 
     public final static double flipperHome =  0.95;
     public final static double flipperOut = 0.25;
@@ -34,5 +34,19 @@ public class GLOBALCONSTANTS {
     public static double movementTurn = 0;
 
     public static double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
+
+
+
+    public static double AngleWrap(double angle) {
+        while(angle < Math.PI) {
+            angle += 2 * Math.PI;
+        }
+
+        while(angle > Math.PI) {
+            angle -= 2 * Math.PI;
+        }
+
+        return angle;
+    }
 
 }

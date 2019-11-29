@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ public class Intake {
     private ExpansionHubMotor leftIntake;
     private ExpansionHubMotor rightIntake;
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
+    private Firefly robot;
+
 
     private final double maxSpeed = 0.75;
     private double leftIntakeSpeed = 0;
@@ -25,9 +28,10 @@ public class Intake {
         CUSTOM
     }
 
-    public Intake(ExpansionHubMotor leftIntake, ExpansionHubMotor rightIntake) {
+    public Intake(Firefly robot, ExpansionHubMotor leftIntake, ExpansionHubMotor rightIntake) {
         this.leftIntake = leftIntake;
         this.rightIntake = rightIntake;
+        this.robot = robot;
         allMotors.add(leftIntake);
         allMotors.add(rightIntake);
 
@@ -79,7 +83,10 @@ public class Intake {
     }
 
 
-
+public boolean isDebugging;
+    public void setDebugging(boolean debugging) {
+        isDebugging = debugging;
+    }
     public void update() {
         // avoid spamming to make loop faster
         if(lastIntakePower != intakePowers) {
@@ -89,7 +96,19 @@ public class Intake {
 
             lastIntakePower = intakePowers;
         }
+
+        robot.telemetry.addData("left intake power", leftIntake.getPower());
+        robot.telemetry.addData("right intake power", rightIntake.getPower());
+
+        if(isDebugging) {
+            robot.telemetry.addData("intakePower status", intakePowers);
+            robot.telemetry.addData("left intake target speed", leftIntakeSpeed);
+            robot.telemetry.addData("right intake target speed", rightIntakeSpeed);
+        }
+
     }
+
+
 
 
 }

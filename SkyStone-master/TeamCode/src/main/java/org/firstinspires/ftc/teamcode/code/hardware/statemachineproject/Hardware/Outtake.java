@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
+package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware;
 
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
 import org.openftc.revextensions2.ExpansionHubServo;
-import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
+import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 
 
 public class Outtake {
@@ -11,13 +12,16 @@ public class Outtake {
     private ExpansionHubServo gripper;
     private ExpansionHubServo leftSlam;
     private ExpansionHubServo rightSlam;
+    private Firefly robot;
+    private boolean isDebugging = false;
 
-    public Outtake(ExpansionHubServo rotater, ExpansionHubServo flipper, ExpansionHubServo gripper, ExpansionHubServo leftSlam, ExpansionHubServo rightSlam) {
+    public Outtake(Firefly robot, ExpansionHubServo rotater, ExpansionHubServo flipper, ExpansionHubServo gripper, ExpansionHubServo leftSlam, ExpansionHubServo rightSlam) {
         this.rotater = flipper;
         this.flipper = flipper;
         this.gripper = gripper;
         this.leftSlam = leftSlam;
         this.rightSlam = rightSlam;
+        this.robot = robot;
     }
 
 
@@ -81,6 +85,12 @@ public class Outtake {
 
 
 
+    public void setDebugging(boolean debugging) {
+        isDebugging = debugging;
+    }
+
+
+
     public void init() {
         rotaterReady();
         flipReady();
@@ -91,8 +101,23 @@ public class Outtake {
         gripper.setPosition(gripperPosition);
         rotater.setPosition(rotaterPosition);
         flipper.setPosition(flipperPosition);
+
+
+
+        robot.addSpace();
+
+        robot.telemetry.addLine("------ outtake telem ---------");
+        robot.telemetry.addData("gripper position", gripper.getPosition());
+        robot.telemetry.addData("rotater position", rotater.getPosition());
+        robot.telemetry.addData("flipper position", flipper.getPosition());
+
+        if(isDebugging) {
+            robot.telemetry.addData("gripper target position", gripperPosition);
+            robot.telemetry.addData("rotater target position", rotaterPosition);
+            robot.telemetry.addData("flipper target position", flipperPosition);
+        }
+
+
     }
-
-
 
 }
