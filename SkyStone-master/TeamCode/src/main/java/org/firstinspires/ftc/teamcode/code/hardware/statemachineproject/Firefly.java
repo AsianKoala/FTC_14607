@@ -10,6 +10,8 @@ import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
 
+import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
+
 /**
  * this is the base state machine used for teleop and auto
  */
@@ -71,7 +73,7 @@ public class Firefly extends TunableOpMode {
         allMotors.add(backRight);
 
         // construct drivetrain
-        myDriveTrain = new DriveTrain(frontLeft, frontRight, backLeft, backRight, master, slave, imu);
+        myDriveTrain = new DriveTrain(this, frontLeft, frontRight, backLeft, backRight, master, slave, imu);
 
 
 
@@ -181,6 +183,8 @@ public class Firefly extends TunableOpMode {
         lastLoopTime = currTimeMillis;
 
 
+
+
         // now updating the state machines starts
 
         // intake update
@@ -193,6 +197,7 @@ public class Firefly extends TunableOpMode {
         tp3.markStart();
         mySlide.update();
         tp3.markEnd();
+
 
 
         telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
@@ -210,14 +215,19 @@ public class Firefly extends TunableOpMode {
      * teleop user control
      */
     public void teleopDrivetrainControl() {
-        double scale = 0.8;
+        double scale = 0.8; // btich im not changing this to 0
         if(gamepad1.left_bumper) {
             scale = 0.5;
         }
         if(gamepad1.right_bumper) {
             scale = 0.25;
         }
-        myDriveTrain.driveMecanum(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, true, scale);
+
+        double threshold = 0.157;
+
+        movementY =  Math.abs(-gamepad1.left_stick_y) > threshold ? -gamepad1.left_stick_y * scale : 0;
+        movementX = Math.abs(gamepad1.left_stick_x) > threshold ? gamepad1.left_stick_x * scale : 0;
+        movementTurn = Math.abs(gamepad1.right_stick_x) > threshold ? gamepad1.right_stick_x * scale : 0;
     }
 
 
@@ -261,6 +271,15 @@ public class Firefly extends TunableOpMode {
 
     public double getCurrentIntakeVelocty() {
         return (masterData.getMotorVelocity(2) + slaveData.getMotorVelocity(2))/2.0;
+    }
+
+
+
+
+
+
+    public void tuneSlidePID() {
+
     }
 
 

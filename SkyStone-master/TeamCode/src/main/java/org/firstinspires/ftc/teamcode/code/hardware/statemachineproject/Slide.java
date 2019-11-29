@@ -6,7 +6,7 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;
 
-public class Slide {
+public class    Slide {
     private ExpansionHubMotor leftSlide;
     private ExpansionHubMotor rightSlide;
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
@@ -22,7 +22,6 @@ public class Slide {
         CUSTOM,
         OUT
     }
-
 
 
 

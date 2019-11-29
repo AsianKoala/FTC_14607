@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -11,9 +12,11 @@ import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.mecanum.SampleMe
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.util.LynxOptimizedI2cFactory;
+import org.jetbrains.annotations.NotNull;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
+import static org.firstinspires.ftc.teamcode.code.GLOBALCONSTANTS.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,10 +32,11 @@ public class DriveTrain extends SampleMecanumDriveBase {
     public ExpansionHubMotor backRight;
     private BNO055IMU imu;
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
+    
+    private Firefly robot;
 
 
-
-    public DriveTrain(ExpansionHubMotor frontLeft, ExpansionHubMotor frontRight, ExpansionHubMotor backLeft, ExpansionHubMotor backRight, ExpansionHubEx master, ExpansionHubEx slave, BNO055IMU imu) {
+    public DriveTrain(Firefly robot, ExpansionHubMotor frontLeft, ExpansionHubMotor frontRight, ExpansionHubMotor backLeft, ExpansionHubMotor backRight, ExpansionHubEx master, ExpansionHubEx slave, BNO055IMU imu) {
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.backLeft = backLeft;
@@ -40,6 +44,8 @@ public class DriveTrain extends SampleMecanumDriveBase {
         this.master = master;
         this.slave = slave;
         this.imu = imu;
+        
+        this.robot = robot;
 
         allMotors.add(frontLeft);
         allMotors.add(frontRight);
@@ -143,25 +149,53 @@ public class DriveTrain extends SampleMecanumDriveBase {
      * @param turnPower  turn of robot; gamepad1.rightstick.x during teleop
      */
     public void driveMecanum(double xPower,double yPower,double turnPower) {
-        frontRight.setPower(1 * (yPower + xPower + -turnPower));
-        backLeft.setPower(1 * (yPower + -xPower + turnPower));
-        frontLeft.setPower(1 * (yPower + xPower+ turnPower));
-        backRight.setPower(1 * (yPower + -xPower + -turnPower));
+        double rawFR = yPower + xPower - turnPower;
+        double rawBL = yPower + -xPower + turnPower;
+        double rawFL = yPower + xPower+ turnPower;
+        double rawBR = yPower + -xPower + -turnPower;
+
+        ArrayList<Double> allPowers = new ArrayList<>();
+        allPowers.add(rawFL);
+        allPowers.add(rawFR);
+        allPowers.add(rawBL);
+        allPowers.add(rawBR);
+
+        double biggestPower = rawFL;
+        for(Double currPower : allPowers) {
+            if(biggestPower > currPower) {
+                biggestPower = currPower;
+            }
+        }
+
+    }
+    
+
+
+
+ @SuppressLint("DefaultLocale")
+    private String mecanumPowers() {
+        return String.format(
+                "\n" +
+                        "(%.1f)---(%.1f)\n" +
+                        "|   Front   |\n" +
+                        "|           |\n" +
+                        "|           |\n" +
+                        "(%.1f)---(%.1f)\n"
+                , frontLeft.getPower(), frontRight.getPower(), backLeft.getPower(), backRight.getPower());
     }
 
+
+
     /**
-     * literally the same exact one but i wanted to add an extra parameter since im too lazy to change all of the implementations of this method
-     * @param xPower
-     * @param yPower
-     * @param turnPower
-     * @param teleopControl
+     * so we dont actually need to update/apply movement for our drivetrain since roadrunner takes care of that (?)
+     * but we do for teleop so slap this shit in here
      */
-    public void driveMecanum(double xPower,double yPower,double turnPower, boolean teleopControl, double multiplier) {
-        yPower *=1;
-        frontRight.setPower(multiplier * (yPower + xPower + -turnPower));
-        backLeft.setPower(multiplier * (yPower + -xPower + turnPower));
-        frontLeft.setPower(multiplier * (yPower + xPower+ turnPower));
-        backRight.setPower(multiplier * (yPower + -xPower + -turnPower));
+
+    public void update() {
+        driveMecanum(movementX, movementY, movementTurn);
+        robot.telemetry.addLine(mecanumPowers());
     }
+
+
 
 }

@@ -25,4 +25,14 @@ public class GLOBALCONSTANTS {
     public final static int liftIncrement = -200;
     public final static int liftIncrementer = -500;
 
+
+
+    //ok these arent constants but stfu
+
+    public static double movementX = 0;
+    public static double movementY = 0;
+    public static double movementTurn = 0;
+
+    public static double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
+
 }
