@@ -33,7 +33,7 @@ public class GLOBALS {
     public static double movementY = 0;
     public static double movementTurn = 0;
 
-    public static double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
+
 
 
 

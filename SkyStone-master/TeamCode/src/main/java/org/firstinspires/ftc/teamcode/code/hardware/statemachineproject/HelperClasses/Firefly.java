@@ -7,12 +7,15 @@ import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware
 import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Slide;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotMovement;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
 
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
@@ -28,6 +31,8 @@ public class Firefly extends TunableOpMode {
     private ExpansionHubEx master;
     private ExpansionHubEx slave;
     private BNO055IMU imu;
+    // wtf
+    public DecimalFormat df = new DecimalFormat("#.00");
 
     // array for all motors
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
@@ -130,7 +135,7 @@ public class Firefly extends TunableOpMode {
 
     @Override
     public void start() {
-
+        RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
     }
 
     /**
@@ -194,20 +199,45 @@ public class Firefly extends TunableOpMode {
 
         // intake update
         tp2.markStart();
-        myIntake.update();
+        myDriveTrain.update();
         tp2.markEnd();
 
 
         // slide update
         tp3.markStart();
-        mySlide.update();
+        myOuttake.update();
         tp3.markEnd();
 
 
         // drivetrain update
         tp4.markStart();
-        myDriveTrain.update();
+        mySlide.update();
         tp4.markEnd();
+
+
+        // outtake update
+        tp5.markStart();
+        myIntake.update();
+        tp5.markEnd();
+
+
+        // update positions
+        tp6.markStart();
+        RobotPosition.giveMePose(myDriveTrain.getPoseEstimate());
+        tp6.markEnd();
+
+
+        // check for debug mode and tune pid gains
+        tp7.markStart();
+        debugMode();
+        tp7.markStart();
+
+        tp8.markStart();
+        tuneSlidePID();
+        tp8.markEnd();
+
+
+
 
 
 
@@ -217,9 +247,15 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 4 " + tp4.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 4: " + tp4.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 5: " + tp5.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
 
     }
+
+
 
 
 
@@ -276,19 +312,44 @@ public class Firefly extends TunableOpMode {
 
 
 
-    public void tuneSlidePID() {
-        double p = getInt("P");
-        double i = getInt("I");
-        double d = getInt("D");
 
-        mySlide.setPIDCoeffs(p,i,d);
-        mySlide.setDebugging(true);
+    // report position
+
+    public void positionTelemetry() {
+        telemetry.addLine("xPos: " + df.format(RobotPosition.worldXPos) +
+                "yPos: "+ df.format(RobotPosition.worldYPos) +
+                "heading: " + df.format(RobotPosition.worldHeadingRad));
+    }
+
+    public double getXPos() { return RobotPosition.worldXPos; }
+    public double getYPos() { return RobotPosition.worldYPos; }
+    public double getHeadingRad() {return RobotPosition.worldHeadingRad; }
+    public double getDegrees() { return Math.toDegrees(RobotPosition.worldHeadingRad); }
+
+
+
+    private void tuneSlidePID() {
+
+            double p = getInt("P");
+            double i = getInt("I");
+            double d = getInt("D");
+
+            mySlide.setPIDCoeffs(p, i, d);
+            mySlide.setDebugging(true);
+
     }
 
 
-    public void debugMode() {
+    private void debugMode() {
+            myDriveTrain.setDebugging(true);
+            mySlide.setDebugging(true);
+            myIntake.setDebugging(true);
+            myOuttake.setDebugging(true);
 
     }
+
+
+
 
     public void addSpace() {
         telemetry.addLine("");

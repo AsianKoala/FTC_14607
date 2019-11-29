@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
 
 public class RobotPosition {
@@ -12,19 +13,16 @@ public class RobotPosition {
     public static double worldHeadingRad = 0.0;
 
 
-    public static void initPositions(double worldX, double worldY, double worldHeading, Firefly robot) {
-        worldXPos = worldX;
-        worldYPos = worldY;
-        worldHeadingRad = worldHeading;
+    public static void initPose(Pose2d pose, Firefly robot) {
+        worldXPos = pose.getX();
+        worldYPos = pose.getY();
+        worldHeadingRad = pose.getHeading();
         myRobot = robot;
     }
-    public static void giveMePositions(double worldX, double worldY, double worldHeading) {
-        worldXPos = worldX;
-        worldYPos = worldY;
-        worldHeadingRad = worldHeading;
+    public static void giveMePose(Pose2d pose) {
+        worldXPos = pose.getX();
+        worldYPos = pose.getY();
+        worldHeadingRad = pose.getHeading();
     }
 
-    public static void update() {
-
-    }
 }

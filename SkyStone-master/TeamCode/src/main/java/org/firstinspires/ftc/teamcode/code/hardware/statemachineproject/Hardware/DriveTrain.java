@@ -203,7 +203,7 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
     public void update() {
         driveMecanum(movementX, movementY, movementTurn); // the robot will only move if we change movementX, movementY, or movementTurn
-
+        updatePoseEstimate();
         robot.addSpace();
         robot.telemetry.addLine("-------- drivetrain telem ---------");
         if (isDebugging) {
