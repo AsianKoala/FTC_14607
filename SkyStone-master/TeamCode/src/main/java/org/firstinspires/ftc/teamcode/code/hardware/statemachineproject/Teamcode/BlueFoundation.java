@@ -135,22 +135,23 @@ public class BlueFoundation extends Auto {
          */
 
         if(currStage == progStates.driveToFoundation.ordinal()) {
-            if(stageFinished) {
+            if (stageFinished) {
                 RobotPosition.setPose(blueFoundationStart);
             }
             initStateVars();
+
+
+            Trajectory toFoundation = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
+                    .forward(Math.abs(stageStartingYPos - blueFoundation.getY()))
+                    .build();
+
+            myDriveTrain.followTrajectory(toFoundation);
+
+            if (!myDriveTrain.isBusy()) {
+                nextStage();
+            }
         }
 
-        Trajectory toFoundation = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
-                .forward(Math.abs(stageStartingYPos - blueFoundation.getY()))
-                .build();
-
-        myDriveTrain.followTrajectory(toFoundation);
-
-        if(!myDriveTrain.isBusy()) {
-
-        }
-
-
+        // add more stges here but you get it
     }
 }
