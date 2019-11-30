@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.HelperClasses;
+package org.firstinspires.ftc.teamcode.HelperClasses;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import static java.lang.Math.*;

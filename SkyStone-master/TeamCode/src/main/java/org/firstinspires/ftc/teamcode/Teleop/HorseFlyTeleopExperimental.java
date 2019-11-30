@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.Teleop;
+package org.firstinspires.ftc.teamcode.Teleop;
 //BASED OFF OF AUTOMATED TELEOP DOES NOT ACCOUNT FOR NEW RESTRUCTURING
 // ok thanks boi
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
