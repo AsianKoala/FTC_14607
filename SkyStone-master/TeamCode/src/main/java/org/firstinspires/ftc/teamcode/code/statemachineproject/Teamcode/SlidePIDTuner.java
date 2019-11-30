@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Teamcode;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.Teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Slide;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware.Slide;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 @TeleOp
@@ -35,7 +35,7 @@ public class SlidePIDTuner extends TunableOpMode {
 
         double increment = gamepad2.right_stick_y * 100;
         if(Math.abs(increment) > 25) {
-            mySlide.manualMovement(increment, true);
+            mySlide.manualMovement((int)increment, true);
         }
 
         if(gamepad2.x) {

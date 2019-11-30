@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware;
 
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.Firefly;
 import org.openftc.revextensions2.ExpansionHubServo;
 import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 

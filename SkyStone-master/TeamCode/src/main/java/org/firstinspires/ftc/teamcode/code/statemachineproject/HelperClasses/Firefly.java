@@ -1,14 +1,13 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses;
 
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Intake;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Outtake;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware.Slide;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotMovement;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware.Intake;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware.Outtake;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware.Slide;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;

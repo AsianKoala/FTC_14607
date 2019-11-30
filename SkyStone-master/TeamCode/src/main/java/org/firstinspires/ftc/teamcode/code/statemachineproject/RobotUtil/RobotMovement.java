@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil;
 
 import com.qualcomm.robotcore.util.Range;
 
 import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition.*;
+import static org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition.*;
 
 /**
  * so i dont think this will work cause cause stupid roadrunner's localization IS SO FUCKED UP

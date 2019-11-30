@@ -1,16 +1,12 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Teamcode;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.Teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Auto;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.TimeProfiler;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.Auto;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.TimeProfiler;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition;
 import org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants;
-
-import static org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition.*;
 
 import java.util.ArrayList;
 
@@ -152,6 +148,6 @@ public class BlueFoundation extends Auto {
             }
         }
 
-        // add more stges here but you get it
+        // add more stages here but you get it
     }
 }

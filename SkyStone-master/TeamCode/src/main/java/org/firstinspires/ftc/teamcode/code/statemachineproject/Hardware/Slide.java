@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;

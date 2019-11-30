@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Hardware;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.Firefly;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;

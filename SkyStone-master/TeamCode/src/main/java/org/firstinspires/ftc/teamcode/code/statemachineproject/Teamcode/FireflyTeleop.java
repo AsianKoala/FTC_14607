@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Teamcode;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.Teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.TimeProfiler;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.Firefly;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.TimeProfiler;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition;
 
 import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 

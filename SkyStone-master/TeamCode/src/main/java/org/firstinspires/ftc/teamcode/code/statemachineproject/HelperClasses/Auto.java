@@ -1,12 +1,11 @@
-package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses;
+package org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses;
 
 import android.os.SystemClock;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition;
 
-import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition.*;
+import static org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition.*;
 
 
 
