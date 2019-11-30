@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.code.statemachineproject.Teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.teamcode.code.statemachineproject.Hardware.Slide;
+import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.Firefly;
 import org.openftc.revextensions2.ExpansionHubMotor;
+
 
 @TeleOp
 public class SlidePIDTuner extends TunableOpMode {
@@ -24,6 +26,7 @@ public class SlidePIDTuner extends TunableOpMode {
 
     @Override
     public void loop() {
+
         p = getInt("p");
         i = getInt("i");
         d = getInt("d");
@@ -44,6 +47,10 @@ public class SlidePIDTuner extends TunableOpMode {
 
         if(gamepad2.b) {
             mySlide.goHome();
+        }
+
+        if(gamepad2.dpad_up) {
+
         }
 
 

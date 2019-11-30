@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses;
 
 import android.os.SystemClock;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition;
 
 import static org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.RobotPosition.*;
@@ -12,7 +11,6 @@ import static org.firstinspires.ftc.teamcode.code.statemachineproject.RobotUtil.
 /**
  * base class for auto opmodes
  */
-@Autonomous
 public abstract class Auto extends Firefly {
 
     private double stateStartTime = 0;

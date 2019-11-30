@@ -213,7 +213,7 @@ public class Firefly extends TunableOpMode {
          * the reason we have to do myDriveTrain.update(); (roadrunner super method) and do
          * RobotPosition.giveMePose is because we convert the pose estimate obtained through rr into vars
          * that are used for everything besides roadrunner movement methods.
-         *
+         * robot position is actually pretty useless since we dont use any other movement methods
          * **** ROBOT POSITION DOES NOT SET ANYTHING, RATHER CONVERTS RR POSE TO OUR VALUES ****
          */
 
@@ -241,9 +241,7 @@ public class Firefly extends TunableOpMode {
    //     debugMode();
     //    tp7.markStart();
 
-   //     tp8.markStart();
-   //     tuneSlidePID();
-   //     tp8.markEnd();
+
 
 
 
@@ -256,8 +254,6 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("profiler 5: " + tp5.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 9: " + tp9.getAverageTimePerUpdateMillis());
 
     }
 
@@ -335,7 +331,6 @@ public class Firefly extends TunableOpMode {
             double p = getInt("P");
             double i = getInt("I");
             double d = getInt("D");
-
             mySlide.setPIDCoeffs(p, i, d);
     }
 
@@ -345,7 +340,6 @@ public class Firefly extends TunableOpMode {
             mySlide.setDebugging(true);
             myIntake.setDebugging(true);
             myOuttake.setDebugging(true);
-
     }
 
 

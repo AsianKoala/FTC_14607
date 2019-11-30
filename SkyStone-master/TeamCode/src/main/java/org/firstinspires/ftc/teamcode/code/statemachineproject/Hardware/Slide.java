@@ -11,8 +11,11 @@ public class Slide {
     private ExpansionHubMotor rightSlide;
 
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
-    public static double P, I, D;
-    private PIDCoefficients coeffs = new PIDCoefficients(P,I,D);
+    // TODO: change these values after you get them from opmode tuner
+    public static double P = 0;
+    public static double I = 0;
+    public static double D = 0;
+    private PIDCoefficients initCoeffs = new PIDCoefficients(P,I,D);
 
     private boolean isDebugging = true;
     private int newPosition;
@@ -41,19 +44,14 @@ public class Slide {
             expansionHubMotor.setTargetPosition(0);
             expansionHubMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             expansionHubMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-            if(isDebugging) {
-                expansionHubMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(0,0,0));
-            }
-
-            else {
-                expansionHubMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, coeffs);
-            }
+            expansionHubMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, initCoeffs);
         }
 
         rightSlide.setDirection(DcMotor.Direction.REVERSE);
 
     }
+
+
 
 
     private void setTargetPosition(int newPosition) {
