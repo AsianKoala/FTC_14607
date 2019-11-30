@@ -5,6 +5,15 @@ import com.qualcomm.robotcore.util.Range;
 import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition.*;
 
+/**
+ * so i dont think this will work cause cause stupid roadrunner's localization IS SO FUCKED UP
+ * like its coord system is like this
+ *
+ *  Q1  | Q4
+ *  ---------
+ *  Q2 | Q3
+ */
+@Deprecated
 public class RobotMovement {
 
 

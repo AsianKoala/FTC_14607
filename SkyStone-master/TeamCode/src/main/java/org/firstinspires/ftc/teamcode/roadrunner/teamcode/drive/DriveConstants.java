@@ -57,10 +57,6 @@ public class DriveConstants {
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
-    public static MecanumConstraints MECANUM_CONSTRAINTS = new MecanumConstraints(
-            BASE_CONSTRAINTS,
-            TRACK_WIDTH
-    );
 
 
     public static double encoderTicksToInches(int ticks) {
@@ -78,4 +74,5 @@ public class DriveConstants {
     public static double getMaxRpm() {
         return 312;
     }
+
 }

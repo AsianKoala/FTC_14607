@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.code;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import static java.lang.Math.*;
+
 public class GLOBALS {
 
     public final static double flipperHome =  0.95;
@@ -48,5 +51,54 @@ public class GLOBALS {
 
         return angle;
     }
+
+
+    public static double rrAngleWrap(double angle) {
+        while(angle < 0) {
+            angle += 2 * PI;
+        }
+
+        while(angle > 2 * PI) {
+            angle -= 2 * PI;
+        }
+
+        return angle;
+    }
+
+    /**
+     * get it
+     * cause I
+     *
+     * red
+     *
+     * it
+     *
+     *
+     *
+     *
+     *
+     * ill lead myself out
+     *
+     *
+     * @param pose blue pose
+     * @return reddited (get it) pose
+     */
+    public static Pose2d redditPose(Pose2d pose) {
+        return new Pose2d(pose.getX(), -1 * pose.getY(), rrAngleWrap(pose.getHeading() + PI));
+    }
+
+    /****************** ------ POSITIONING CONSTANTS ----------*****************/
+    public static Pose2d blueFoundationStart = new Pose2d(48, 54, toRadians(90));
+    public static Pose2d blueFoundation = new Pose2d(48, 24, toRadians(90));
+    public static Pose2d blueNotSafePark = new Pose2d(0,54, toRadians(90));
+    public static Pose2d blueSafePark = new Pose2d(0, 30, toRadians(0));
+
+    // red pose for foundation
+
+    public static Pose2d redFoundationStart = redditPose(blueFoundationStart);
+    public static Pose2d redFoundation = redditPose(blueFoundation);
+    public static Pose2d redNotSafePark = redditPose(blueNotSafePark);
+    public static Pose2d redSafePark = redditPose(blueSafePark);
+
 
 }

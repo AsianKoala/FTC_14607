@@ -42,7 +42,7 @@ public class Firefly extends TunableOpMode {
     public Slide mySlide;
     public Intake myIntake;
     public Outtake myOuttake;
-    private DriveTrain myDriveTrain;
+    public DriveTrain myDriveTrain;
 
 
     // used for debugging
@@ -198,28 +198,43 @@ public class Firefly extends TunableOpMode {
         // now updating the state machines starts
 
         tp2.markStart();
-        myDriveTrain.updatee(); // updates drivetrain with non
+        myDriveTrain.updatee(); // applies movementX etc. to drive motor powers
         tp2.markEnd();
 
-
         tp3.markStart();
-        myOuttake.update();
+        myDriveTrain.update(); // updates roadrunner pose using motor encoder values
         tp3.markEnd();
 
-
         tp4.markStart();
-        mySlide.update();
+        RobotPosition.giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp4.markEnd();
+
+        /**
+         * referencing above ^
+         * the reason we have to do myDriveTrain.update(); (roadrunner super method) and do
+         * RobotPosition.giveMePose is because we convert the pose estimate obtained through rr into vars
+         * that are used for everything besides roadrunner movement methods.
+         *
+         * **** ROBOT POSITION DOES NOT SET ANYTHING, RATHER CONVERTS RR POSE TO OUR VALUES ****
+         */
 
 
         tp5.markStart();
-        myIntake.update();
+        myOuttake.update();
         tp5.markEnd();
 
 
         tp6.markStart();
-        RobotPosition.giveMePose(myDriveTrain.getPoseEstimate());
+        mySlide.update();
         tp6.markEnd();
+
+
+        tp7.markStart();
+        myIntake.update();
+        tp7.markEnd();
+
+
+
 
 
         // check for debug mode and tune pid gains
@@ -235,12 +250,6 @@ public class Firefly extends TunableOpMode {
 
 
 
-
-
-
-
-
-
         telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
@@ -249,6 +258,7 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
+        telemetry.addLine("profiler 9: " + tp9.getAverageTimePerUpdateMillis());
 
     }
 
