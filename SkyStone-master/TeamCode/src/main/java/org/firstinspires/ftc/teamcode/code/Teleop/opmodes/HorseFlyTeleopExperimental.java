@@ -234,27 +234,46 @@ public class HorseFlyTeleopExperimental extends OpMode {
 
 
 
-
+        /**
+         *
+         *
+         * FLIP BACK
+         *
+         */
 
 
         switch(counter)
-        {
-                //task 1: lift up
+        {            
+            //gripper let go first? 
+            //task 1: lift up
+            //need to test, this step should not be necesssary
             case 1:
                     gripper.setPosition(gripperGrip);
-                    newSlideLeft = liftIncrementer;
+                    newSlideLeft = liftIncrementer;//height should not be hardcoded, fix after PID tuned
                     newSlideRight = liftIncrementer;
+                
+                //none of :
                     leftSlide.setTargetPosition((int)(newSlideLeft));
                     rightSlide.setTargetPosition((int)(newSlideRight));
                     leftSlide.setPower(1);
                     rightSlide.setPower(1);
+                //this is necessary? coded later already    
+                    
                     chime = System.currentTimeMillis();
                     counter++;
-
-                break;
-            //task 3: flip back
+                    break;
+ 
+            //rotate
             case 2:
-                if(System.currentTimeMillis() - chime >= toLiftTimeTo)
+                if(System.currentTimeMillis() - chime >= 100)//lift is super fast, can also rotate on the way up
+                {
+                    rotaterReady();
+                    counter++;
+                }
+                break;
+            //flip
+            case 3:
+                if(System.currentTimeMillis() - chime >= 750)//amount of time rotation takes
                 {
                     flipper.setPosition(0.95);
                     chime = System.currentTimeMillis();
@@ -262,17 +281,10 @@ public class HorseFlyTeleopExperimental extends OpMode {
                 }
 
                 break;
-            //rotate around
-            case 3:
-                if(System.currentTimeMillis() - chime >= toBackTimeTo)
-                {
-                    rotaterReady();
-                    counter++;
-                }
-                break;
+            //pseudo home lift
             case 4:
-                leftSlide.setTargetPosition((int)(-25.0/2));
-                rightSlide.setTargetPosition((int)(-25.0/2));
+                leftSlide.setTargetPosition((int)(-25.0));//changed to pseudo home
+                rightSlide.setTargetPosition((int)(-25.0));
                 leftSlide.setPower(0.75);
                 rightSlide.setPower(0.75);
                 chime = System.currentTimeMillis();
@@ -281,11 +293,12 @@ public class HorseFlyTeleopExperimental extends OpMode {
 
             // grip to home
             case 5:
-                if(System.currentTimeMillis() - chime >= 500) {
+                if(System.currentTimeMillis() - chime >= 300) {
                     gripper.setPosition(gripperHome);
                 }
                 counter++;
                 break;
+           // lift to home 
             case 6:
                 oldSlideLeft = leftSlide.getCurrentPosition();
                 oldSlideRight = rightSlide.getCurrentPosition();
@@ -297,7 +310,12 @@ public class HorseFlyTeleopExperimental extends OpMode {
         }
 
 
-
+        /**
+         *
+         *
+         * FLIP OUT
+         *
+         */
 
         switch(count)
         {
