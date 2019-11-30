@@ -11,7 +11,7 @@ public class PitScanner {
     private static double bestDropX = 0;
     private static double bestDropY = 0;
 
-
+//
     //These are the world coordinates of the best cube location
     private static double bestCubeX = 0;
     private static double bestCubeY = 0;

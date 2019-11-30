@@ -1,0 +1,55 @@
+package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
+
+
+/**
+ * this is used so that we can put the roadrunner localization into vars
+ */
+public class RobotPosition {
+
+    private static Firefly myRobot;
+
+
+
+    public static double worldXPos = 0.0;
+    public static double worldYPos = 0.0;
+    public static double worldHeadingRad = 0.0;
+    public static Pose2d worldPose = new Pose2d(0,0,0);
+
+
+    public static void initPose(Pose2d pose, Firefly robot) {
+        worldXPos = pose.getX();
+        worldYPos = pose.getY();
+        worldHeadingRad = pose.getHeading();
+        worldPose = pose;
+        myRobot = robot;
+    }
+    public static void giveMePose(Pose2d pose) {
+        worldXPos = pose.getX();
+        worldYPos = pose.getY();
+        worldHeadingRad = pose.getHeading();
+        worldPose = pose;
+    }
+
+
+    public void PositioningCalculation() {
+        /**
+         * first thing we need to do is convert
+         */
+    }
+
+
+
+
+    /**
+     * we put this in here so that myDriveTrain controls motor powers while this gets pose values from
+     * myDriveTrain and uses them
+     * @param pose
+     */
+    public static void setPose(Pose2d pose) {
+        myRobot.myDriveTrain.setPoseEstimate(pose);
+        giveMePose(pose);
+    }
+}
