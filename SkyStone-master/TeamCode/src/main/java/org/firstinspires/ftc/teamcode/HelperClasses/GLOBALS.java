@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.HelperClasses;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import static java.lang.Math.*;
 
-public class GLOBALS {
+public  class GLOBALS {
 
     public final static double flipperHome =  0.95;
     public final static double flipperOut = 0.25;
@@ -13,9 +13,9 @@ public class GLOBALS {
     public final static double rotaterOut = 0.95;
     public final static double gripperHome = 0.41;
     public final static double gripperGrip = 0.2;
-    
-    
-    
+
+
+
 
 
     public final static long toMidTime = 450;
