@@ -55,6 +55,7 @@ public abstract class Auto extends Firefly {
         stageStartingYPos = worldYPos;
         stageStartingAngleRad = worldHeadingRad;
         stageStartingPose = new Pose2d(stageStartingXPos, stageStartingYPos, stageStartingAngleRad);
+        stateStartTime = currTimeMillis;
     }
 
 

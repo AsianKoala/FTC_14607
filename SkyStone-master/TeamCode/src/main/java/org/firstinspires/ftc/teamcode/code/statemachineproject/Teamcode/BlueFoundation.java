@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.code.statemachineproject.Teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.Auto;
 import org.firstinspires.ftc.teamcode.code.statemachineproject.HelperClasses.TimeProfiler;
@@ -25,7 +27,8 @@ public class BlueFoundation extends Auto {
         ungrab,
 
         park,
-        safePark // used if we need to park safely
+        safePark, // used if we need to park safely
+        stop
     }
 
 
@@ -44,7 +47,17 @@ public class BlueFoundation extends Auto {
     public void init_loop() {
         super.init_loop();
 
+        if(gamepad1.a) {
+            safePark = true;
+        }
+
+        if(gamepad1.b) {
+            safePark = false;
+        }
         telemetry.addLine("hi dev charlie krish reevu");
+        telemetry.addLine("a is true, b is false");
+        telemetry.addData("safe parking?", safePark);
+        telemetry.update();
     }
 
 
@@ -133,21 +146,113 @@ public class BlueFoundation extends Auto {
         if(currStage == progStates.driveToFoundation.ordinal()) {
             if (stageFinished) {
                 RobotPosition.setPose(blueFoundationStart);
+                initStateVars();
+
+                Trajectory toFoundation = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
+                        .forward(Math.abs(stageStartingYPos - blueFoundation.getY()))
+                        .build();
+
+                myDriveTrain.followTrajectory(toFoundation);
             }
-            initStateVars();
 
 
-            Trajectory toFoundation = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
-                    .forward(Math.abs(stageStartingYPos - blueFoundation.getY()))
-                    .build();
 
-            myDriveTrain.followTrajectory(toFoundation);
 
             if (!myDriveTrain.isBusy()) {
                 nextStage();
             }
         }
 
-        // add more stages here but you get it
+        if(currStage == progStates.grabbing.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+            }
+
+            myOuttake.grabFoundation();
+
+            if(timedOut(1000)) {
+                nextStage();
+            }
+        }
+
+        if(currStage == progStates.pulling.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+                Trajectory toWall = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
+                        .back(Math.abs(stageStartingYPos - blueFoundation.getY()))
+                        .build();
+                myDriveTrain.followTrajectory(toWall);
+            }
+
+
+            if(!myDriveTrain.isBusy()) {
+                nextStage();
+            }
+        }
+
+        if(currStage == progStates.ungrab.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+            }
+
+            myOuttake.ungrabFoundation();
+
+            if(timedOut(1000)) {
+                if(!safePark) {
+                    nextStage();
+                }
+
+                else {
+                    nextStage(progStates.safePark.ordinal());
+                }
+            }
+        }
+
+        if(currStage == progStates.park.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+
+                Trajectory toPark = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
+                        .strafeRight(Math.abs(stageStartingXPos - blueNotSafePark.getX()))
+                        .build();
+                myDriveTrain.followTrajectory(toPark);
+            }
+
+
+            if(!myDriveTrain.isBusy()) {
+                nextStage(progStates.stop.ordinal());
+            }
+        }
+
+
+
+        if(currStage == progStates.park.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+
+            }
+            int i = 0;
+            if(30 * 1000 - currTimeMillis > 10 && i==0) { // the errors are stupid, main state machine is looped so i will be bigger than 0
+                Trajectory toSafePark = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
+                        .strafeRight(Math.abs(stageStartingXPos - 18))
+                        .splineTo(blueSafePark)
+                        .build();
+
+                myDriveTrain.followTrajectory(toSafePark);
+                i++;
+            }
+
+            if(!myDriveTrain.isBusy() && i==1) {
+                nextStage(progStates.stop.ordinal());
+            }
+        }
+
+        if(currStage == progStates.stop.ordinal()) {
+            myDriveTrain.setMotorPowers(0,0,0,0);
+        }
+
+
+
+
     }
 }

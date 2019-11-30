@@ -91,7 +91,7 @@ public class GLOBALS {
     public static Pose2d blueFoundationStart = new Pose2d(48, 54, toRadians(90));
     public static Pose2d blueFoundation = new Pose2d(48, 24, toRadians(90));
     public static Pose2d blueNotSafePark = new Pose2d(0,54, toRadians(90));
-    public static Pose2d blueSafePark = new Pose2d(0, 30, toRadians(0));
+    public static Pose2d blueSafePark = new Pose2d(0, 34, toRadians(0));
 
     // red pose for foundation
 
