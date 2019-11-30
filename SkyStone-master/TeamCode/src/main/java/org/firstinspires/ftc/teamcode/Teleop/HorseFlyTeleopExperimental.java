@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 //BASED OFF OF AUTOMATED TELEOP DOES NOT ACCOUNT FOR NEW RESTRUCTURING
-// ok thanks boi
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+
 import java.util.ArrayList;
+
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 
 @TeleOp(name = "experimental teleop")
