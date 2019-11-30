@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.roadrunner.drive.opmode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.code.HelperClasses.HouseFly;
+import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
 
 /*
  * This is an example of a more complex path to really test the tuning.

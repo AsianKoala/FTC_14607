@@ -22,7 +22,7 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.roadrunner.util.DashboardUtil;
 
-import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.*;
+import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.*;
 
 /*
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are

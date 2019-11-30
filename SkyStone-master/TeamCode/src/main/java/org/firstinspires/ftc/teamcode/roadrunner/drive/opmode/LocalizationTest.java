@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.roadrunner.drive.opmode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.code.HelperClasses.HouseFly;
+import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal

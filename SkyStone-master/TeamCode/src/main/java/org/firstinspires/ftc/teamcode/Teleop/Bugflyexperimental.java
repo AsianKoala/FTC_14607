@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.teamcode.code.HelperClasses.HouseFly;
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 @TeleOp(name = "Big Kahuna Experimental")
 public class Bugflyexperimental extends OpMode {

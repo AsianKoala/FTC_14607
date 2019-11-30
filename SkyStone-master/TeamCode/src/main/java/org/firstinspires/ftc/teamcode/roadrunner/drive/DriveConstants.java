@@ -1,11 +1,8 @@
-package org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive;
+package org.firstinspires.ftc.teamcode.roadrunner.drive;
 
 //import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
-import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
-import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 /*
  * Constants shared between multiple drive types.

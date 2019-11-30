@@ -17,8 +17,8 @@ import org.openftc.revextensions2.RevBulkData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.encoderTicksToInches;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
@@ -301,6 +301,6 @@ public class HouseFly extends SampleMecanumDriveBase {
         return rotater.getPosition() == rotaterOut;
     }
 
-    public boolean isOuttakeReady() {  return rotater.getPosition() == rotaterHome;}
+    public boolean isOuttakeReady() {  return rotater.getPosition() == GLOBALS.rotaterHome;}
 
 }

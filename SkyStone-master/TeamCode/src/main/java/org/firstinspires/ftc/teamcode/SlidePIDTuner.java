@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.openftc.revextensions2.ExpansionHubMotor;
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
 
 import java.util.ArrayList;
 

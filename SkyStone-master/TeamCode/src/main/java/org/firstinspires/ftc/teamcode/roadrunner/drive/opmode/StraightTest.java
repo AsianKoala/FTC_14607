@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.code.HelperClasses.HouseFly;
+import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
 
 /*
  * This is a simple routine to test translational drive capabilities.

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import java.util.ArrayList;
 
 

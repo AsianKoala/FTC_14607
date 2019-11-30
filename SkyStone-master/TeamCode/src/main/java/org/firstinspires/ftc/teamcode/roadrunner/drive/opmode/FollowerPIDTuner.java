@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.code.HelperClasses.HouseFly;
+import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
 
 /*
  * Op mode for tuning follower PID coefficients. The robot drives in a DISTANCE-by-DISTANCE square
