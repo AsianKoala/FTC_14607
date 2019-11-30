@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.Teamcod
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.Firefly;
 import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.HelperClasses.TimeProfiler;
+import org.firstinspires.ftc.teamcode.code.hardware.statemachineproject.RobotUtil.RobotPosition;
+
 import static org.firstinspires.ftc.teamcode.code.GLOBALS.*;
 
 @TeleOp(name = "new test teleop", group = "teleop")
@@ -46,6 +48,7 @@ public class FireflyTeleop extends Firefly {
     private TimeProfiler tp6 = new TimeProfiler(1000);
     private TimeProfiler tp7 = new TimeProfiler(1000);
     private TimeProfiler tp8 = new TimeProfiler(1000);
+    private TimeProfiler tp9 = new TimeProfiler(1000);
 
     @Override
     public void loop() {
@@ -91,17 +94,23 @@ public class FireflyTeleop extends Firefly {
         tp8.markEnd();
 
 
+        tp9.markStart();
+        positionTelemetry();
+        tp9.markEnd();
+
+
 
 
         telemetry.addLine("-------------- FIREFLY TELEOP TELEMETRY -----------------");
-        telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 4: " + tp4.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 5: " + tp5.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 1: " + tp1.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 2: " + tp2.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 3: " + tp3.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 4: " + tp4.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 5: " + tp5.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 6: " + tp6.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 7: " + tp7.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 8: " + tp8.getAverageTimePerUpdateMillis());
+        telemetry.addLine("tOp profiler 9: " + tp9.getAverageTimePerUpdateMillis());
 
     }
 
@@ -128,6 +137,12 @@ public class FireflyTeleop extends Firefly {
         }
     }
 
+
+    public void positionTelemetry() {
+        telemetry.addLine("xPos: " + df.format(RobotPosition.worldXPos) +
+                "yPos: "+ df.format(RobotPosition.worldYPos) +
+                "heading: " + df.format(RobotPosition.worldHeadingRad));
+    }
 
     private void gripperControl() {
         if(gamepad2.a) {
@@ -182,11 +197,11 @@ public class FireflyTeleop extends Firefly {
 
 
 
-        if(gamepad1.dpad_left) {
+        if(gamepad2.dpad_left) {
             count = 1;
         }
 
-        if(gamepad1.dpad_right) {
+        if(gamepad2.dpad_right) {
             counter = 1;
         }
 

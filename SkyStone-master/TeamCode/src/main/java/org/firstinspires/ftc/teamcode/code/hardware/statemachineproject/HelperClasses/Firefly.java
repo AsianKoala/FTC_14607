@@ -150,7 +150,7 @@ public class Firefly extends TunableOpMode {
     private TimeProfiler tp6 = new TimeProfiler(1000);
     private TimeProfiler tp7 = new TimeProfiler(1000);
     private TimeProfiler tp8 = new TimeProfiler(1000);
-
+    private TimeProfiler tp9 = new TimeProfiler(1000);
 
     /**
      * time of last loop update in millis
@@ -197,44 +197,41 @@ public class Firefly extends TunableOpMode {
 
         // now updating the state machines starts
 
-        // intake update
         tp2.markStart();
-        myDriveTrain.updatee();
+        myDriveTrain.updatee(); // updates drivetrain with non
         tp2.markEnd();
 
 
-        // slide update
         tp3.markStart();
         myOuttake.update();
         tp3.markEnd();
 
 
-        // drivetrain update
         tp4.markStart();
         mySlide.update();
         tp4.markEnd();
 
 
-        // outtake update
         tp5.markStart();
         myIntake.update();
         tp5.markEnd();
 
 
-        // update positions
         tp6.markStart();
         RobotPosition.giveMePose(myDriveTrain.getPoseEstimate());
         tp6.markEnd();
 
 
         // check for debug mode and tune pid gains
-        tp7.markStart();
-        debugMode();
-        tp7.markStart();
+  //      tp7.markStart();
+   //     debugMode();
+    //    tp7.markStart();
 
-        tp8.markStart();
-        tuneSlidePID();
-        tp8.markEnd();
+   //     tp8.markStart();
+   //     tuneSlidePID();
+   //     tp8.markEnd();
+
+
 
 
 
@@ -315,11 +312,7 @@ public class Firefly extends TunableOpMode {
 
     // report position
 
-    public void positionTelemetry() {
-        telemetry.addLine("xPos: " + df.format(RobotPosition.worldXPos) +
-                "yPos: "+ df.format(RobotPosition.worldYPos) +
-                "heading: " + df.format(RobotPosition.worldHeadingRad));
-    }
+
 
     public double getXPos() { return RobotPosition.worldXPos; }
     public double getYPos() { return RobotPosition.worldYPos; }
@@ -335,8 +328,6 @@ public class Firefly extends TunableOpMode {
             double d = getInt("D");
 
             mySlide.setPIDCoeffs(p, i, d);
-            mySlide.setDebugging(true);
-
     }
 
 

@@ -23,7 +23,8 @@ public class Slide {
         PSEUDOHOME,
         HOME,
         CUSTOM,
-        OUT
+        OUT,
+        OLDPOS
     }
 
 
@@ -34,9 +35,13 @@ public class Slide {
         allMotors.add(leftSlide);
         allMotors.add(rightSlide);
 
+
+
         for(ExpansionHubMotor expansionHubMotor : allMotors) {
+            expansionHubMotor.setTargetPosition(0);
             expansionHubMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             expansionHubMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
             if(isDebugging) {
                 expansionHubMotor.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(0,0,0));
             }
@@ -49,6 +54,48 @@ public class Slide {
         rightSlide.setDirection(DcMotor.Direction.REVERSE);
 
     }
+
+
+    private void setTargetPosition(int newPosition) {
+        this.newPosition = newPosition;
+    }
+
+    private void applyPIDCoeffs() {
+        leftSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
+        rightSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
+    }
+
+    private void recordOldPos() {
+        oldPosition = getLeftSlidePosition();
+    }
+
+
+
+
+    private void HandleMovements() {
+        if(states == STATES.HOME) {
+            recordOldPos();
+            setTargetPosition(13);
+        }
+
+        if(states == STATES.PSEUDOHOME) {
+            recordOldPos();
+            setTargetPosition(25);
+        }
+
+        if(states == STATES.OUT) {
+            setTargetPosition(-500);
+        }
+
+        if(states == STATES.OLDPOS) {
+            setTargetPosition(oldPosition);
+        }
+
+        if(states == STATES.CUSTOM) {
+
+        }
+    }
+
 
 
 
@@ -65,14 +112,11 @@ public class Slide {
     public int getRightSlidePosition() {
         return rightSlide.getCurrentPosition();
     }
+
     public void setPIDCoeffs(double p, double i, double d) {
         P = p;
         I = i;
         D = d;
-    }
-
-    private void applyPIDCoeffs() {
-        leftSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
     }
 
 
@@ -81,10 +125,6 @@ public class Slide {
     }
 
 
-
-    private void setTargetPosition(int newPosition) {
-        this.newPosition = newPosition;
-    }
 
     public void goHome() { states = STATES.HOME;}
     public void goPsuedohome() { states = STATES.PSEUDOHOME;}
@@ -103,34 +143,15 @@ public class Slide {
     }
 
 
-    private void recordOldPos() {
-        oldPosition = getLeftSlidePosition();
-    }
-    
+    public void goOld() { states = STATES.OLDPOS; }
 
 
-
-    private void HandleMovements() {
-        if(states == STATES.HOME) {
-            setTargetPosition(13);
-        }
-
-        if(states == STATES.PSEUDOHOME) {
-            setTargetPosition(25);
-        }
-
-        if(states == STATES.OUT) {
-            setTargetPosition(-500);
-        }
-
-        if(states == STATES.CUSTOM) {
-
-        }
-    }
 
 
 
     public void update() {
+
+        HandleMovements();
 
         if (Math.abs(leftSlide.getCurrentPosition() - newPosition) > 10 || Math.abs(rightSlide.getCurrentPosition() - newPosition) > 10) {
 
