@@ -1,0 +1,211 @@
+buildscript {
+    ext.dashboard_version = '0.3.4'
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
+
+plugins {
+    id "com.moowork.node" version "1.2.0"
+}
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'checkstyle'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 26
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+node {
+    version = '12.9.0'
+    download = true
+    nodeModulesDir = file("${project.projectDir}/dash")
+}
+
+yarn_build.dependsOn yarn_install
+
+task cleanDashAssets(type: Delete) {
+    delete "${android.sourceSets.getByName('main').assets.srcDirs[0]}/dash"
+}
+
+clean.dependsOn cleanDashAssets
+
+task copyDashAssets(type: Copy) {
+    from "${project.projectDir}/dash/build"
+    into "${android.sourceSets.getByName('main').assets.srcDirs[0]}/dash"
+}
+
+copyDashAssets.dependsOn cleanDashAssets
+copyDashAssets.dependsOn yarn_build
+
+android.libraryVariants.all { variant ->
+    variant.preBuildProvider.get().dependsOn copyDashAssets
+}
+
+// adapted from https://github.com/Genymobile/gnirehtet/blob/master/config/android-checkstyle.gradle
+check.dependsOn 'checkstyle'
+
+checkstyle {
+    toolVersion = checkstyle_version
+}
+
+task checkstyle(type: Checkstyle) {
+    description = "Check Java style with Checkstyle"
+    configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+    source = javaSources()
+    classpath = files()
+    ignoreFailures = true
+}
+
+def javaSources() {
+    def files = []
+    android.sourceSets.each { sourceSet ->
+        sourceSet.java.each { javaSource ->
+            javaSource.getSrcDirs().each {
+                if (it.exists()) {
+                    files.add(it)
+                }
+            }
+        }
+    }
+    return files
+}
+
+repositories {
+    flatDir {
+        dirs '../libs'
+    }
+}
+
+dependencies {
+    api(name: 'RobotCore-release', ext: 'aar')
+    api(name: 'FtcCommon-release', ext: 'aar')
+    api(name: 'RobotServer-release', ext: 'aar')
+
+    implementation 'com.android.support:support-compat:28.0.0'
+
+    implementation('org.nanohttpd:nanohttpd-websocket:2.3.1') {
+        exclude module: 'nanohttpd'
+    }
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task androidJavadocs(type: Javadoc) {
+    failOnError = false
+    source = android.sourceSets.main.java.srcDirs
+    ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+    classpath += files(ext.androidJar)
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The MIT License"
+            url "https://opensource.org/licenses/MIT"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "rbrott"
+            name "Ryan Brott"
+            email "rcbrott@gmail.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/acmerobotics/ftc-dashboard"
+    }
+}
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                artifact bundleReleaseAar
+                artifact androidSourcesJar
+                artifact androidJavadocsJar
+                groupId = 'com.acmerobotics.dashboard'
+                artifactId = 'dashboard'
+                version dashboard_version
+                pom.withXml {
+                    def root = asNode()
+                    root.appendNode('description', 'React-based web dashboard designed for FTC')
+                    root.appendNode('name', 'FTC Dashboard')
+                    root.appendNode('url', 'https://github.com/acmerobotics/ftc-dashboard')
+                    root.children().last() + pomConfig
+                }
+
+                pom.withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+                    // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                    configurations.implementation.allDependencies.each { dep ->
+                        // Ensure dependencies such as fileTree are not included.
+                        if (dep instanceof ModuleDependency && !dep.name.endsWith("-release")) {
+                            def moduleDep = (ModuleDependency) dep
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', moduleDep.group)
+                            dependencyNode.appendNode('artifactId', moduleDep.name)
+                            dependencyNode.appendNode('version', moduleDep.version)
+                            if (dep.excludeRules.size() > 0) {
+                                def exclusionsNode = dependencyNode.appendNode('exclusions')
+                                dep.excludeRules.every { excludedDep ->
+                                    def exclusionNode = exclusionsNode.appendNode('exclusion')
+                                    exclusionNode.appendNode('groupId', moduleDep.group)
+                                    exclusionNode.appendNode('artifactId', excludedDep.module)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = 'ftc-dashboard'
+        userOrg = 'acmerobotics'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/acmerobotics/ftc-dashboard.git'
+        version {
+            name = dashboard_version
+            released  = new Date()
+        }
+        publications = ['maven']
+    }
+}
