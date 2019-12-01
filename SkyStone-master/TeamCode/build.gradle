@@ -22,7 +22,6 @@ dependencies {
     implementation 'org.openftc:rev-extensions-2:1.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'org.openftc:ftc-opmode-tuner-common:0.22'
-
 }
 repositories {
     mavenCentral()

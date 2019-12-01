@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detekt_version"
+    }
+}
+
+plugins {
+    id 'kotlin'
+}
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+repositories {
+    jcenter()
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+detekt {
+    toolVersion = detekt_version
+    input = files("src/main/kotlin")
+    filters = ".*/resources/.*,.*/build/.*"
+    config = files("$rootDir/detekt-config.yml")
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    api "io.gitlab.arturbosch.detekt:detekt-api:$detekt_version"
+
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:$detekt_version"
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-cli:$detekt_version"
+}
