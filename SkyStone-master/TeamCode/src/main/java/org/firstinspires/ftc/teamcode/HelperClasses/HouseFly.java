@@ -1,16 +1,14 @@
-package org.firstinspires.ftc.teamcode.HelperClasses;
+package org.firstinspires.ftc.teamcode.code.HelperClasses;
 
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.roadrunner.util.AxesSigns;
-import org.firstinspires.ftc.teamcode.roadrunner.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.roadrunner.util.LynxOptimizedI2cFactory;
+import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.BNO055IMUUtil;
+import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.LynxOptimizedI2cFactory;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
@@ -19,9 +17,8 @@ import org.openftc.revextensions2.RevBulkData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.code.Auto.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
@@ -304,6 +301,6 @@ public class HouseFly extends SampleMecanumDriveBase {
         return rotater.getPosition() == rotaterOut;
     }
 
-    public boolean isOuttakeReady() {  return rotater.getPosition() == GLOBALS.rotaterHome;}
+    public boolean isOuttakeReady() {  return rotater.getPosition() == rotaterHome;}
 
 }

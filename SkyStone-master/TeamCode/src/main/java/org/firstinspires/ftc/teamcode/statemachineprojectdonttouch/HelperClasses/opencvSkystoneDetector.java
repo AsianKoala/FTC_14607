@@ -1,8 +1,11 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses;
 
+
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -14,9 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-@TeleOp(name= "opencvSkystoneDetector", group="")
-public class opencvSkystoneDetector extends LinearOpMode {
+public class opencvSkystoneDetector  {
     private ElapsedTime runtime = new ElapsedTime();
 
     //0 means skystone, 1 means yellow stone
@@ -40,31 +41,44 @@ public class opencvSkystoneDetector extends LinearOpMode {
     private final int cols = 480;
 
     OpenCvCamera phoneCam;
+    Firefly myRobot;
 
-    @Override
-    public void runOpMode() {
+    private int cameraMonitorViewId;
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    
+
+    public opencvSkystoneDetector(Firefly myRobot, int id) {
+        this.myRobot = myRobot;
+        cameraMonitorViewId = id;
+    }
+    
+    public void initCamera() {
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDevice();//open camera
-        phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
-        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.SIDEWAYS_LEFT);//display on phone
-        //width, height
-        //width = height in this case, because camera is in portrait mode.
-
-        waitForStart();
-        runtime.reset();
-        while (opModeIsActive()) {
-            telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
-            telemetry.addData("Height", rows);
-            telemetry.addData("Width", cols);
-
-            telemetry.update();
-            sleep(100);
+        phoneCam.openCameraDevice();
+        phoneCam.setPipeline(new StageSwitchingPipeline());
+        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.SIDEWAYS_LEFT);
+    }
+    
+    public void update() {
+        myRobot.telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
+        myRobot.telemetry.addData("Height", rows);
+        myRobot.telemetry.addData("Width", cols);
 
 
+        if(valLeft == 0) {
+            ourSkystonePosition = SKYSTONE_POSITION.LEFT;
+        }
+
+        if(valMid == 0) {
+            ourSkystonePosition = SKYSTONE_POSITION.MIDDLE;
+        }
+
+        if(valRight == 0) {
+            ourSkystonePosition = SKYSTONE_POSITION.RIGHT;
         }
     }
+
+
 
     //detection pipeline
     static class StageSwitchingPipeline extends OpenCvPipeline
