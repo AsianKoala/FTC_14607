@@ -38,7 +38,7 @@ public  class GLOBALS {
 
 
 
-    public SKYSTONE_POSITION ourSkystonePosition;
+    public static SKYSTONE_POSITION ourSkystonePosition;
     public enum SKYSTONE_POSITION {
         LEFT,
         MIDDLE,
