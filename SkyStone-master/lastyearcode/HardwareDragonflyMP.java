@@ -31,7 +31,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import java.util.List;
 import java.util.Arrays;
 
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.LynxOptimizedI2cFactory;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.LynxOptimizedI2cFactory;
 import org.jetbrains.annotations.NotNull;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;

@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
 
 /*
  * Op mode for tuning follower PID coefficients. This is the final step in the tuning process.

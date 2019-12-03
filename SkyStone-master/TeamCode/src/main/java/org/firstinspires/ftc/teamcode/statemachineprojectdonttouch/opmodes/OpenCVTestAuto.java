@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
 
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Auto;
 
 public class OpenCVTestAuto extends Auto {

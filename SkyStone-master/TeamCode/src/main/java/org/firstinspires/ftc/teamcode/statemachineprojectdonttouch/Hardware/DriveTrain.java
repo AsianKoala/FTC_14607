@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.AxesSigns;
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.LynxOptimizedI2cFactory;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.LynxOptimizedI2cFactory;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.code.Auto.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
 
 public class DriveTrain extends SampleMecanumDriveBase {
     public ExpansionHubEx master, slave;

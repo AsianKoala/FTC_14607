@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
 
 import java.util.List;
 

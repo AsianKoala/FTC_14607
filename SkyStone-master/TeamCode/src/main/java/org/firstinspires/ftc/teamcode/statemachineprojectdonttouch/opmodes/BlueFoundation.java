@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.code.Auto.roadrunner.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Auto;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.TimeProfiler;
 
