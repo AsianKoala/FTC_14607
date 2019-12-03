@@ -12,7 +12,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
  */
 public abstract class Auto extends org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly {
 
-    private double stateStartTime = 0;
+    public double stateStartTime = 0;
     public int currStage = 0; // current stage
     int nextStage = 1; // holds next stage
    public  boolean stageFinished = true; // used to progress to next stage
