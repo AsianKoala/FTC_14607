@@ -1,6 +1,7 @@
 # FTC_14607
 
-master branch - stable, 9/10 times just clone this one 
-neil branch - newest/the one that neil likes to test stuff on
-backup branch - backup
-any other branch - irrelevant__
+master - 9/10 newest code, stablest code
+neil - newest code (most of the time) but also broken a lot of the time
+stateMachineProject - state machine side project
+backup - a backup if we somehow mess up the repo (which has happened before)
+every other branch - pretty irrelevant ¯\_(ツ)_/¯
