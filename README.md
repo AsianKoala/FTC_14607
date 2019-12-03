@@ -8,4 +8,4 @@ stateMachineProject - state machine side project
 
 backup - a backup if we somehow mess up the repo (which has happened before)
 
-every other branch - pretty irrelevant ¯\_(ツ)_/¯
+every other branch - pretty irrelevant   ¯\_(ツ)_/¯
