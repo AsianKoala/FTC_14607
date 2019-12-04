@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.AngleWrap;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
 
 
 /**
@@ -49,13 +49,5 @@ public class RobotPosition {
     }
 
 
-    /**
-     * we put this in here so that myDriveTrain controls motor powers while this gets pose values from
-     * myDriveTrain and uses them
-     * @param pose
-     */
-    public static void setPose(Pose2d pose) {
-        myRobot.myDriveTrain.setPoseEstimate(pose);
-        giveMePose(pose);
-    }
+
 }

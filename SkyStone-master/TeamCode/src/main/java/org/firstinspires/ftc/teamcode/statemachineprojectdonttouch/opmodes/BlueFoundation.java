@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Auto;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.TimeProfiler;
 
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
 
@@ -124,7 +124,7 @@ public class BlueFoundation extends Auto {
      */
 
 
-    @Override
+    //@Override
     public void MainStateMachine() {
         /**
          * this is the basic layout of the flow
@@ -140,7 +140,7 @@ public class BlueFoundation extends Auto {
          *
          * **remember, do not loop anything in here, main state machine is looped**
          */
-
+/*
         if(currStage == progStates.driveToFoundation.ordinal()) {
             if (stageFinished) {
                 setPose(blueFoundationStart);
@@ -251,6 +251,6 @@ public class BlueFoundation extends Auto {
 
 
 
-
+*/
     }
 }

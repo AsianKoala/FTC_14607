@@ -1,8 +1,35 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses;
 
+import android.annotation.SuppressLint;
 import android.os.SystemClock;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
+import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.profile.MotionProfile;
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
+import com.acmerobotics.roadrunner.profile.MotionState;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.HelperClasses.SampleMecanumDriveREVOptimized;
+import org.firstinspires.ftc.teamcode.Teleop.opencvSkystoneDetector;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -13,38 +40,46 @@ import org.openftc.revextensions2.RevBulkData;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.*;
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.giveMePose;
 
 /**
  * this is the base state machine used for teleop and auto
  */
+
 public class Firefly extends TunableOpMode {
 
     // rev objects
-    RevBulkData masterData; // right hub
-    RevBulkData slaveData; // left hub
+    public RevBulkData masterData;
+    public RevBulkData slaveData;
+
     private ExpansionHubEx master;
     private ExpansionHubEx slave;
-    private BNO055IMU imu;
-    // wtf
     public DecimalFormat df = new DecimalFormat("#.00");
 
-    // array for all motors
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
 
 
     // create hardware objects
+    private DriveTrain myDriveTrain;
     public Slide mySlide;
     public Intake myIntake;
     public Outtake myOuttake;
-    public DriveTrain myDriveTrain;
     public opencvSkystoneDetector myDetector;
+    BNO055IMU imu;
+    BNO055IMU.Parameters parameters;
+    private SampleMecanumDriveREVOptimized drive;
+
+
 
 
     // used for debugging
     public long currTimeMillis = 0;
-
+    public boolean isImuInit = false;
 
 
 
@@ -58,29 +93,46 @@ public class Firefly extends TunableOpMode {
 
 
 
-
-        // time for mapping everything
-
-
-        // map rev stuff
         master = hardwareMap.get(ExpansionHubEx.class, "master");
         slave = hardwareMap.get(ExpansionHubEx.class, "follower");
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
 
         ExpansionHubMotor frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
         ExpansionHubMotor frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
         ExpansionHubMotor backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
         ExpansionHubMotor backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
+           allMotors.add(frontLeft);
+            allMotors.add(backLeft);
+         allMotors.add(frontRight);
+            allMotors.add(backRight);
 
-        // add all the motors to our array
-        allMotors.add(frontLeft);
-        allMotors.add(frontRight);
-        allMotors.add(backLeft);
-        allMotors.add(backRight);
 
-        // construct drivetrain
-        myDriveTrain = new DriveTrain(this, frontLeft, frontRight, backLeft, backRight, master, slave, imu);
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        parameters = new BNO055IMU.Parameters();
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+
+
+        class IMUInitter implements Runnable {
+            public void run() {
+                telemetry.addLine("imu about to init");
+                isImuInit = imu.initialize(parameters);
+            }
+        }
+
+
+
+        if(imu != null) {
+            Thread t1 = new Thread(new IMUInitter());
+            telemetry.addLine("imu initting");
+            t1.start();
+        }
+
+
+
+        myDriveTrain = new DriveTrain(this, allMotors,imu,master,slave );
+
 
 
 
@@ -97,9 +149,8 @@ public class Firefly extends TunableOpMode {
         ExpansionHubMotor leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
         ExpansionHubMotor rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
 
-        mySlide = new Slide(leftSlide, rightSlide);
+        mySlide = new Slide(this, leftSlide, rightSlide);
 
-        mySlide.setDebugging(false);
 
 
         ExpansionHubServo leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
@@ -125,7 +176,13 @@ public class Firefly extends TunableOpMode {
 
         getRevBulkData();
 
+
+
     }
+
+
+
+
 
 
     @Override
@@ -137,9 +194,11 @@ public class Firefly extends TunableOpMode {
     }
 
 
+
     @Override
     public void start() {
-        RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
+        //RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
+        telemetry.clear();
     }
 
     /**
@@ -183,13 +242,14 @@ public class Firefly extends TunableOpMode {
         updatesPerSecond = 1000/timeProfiler.getAverageTimePerUpdateMillis();
         telemetry.addLine("UPS: " + updatesPerSecond);
 
-        long timeBeforeDataRead = System.currentTimeMillis();
-        tp1.markStart();
+        long timeBefore = SystemClock.uptimeMillis();
+        tp2.markStart();
+        //get all the bulk data
         getRevBulkData();
-        tp1.markEnd();
+        tp2.markEnd();
 
-        long timeAfterDataRead = System.currentTimeMillis();
-        telemetry.addData("Bulk data read time", timeAfterDataRead);
+        long timeAfter = SystemClock.uptimeMillis();
+        telemetry.addData("Bulk data time: ", (timeAfter-timeBefore));
 
 
         currTimeMillis = SystemClock.uptimeMillis();
@@ -201,16 +261,16 @@ public class Firefly extends TunableOpMode {
 
         // now updating the state machines starts
 
-        tp2.markStart();
-        myDriveTrain.updatee(); // applies movementX etc. to drive motor powers
-        tp2.markEnd();
+        tp1.markStart();
+        myDriveTrain.updatee();
+        tp1.markEnd();
 
-        tp3.markStart();
-        myDriveTrain.update(); // updates roadrunner pose using motor encoder values
+       tp3.markStart();
+         myDriveTrain.update(); // updates roadrunner pose using motor encoder values
         tp3.markEnd();
 
         tp4.markStart();
-        RobotPosition.giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
+        giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp4.markEnd();
 
         /**
@@ -249,7 +309,9 @@ public class Firefly extends TunableOpMode {
 
 
 
-
+        // in millis
+        addSpace();
+        telemetry.addLine("---------------- FIREFLY BASE CLASS TELEM ---------------");
         telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
@@ -258,13 +320,7 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
-
-        telemetry.update();
-
     }
-
-
-
 
 
 
@@ -334,18 +390,18 @@ public class Firefly extends TunableOpMode {
 
     private void tuneSlidePID() {
 
-            double p = getInt("P");
-            double i = getInt("I");
-            double d = getInt("D");
-            mySlide.setPIDCoeffs(p, i, d);
+    //        double p = getInt("P");
+      //      double i = getInt("I");
+        //    double d = getInt("D");
+        //    mySlide.setPIDCoeffs(p, i, d);
     }
 
 
-    private void debugMode() {
-            myDriveTrain.setDebugging(true);
-            mySlide.setDebugging(true);
-            myIntake.setDebugging(true);
-            myOuttake.setDebugging(true);
+    public void debugMode(boolean debugMode) {
+            myDriveTrain.setDebugging(debugMode);
+            mySlide.setDebugging(debugMode);
+            myIntake.setDebugging(debugMode);
+            myOuttake.setDebugging(debugMode);
     }
 
 
@@ -354,6 +410,35 @@ public class Firefly extends TunableOpMode {
     public void addSpace() {
         telemetry.addLine("");
     }
+
+
+
+    /**
+     * we put this in here so that myDriveTrain controls motor powers while this gets pose values from
+     * myDriveTrain and uses them
+     * @param pose
+     */
+    public void setPose(Pose2d pose) {
+        myDriveTrain.setPoseEstimate(pose);
+        giveMePose(pose);
+    }
+
+
+
+
+
+    // weirdchamp @roadrunner
+
+
+
+        public void followTrajectory(Trajectory trajectory) {
+            myDriveTrain.followTrajectory(trajectory);
+        }
+
+
+        public boolean isBusy() {
+            return myDriveTrain.isBusy();
+        }
 
 
 }

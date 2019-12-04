@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil;
 
 import org.firstinspires.ftc.teamcode.HelperClasses.ppProject.company.Range;
 
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
 import static java.lang.Math.*;

@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.ArrayList;
-
+import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
+import java.util.ArrayList;
 
-@TeleOp(name = "experimental teleop")
+
+
+@TeleOp(name = "main teleop")
 public class HorseFlyTeleopExperimental extends OpMode {
 
     /**
@@ -36,6 +38,19 @@ public class HorseFlyTeleopExperimental extends OpMode {
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
 
 
+
+
+
+
+    public final static long toMidTime = 450;
+    public final static long liftTime = 200;
+    public final static long toBackTime = 750;
+
+    public final static long toLiftTimeTo = 400;
+    public final static long toBackTimeTo = 700;
+
+    public final static int liftIncrement = -200;
+    public final static int liftIncrementer = -500;
 
     private double oldSlideLeft = 0;
     private double oldSlideRight = 0;
@@ -104,6 +119,13 @@ public class HorseFlyTeleopExperimental extends OpMode {
     public void loop() {
         
 
+        // tunable opmode vars
+        
+
+        
+        
+        
+        
 
         /**
          *
@@ -172,19 +194,19 @@ public class HorseFlyTeleopExperimental extends OpMode {
         // flipper arm control
 
         if(gamepad2.dpad_down) {
-            flipper.setPosition(.6);
+            flipper.setPosition(flipperBetween);
         }
 
         if(gamepad2.dpad_up) {
-            flipper.setPosition((0.25+0.95)/2);
+            flipper.setPosition(flipperBetween);
         }
 
         if(gamepad2.right_trigger > 0.5) {
-            flipper.setPosition(0.95);
+            flipper.setPosition(flipperHome);
         }
 
         if(gamepad2.left_trigger > 0.5) {
-            flipper.setPosition(0.25);
+            flipper.setPosition(flipperOut);
         }
 
 
@@ -285,8 +307,8 @@ public class HorseFlyTeleopExperimental extends OpMode {
                 break;
             //pseudo home lift
             case 4:
-                leftSlide.setTargetPosition((int)(-25.0));//changed to pseudo home
-                rightSlide.setTargetPosition((int)(-25.0));
+                leftSlide.setTargetPosition(psuedoHome);//changed to pseudo home
+                rightSlide.setTargetPosition(psuedoHome);
                 leftSlide.setPower(0.75);
                 rightSlide.setPower(0.75);
                 chime = System.currentTimeMillis();
@@ -304,8 +326,8 @@ public class HorseFlyTeleopExperimental extends OpMode {
             case 6:
                 oldSlideLeft = leftSlide.getCurrentPosition();
                 oldSlideRight = rightSlide.getCurrentPosition();
-                newSlideLeft = -25.0/2;
-                newSlideRight = -25.0/2;
+                newSlideLeft = psuedoHome;
+                newSlideRight = psuedoHome;
                 gripReady();
                 counter = 0;
                 break;
@@ -413,8 +435,7 @@ public class HorseFlyTeleopExperimental extends OpMode {
         telemetry.addData("left slide pos", leftSlide.getCurrentPosition());
         telemetry.addData("right slide pos", rightSlide.getCurrentPosition());
         telemetry.addData("left slide pid coefffs", leftSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
-        telemetry.addData("right slide pid coeffs", rightSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
-
+        telemetry.addLine("-----------");
     }
 
 
@@ -453,9 +474,7 @@ public class HorseFlyTeleopExperimental extends OpMode {
     }
 
 
-    /**
-     *
-     *
+    /*
      * flipper movement controls
      */
 
@@ -470,13 +489,7 @@ public class HorseFlyTeleopExperimental extends OpMode {
     public void flipMid() {
         flipper.setPosition(flipperBetween);}
 
-    public boolean isFlipperReady() {
-        return flipper.getPosition() == flipperHome;
-    }
 
-    public boolean isFlipperFlipped() {
-        return flipper.getPortNumber() == flipperOut;
-    }
     /**
      * gripper controls
      */
@@ -488,13 +501,7 @@ public class HorseFlyTeleopExperimental extends OpMode {
         gripper.setPosition(gripperHome);
     }
 
-    public boolean isGripReady() {
-        return gripper.getPosition() == gripperHome;
-    }
 
-    public boolean isGripped() {
-        return gripper.getPosition() == gripperGrip;
-    }
 
     /**
      * rotater movement controls
@@ -508,11 +515,5 @@ public class HorseFlyTeleopExperimental extends OpMode {
         rotater.setPosition(rotaterHome);
     }
 
-    public boolean isOuttaked() {
-        return rotater.getPosition() == rotaterOut;
-    }
-
-    public boolean isOuttakeReady() {
-        return rotater.getPosition() == rotaterHome;}
 
 }
