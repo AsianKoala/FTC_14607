@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.teamcode.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.encoderTicksToInches;
 
 public class DriveTrain extends SampleMecanumDriveBase {
     public ExpansionHubEx master, slave;

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasse
 
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition;
@@ -14,11 +15,12 @@ import org.openftc.revextensions2.RevBulkData;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 /**
  * this is the base state machine used for teleop and auto
  */
+@TeleOp(name = "firefly class")
 public class Firefly extends TunableOpMode {
 
     // rev objects
@@ -83,7 +85,7 @@ public class Firefly extends TunableOpMode {
         myDriveTrain = new DriveTrain(this, frontLeft, frontRight, backLeft, backRight, master, slave, imu);
 
 
-
+/*
 
         // construct intake
 
@@ -123,23 +125,24 @@ public class Firefly extends TunableOpMode {
         mySlide.update();
         myIntake.update();
 
-        getRevBulkData();
+        getRevBulkData(); */
 
     }
 
 
     @Override
     public void init_loop() {
-        currTimeMillis = SystemClock.uptimeMillis();
+    /*    currTimeMillis = SystemClock.uptimeMillis();
         getRevBulkData();
         mySlide.update();
-        myDetector.update();
+        myDetector.update(); */
     }
+
 
 
     @Override
     public void start() {
-        RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
+        //RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
     }
 
     /**
@@ -147,7 +150,7 @@ public class Firefly extends TunableOpMode {
      */
 
     private TimeProfiler tp1 = new TimeProfiler(1000);
-    private TimeProfiler tp2 = new TimeProfiler(1000);
+   /* private TimeProfiler tp2 = new TimeProfiler(1000);
     private TimeProfiler tp3 = new TimeProfiler(1000);
     private TimeProfiler tp4 = new TimeProfiler(1000);
     private TimeProfiler tp5 = new TimeProfiler(1000);
@@ -159,12 +162,12 @@ public class Firefly extends TunableOpMode {
     /**
      * time of last loop update in millis
      */
-    private long lastLoopTime = 0;
+  //  private long lastLoopTime = 0;
 
     /**
      * amount of time elapsed this update in millis
      */
-    public int elapsedMillisThisUpdate = 0;
+  //  public int elapsedMillisThisUpdate = 0;
 
 
 
@@ -182,7 +185,7 @@ public class Firefly extends TunableOpMode {
 
         updatesPerSecond = 1000/timeProfiler.getAverageTimePerUpdateMillis();
         telemetry.addLine("UPS: " + updatesPerSecond);
-
+/*
         long timeBeforeDataRead = System.currentTimeMillis();
         tp1.markStart();
         getRevBulkData();
@@ -195,17 +198,17 @@ public class Firefly extends TunableOpMode {
         currTimeMillis = SystemClock.uptimeMillis();
         elapsedMillisThisUpdate = (int)(currTimeMillis - lastLoopTime);
         lastLoopTime = currTimeMillis;
-
+*/
 
 
 
         // now updating the state machines starts
 
-        tp2.markStart();
+        tp1.markStart();
         myDriveTrain.updatee(); // applies movementX etc. to drive motor powers
-        tp2.markEnd();
+        tp1.markEnd();
 
-        tp3.markStart();
+       /* tp3.markStart();
         myDriveTrain.update(); // updates roadrunner pose using motor encoder values
         tp3.markEnd();
 
@@ -223,7 +226,7 @@ public class Firefly extends TunableOpMode {
          */
 
 
-        tp5.markStart();
+   /*     tp5.markStart();
         myOuttake.update();
         tp5.markEnd();
 
@@ -248,17 +251,17 @@ public class Firefly extends TunableOpMode {
     //    tp7.markStart();
 
 
-
+*/
 
         telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
+       /* telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 4: " + tp4.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 5: " + tp5.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
-
+*/
         telemetry.update();
 
     }

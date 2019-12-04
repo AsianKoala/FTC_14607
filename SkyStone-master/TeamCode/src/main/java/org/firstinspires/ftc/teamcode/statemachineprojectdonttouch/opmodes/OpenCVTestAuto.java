@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import static org.firstinspires.ftc.teamcode.code.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Auto;
 
 public class OpenCVTestAuto extends Auto {
