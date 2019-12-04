@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.Rob
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
+import org.openftc.revextensions2.RevBulkData;
 
 
 import java.text.DecimalFormat;
@@ -31,15 +32,12 @@ public class Firefly extends OpMode {
 
 
    // see https://ftcforum.firstinspires.org/forum/ftc-technology/android-studio/78096-problem-with-imu-stuck-in-loop
-    public int msStuckDetectInit     = 20000;
-    public int msStuckDetectInitLoop = 5000;
-    public int msStuckDetectStart    = 20000;
-    public int msStuckDetectLoop     = 5000;
-    public int msStuckDetectStop     = 1000;
 
 
 
     // rev objects
+    public RevBulkData masterData;
+    public RevBulkData slaveData;
 
     private ExpansionHubEx master;
     private ExpansionHubEx slave;
@@ -49,22 +47,21 @@ public class Firefly extends OpMode {
 
 
     // create hardware objects
+    public DriveTrain myDriveTrain;
     public Slide mySlide;
     public Intake myIntake;
-    public DriveTrain myDriveTrain;
     public Outtake myOuttake;
-    private DriveTrainTest myDriveTrainTest;
     public opencvSkystoneDetector myDetector;
     BNO055IMU imu;
     BNO055IMU.Parameters parameters;
-//    private SampleMecanumDriveREVOptimized drive;
+    private SampleMecanumDriveREVOptimized drive;
 
 
 
 
     // used for debugging
     public long currTimeMillis = 0;
-
+    public boolean isImuInit = false;
 
 
 
@@ -78,31 +75,6 @@ public class Firefly extends OpMode {
 
 
 
-        // time for mapping everything
-
-
-        // map rev stuff
-     /*   master = hardwareMap.get(ExpansionHubEx.class, "master");
-        slave = hardwareMap.get(ExpansionHubEx.class, "follower");
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-
-     /*   ExpansionHubMotor frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
-        ExpansionHubMotor frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
-        ExpansionHubMotor backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
-        ExpansionHubMotor backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
-
-        // add all the motors to our array
-     //   allMotors.add(frontLeft);
-    //    allMotors.add(frontRight);
-       // allMotors.add(backLeft);
-   //    allMotors.add(backRight);
-
-        // construct drivetrain
-        myDriveTrainTest = new DriveTrainTest(frontLeft, frontRight, backLeft, backRight);
-
-         myREVDrive = new SampleMecanumDriveREVOptimized(hardwareMap);*/
-//
         master = hardwareMap.get(ExpansionHubEx.class, "master");
         slave = hardwareMap.get(ExpansionHubEx.class, "follower");
 
@@ -111,8 +83,8 @@ public class Firefly extends OpMode {
         ExpansionHubMotor backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
         ExpansionHubMotor backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
            allMotors.add(frontLeft);
-            allMotors.add(frontRight);
-         allMotors.add(backLeft);
+            allMotors.add(backLeft);
+         allMotors.add(frontRight);
             allMotors.add(backRight);
 
 
@@ -122,7 +94,28 @@ public class Firefly extends OpMode {
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
-        //drive = new SampleMecanumDriveREVOptimized(allMotors,imu,master,slave );
+
+
+        class IMUInitter implements Runnable {
+            public void run() {
+                telemetry.addLine("imu about to init");
+                isImuInit = imu.initialize(parameters);
+            }
+        }
+
+
+
+        if(imu != null) {
+            Thread t1 = new Thread(new IMUInitter());
+            telemetry.addLine("imu initting");
+            t1.start();
+        }
+
+
+
+        myDriveTrain = new DriveTrain(this, allMotors,imu,master,slave );
+
+
 
 
 
@@ -166,13 +159,19 @@ public class Firefly extends OpMode {
 
     //    getRevBulkData();
 
+
+
     }
+
+
+
+
 
 
     @Override
     public void init_loop() {
         currTimeMillis = SystemClock.uptimeMillis();
-   //     getRevBulkData();
+        getRevBulkData();
         mySlide.update();
         myDetector.update();
     }
@@ -183,7 +182,6 @@ public class Firefly extends OpMode {
     public void start() {
         //RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
         telemetry.clear();
-        imu.initialize(parameters);
     }
 
     /**
@@ -230,7 +228,7 @@ public class Firefly extends OpMode {
         long timeBefore = SystemClock.uptimeMillis();
         tp2.markStart();
         //get all the bulk data
-     //   getRevBulkData();
+        getRevBulkData();
         tp2.markEnd();
 
         long timeAfter = SystemClock.uptimeMillis();
@@ -247,15 +245,15 @@ public class Firefly extends OpMode {
         // now updating the state machines starts
 
         tp1.markStart();
-       //    myDriveTrainTest.driveMecanum(movementX, movementY, movementTurn); // applies movementX etc. to drive motor powers
+        myDriveTrain.updatee();
         tp1.markEnd();
 
        // tp3.markStart();
-      //  myDriveTrain.update(); // updates roadrunner pose using motor encoder values
+         myDriveTrain.update(); // updates roadrunner pose using motor encoder values
       //  tp3.markEnd();
 
         tp4.markStart();
-     //   RobotPosition.giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
+        RobotPosition.giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp4.markEnd();
 
         /**
@@ -303,9 +301,6 @@ public class Firefly extends OpMode {
         telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
-     //   telemetry.addLine(mecanumPowers());
-        telemetry.update();
-
     }
 
 
@@ -318,7 +313,7 @@ public class Firefly extends OpMode {
                         "|                  |\n" +
                         "|                  |\n" +
                         "(%.1f)---(%.1f)\n"
-                , myDriveTrainTest.frontLeft.getPower(), myDriveTrainTest.frontRight.getPower(), myDriveTrainTest.backLeft.getPower(), myDriveTrainTest.backRight.getPower());
+                , drive.frontLeft.getPower(), drive.frontRight.getPower(), drive.backLeft.getPower(), drive.backRight.getPower());
     }
 
 
@@ -347,7 +342,7 @@ public class Firefly extends OpMode {
     /**
      * gets all the data from the expansion hubs in one command
      */
-   /* public void getRevBulkData() {
+    public void getRevBulkData() {
         RevBulkData newMasterData;
 
         try {
@@ -372,7 +367,7 @@ public class Firefly extends OpMode {
 
         catch(Exception e) {}
     }
-*/
+
 
 
 

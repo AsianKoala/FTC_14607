@@ -31,12 +31,36 @@ import org.openftc.revextensions2.RevBulkData;
  */
 public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     private ExpansionHubEx master, slave;
-    private ExpansionHubMotor frontLeft, frontRight, backLeft, backRight;
+    public ExpansionHubMotor frontLeft, frontRight, backLeft, backRight;
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
     public SampleMecanumDriveREVOptimized(ArrayList<ExpansionHubMotor> allMotors, BNO055IMU imu, ExpansionHubEx master, ExpansionHubEx slave) {
-     //   super();
+        super();
+
+        this.imu = imu;
+        this.master = master;
+        this.slave = slave;
+
+
+        frontLeft = allMotors.get(0);
+        frontRight = allMotors.get(1);
+        backLeft = allMotors.get(2);
+        backRight = allMotors.get(3);
+
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
