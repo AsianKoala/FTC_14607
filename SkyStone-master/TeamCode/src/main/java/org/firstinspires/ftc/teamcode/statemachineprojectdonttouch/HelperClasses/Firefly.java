@@ -3,19 +3,18 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasse
 import android.annotation.SuppressLint;
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.HelperClasses.SampleMecanumDriveREVOptimized;
+import org.firstinspires.ftc.teamcode.Teleop.opencvSkystoneDetector;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
-import org.openftc.revextensions2.RevBulkData;
 
 
 import java.text.DecimalFormat;
@@ -29,11 +28,21 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 @TeleOp(name = "firefly class")
 public class Firefly extends TunableOpMode {
 
+
+    // FUCK YOU REV
+    public int msStuckDetectInit = 5000;
+    public int msStuckDetectInitLoop = 5000;
+    public int msStuckDetectStart = 4 * 5000;
+    public int msStuckDetectLoop = 5000;
+    public int msStuckDetectStop = 1000;
+
+
+
+
     // rev objects
 
     private ExpansionHubEx master;
     private ExpansionHubEx slave;
-    private BNO055IMU imu;
     public DecimalFormat df = new DecimalFormat("#.00");
 
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
@@ -46,7 +55,9 @@ public class Firefly extends TunableOpMode {
     public Outtake myOuttake;
     private DriveTrainTest myDriveTrainTest;
     public opencvSkystoneDetector myDetector;
-
+    BNO055IMU imu;
+    BNO055IMU.Parameters parameters;
+//    private SampleMecanumDriveREVOptimized drive;
 
 
 
@@ -90,8 +101,12 @@ public class Firefly extends TunableOpMode {
         // construct drivetrain
         myDriveTrainTest = new DriveTrainTest(frontLeft, frontRight, backLeft, backRight);
 
-        myREVDrive = new SampleMecanumDriveREVOptimized(hardwareMap);*/
-         ExpansionHubMotor frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
+         myREVDrive = new SampleMecanumDriveREVOptimized(hardwareMap);*/
+//
+        master = hardwareMap.get(ExpansionHubEx.class, "master");
+        slave = hardwareMap.get(ExpansionHubEx.class, "follower");
+
+        ExpansionHubMotor frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
         ExpansionHubMotor frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
         ExpansionHubMotor backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
         ExpansionHubMotor backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
@@ -99,16 +114,16 @@ public class Firefly extends TunableOpMode {
             allMotors.add(frontRight);
          allMotors.add(backLeft);
             allMotors.add(backRight);
-        SampleMecanumDriveREVOptimized drive = new SampleMecanumDriveREVOptimized(allMotors,imu,master,slave );
 
 
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
-
+        parameters = new BNO055IMU.Parameters();
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        //drive = new SampleMecanumDriveREVOptimized(allMotors,imu,master,slave );
+
 
 
         // construct intake
@@ -167,6 +182,8 @@ public class Firefly extends TunableOpMode {
     @Override
     public void start() {
         //RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
+        telemetry.clear();
+        imu.initialize(parameters);
     }
 
     /**
@@ -286,7 +303,7 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
-        telemetry.addLine(mecanumPowers());
+     //   telemetry.addLine(mecanumPowers());
         telemetry.update();
 
     }

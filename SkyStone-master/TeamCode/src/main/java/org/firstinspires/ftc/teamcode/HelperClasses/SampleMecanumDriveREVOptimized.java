@@ -36,38 +36,8 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     private BNO055IMU imu;
 
     public SampleMecanumDriveREVOptimized(ArrayList<ExpansionHubMotor> allMotors, BNO055IMU imu, ExpansionHubEx master, ExpansionHubEx slave) {
-        super();
+     //   super();
 
-
-        frontLeft = allMotors.get(0);
-        frontRight = allMotors.get(1);
-        backLeft = allMotors.get(2);
-        backRight = allMotors.get(3);
-        this.imu = imu;
-        this.master = master;
-        this.slave = slave;
-
-
-
-
-
-        motors = Arrays.asList(frontLeft, frontRight, backLeft, backRight);
-
-        for (ExpansionHubMotor motor : motors) {
-            if (RUN_USING_ENCODER) {
-                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-
-        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
-        }
-
-
-
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
