@@ -32,12 +32,9 @@ public class DriveTrain extends SampleMecanumDriveBase {
     public ExpansionHubMotor backRight;
     private BNO055IMU imu;
     private boolean isDebugging = false;
-    public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
-    
-    private Firefly robot;
+    private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
 
-
-    public DriveTrain(Firefly robot, ExpansionHubMotor frontLeft, ExpansionHubMotor frontRight, ExpansionHubMotor backLeft, ExpansionHubMotor backRight, ExpansionHubEx master, ExpansionHubEx slave, BNO055IMU imu) {
+    public DriveTrain(ExpansionHubMotor frontLeft, ExpansionHubMotor frontRight, ExpansionHubMotor backLeft, ExpansionHubMotor backRight, ExpansionHubEx master, ExpansionHubEx slave, BNO055IMU imu) {
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.backLeft = backLeft;
@@ -46,13 +43,11 @@ public class DriveTrain extends SampleMecanumDriveBase {
         this.slave = slave;
         this.imu = imu;
         
-        this.robot = robot;
 
         allMotors.add(frontLeft);
         allMotors.add(frontRight);
         allMotors.add(backLeft);
         allMotors.add(backRight);
-
 
 
 
@@ -171,8 +166,6 @@ public class DriveTrain extends SampleMecanumDriveBase {
             motor.setPower(allPowers.get(i));
             i++;
         }
-
-
     }
     
 
@@ -185,7 +178,7 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
 
  @SuppressLint("DefaultLocale")
-    private String mecanumPowers() {
+    public String mecanumPowers() {
         return String.format(
                 "\n" +
                         "(%.1f)---(%.1f)\n" +
@@ -205,13 +198,5 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
     public void updatee() {
         driveMecanum(movementX, movementY, movementTurn); // the robot will only move if we change movementX, movementY, or movementTurn
-        robot.addSpace();
-        robot.telemetry.addLine("-------- drivetrain telem ---------");
-        if (isDebugging) {
-            robot.telemetry.addLine(mecanumPowers());
-            robot.telemetry.addData("movement x var", movementX);
-            robot.telemetry.addData("movement y var", movementY);
-            robot.telemetry.addData("movement turn var", movementTurn);
-        }
     }
 }
