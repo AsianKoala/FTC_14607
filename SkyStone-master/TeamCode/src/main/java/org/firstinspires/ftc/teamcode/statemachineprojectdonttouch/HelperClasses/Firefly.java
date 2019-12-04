@@ -2,13 +2,32 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasse
 
 import android.annotation.SuppressLint;
 import android.os.SystemClock;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
+import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.profile.MotionProfile;
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
+import com.acmerobotics.roadrunner.profile.MotionState;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.HelperClasses.SampleMecanumDriveREVOptimized;
 import org.firstinspires.ftc.teamcode.Teleop.opencvSkystoneDetector;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
@@ -21,19 +40,18 @@ import org.openftc.revextensions2.RevBulkData;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.*;
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.giveMePose;
 
 /**
  * this is the base state machine used for teleop and auto
  */
 
 public class Firefly extends TunableOpMode {
-
-
-   // see https://ftcforum.firstinspires.org/forum/ftc-technology/android-studio/78096-problem-with-imu-stuck-in-loop
-
-
 
     // rev objects
     public RevBulkData masterData;
@@ -47,7 +65,7 @@ public class Firefly extends TunableOpMode {
 
 
     // create hardware objects
-    public DriveTrain myDriveTrain;
+    private DriveTrain myDriveTrain;
     public Slide mySlide;
     public Intake myIntake;
     public Outtake myOuttake;
@@ -133,7 +151,6 @@ public class Firefly extends TunableOpMode {
 
         mySlide = new Slide(this, leftSlide, rightSlide);
 
-        mySlide.setDebugging(false);
 
 
         ExpansionHubServo leftSlam = hardwareMap.get(ExpansionHubServo.class, "leftSlam");
@@ -157,7 +174,7 @@ public class Firefly extends TunableOpMode {
         mySlide.update();
         myIntake.update();
 
-    //    getRevBulkData();
+        getRevBulkData();
 
 
 
@@ -253,7 +270,7 @@ public class Firefly extends TunableOpMode {
         tp3.markEnd();
 
         tp4.markStart();
-        RobotPosition.giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
+        giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp4.markEnd();
 
         /**
@@ -393,6 +410,35 @@ public class Firefly extends TunableOpMode {
     public void addSpace() {
         telemetry.addLine("");
     }
+
+
+
+    /**
+     * we put this in here so that myDriveTrain controls motor powers while this gets pose values from
+     * myDriveTrain and uses them
+     * @param pose
+     */
+    public void setPose(Pose2d pose) {
+        myDriveTrain.setPoseEstimate(pose);
+        giveMePose(pose);
+    }
+
+
+
+
+
+    // weirdchamp @roadrunner
+
+
+
+        public void followTrajectory(Trajectory trajectory) {
+            myDriveTrain.followTrajectory(trajectory);
+        }
+
+
+        public boolean isBusy() {
+            return myDriveTrain.isBusy();
+        }
 
 
 }

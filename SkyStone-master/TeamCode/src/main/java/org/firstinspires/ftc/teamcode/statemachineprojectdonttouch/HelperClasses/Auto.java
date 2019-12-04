@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasse
 
 import android.os.SystemClock;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
@@ -10,7 +11,8 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 /**
  * base class for auto opmodes
  */
-public abstract class Auto extends org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly {
+@Autonomous(name = "auto statemachine")
+public class Auto extends Firefly {
 
     public double stateStartTime = 0;
     public int currStage = 0; // current stage
@@ -69,23 +71,22 @@ public abstract class Auto extends org.firstinspires.ftc.teamcode.statemachinepr
     }
 
 
-/*
+
     @Override
     public void init() {
         super.init();
-        myDetector.initCamera();
     }
 
 
     /**
      * sets our position to the starting position
      */
-  /*  @Override
+    @Override
     public void init_loop() {
         super.init_loop();
         //set position
-        setPose(startingPose);
-        myDetector.update();
+       // setPose(startingPose);
+        telemetry.addLine("auto inited");
     }
 
 
@@ -103,11 +104,11 @@ public abstract class Auto extends org.firstinspires.ftc.teamcode.statemachinepr
     @Override
     public void loop() {
         super.loop();
-        MainStateMachine();
+     //   MainStateMachine();
     }
 
     // override this
-    public abstract void MainStateMachine();*/
+  //  public abstract void MainStateMachine();
 
 }
 
