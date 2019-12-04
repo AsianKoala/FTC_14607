@@ -27,8 +27,8 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 /**
  * this is the base state machine used for teleop and auto
  */
-@TeleOp(name = "firefly class")
-public class Firefly extends OpMode {
+
+public class Firefly extends TunableOpMode {
 
 
    // see https://ftcforum.firstinspires.org/forum/ftc-technology/android-studio/78096-problem-with-imu-stuck-in-loop
@@ -131,7 +131,7 @@ public class Firefly extends OpMode {
         ExpansionHubMotor leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
         ExpansionHubMotor rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
 
-        mySlide = new Slide(leftSlide, rightSlide);
+        mySlide = new Slide(this, leftSlide, rightSlide);
 
         mySlide.setDebugging(false);
 
@@ -248,9 +248,9 @@ public class Firefly extends OpMode {
         myDriveTrain.updatee();
         tp1.markEnd();
 
-       // tp3.markStart();
+       tp3.markStart();
          myDriveTrain.update(); // updates roadrunner pose using motor encoder values
-      //  tp3.markEnd();
+        tp3.markEnd();
 
         tp4.markStart();
         RobotPosition.giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
@@ -293,6 +293,8 @@ public class Firefly extends OpMode {
 
 
         // in millis
+        addSpace();
+        telemetry.addLine("---------------- FIREFLY BASE CLASS TELEM ---------------");
         telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
@@ -301,19 +303,6 @@ public class Firefly extends OpMode {
         telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
         telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
-    }
-
-
-    @SuppressLint("DefaultLocale")
-    public String mecanumPowers() {
-        return String.format(
-                "\n" +
-                        "(%.1f)---(%.1f)\n" +
-                        "|   Front      |\n" +
-                        "|                  |\n" +
-                        "|                  |\n" +
-                        "(%.1f)---(%.1f)\n"
-                , drive.frontLeft.getPower(), drive.frontRight.getPower(), drive.backLeft.getPower(), drive.backRight.getPower());
     }
 
 
@@ -391,11 +380,11 @@ public class Firefly extends OpMode {
     }
 
 
-    private void debugMode() {
-          //  myDriveTrain.setDebugging(true);
-            mySlide.setDebugging(true);
-            myIntake.setDebugging(true);
-            myOuttake.setDebugging(true);
+    public void debugMode(boolean debugMode) {
+            myDriveTrain.setDebugging(debugMode);
+            mySlide.setDebugging(debugMode);
+            myIntake.setDebugging(debugMode);
+            myOuttake.setDebugging(debugMode);
     }
 
 

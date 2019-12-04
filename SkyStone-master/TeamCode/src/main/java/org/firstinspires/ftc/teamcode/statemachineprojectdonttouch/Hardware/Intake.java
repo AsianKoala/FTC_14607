@@ -97,6 +97,8 @@ public class Intake {
             lastIntakePower = intakePowers;
         }
 
+        robot.addSpace();
+        robot.telemetry.addLine("-------------------- INTAKE TELEM -----------------");
         robot.telemetry.addData("left intake power", leftIntake.getPower());
         robot.telemetry.addData("right intake power", rightIntake.getPower());
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 public class Slide {
     private ExpansionHubMotor leftSlide;
     private ExpansionHubMotor rightSlide;
+    private Firefly myRobot;
 
     public ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
     // TODO: change these values after you get them from opmode tuner
@@ -32,7 +34,8 @@ public class Slide {
 
 
 
-    public Slide(ExpansionHubMotor leftSlide, ExpansionHubMotor rightSlide) {
+    public Slide(Firefly myRobot, ExpansionHubMotor leftSlide, ExpansionHubMotor rightSlide) {
+        this.myRobot = myRobot;
         this.leftSlide = leftSlide;
         this.rightSlide = rightSlide;
         allMotors.add(leftSlide);
@@ -168,6 +171,19 @@ public class Slide {
         else {
             leftSlide.setPower(0);
             rightSlide.setPower(0);
+        }
+
+
+        myRobot.addSpace();
+        myRobot.telemetry.addLine("-------- SLIDE TELEM HERE ---------");
+        myRobot.telemetry.addData("left slide curr pos", leftSlide.getCurrentPosition());
+        myRobot.telemetry.addData("right slide curr pos", rightSlide.getCurrentPosition());
+        if(isDebugging) {
+            myRobot.telemetry.addData("current state", states);
+            myRobot.telemetry.addData("LS motor target pos", leftSlide.getTargetPosition());
+            myRobot.telemetry.addData("RS motor target pos", rightSlide.getTargetPosition());
+            myRobot.telemetry.addData("data target position", newPosition);
+            myRobot.telemetry.addData("PID GAINS", new PIDCoefficients(P,I,D));
         }
     }
 

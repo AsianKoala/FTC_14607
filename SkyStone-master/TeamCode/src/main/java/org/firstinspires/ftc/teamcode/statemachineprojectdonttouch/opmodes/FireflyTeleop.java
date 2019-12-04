@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
-@TeleOp(name = "state machine teleop", group = "teleop")
+@TeleOp(name = "dont touch me", group = "teleop")
 public class FireflyTeleop extends Firefly {
 
     /**
@@ -27,6 +27,7 @@ public class FireflyTeleop extends Firefly {
     @Override
     public void init() {
         super.init();
+        debugMode(true);
     }
 
     @Override
@@ -140,8 +141,8 @@ public class FireflyTeleop extends Firefly {
 
     public void positionTelemetry() {
         telemetry.addLine("xPos: " + df.format(worldXPos) +
-                "yPos: "+ df.format(worldYPos) +
-                "heading: " + df.format(worldHeadingRad));
+                " yPos: "+ df.format(worldYPos) +
+                " heading: " + df.format(worldHeadingRad));
     }
 
     private void gripperControl() {

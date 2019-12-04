@@ -28,6 +28,7 @@ import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstant
 
 public class DriveTrain extends SampleMecanumDriveBase {
     private ExpansionHubEx master, slave;
+    private Firefly myRobot;
     public ExpansionHubMotor frontLeft, frontRight, backLeft, backRight;
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
@@ -37,6 +38,7 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
     public DriveTrain(Firefly myRobot, ArrayList<ExpansionHubMotor> allMotors, BNO055IMU imu, ExpansionHubEx master, ExpansionHubEx slave) {
         super();
+        this.myRobot = myRobot;
         frontLeft = allMotors.get(0);
         frontRight = allMotors.get(1);
         backLeft = allMotors.get(2);
@@ -183,15 +185,14 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
 
 
-
  @SuppressLint("DefaultLocale")
-    public String mecanumPowers() {
+    private String mecanumPowers() {
         return String.format(
                 "\n" +
                         "(%.1f)---(%.1f)\n" +
                         "|   Front   |\n" +
-                        "|           |\n" +
-                        "|           |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
                         "(%.1f)---(%.1f)\n"
                 , frontLeft.getPower(), frontRight.getPower(), backLeft.getPower(), backRight.getPower());
     }
@@ -205,6 +206,8 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
     public void updatee() {
         driveMecanum(movementX, movementY, movementTurn); // the robot will only move if we change movementX, movementY, or movementTurn
-
+        myRobot.addSpace();
+        myRobot.telemetry.addLine("------------- ROBOT VISUAL ---------------");
+        myRobot.telemetry.addLine(mecanumPowers());
     }
 }
