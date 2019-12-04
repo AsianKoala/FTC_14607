@@ -30,7 +30,7 @@ public class BlueFoundation extends Auto {
     }
 
 
-
+/*
     @Override
     public void init() {
         super.init();
@@ -123,7 +123,7 @@ public class BlueFoundation extends Auto {
      * lets see
      */
 
-
+/*
     @Override
     public void MainStateMachine() {
         /**
@@ -140,7 +140,7 @@ public class BlueFoundation extends Auto {
          *
          * **remember, do not loop anything in here, main state machine is looped**
          */
-
+/*
         if(currStage == progStates.driveToFoundation.ordinal()) {
             if (stageFinished) {
                 setPose(blueFoundationStart);
@@ -253,4 +253,4 @@ public class BlueFoundation extends Auto {
 
 
     }
-}
+*/}

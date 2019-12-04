@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasse
 import android.annotation.SuppressLint;
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
+import org.firstinspires.ftc.teamcode.HelperClasses.SampleMecanumDriveREVOptimized;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -25,15 +27,13 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 public class Firefly extends TunableOpMode {
 
     // rev objects
-    RevBulkData masterData; // right hub
-    RevBulkData slaveData; // left hub
-    private ExpansionHubEx master;
-    private ExpansionHubEx slave;
-    private BNO055IMU imu;
-    // wtf
+  //  RevBulkData masterData; // right hub
+  //  RevBulkData slaveData; // left hub
+   // private ExpansionHubEx master;
+   // private ExpansionHubEx slave;
+  //  private BNO055IMU imu;
     public DecimalFormat df = new DecimalFormat("#.00");
 
-    // array for all motors
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
 
 
@@ -44,6 +44,8 @@ public class Firefly extends TunableOpMode {
     public Outtake myOuttake;
     private DriveTrainTest myDriveTrainTest;
     public opencvSkystoneDetector myDetector;
+    public SampleMecanumDriveREVOptimized          drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+
 
 
     // used for debugging
@@ -67,12 +69,12 @@ public class Firefly extends TunableOpMode {
 
 
         // map rev stuff
-        master = hardwareMap.get(ExpansionHubEx.class, "master");
+     /*   master = hardwareMap.get(ExpansionHubEx.class, "master");
         slave = hardwareMap.get(ExpansionHubEx.class, "follower");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
 
-        ExpansionHubMotor frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
+     /*   ExpansionHubMotor frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
         ExpansionHubMotor frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
         ExpansionHubMotor backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
         ExpansionHubMotor backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
@@ -85,6 +87,8 @@ public class Firefly extends TunableOpMode {
 
         // construct drivetrain
         myDriveTrainTest = new DriveTrainTest(frontLeft, frontRight, backLeft, backRight);
+
+        myREVDrive = new SampleMecanumDriveREVOptimized(hardwareMap);*/
 
 
 
@@ -127,7 +131,7 @@ public class Firefly extends TunableOpMode {
         mySlide.update();
         myIntake.update();
 
-        getRevBulkData();
+    //    getRevBulkData();
 
     }
 
@@ -135,7 +139,7 @@ public class Firefly extends TunableOpMode {
     @Override
     public void init_loop() {
         currTimeMillis = SystemClock.uptimeMillis();
-        getRevBulkData();
+   //     getRevBulkData();
         mySlide.update();
         myDetector.update();
     }
@@ -191,7 +195,7 @@ public class Firefly extends TunableOpMode {
         long timeBefore = SystemClock.uptimeMillis();
         tp2.markStart();
         //get all the bulk data
-        getRevBulkData();
+     //   getRevBulkData();
         tp2.markEnd();
 
         long timeAfter = SystemClock.uptimeMillis();
@@ -208,7 +212,7 @@ public class Firefly extends TunableOpMode {
         // now updating the state machines starts
 
         tp1.markStart();
-        myDriveTrainTest.driveMecanum(movementX, movementY, movementTurn); // applies movementX etc. to drive motor powers
+       //    myDriveTrainTest.driveMecanum(movementX, movementY, movementTurn); // applies movementX etc. to drive motor powers
         tp1.markEnd();
 
        // tp3.markStart();
@@ -308,7 +312,7 @@ public class Firefly extends TunableOpMode {
     /**
      * gets all the data from the expansion hubs in one command
      */
-    public void getRevBulkData() {
+   /* public void getRevBulkData() {
         RevBulkData newMasterData;
 
         try {
@@ -333,7 +337,7 @@ public class Firefly extends TunableOpMode {
 
         catch(Exception e) {}
     }
-
+*/
 
 
 
@@ -350,10 +354,10 @@ public class Firefly extends TunableOpMode {
 
     private void tuneSlidePID() {
 
-            double p = getInt("P");
-            double i = getInt("I");
-            double d = getInt("D");
-            mySlide.setPIDCoeffs(p, i, d);
+    //        double p = getInt("P");
+      //      double i = getInt("I");
+        //    double d = getInt("D");
+        //    mySlide.setPIDCoeffs(p, i, d);
     }
 
 

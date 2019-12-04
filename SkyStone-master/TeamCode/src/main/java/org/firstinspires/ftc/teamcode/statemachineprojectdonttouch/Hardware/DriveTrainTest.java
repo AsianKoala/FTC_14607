@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
-public class DriveTrainTest extends SampleMecanumDriveREV {
+public class DriveTrainTest  {
 
     public ExpansionHubMotor frontLeft, frontRight, backLeft, backRight;
 

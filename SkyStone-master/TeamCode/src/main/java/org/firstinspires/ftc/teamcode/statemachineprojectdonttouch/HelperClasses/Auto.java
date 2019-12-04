@@ -69,7 +69,7 @@ public abstract class Auto extends org.firstinspires.ftc.teamcode.statemachinepr
     }
 
 
-
+/*
     @Override
     public void init() {
         super.init();
@@ -80,7 +80,7 @@ public abstract class Auto extends org.firstinspires.ftc.teamcode.statemachinepr
     /**
      * sets our position to the starting position
      */
-    @Override
+  /*  @Override
     public void init_loop() {
         super.init_loop();
         //set position
@@ -107,7 +107,7 @@ public abstract class Auto extends org.firstinspires.ftc.teamcode.statemachinepr
     }
 
     // override this
-    public abstract void MainStateMachine();
+    public abstract void MainStateMachine();*/
 
 }
 

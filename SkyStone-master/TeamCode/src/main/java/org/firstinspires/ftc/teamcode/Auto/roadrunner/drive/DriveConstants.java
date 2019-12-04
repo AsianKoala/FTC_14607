@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Auto.roadrunner.drive;
 
 //import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 /*
@@ -19,6 +20,12 @@ public class DriveConstants {
 
     private static final double TICKS_PER_REV = 537.6;
 
+    /*
+     * Set the first flag appropriately. If using the built-in motor velocity PID, update
+     * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
+     */
+    public static final boolean RUN_USING_ENCODER = true;
+    public static final PIDCoefficients MOTOR_VELO_PID = null;
     /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
@@ -70,6 +77,16 @@ public class DriveConstants {
 
     public static double getMaxRpm() {
         return 312;
+    }
+
+    public static double getTicksPerSec() {
+        // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
+        return (getMaxRpm() * TICKS_PER_REV / 60.0);
+    }
+
+    public static double getMotorVelocityF() {
+        // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
+        return 32767 / getTicksPerSec();
     }
 
 }

@@ -22,6 +22,9 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.*;
 
 /*
@@ -32,14 +35,14 @@ import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstant
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
-//test 2
+
 
     public enum Mode {
         IDLE,
         TURN,
         FOLLOW_TRAJECTORY
     }
-// pls work
+
     private FtcDashboard dashboard;
     private NanoClock clock;
 
@@ -52,10 +55,15 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
+    private List<Double> lastWheelPositions;
+    private double lastTimestamp;
+
     public SampleMecanumDriveBase() {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
         dashboard = FtcDashboard.getInstance();
+        dashboard.setTelemetryTransmissionInterval(25);
+
         clock = NanoClock.system();
 
         mode = Mode.IDLE;
@@ -133,12 +141,14 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         switch (mode) {
             case IDLE:
                 // do nothing
-                setDriveSignal(new DriveSignal());
                 break;
             case TURN: {
                 double t = clock.seconds() - turnStart;
 
                 MotionState targetState = turnProfile.get(t);
+
+                turnController.setTargetPosition(targetState.getX());
+
                 double targetOmega = targetState.getV();
                 double targetAlpha = targetState.getA();
                 double correction = turnController.update(currentPose.getHeading(), targetOmega);
@@ -192,6 +202,28 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
     public boolean isBusy() {
         return mode != Mode.IDLE;
+    }
+
+    public List<Double> getWheelVelocities() {
+        List<Double> positions = getWheelPositions();
+        double currentTimestamp = clock.seconds();
+
+        List<Double> velocities = new ArrayList<>(positions.size());;
+        if (lastWheelPositions != null) {
+            double dt = currentTimestamp - lastTimestamp;
+            for (int i = 0; i < positions.size(); i++) {
+                velocities.add((positions.get(i) - lastWheelPositions.get(i)) / dt);
+            }
+        } else {
+            for (int i = 0; i < positions.size(); i++) {
+                velocities.add(0.0);
+            }
+        }
+
+        lastTimestamp = currentTimestamp;
+        lastWheelPositions = positions;
+
+        return velocities;
     }
 
     public abstract PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode);

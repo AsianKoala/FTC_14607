@@ -26,7 +26,7 @@ import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstant
  * trajectory following performance with moderate additional complexity.
  */
 
-public class HouseFly extends SampleMecanumDriveREV {
+public class HouseFly extends SampleMecanumDriveBase {
     public ExpansionHubEx master, slave;
     public ExpansionHubMotor frontLeft, backLeft, backRight, frontRight;
     public ExpansionHubMotor leftIntake, rightIntake;
