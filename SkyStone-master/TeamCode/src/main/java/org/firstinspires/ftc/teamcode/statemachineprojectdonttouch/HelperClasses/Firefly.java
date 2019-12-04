@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasse
 import android.annotation.SuppressLint;
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -26,16 +27,15 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
  * this is the base state machine used for teleop and auto
  */
 @TeleOp(name = "firefly class")
-public class Firefly extends TunableOpMode {
+public class Firefly extends OpMode {
 
 
-    // FUCK YOU REV
-    public int msStuckDetectInit = 5000;
+   // see https://ftcforum.firstinspires.org/forum/ftc-technology/android-studio/78096-problem-with-imu-stuck-in-loop
+    public int msStuckDetectInit     = 20000;
     public int msStuckDetectInitLoop = 5000;
-    public int msStuckDetectStart = 4 * 5000;
-    public int msStuckDetectLoop = 5000;
-    public int msStuckDetectStop = 1000;
-
+    public int msStuckDetectStart    = 20000;
+    public int msStuckDetectLoop     = 5000;
+    public int msStuckDetectStop     = 1000;
 
 
 
