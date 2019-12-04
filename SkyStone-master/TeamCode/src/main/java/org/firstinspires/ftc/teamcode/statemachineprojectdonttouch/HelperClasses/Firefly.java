@@ -6,6 +6,9 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.HelperClasses.SampleMecanumDriveREVOptimized;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition;
@@ -27,11 +30,10 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 public class Firefly extends TunableOpMode {
 
     // rev objects
-  //  RevBulkData masterData; // right hub
-  //  RevBulkData slaveData; // left hub
-   // private ExpansionHubEx master;
-   // private ExpansionHubEx slave;
-  //  private BNO055IMU imu;
+
+    private ExpansionHubEx master;
+    private ExpansionHubEx slave;
+    private BNO055IMU imu;
     public DecimalFormat df = new DecimalFormat("#.00");
 
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
@@ -44,7 +46,8 @@ public class Firefly extends TunableOpMode {
     public Outtake myOuttake;
     private DriveTrainTest myDriveTrainTest;
     public opencvSkystoneDetector myDetector;
-    public SampleMecanumDriveREVOptimized          drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+
+
 
 
 
@@ -61,7 +64,6 @@ public class Firefly extends TunableOpMode {
     @Override
     public void init() {
         currTimeMillis = SystemClock.uptimeMillis();
-
 
 
 
@@ -89,8 +91,24 @@ public class Firefly extends TunableOpMode {
         myDriveTrainTest = new DriveTrainTest(frontLeft, frontRight, backLeft, backRight);
 
         myREVDrive = new SampleMecanumDriveREVOptimized(hardwareMap);*/
+         ExpansionHubMotor frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
+        ExpansionHubMotor frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
+        ExpansionHubMotor backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
+        ExpansionHubMotor backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
+           allMotors.add(frontLeft);
+            allMotors.add(frontRight);
+         allMotors.add(backLeft);
+            allMotors.add(backRight);
+        SampleMecanumDriveREVOptimized drive = new SampleMecanumDriveREVOptimized(allMotors,imu,master,slave );
 
 
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
 
         // construct intake
