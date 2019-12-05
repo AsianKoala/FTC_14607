@@ -342,6 +342,8 @@ public class Firefly extends TunableOpMode {
 
 
 
+
+
     /**
      * gets all the data from the expansion hubs in one command
      */
@@ -373,15 +375,6 @@ public class Firefly extends TunableOpMode {
 
 
 
-
-    // report position
-
-
-
-    public double getXPos() { return RobotPosition.worldXPos; }
-    public double getYPos() { return RobotPosition.worldYPos; }
-    public double getHeadingRad() {return RobotPosition.worldHeadingRad; }
-    public double getDegrees() { return Math.toDegrees(RobotPosition.worldHeadingRad); }
 
 
 
