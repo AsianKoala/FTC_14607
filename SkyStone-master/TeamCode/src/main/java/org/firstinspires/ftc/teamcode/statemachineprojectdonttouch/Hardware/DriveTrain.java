@@ -154,6 +154,7 @@ public class DriveTrain extends SampleMecanumDriveBase {
      * @param yPower  y translation of robot; gamepad1.leftstick.y during teleop
      * @param turnPower  turn of robot; gamepad1.rightstick.x during teleop
      */
+
     public void driveMecanum(double xPower,double yPower,double turnPower) {
         double rawFR = yPower + xPower - turnPower;
         double rawBL = yPower + -xPower + turnPower;
@@ -175,6 +176,14 @@ public class DriveTrain extends SampleMecanumDriveBase {
         rawFR *= scaleAmt;
         rawBL *= scaleAmt;
         rawBR *= scaleAmt;
+
+
+        frontLeft.setPower(rawFL);
+        frontRight.setPower(rawFR);
+        backLeft.setPower(rawBL);
+        backRight.setPower(rawBR);
+
+
     }
     
 
@@ -184,8 +193,7 @@ public class DriveTrain extends SampleMecanumDriveBase {
     }
 
 
-
- @SuppressLint("DefaultLocale")
+    @SuppressLint("DefaultLocale")
     private String mecanumPowers() {
         return String.format(
                 "\n" +
@@ -208,6 +216,9 @@ public class DriveTrain extends SampleMecanumDriveBase {
         driveMecanum(movementX, movementY, movementTurn); // the robot will only move if we change movementX, movementY, or movementTurn
         myRobot.addSpace();
         myRobot.telemetry.addLine("------------- ROBOT VISUAL ---------------");
+        myRobot.telemetry.addData("movementX", movementX);
+        myRobot.telemetry.addData("movementY", movementY);
+        myRobot.telemetry.addData("movementTurn", movementTurn);
         myRobot.telemetry.addLine(mecanumPowers());
     }
 }

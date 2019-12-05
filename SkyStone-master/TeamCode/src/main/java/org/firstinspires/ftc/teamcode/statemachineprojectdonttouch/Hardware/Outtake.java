@@ -16,7 +16,7 @@ public class Outtake {
     private boolean isDebugging = false;
 
     public Outtake(Firefly robot, ExpansionHubServo rotater, ExpansionHubServo flipper, ExpansionHubServo gripper, ExpansionHubServo leftSlam, ExpansionHubServo rightSlam) {
-        this.rotater = flipper;
+        this.rotater = rotater;
         this.flipper = flipper;
         this.gripper = gripper;
         this.leftSlam = leftSlam;
@@ -98,6 +98,7 @@ public class Outtake {
     }
 
     public void update() {
+
         gripper.setPosition(gripperPosition);
         rotater.setPosition(rotaterPosition);
         flipper.setPosition(flipperPosition);

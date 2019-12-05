@@ -6,8 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.openftc.revextensions2.ExpansionHubMotor;
-
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import java.util.ArrayList;
+
 
 @TeleOp(name = "slide pid tuner non restructure", group = "")
 public class SlidePIDTuner extends TunableOpMode {
@@ -15,9 +16,7 @@ public class SlidePIDTuner extends TunableOpMode {
     private ExpansionHubMotor rightSlide;
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
     
-    private double P = 0;
-    private double I = 0;
-    private double D = 0;
+;
     private double newSlidePosition;
 
 
@@ -34,7 +33,7 @@ public class SlidePIDTuner extends TunableOpMode {
             dcMotorEx.setTargetPosition(0);
             dcMotorEx.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             dcMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            dcMotorEx.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(0,0,0));
+            dcMotorEx.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
         }
 
         leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
