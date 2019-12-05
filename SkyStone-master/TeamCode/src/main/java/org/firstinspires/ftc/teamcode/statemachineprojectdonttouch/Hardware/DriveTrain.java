@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.sax.StartElementListener;
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -144,6 +145,10 @@ public class DriveTrain extends SampleMecanumDriveBase {
     }
 
 
+    public void startPose(Pose2d pose) {
+        setPoseEstimate(pose);
+    }
+
 
 
 
@@ -156,20 +161,21 @@ public class DriveTrain extends SampleMecanumDriveBase {
      */
 
     public void driveMecanum(double xPower,double yPower,double turnPower) {
-        double rawFR = yPower + xPower - turnPower;
-        double rawBL = yPower + -xPower + turnPower;
-        double rawFL = yPower + xPower+ turnPower;
-        double rawBR = yPower + -xPower + -turnPower;
+
+        double rawFL = yPower+turnPower+xPower*1.5;
+        double rawBL = yPower+turnPower- xPower*1.5;
+        double rawBR = yPower-turnPower+xPower*1.5;
+        double rawFR = yPower-turnPower-xPower*1.5;
 
 
         double scaleAmt = 1;
         double biggestPower = rawFL;
 
-        if(rawBL > biggestPower) { rawBL = biggestPower; }
-        if(rawFR > biggestPower) { rawFR = biggestPower; }
-        if(rawBR > biggestPower) { rawBR = biggestPower; }
+        if(Math.abs(rawBL) > Math.abs(biggestPower)) { rawBL = biggestPower; }
+        if(Math.abs(rawFR) > Math.abs(biggestPower)) { rawFR = biggestPower; }
+        if(Math.abs(rawBR) > Math.abs(biggestPower)) { rawBR = biggestPower; }
         if(biggestPower > 1.0) {
-            scaleAmt = 1.0 / biggestPower;
+            scaleAmt = Math.abs(1.0 / biggestPower);
         }
 
         rawFL *= scaleAmt;

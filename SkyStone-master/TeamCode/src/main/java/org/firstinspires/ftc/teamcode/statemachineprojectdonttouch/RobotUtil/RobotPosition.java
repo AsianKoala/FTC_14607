@@ -11,8 +11,6 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
  */
 public class RobotPosition {
 
-    private static Firefly myRobot;
-
 
     public static double scaledWorldXPos = 0.0;
     public static double scaledWorldYPos = 0.0;
@@ -23,7 +21,7 @@ public class RobotPosition {
     public static Pose2d worldPose = new Pose2d(0,0,0);
 
 
-    public static void initPose(Pose2d pose, Firefly robot) {
+    public static void initPose(Pose2d pose) {
         worldXPos = pose.getX();
         worldYPos = pose.getY();
         worldHeadingRad = pose.getHeading();
@@ -33,9 +31,9 @@ public class RobotPosition {
         scaledWorldYPos = worldXPos + 72;
         scaledWorldXPos = -worldYPos + 72;
         scaledWorldHeadingRad = Math.PI + AngleWrap(worldHeadingRad);
-
-        myRobot = robot;
     }
+
+
     public static void giveMePose(Pose2d pose) {
         worldXPos = pose.getX();
         worldYPos = pose.getY();

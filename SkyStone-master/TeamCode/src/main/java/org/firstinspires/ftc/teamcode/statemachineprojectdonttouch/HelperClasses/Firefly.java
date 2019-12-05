@@ -56,23 +56,22 @@ public class Firefly extends TunableOpMode {
     // rev objects
     public RevBulkData masterData;
     public RevBulkData slaveData;
-
     private ExpansionHubEx master;
     private ExpansionHubEx slave;
     public DecimalFormat df = new DecimalFormat("#.00");
-
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
 
 
     // create hardware objects
-    private DriveTrain myDriveTrain;
+    public DriveTrain myDriveTrain;
     public Slide mySlide;
     public Intake myIntake;
     public Outtake myOuttake;
     public opencvSkystoneDetector myDetector;
+
+
     BNO055IMU imu;
     BNO055IMU.Parameters parameters;
-    private SampleMecanumDriveREVOptimized drive;
 
 
 
@@ -82,6 +81,7 @@ public class Firefly extends TunableOpMode {
     public boolean isImuInit = false;
 
 
+    public boolean everythingInit = false;
 
 
     /**
@@ -177,20 +177,30 @@ public class Firefly extends TunableOpMode {
         getRevBulkData();
 
 
+        if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
+            everythingInit = true;
+        }
 
     }
 
 
 
-
+    private long timeBeforeCheck = SystemClock.uptimeMillis();
 
 
     @Override
     public void init_loop() {
         currTimeMillis = SystemClock.uptimeMillis();
         getRevBulkData();
-        mySlide.update();
-        myDetector.update();
+//        mySlide.update();
+
+        if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
+            myDetector.update();
+        }
+        telemetry.addData("millis until full init", currTimeMillis - timeBeforeCheck);
+        telemetry.addData("all inited", everythingInit);
+
+
     }
 
 
@@ -198,6 +208,8 @@ public class Firefly extends TunableOpMode {
     @Override
     public void start() {
         //RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
+        myDriveTrain.setPoseEstimate(new Pose2d(0,0,0));
+        RobotPosition.initPose(myDriveTrain.getPoseEstimate());
         telemetry.clear();
     }
 
@@ -400,35 +412,6 @@ public class Firefly extends TunableOpMode {
     public void addSpace() {
         telemetry.addLine("");
     }
-
-
-
-    /**
-     * we put this in here so that myDriveTrain controls motor powers while this gets pose values from
-     * myDriveTrain and uses them
-     * @param pose
-     */
-    public void setPose(Pose2d pose) {
-        myDriveTrain.setPoseEstimate(pose);
-        giveMePose(pose);
-    }
-
-
-
-
-
-    // weirdchamp @roadrunner
-
-
-
-        public void followTrajectory(Trajectory trajectory) {
-            myDriveTrain.followTrajectory(trajectory);
-        }
-
-
-        public boolean isBusy() {
-            return myDriveTrain.isBusy();
-        }
 
 
 }

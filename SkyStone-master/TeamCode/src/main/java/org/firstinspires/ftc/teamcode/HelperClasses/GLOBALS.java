@@ -36,6 +36,9 @@ public  class GLOBALS {
 
 
 
+
+
+
     //ok these arent constants but stfu
 
     public static double movementX = 0;
@@ -49,6 +52,20 @@ public  class GLOBALS {
         LEFT,
         MIDDLE,
         RIGHT
+    }
+
+
+    public static SIDE ourSide;
+    public enum SIDE {
+        BLUE,
+        RED
+    }
+
+    public static SIDE ourStartingPosition;
+    public enum STARTING_POSITION {
+        FOUNDATION,
+        SKYSTONE,
+        PARK
     }
 
 

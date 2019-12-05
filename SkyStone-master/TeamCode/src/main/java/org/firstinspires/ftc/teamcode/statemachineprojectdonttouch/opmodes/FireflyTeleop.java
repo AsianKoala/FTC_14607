@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
-@TeleOp(name = "dont touch me", group = "teleop")
+@TeleOp(name = "dont click me owo", group = "teleop")
 public class FireflyTeleop extends Firefly {
 
     /**
@@ -110,13 +110,7 @@ public class FireflyTeleop extends Firefly {
      * teleop user control
      */
     public void teleopDrivetrainControl() {
-        double scale = 0.8; // btich im not changing this to 1
-        if(gamepad1.left_bumper) {
-            scale = 0.5;
-        }
-        if(gamepad1.right_bumper) {
-            scale = 0.25;
-        }
+        double scale = Math.abs(0.8 + (gamepad1.left_bumper ? -0.3 : gamepad1.right_bumper ? -0.6 : 0));
 
         double threshold = 0.157;
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasse
 import android.os.SystemClock;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.DriveTrain;
 
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
@@ -13,6 +14,9 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
  */
 @Autonomous(name = "auto statemachine")
 public class Auto extends Firefly {
+
+    private DriveTrain thisDriveTrain = super.myDriveTrain;
+
 
     public double stateStartTime = 0;
     public int currStage = 0; // current stage
@@ -74,7 +78,6 @@ public class Auto extends Firefly {
 
     @Override
     public void init() {
-        super.init();
     }
 
 
@@ -85,7 +88,9 @@ public class Auto extends Firefly {
     public void init_loop() {
         super.init_loop();
         //set position
-       // setPose(startingPose);
+       // if(everythingInit) {
+        //    setPose(startingPose);
+      //  }
         telemetry.addLine("auto inited");
     }
 
@@ -94,7 +99,6 @@ public class Auto extends Firefly {
     public void start() {
         super.start();
         // set position again
-        setPose(startingPose);
 
         stageFinished = true;
         currStage = 0;
