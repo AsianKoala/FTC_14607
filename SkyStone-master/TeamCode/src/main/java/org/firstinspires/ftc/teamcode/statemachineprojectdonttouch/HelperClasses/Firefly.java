@@ -199,8 +199,6 @@ public class Firefly extends TunableOpMode {
         }
         telemetry.addData("millis until full init", currTimeMillis - timeBeforeCheck);
         telemetry.addData("all inited", everythingInit);
-
-
     }
 
 

@@ -4,7 +4,7 @@ import android.os.SystemClock;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.DriveTrain;
-
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
 
@@ -99,7 +99,6 @@ public class Auto extends Firefly {
     public void start() {
         super.start();
         // set position again
-
         stageFinished = true;
         currStage = 0;
         currTimeMillis = SystemClock.uptimeMillis();
