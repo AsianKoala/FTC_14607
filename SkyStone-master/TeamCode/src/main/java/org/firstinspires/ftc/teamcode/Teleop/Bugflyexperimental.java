@@ -4,6 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import static java.lang.System.currentTimeMillis;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 @TeleOp(name = "Big Kahuna Experimental")
@@ -208,23 +214,23 @@ public class Bugflyexperimental extends OpMode {
                     robot.rightSlide.setTargetPosition((int)(newSlideRight));
                     robot.leftSlide.setPower(1);
                     robot.rightSlide.setPower(1);
-                    chime = System.currentTimeMillis();
+                    chime = currentTimeMillis();
                     counter++;
 
                 break;
             //task 3: flip back
             case 2:
-                if(System.currentTimeMillis() - chime >= toLiftTimeTo)
+                if(currentTimeMillis() - chime >= toLiftTimeTo)
                 {
                     robot.flipper.setPosition(0.95);
-                    chime = System.currentTimeMillis();
+                    chime = currentTimeMillis();
                     counter++;
                 }
 
                 break;
             //rotate around
             case 3:
-                if(System.currentTimeMillis() - chime >= toBackTimeTo)
+                if(currentTimeMillis() - chime >= toBackTimeTo)
                 {
                     robot.rotaterReady();
                     counter++;
@@ -235,13 +241,13 @@ public class Bugflyexperimental extends OpMode {
                 robot.rightSlide.setTargetPosition((int)(-25.0/2));
                 robot.leftSlide.setPower(0.75);
                 robot.rightSlide.setPower(0.75);
-                chime = System.currentTimeMillis();
+                chime = currentTimeMillis();
                 counter++;
                 break;
 
             // grip to home
             case 5:
-                if(System.currentTimeMillis() - chime >= 500) {
+                if(currentTimeMillis() - chime >= 500) {
                     robot.gripper.setPosition(gripperHome);
                 }
                 counter++;
@@ -265,13 +271,26 @@ public class Bugflyexperimental extends OpMode {
         {
             //task 1: flip to center
             case 1:
-                robot.flipper.setPosition(0.6);
-                time = System.currentTimeMillis();
-                count++;
-                break;
+                //THIS IS ALL IN A SUPER PRE-ALPHA STAGE AS OF 11/30/19 at 9:33 pm
+                /*Collects Data into a .txt file so Grab Data can be analyzed (To Check for Variances in the Slide Position during Grabbing)
+                probably just end up pumping the data into excel or google sheets to visualize the slide positioning and difference variation
+                difference variation causes intake to get caught so looking at slide data can help us determing whats going on during the
+                state automated movement*/
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter("Position Data.txt");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                PrintWriter printWriter = new PrintWriter(fileWriter);
+                printWriter.println("Slide Data when block is grabbed");
+                printWriter.println("left slide pos: " + robot.leftSlide.getCurrentPosition());
+                printWriter.println("right slide pos: " + robot.rightSlide.getCurrentPosition());
+                printWriter.println("left slide pid coefffs: " + robot.leftSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
+                printWriter.println("right slide pid coeffs: " + robot.rightSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
             //task 2: lift up
             case 2:
-                if(System.currentTimeMillis() - time >= toMidTime)
+                if(currentTimeMillis() - time >= toMidTime)
                 {
                     newSlideLeft = liftIncrement;
                     newSlideRight = liftIncrement;
@@ -279,16 +298,16 @@ public class Bugflyexperimental extends OpMode {
                     robot.rightSlide.setTargetPosition((int)(newSlideRight));
                     robot.leftSlide.setPower(1);
                     robot.rightSlide.setPower(1);
-                    time = System.currentTimeMillis();
+                    time = currentTimeMillis();
                     count++;
                 }
                 break;
             //task 3: flip back
             case 3:
-                if(System.currentTimeMillis() - time >= liftTime)
+                if(currentTimeMillis() - time >= liftTime)
                 {
                     robot.flipper.setPosition(0.25);
-                    time = System.currentTimeMillis();
+                    time = currentTimeMillis();
                     count++;
                 }
 
@@ -303,7 +322,7 @@ public class Bugflyexperimental extends OpMode {
 
             //rotate around
             case 4:
-                if(System.currentTimeMillis() - time >= toBackTime)
+                if(currentTimeMillis() - time >= toBackTime)
                 {
                     robot.rotaterOut();
                     count = 0;

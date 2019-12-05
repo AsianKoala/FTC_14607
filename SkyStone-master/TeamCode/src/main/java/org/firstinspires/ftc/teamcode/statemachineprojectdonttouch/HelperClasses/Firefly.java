@@ -207,9 +207,6 @@ public class Firefly extends TunableOpMode {
 
     @Override
     public void start() {
-        //RobotPosition.initPose(myDriveTrain.getPoseEstimate(), this);
-        myDriveTrain.setPoseEstimate(new Pose2d(0,0,0));
-        RobotPosition.initPose(myDriveTrain.getPoseEstimate());
         telemetry.clear();
     }
 

@@ -16,7 +16,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 @Autonomous
 public class BlueFoundation extends Auto {
 
-    public boolean safePark = false;
+    public boolean safePark = true;
 
     public enum progStates {
         driveToFoundation,
@@ -37,7 +37,7 @@ public class BlueFoundation extends Auto {
 
 
         // set starting position at left foundation starting position
-        initPosition(blueFoundationStart);
+        giveMePose(blueFoundationStart);
     }
 
 
@@ -121,6 +121,11 @@ public class BlueFoundation extends Auto {
      * also this input lag might be bad (?)
      * idk
      * lets see
+     *
+     *
+     * // edit from future me
+     * roadrunner hates state machines
+     *
      */
 
 
@@ -140,10 +145,9 @@ public class BlueFoundation extends Auto {
          *
          * **remember, do not loop anything in here, main state machine is looped**
          */
-/*
+
         if(currStage == progStates.driveToFoundation.ordinal()) {
             if (stageFinished) {
-                setPose(blueFoundationStart);
                 initStateVars();
 
                 Trajectory toFoundation = new TrajectoryBuilder(stageStartingPose, DriveConstants.BASE_CONSTRAINTS)
@@ -251,6 +255,6 @@ public class BlueFoundation extends Auto {
 
 
 
-*/
+
     }
 }

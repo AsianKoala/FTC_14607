@@ -28,6 +28,31 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.encoderTicksToInches;
 
 public class DriveTrain extends SampleMecanumDriveBase {
+
+    class OdometryModule {
+        double currReading;
+        public OdometryModule() {
+            currReading = 0;
+        }
+
+        public void setReading(double reading) {
+            currReading = reading;
+        }
+
+        public double getReading() {
+            return currReading;
+        }
+
+        public void update() {
+
+        }
+
+
+    }
+
+
+
+
     private ExpansionHubEx master, slave;
     private Firefly myRobot;
     public ExpansionHubMotor frontLeft, frontRight, backLeft, backRight;

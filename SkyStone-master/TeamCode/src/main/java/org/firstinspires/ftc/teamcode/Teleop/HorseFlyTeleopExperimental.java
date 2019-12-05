@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
+
+import org.openftc.revextensions2.ExpansionHubMotor;
+
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ import java.util.ArrayList;
 
 
 @TeleOp(name = "main teleop")
-public class HorseFlyTeleopExperimental extends OpMode {
+public class HorseFlyTeleopExperimental extends TunableOpMode {
 
     /**
      * LIST OF TODOS
@@ -27,17 +30,17 @@ public class HorseFlyTeleopExperimental extends OpMode {
      * TODO: add more stuff that makes it easier for driver to drive
      */
 
-    private DcMotor leftFront;
-    private DcMotor rightFront;
-    private DcMotor leftRear;
-    private DcMotor rightRear;
-    private DcMotor leftIntake;
-    private DcMotor rightIntake;
-    private DcMotorEx leftSlide;
-    private DcMotorEx rightSlide;
+    private ExpansionHubMotor leftFront;
+    private ExpansionHubMotor rightFront;
+    private ExpansionHubMotor leftRear;
+    private ExpansionHubMotor rightRear;
+    private ExpansionHubMotor leftIntake;
+    private ExpansionHubMotor rightIntake;
+    private ExpansionHubMotor leftSlide;
+    private ExpansionHubMotor rightSlide;
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
 
-    private ArrayList<DcMotor> driveMotors = new ArrayList<>();
+    private ArrayList<ExpansionHubMotor> driveMotors = new ArrayList<>();
 
 
 
@@ -69,14 +72,14 @@ public class HorseFlyTeleopExperimental extends OpMode {
     @Override
     public void init() {
 
-        leftFront = hardwareMap.get(DcMotor.class, "FL");
-        leftRear = hardwareMap.get(DcMotor.class, "BL");
-        rightRear = hardwareMap.get(DcMotor.class, "FR");
-        rightFront = hardwareMap.get(DcMotor.class, "BR");
-        leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");
-        rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");
-        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
+        leftFront = hardwareMap.get(ExpansionHubMotor.class, "FL");
+        leftRear = hardwareMap.get(ExpansionHubMotor.class, "BL");
+        rightRear = hardwareMap.get(ExpansionHubMotor.class, "FR");
+        rightFront = hardwareMap.get(ExpansionHubMotor.class, "BR");
+        leftIntake = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
+        rightIntake = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
 
         gripper = hardwareMap.get(Servo.class, "gripper");
         flipper = hardwareMap.get(Servo.class, "flipper");
@@ -111,7 +114,6 @@ public class HorseFlyTeleopExperimental extends OpMode {
         driveMotors.add(rightRear);
         /*
          * HOME THE FLIP AND GRIP SERVO
-         *
          */
          flipReady();
          rotaterReady();
@@ -149,6 +151,8 @@ public class HorseFlyTeleopExperimental extends OpMode {
         }
 
 
+
+
         /**
          *
          *
@@ -166,7 +170,7 @@ public class HorseFlyTeleopExperimental extends OpMode {
         }
 
         else {
-            motorPower = 1;
+            motorPower = 0.95;
         }
 
         double threshold = 0.157; // deadzone
@@ -185,9 +189,6 @@ public class HorseFlyTeleopExperimental extends OpMode {
             leftRear.setPower(0);
             rightRear.setPower(0);
         }
-
-
-
 
 
 
@@ -216,9 +217,6 @@ public class HorseFlyTeleopExperimental extends OpMode {
 
 
 
-
-
-
         // rotater arm control
         if(gamepad2.left_bumper) {
             rotaterOut();
@@ -226,8 +224,6 @@ public class HorseFlyTeleopExperimental extends OpMode {
         if(gamepad2.right_bumper) {
             rotaterReady();
         }
-
-
 
 
         // gripper arm control
@@ -239,8 +235,6 @@ public class HorseFlyTeleopExperimental extends OpMode {
         }
 
 
-
-
         //foundation mover control
         if(gamepad1.a) {
             grabFoundation();
@@ -249,6 +243,11 @@ public class HorseFlyTeleopExperimental extends OpMode {
         if(gamepad1.b) {
             ungrabFoundation();
         }
+
+
+
+
+
 
         // AUTOMATED FLIP
         if(gamepad2.dpad_left) {
@@ -260,6 +259,9 @@ public class HorseFlyTeleopExperimental extends OpMode {
         {
             counter = 1;
         }
+
+
+
 
 
 
@@ -312,8 +314,8 @@ public class HorseFlyTeleopExperimental extends OpMode {
                 break;
             //pseudo home lift
             case 4:
-                leftSlide.setTargetPosition(psuedoHome);//changed to pseudo home
-                rightSlide.setTargetPosition(psuedoHome);
+                leftSlide.setTargetPosition((int)psuedoHomer);//changed to pseudo home
+                rightSlide.setTargetPosition((int)psuedoHomer);
                 leftSlide.setPower(0.75);
                 rightSlide.setPower(0.75);
                 chime = System.currentTimeMillis();
@@ -331,8 +333,8 @@ public class HorseFlyTeleopExperimental extends OpMode {
             case 6:
                 oldSlideLeft = leftSlide.getCurrentPosition();
                 oldSlideRight = rightSlide.getCurrentPosition();
-                newSlideLeft = psuedoHome;
-                newSlideRight = psuedoHome;
+                newSlideLeft = psuedoHomer;
+                newSlideRight = psuedoHomer;
                 gripReady();
                 counter = 0;
                 break;
