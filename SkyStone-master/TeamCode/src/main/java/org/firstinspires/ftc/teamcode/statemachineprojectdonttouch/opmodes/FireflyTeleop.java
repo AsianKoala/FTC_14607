@@ -76,23 +76,13 @@ public class FireflyTeleop extends Firefly {
 
 
         tp5.markStart();
-        foundationGripperControl();
+        servoControl();
         tp5.markEnd();
 
 
         tp6.markStart();
-        flipperControl();
+        gamepadTelem();
         tp6.markEnd();
-
-
-        tp7.markStart();
-        gripperControl();
-        tp7.markEnd();
-
-
-        tp8.markStart();
-        rotaterControl();
-        tp8.markEnd();
 
 
         tp9.markStart();
@@ -116,11 +106,43 @@ public class FireflyTeleop extends Firefly {
     }
 
 
+    /**
+     * teleop user control
+     */
+    public void teleopDrivetrainControl() {
+        double scale = 0.8; // btich im not changing this to 1
+        if(gamepad1.left_bumper) {
+            scale = 0.5;
+        }
+        if(gamepad1.right_bumper) {
+            scale = 0.25;
+        }
+
+        double threshold = 0.157;
+
+        movementY =  Math.abs(-gamepad1.left_stick_y) > threshold ? -gamepad1.left_stick_y * scale : 0;
+        movementX = Math.abs(gamepad1.left_stick_x) > threshold ? gamepad1.left_stick_x * scale : 0;
+        movementTurn = Math.abs(gamepad1.right_stick_x) > threshold ? gamepad1.right_stick_x * scale : 0;
+    }
 
 
 
+    public void gamepadTelem() {
+        telemetry.addData("gpad 1 ls y", gamepad1.left_stick_y);
+        telemetry.addData("gpad 1 ls x", gamepad1.left_stick_x);
+        telemetry.addData("gpad 1 rs x", gamepad1.right_stick_x);
+    }
 
-    private void flipperControl() {
+
+
+    public void positionTelemetry() {
+        telemetry.addLine("xPos: " + df.format(worldXPos) +
+                " yPos: "+ df.format(worldYPos) +
+                " heading: " + df.format(worldHeadingRad));
+    }
+
+
+    private void servoControl() {
         if(gamepad2.dpad_down) {
             myOuttake.flipMid();
         }
@@ -136,27 +158,7 @@ public class FireflyTeleop extends Firefly {
         if(gamepad2.left_trigger > 0.5) {
             myOuttake.flipOut();
         }
-    }
 
-
-    public void positionTelemetry() {
-        telemetry.addLine("xPos: " + df.format(worldXPos) +
-                " yPos: "+ df.format(worldYPos) +
-                " heading: " + df.format(worldHeadingRad));
-    }
-
-    private void gripperControl() {
-        if(gamepad2.a) {
-            myOuttake.grip();
-        }
-
-        if(gamepad2.y) {
-            myOuttake.gripReady();
-        }
-    }
-
-
-    private void rotaterControl() {
         if(gamepad2.left_bumper) {
             myOuttake.rotaterOut();
         }
@@ -164,12 +166,15 @@ public class FireflyTeleop extends Firefly {
         if(gamepad2.right_bumper) {
             myOuttake.rotaterReady();
         }
-    }
 
+        if(gamepad2.a) {
+            myOuttake.grip();
+        }
 
+        if(gamepad2.y) {
+            myOuttake.gripReady();
+        }
 
-
-    private void foundationGripperControl() {
         if(gamepad1.a) {
             myOuttake.grabFoundation();
         }
@@ -178,6 +183,7 @@ public class FireflyTeleop extends Firefly {
             myOuttake.ungrabFoundation();
         }
     }
+
 
 
 

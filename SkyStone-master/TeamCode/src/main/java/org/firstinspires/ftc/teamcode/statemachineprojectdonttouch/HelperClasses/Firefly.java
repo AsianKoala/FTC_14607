@@ -298,6 +298,11 @@ public class Firefly extends TunableOpMode {
         tp7.markEnd();
 
 
+        tp8.markStart();
+        robotPowerTele();
+        tp8.markEnd();
+
+
 
 
 
@@ -325,24 +330,16 @@ public class Firefly extends TunableOpMode {
 
 
 
-    /**
-     * teleop user control
-     */
-    public void teleopDrivetrainControl() {
-        double scale = 0.8; // btich im not changing this to 1
-        if(gamepad1.left_bumper) {
-            scale = 0.5;
-        }
-        if(gamepad1.right_bumper) {
-            scale = 0.25;
-        }
-
-        double threshold = 0.157;
-
-        movementY =  Math.abs(-gamepad1.left_stick_y) > threshold ? -gamepad1.left_stick_y * scale : 0;
-        movementX = Math.abs(gamepad1.left_stick_x) > threshold ? gamepad1.left_stick_x * scale : 0;
-        movementTurn = Math.abs(gamepad1.right_stick_x) > threshold ? gamepad1.right_stick_x * scale : 0;
+    public void robotPowerTele() {
+        telemetry.addData("fl power", myDriveTrain.frontLeft.getPower());
+        telemetry.addData("fr power", myDriveTrain.frontRight.getPower());
+        telemetry.addData("bl power", myDriveTrain.backLeft.getPower());
+        telemetry.addData("br power", myDriveTrain.backRight.getPower());
     }
+
+
+
+
 
 
     /**

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 //BASED OFF OF AUTOMATED TELEOP DOES NOT ACCOUNT FOR NEW RESTRUCTURING
 
+import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -447,11 +448,22 @@ public class HorseFlyTeleopExperimental extends OpMode {
         telemetry.addData("left slide pos", leftSlide.getCurrentPosition());
         telemetry.addData("right slide pos", rightSlide.getCurrentPosition());
         telemetry.addData("left slide pid coefffs", leftSlide.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION).toString());
+        telemetry.addLine(mecanumPowers());
         telemetry.addLine("-----------");
     }
 
 
-
+    @SuppressLint("DefaultLocale")
+    private String mecanumPowers() {
+        return String.format(
+                "\n" +
+                        "(%.1f)---(%.1f)\n" +
+                        "|   Front   |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "(%.1f)---(%.1f)\n"
+                , leftFront.getPower(), rightFront.getPower(), leftRear.getPower(), rightRear.getPower());
+    }
 
     /**
      * @return whether or not the intake motors are busy
