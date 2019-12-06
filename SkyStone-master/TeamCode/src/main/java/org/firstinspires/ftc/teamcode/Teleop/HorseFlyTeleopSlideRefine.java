@@ -18,8 +18,8 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import java.util.ArrayList;
 
 
-@TeleOp(name = "main teleop")
-public class HorseFlyTeleopExperimental extends TunableOpMode {
+@TeleOp(name = "slide refined teleop")
+public class HorseFlyTeleopSlideRefine extends TunableOpMode {
 
     /**
      * LIST OF TODOS
@@ -46,20 +46,9 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
 
 
-    public final static long toMidTime = 450;
-    public final static long liftTime = 200;
-    public final static long toBackTime = 750;
 
-    public final static long toLiftTimeTo = 400;
-    public final static long toBackTimeTo = 700;
 
-    public final static int liftIncrement = -200;
-    public final static int liftIncrementer = -500;
-
-    private double oldSlideLeft = 0;
-    private double oldSlideRight = 0;
-    private double newSlideLeft = 0;
-    private double newSlideRight = 0;
+    private double newSlideTarget;
 
     public static long time = 0;
     public static int count = 0;
@@ -114,9 +103,9 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         /*
          * HOME THE FLIP AND GRIP SERVO
          */
-         flipReady();
-         rotaterReady();
-         gripReady();
+        flipReady();
+        rotaterReady();
+        gripReady();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -263,95 +252,6 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
 
 
-
-        /**
-         *
-         *
-         * FLIP BACK
-         *
-         */
-
-
-        switch(counter)
-        {
-            //gripper let go first?
-            //task 1: lift up
-            //need to test, this step should not be necesssary
-            case 1:
-                    gripper.setPosition(gripperGrip);
-                    newSlideLeft = liftIncrementer;//height should not be hardcoded, fix after PID tuned
-                    newSlideRight = liftIncrementer;
-
-                //none of :
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
-                    leftSlide.setPower(1);
-                    rightSlide.setPower(1);
-                //this is necessary? coded later already
-
-                    chime = System.currentTimeMillis();
-                    counter++;
-                    break;
-
-            //rotate
-            case 2:
-                if(System.currentTimeMillis() - chime >= 100)//lift is super fast, can also rotate on the way up
-                {
-                    rotaterReady();
-                    counter++;
-                }
-                break;
-            //flip
-            case 3:
-                if(System.currentTimeMillis() - chime >= 750)//amount of time rotation takes
-                {
-                    flipper.setPosition(0.95);
-                    chime = System.currentTimeMillis();
-                    counter++;
-                }
-
-                break;
-            //pseudo home lift
-            case 4:
-                leftSlide.setTargetPosition((int)psuedoHomer);//changed to pseudo home
-                rightSlide.setTargetPosition((int)psuedoHomer);
-                leftSlide.setPower(0.75);
-                rightSlide.setPower(0.75);
-                chime = System.currentTimeMillis();
-                counter++;
-                break;
-
-            // grip to home
-            case 5:
-                if(System.currentTimeMillis() - chime >= 300) {
-                    gripper.setPosition(gripperHome);
-                }
-                counter++;
-                break;
-           // lift to home
-            case 6:
-                oldSlideLeft = leftSlide.getCurrentPosition();
-                oldSlideRight = rightSlide.getCurrentPosition();
-                newSlideLeft = psuedoHomer;
-                newSlideRight = psuedoHomer;
-                gripReady();
-                counter = 0;
-                break;
-        }
-        /**
-         * 2.99
-         * 0.042
-         * 3.6
-         *
-         * 2.99
-         * 0.042
-         * 3.6
-         * 2.99
-         * 0.042
-         * 3.6
-         */
-
-
         /**
          *
          *
@@ -363,7 +263,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         {
             //task 1: flip to center
             case 1:
-                flipper.setPosition(0.6);
+                flipper.setPosition(flipperBetween);
                 time = System.currentTimeMillis();
                 count++;
                 break;
@@ -371,12 +271,8 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
             case 2:
                 if(System.currentTimeMillis() - time >= toMidTime)
                 {
-                    newSlideLeft = liftIncrement;
-                    newSlideRight = liftIncrement;
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
-                    leftSlide.setPower(1);
-                    rightSlide.setPower(1);
+                    newSlideTarget = liftIncrement;
+
                     time = System.currentTimeMillis();
                     count++;
                 }
@@ -385,7 +281,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
             case 3:
                 if(System.currentTimeMillis() - time >= liftTime)
                 {
-                    flipper.setPosition(0.25);
+                    flipper.setPosition(flipperOut);
                     time = System.currentTimeMillis();
                     count++;
                 }
@@ -403,6 +299,55 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         }
 
 
+
+
+
+        /**
+         *
+         *
+         * FLIP BACK
+         *
+         */
+
+
+        switch(counter)
+        {
+            //gripper let go first?
+            //task 1: lift up
+            //need to test, this step should not be necesssary
+            case 1:
+                gripReady();
+                rotaterReady();
+                newSlideTarget = liftIncrementer;
+
+                chime = System.currentTimeMillis();
+                counter++;
+                break;
+
+            //rotate
+            case 2:
+                if(System.currentTimeMillis() - chime >= 750)//amount of time rotation takes
+                {
+                    flipper.setPosition(flipperHome);
+                    chime = System.currentTimeMillis();
+                    counter++;
+                }
+
+                break;
+            //pseudo home lift
+            case 3:
+
+                newSlideTarget = psuedoHomer;
+
+                chime = System.currentTimeMillis();
+                counter = 0;
+                break;
+
+        }
+
+
+
+
         /**
          * slide powers here
          */
@@ -410,26 +355,23 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         double increment = gamepad2.right_stick_y * 100;
 
         if(Math.abs(increment) > 25) {
-            newSlideLeft = leftSlide.getCurrentPosition() + increment;
-            newSlideRight = rightSlide.getCurrentPosition() + increment;
+            newSlideTarget = leftSlide.getCurrentPosition() + increment;
         }
         if(gamepad2.x) {
-            oldSlideLeft = leftSlide.getCurrentPosition();
-            oldSlideRight = rightSlide.getCurrentPosition();
-            newSlideLeft = -25;
-            newSlideRight = -25;
+            newSlideTarget = psuedoHomer;
         }
 
         if(gamepad2.b) {
-            oldSlideLeft = leftSlide.getCurrentPosition();
-            oldSlideRight = rightSlide.getCurrentPosition();
-            newSlideLeft = -25.0/2;
-            newSlideRight = -25.0/2;
+            newSlideTarget = psuedoHomer;
         }
 
-        if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
-            leftSlide.setTargetPosition((int)(newSlideLeft));
-            rightSlide.setTargetPosition((int)(newSlideRight));
+
+        /**
+         * let this handle ALL movement
+         */
+        if(Math.abs(newSlideTarget - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideTarget - rightSlide.getCurrentPosition()) > 10) {
+            leftSlide.setTargetPosition((int)(newSlideTarget));
+            rightSlide.setTargetPosition((int)(newSlideTarget));
             leftSlide.setPower(1);
             rightSlide.setPower(1);
         }

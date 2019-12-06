@@ -32,7 +32,7 @@ public  class GLOBALS {
 
     public final static int liftIncrement = -200;
     public final static int liftIncrementer = -500;
-    public static double psuedoHomer = -50;
+    public static double   psuedoHomer = -50;
 
 
 
