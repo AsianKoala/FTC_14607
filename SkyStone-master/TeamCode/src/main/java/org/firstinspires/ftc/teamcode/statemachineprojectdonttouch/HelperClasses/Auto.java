@@ -13,7 +13,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 /**
  * base class for auto opmodes
  */
-@Autonomous(name = "auto statemachine")
+@Autonomous(name = "auto statemachine deebug")
 public abstract class Auto extends Firefly {
 
     public double stateStartTime = 0;

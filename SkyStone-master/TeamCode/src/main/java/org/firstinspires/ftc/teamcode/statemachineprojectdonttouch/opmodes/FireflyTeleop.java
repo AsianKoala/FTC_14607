@@ -87,11 +87,12 @@ public class FireflyTeleop extends Firefly {
 
         tp9.markStart();
         positionTelemetry();
+        scaledPositionTelemetry();
         tp9.markEnd();
 
 
 
-
+        addSpace();
         telemetry.addLine("-------------- FIREFLY TELEOP TELEMETRY -----------------");
         telemetry.addLine("tOp profiler 1: " + tp1.getAverageTimePerUpdateMillis());
         telemetry.addLine("tOp profiler 2: " + tp2.getAverageTimePerUpdateMillis());
@@ -105,7 +106,7 @@ public class FireflyTeleop extends Firefly {
 
     }
 
-
+// ready
     /**
      * teleop user control
      */
@@ -120,23 +121,30 @@ public class FireflyTeleop extends Firefly {
     }
 
 
-
+// ready
     public void gamepadTelem() {
-        telemetry.addData("gpad 1 ls y", gamepad1.left_stick_y);
-        telemetry.addData("gpad 1 ls x", gamepad1.left_stick_x);
-        telemetry.addData("gpad 1 rs x", gamepad1.right_stick_x);
+        telemetry.addData("gpad 1 ls y: ", gamepad1.left_stick_y);
+        telemetry.addData("gpad 1 ls x: ", gamepad1.left_stick_x);
+        telemetry.addData("gpad 1 rs x: ", gamepad1.right_stick_x);
     }
 
 
-
+// ready
     public void positionTelemetry() {
         telemetry.addLine("xPos: " + df.format(worldXPos) +
                 " yPos: "+ df.format(worldYPos) +
                 " heading: " + df.format(worldHeadingRad));
     }
 
+    // ready
+    private void scaledPositionTelemetry() {
+        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
+    }
+
+
 
     private void servoControl() {
+
         if(gamepad2.dpad_down) {
             myOuttake.flipMid();
         }
@@ -153,6 +161,8 @@ public class FireflyTeleop extends Firefly {
             myOuttake.flipOut();
         }
 
+
+
         if(gamepad2.left_bumper) {
             myOuttake.rotaterOut();
         }
@@ -161,6 +171,8 @@ public class FireflyTeleop extends Firefly {
             myOuttake.rotaterReady();
         }
 
+
+
         if(gamepad2.a) {
             myOuttake.grip();
         }
@@ -168,6 +180,8 @@ public class FireflyTeleop extends Firefly {
         if(gamepad2.y) {
             myOuttake.gripReady();
         }
+
+
 
         if(gamepad1.a) {
             myOuttake.grabFoundation();

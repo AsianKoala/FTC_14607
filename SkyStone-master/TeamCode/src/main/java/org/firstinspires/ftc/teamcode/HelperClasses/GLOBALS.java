@@ -5,7 +5,7 @@ import static java.lang.Math.*;
 
 public  class GLOBALS {
 
-    public  final static double flipperHome =  0.95;
+    public final static double flipperHome =  0.95;
     public final static double flipperOut = 0.31;
     public final static double flipperBetween = 0.8347;
     public final static double flipperBetweenBetween = (flipperBetween + flipperOut)/2;

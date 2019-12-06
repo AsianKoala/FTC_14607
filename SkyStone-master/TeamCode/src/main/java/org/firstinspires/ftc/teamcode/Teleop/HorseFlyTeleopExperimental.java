@@ -18,7 +18,6 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import java.util.ArrayList;
 
 
-
 @TeleOp(name = "main teleop")
 public class HorseFlyTeleopExperimental extends TunableOpMode {
 
@@ -475,8 +474,6 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
      * @return whether or not the intake motors are busy
      */
 
-    public boolean intakeBusy() {
-        return leftIntake.isBusy() || rightIntake.isBusy();}
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
         leftIntake.setPower(leftIntakePower);
@@ -484,7 +481,6 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
     }
 
 
-    public void stopIntake() { setIntakePowers(0,0);}
 
 
     /**

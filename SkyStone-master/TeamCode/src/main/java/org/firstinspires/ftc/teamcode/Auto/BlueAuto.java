@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.util.ArrayList;
 
+@Deprecated
 @Autonomous(name = "Blue Auto", group = "Firefly")
 public class BlueAuto extends LinearOpMode {
 

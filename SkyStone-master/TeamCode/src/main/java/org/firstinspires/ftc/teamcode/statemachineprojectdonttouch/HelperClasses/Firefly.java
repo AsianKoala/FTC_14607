@@ -1,50 +1,22 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses;
 
-import android.annotation.SuppressLint;
 import android.os.SystemClock;
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
-import com.acmerobotics.roadrunner.drive.DriveSignal;
-import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
-import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
-import com.acmerobotics.roadrunner.profile.MotionState;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
-import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.HelperClasses.SampleMecanumDriveREVOptimized;
 import org.firstinspires.ftc.teamcode.Teleop.opencvSkystoneDetector;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
-import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 import org.openftc.revextensions2.RevBulkData;
 
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.*;
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.giveMePose;
 
 /**
@@ -52,7 +24,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
  */
 
 public class Firefly extends TunableOpMode {
-    
+
     // rev objects
     public RevBulkData masterData;
     public RevBulkData slaveData;
@@ -271,15 +243,15 @@ public class Firefly extends TunableOpMode {
         // now updating the state machines starts
 
         tp1.markStart();
-        myDriveTrain.updatee();
+        myDriveTrain.update(); // updates roadrunner pose using motor encoder values
         tp1.markEnd();
 
-       tp3.markStart();
-         myDriveTrain.update(); // updates roadrunner pose using motor encoder values
+        tp3.markStart();
+        giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp3.markEnd();
 
         tp4.markStart();
-        giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
+        myDriveTrain.updatee();
         tp4.markEnd();
 
         /**
@@ -307,12 +279,6 @@ public class Firefly extends TunableOpMode {
         tp7.markEnd();
 
 
-        tp8.markStart();
-        robotPowerTele();
-        tp8.markEnd();
-
-
-
 
 
 
@@ -326,27 +292,14 @@ public class Firefly extends TunableOpMode {
         // in millis
         addSpace();
         telemetry.addLine("---------------- FIREFLY BASE CLASS TELEM ---------------");
-        telemetry.addLine("profiler 1: " + tp1.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 2: " + tp2.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 3: " + tp3.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 4: " + tp4.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 5: " + tp5.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 6: " + tp6.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 7: " + tp7.getAverageTimePerUpdateMillis());
-        telemetry.addLine("profiler 8: " + tp8.getAverageTimePerUpdateMillis());
+        telemetry.addLine("rr localization profiler: " + tp1.getAverageTimePerUpdateMillis());
+        telemetry.addLine("bulk data profiler: " + tp2.getAverageTimePerUpdateMillis());
+        telemetry.addLine("localization conversion profiler: " + tp3.getAverageTimePerUpdateMillis());
+        telemetry.addLine("drivetrain power profiler: " + tp4.getAverageTimePerUpdateMillis());
+        telemetry.addLine("outtake profiler: " + tp5.getAverageTimePerUpdateMillis());
+        telemetry.addLine("slide profiler: " + tp6.getAverageTimePerUpdateMillis());
+        telemetry.addLine("intake profiler: " + tp7.getAverageTimePerUpdateMillis());
     }
-
-
-
-
-    public void robotPowerTele() {
-        telemetry.addData("fl power", myDriveTrain.frontLeft.getPower());
-        telemetry.addData("fr power", myDriveTrain.frontRight.getPower());
-        telemetry.addData("bl power", myDriveTrain.backLeft.getPower());
-        telemetry.addData("br power", myDriveTrain.backRight.getPower());
-    }
-
-
 
 
 
