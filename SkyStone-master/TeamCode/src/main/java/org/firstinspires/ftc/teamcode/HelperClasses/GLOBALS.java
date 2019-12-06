@@ -39,7 +39,15 @@ public  class GLOBALS {
 
 
 
-    //ok these arent constants but stfu
+
+
+
+
+
+
+
+
+
 
     public static double movementX = 0;
     public static double movementY = 0;
@@ -77,7 +85,7 @@ public  class GLOBALS {
 
 
     public static double AngleWrap(double angle) {
-        while(angle < Math.PI) {
+        while(angle <= -Math.PI) {
             angle += 2 * Math.PI;
         }
 
@@ -100,6 +108,12 @@ public  class GLOBALS {
 
         return angle;
     }
+
+
+
+
+
+
 
     /**
      * get it

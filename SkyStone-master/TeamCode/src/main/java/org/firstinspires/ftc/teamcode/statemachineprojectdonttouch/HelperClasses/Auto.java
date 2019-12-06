@@ -89,7 +89,9 @@ public abstract class Auto extends Firefly {
         stageFinished = true;
         currStage = 0;
         currTimeMillis = SystemClock.uptimeMillis();
+        giveMePose(new Pose2d(0,0,0));
     }
+
 
     @Override
     public void loop() {
