@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil;
 
 import org.firstinspires.ftc.teamcode.HelperClasses.ppProject.company.Range;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.WayPoint;
-import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.movementTarget;
 
 
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class RobotMovement {
 
 
 
-    public static void gunToPosition(double targetX, double targetY, double movementSpeed, double pointAngle, double pointSpeed, double slowDownTurnRad, double slowDownMovementFromTurnErrorMax, boolean stop ) {
+    public static boolean gunToPosition(double targetX, double targetY, double movementSpeed, double pointAngle, double pointSpeed, double slowDownTurnRad, double slowDownMovementFromTurnErrorMax, boolean stop ) {
 
 
         double distanceToTarget = Math.hypot(scaledWorldXPos - targetX, scaledWorldYPos - targetY);
@@ -112,7 +111,7 @@ public class RobotMovement {
         double movementYComponent = (relativeYToPoint / (relativeAbsX + relativeAbsY));
 
 
-        //So we will basically not care about what movement_speed was given, we are going to
+        //So we will basically not care about what movementSpeed was given, we are going to
         //decelerate over the course of 30 cm anyways (100% to 0) and then clip the final values
         //to have a max of movement_speed.
         if (stop) {
@@ -131,10 +130,8 @@ public class RobotMovement {
         double relativePointAngle = AngleWrap(absolutePointAngle - scaledWorldHeadingRad);
 
 
-        double deccelDistance = Math.toRadians(40);
-
-        // scale down angle by 40 and multiply by point speed
-        double turnSpeed = (relativePointAngle / deccelDistance) * pointSpeed;
+        // scale down angle by 40 and multiply by point
+        double turnSpeed = (relativePointAngle / Math.toRadians(40)) * pointSpeed;
 
 
         movementTurn = Range.clip(turnSpeed, -pointSpeed, pointSpeed);
@@ -161,26 +158,40 @@ public class RobotMovement {
         movementX *= turnErrorSoSlowDown;
         movementY *= turnErrorSoSlowDown;
 
-        target = new movementTarget(targetX, targetY, pointAngle);
+
+        return Math.abs(distanceToTarget) < 2 && Math.abs(relativeAngleToTarget) < Math.toDegrees(2);
     }
 
 
-    public static movementTarget target;
+
+    private static int currMovementStage = 0;
+
+    public static void initFollowCurve() {
+        currMovementStage = 0;
+    }
 
 
     public static void followCurve(ArrayList<WayPoint> wayPoints) {
-        WayPoint targetPoint = wayPoints.get(1);
-
-        gunToPosition(targetPoint.targetX, targetPoint.targetY, targetPoint.movementSpeed, targetPoint.pointAngle, targetPoint.pointSpeed, targetPoint.slowDownRadians, targetPoint.slowDownErrorMax, false);
-
-    }
+        WayPoint targetWayPoint = wayPoints.get(currMovementStage);
 
 
-    private static WayPoint getTargetPoint(ArrayList<WayPoint> wayPoints, movementTarget target) {
-        for(int i=0; i < wayPoints.size() - 1; i++) {
-            if(wayPoints.get(i).getMovementTarget().equals())
+
+
+        if(currMovementStage == wayPoints.size()-1) {
+
         }
+
+
+
+        if(gunToPosition(targetWayPoint.targetX, targetWayPoint.targetY, targetWayPoint.movementSpeed, targetWayPoint.pointAngle, targetWayPoint.pointSpeed, targetWayPoint.slowDownRadians, targetWayPoint.slowDownErrorMax, false)) {
+            currMovementStage++;
+        }
+
+        targetWayPoint = wayPoints.get(currMovementStage);
     }
+
+
+
 
 
 

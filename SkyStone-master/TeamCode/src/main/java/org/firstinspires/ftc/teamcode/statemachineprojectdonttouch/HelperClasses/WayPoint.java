@@ -33,7 +33,14 @@ public class WayPoint {
     }
 
 
-    public movementTarget getMovementTarget() {
-        return new movementTarget(targetX, targetY, pointAngle);
+    public WayPoint(double targetX, double targetY, double pointAngle) {
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.pointAngle = pointAngle;
     }
+
+
+
+
+
 }
