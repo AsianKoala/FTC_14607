@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants;
+
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Auto;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.TimeProfiler;
 
@@ -20,7 +18,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 @Autonomous
 public class AutoLayout extends Auto {
 
-    public boolean safePark = true;
+    private boolean safePark = true;
 
     public enum progStates {
         move,
@@ -32,8 +30,6 @@ public class AutoLayout extends Auto {
     @Override
     public void init() {
         super.init();
-
-
         // set starting pose
         giveMePose(blueFoundationStart);
     }
@@ -109,13 +105,13 @@ public class AutoLayout extends Auto {
 
 
 
-    public void positionTelemetry() {
+    private void positionTelemetry() {
         telemetry.addLine("xPos: " + df.format(worldXPos) +
                 "yPos: "+ df.format(worldYPos) +
                 "heading: " + df.format(worldHeadingRad));
     }
 
-    public void scaledPositionTelemetry() {
+    private void scaledPositionTelemetry() {
         telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
     }
 
@@ -124,23 +120,23 @@ public class AutoLayout extends Auto {
 
 
 
+    /**
+     * this is the basic layout of the flow
+     * if(stageFinished) { // runs once when looping
+     *      initStateVars(); // inits vars
+     * }
+     *
+     *do whatever you want to do here
+     *
+     * if( done with thing || timed out) {    // this is our condition going to the next stage
+     *      nextStage();
+     * }
+     *
+     * **remember, do not loop anything in here, main state machine is looped**
+     */
 
     @Override
     public void MainStateMachine() {
-        /**
-         * this is the basic layout of the flow
-         * if(stageFinished) { // runs once when looping
-         *      initStateVars(); // inits vars
-         * }
-         *
-         *do whatever you want to do here
-         *
-         * if( done with thing || timed out) {    // this is our condition going to the next stage
-         *      nextStage();
-         * }
-         *
-         * **remember, do not loop anything in here, main state machine is looped**
-         */
 
         if(currStage == progStates.move.ordinal()) {
             if (stageFinished) {
