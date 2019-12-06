@@ -52,7 +52,6 @@ public class Firefly extends TunableOpMode {
     public long currTimeMillis = 0;
     public boolean isImuInit = false;
 
-
     public boolean everythingInit = false;
 
 
@@ -72,10 +71,10 @@ public class Firefly extends TunableOpMode {
         ExpansionHubMotor frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
         ExpansionHubMotor backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
         ExpansionHubMotor backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
-           allMotors.add(frontLeft);
-            allMotors.add(backLeft);
-         allMotors.add(frontRight);
-            allMotors.add(backRight);
+        allMotors.add(frontLeft);
+        allMotors.add(backLeft);
+        allMotors.add(frontRight);
+        allMotors.add(backRight);
 
 
 
@@ -211,6 +210,9 @@ public class Firefly extends TunableOpMode {
 
     @Override
     public void loop() {
+
+
+
         /**
          * most of this stuff is just state machine updating + telemetry
          */
@@ -248,8 +250,11 @@ public class Firefly extends TunableOpMode {
         giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp3.markEnd();
 
+        currTimeMillis = SystemClock.uptimeMillis();
         tp4.markStart();
-        myDriveTrain.updatee();
+        if(currTimeMillis - lastLoopTime > 16) {    // update if 16 ms passed
+            myDriveTrain.updatee();
+        }
         tp4.markEnd();
 
         /**
@@ -284,6 +289,9 @@ public class Firefly extends TunableOpMode {
   //      tp7.markStart();
    //     debugMode();
     //    tp7.markStart();
+
+
+
 
 
 

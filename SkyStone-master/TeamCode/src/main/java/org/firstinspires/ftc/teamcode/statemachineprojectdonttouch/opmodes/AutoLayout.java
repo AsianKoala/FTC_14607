@@ -22,6 +22,8 @@ public class AutoLayout extends Auto {
 
     public enum progStates {
         move,
+        turn,
+        guntoposition,
         stop
     }
 
@@ -118,8 +120,6 @@ public class AutoLayout extends Auto {
 
 
 
-
-
     /**
      * this is the basic layout of the flow
      * if(stageFinished) { // runs once when looping
@@ -132,7 +132,7 @@ public class AutoLayout extends Auto {
      *      nextStage();
      * }
      *
-     * **remember, do not loop anything in here, main state machine is looped**
+     * remember, do not loop anything in here, main state machine is looped**
      */
 
     @Override
@@ -145,13 +145,42 @@ public class AutoLayout extends Auto {
             }
 
 
-            goToPosition(stageStartingXPos, stageStartingYPos + 24, stageStartingAngleRad, 1, 1);
+            goToPosition(stageStartingXPos+24, stageStartingYPos, stageStartingAngleRad, 1, 1);
 
-            if(goToPositionCompleted) {
+            if(scaledWorldXPos < 2) {
                 nextStage();
             }
 
         }
+
+
+        if(currStage == progStates.turn.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+            }
+
+
+            pointAngle(Math.toRadians(45), 0.5, Math.toRadians(10));
+
+            if(Math.abs(stageStartingAngleRad - scaledWorldHeadingRad) == Math.PI/4) {
+                nextStage();
+            }
+        }
+
+
+        if(currStage == progStates.guntoposition.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+            }
+
+            gunToPosition(24,24, 1, Math.toRadians(-90), 1, Math.toRadians(10), 10,  true);
+
+
+            if(Math.hypot(24 - scaledWorldXPos, 24 - scaledWorldYPos) < 2) {
+                nextStage();
+            }
+        }
+
 
         if(currStage == progStates.stop.ordinal()) {
             initStateVars();

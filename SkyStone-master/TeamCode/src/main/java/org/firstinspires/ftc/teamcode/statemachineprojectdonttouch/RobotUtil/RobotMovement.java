@@ -1,9 +1,16 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil;
 
 import org.firstinspires.ftc.teamcode.HelperClasses.ppProject.company.Range;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.WayPoint;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.movementTarget;
+
+
+import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
+
+
 
 import static java.lang.Math.*;
 
@@ -15,24 +22,14 @@ public class RobotMovement {
         accurate
     }
 
-    private static boolean distanceCompleted;
-    private static boolean turnCompleted;
-    public static boolean goToPositionCompleted = distanceCompleted && turnCompleted;
-
-
     public static void goToPosition(double targetX, double targetY, double point_angle, double movement_speed, double point_speed) {
-
-        // init bools for movement (if we have to loop this then we know we havent reached targ position so init bool)
-        distanceCompleted = false;
-        turnCompleted = false;
-
 
         //get our distance away from the point
 
         double distanceToPoint = Math.sqrt(Math.pow(targetX-scaledWorldXPos,2) + Math.pow(targetY-scaledWorldYPos,2));
 
         double angleToPoint = Math.atan2(targetY-scaledWorldYPos,targetX-scaledWorldXPos);
-        double deltaAngleToPoint = AngleWrap(angleToPoint-(scaledWorldHeadingRad-Math.toRadians(90)));
+        double deltaAngleToPoint = AngleWrap(angleToPoint-(scaledWorldHeadingRad));
         //x and y components required to move toward the next point (with angle correction)
         double relative_x_to_point = Math.cos(deltaAngleToPoint) * distanceToPoint;
         double relative_y_to_point = Math.sin(deltaAngleToPoint) * distanceToPoint;
@@ -71,13 +68,118 @@ public class RobotMovement {
         movementY = movement_y_power;
 
 
+    }
 
 
-        // use this to check if are movements are complete
-        // these are false anyways at the beginning of every loop
-        distanceCompleted = true;
-        turnCompleted = true;
 
+    public static void pointAngle(double pointAngle, double pointSpeed, double deccelRad) {
+        double relativePointAngle = AngleWrap(pointAngle - scaledWorldHeadingRad);
+
+        double turnSpeed = (relativePointAngle/deccelRad) * pointSpeed;
+
+        movementTurn = Range.clip(turnSpeed, -pointSpeed, pointSpeed);
+        movementTurn = Range.clip(Math.abs(relativePointAngle)/ Math.toRadians(3), 0,1);
+    }
+
+
+
+    public static void gunToPosition(double targetX, double targetY, double movementSpeed, double pointAngle, double pointSpeed, double slowDownTurnRad, double slowDownMovementFromTurnErrorMax, boolean stop ) {
+
+
+        double distanceToTarget = Math.hypot(scaledWorldXPos - targetX, scaledWorldYPos - targetY);
+
+
+        double angleToTarget = atan2(targetY - scaledWorldYPos, targetX - scaledWorldXPos);
+        double relativeAngleToTarget = AngleWrap(angleToTarget - scaledWorldHeadingRad);
+
+
+        // angle correction rel x and y
+        double relativeXToPoint = Math.cos(relativeAngleToTarget) * distanceToTarget;
+        double relativeYToPoint = sin(relativeAngleToTarget) * distanceToTarget;
+
+        double relativeAbsX = Math.abs(relativeXToPoint);
+        double relativeAbsY = Math.abs(relativeYToPoint);
+
+
+
+        /* motor powers */
+
+        //let's initialize to a power that doesn't care how far we are away from the point
+        //We do this by just calculating the ratios (shape) of the movement with respect to
+        //the sum of the two components, (sum of the absolute values to preserve the sines)
+        //so total magnitude should always equal 1
+        double movementXComponent = (relativeXToPoint / (relativeAbsX + relativeAbsY));
+        double movementYComponent = (relativeYToPoint / (relativeAbsX + relativeAbsY));
+
+
+        //So we will basically not care about what movement_speed was given, we are going to
+        //decelerate over the course of 30 cm anyways (100% to 0) and then clip the final values
+        //to have a max of movement_speed.
+        if (stop) {
+            movementXComponent = relativeAbsX / 30.0;
+            movementYComponent = relativeAbsY / 30.0;
+        }
+
+        movementX = Range.clip(movementXComponent, -movementSpeed, movementSpeed);
+        movementY = Range.clip(movementYComponent, -movementSpeed, movementSpeed);
+
+
+        // turn stuff here
+        double absolutePointAngle = pointAngle + angleToTarget;
+
+
+        double relativePointAngle = AngleWrap(absolutePointAngle - scaledWorldHeadingRad);
+
+
+        double deccelDistance = Math.toRadians(40);
+
+        // scale down angle by 40 and multiply by point speed
+        double turnSpeed = (relativePointAngle / deccelDistance) * pointSpeed;
+
+
+        movementTurn = Range.clip(turnSpeed, -pointSpeed, pointSpeed);
+        if (distanceToTarget < 5) {
+            movementTurn = 0;
+        }
+
+
+        // add smoothing near last 3 cm (no oscillate)
+        movementX = Range.clip(relativeAbsX / 6, 0, 1);
+        movementY = Range.clip(relativeAbsY / 6, 0, 1);
+
+        movementTurn = Range.clip(Math.abs(relativePointAngle) / Math.toRadians(2), 0, 1);
+
+
+        // slow down if heading off
+        double turnErrorSoSlowDown = Range.clip(1.0 - Math.abs(relativePointAngle / slowDownTurnRad), 1.0 - slowDownMovementFromTurnErrorMax, 1);
+
+        if (Math.abs(movementTurn) < 0.0001) {
+            turnErrorSoSlowDown = 1;
+        }
+
+
+        movementX *= turnErrorSoSlowDown;
+        movementY *= turnErrorSoSlowDown;
+
+        target = new movementTarget(targetX, targetY, pointAngle);
+    }
+
+
+    public static movementTarget target;
+
+
+    public static void followCurve(ArrayList<WayPoint> wayPoints) {
+        WayPoint targetPoint = wayPoints.get(1);
+
+        gunToPosition(targetPoint.targetX, targetPoint.targetY, targetPoint.movementSpeed, targetPoint.pointAngle, targetPoint.pointSpeed, targetPoint.slowDownRadians, targetPoint.slowDownErrorMax, false);
+
+    }
+
+
+    private static WayPoint getTargetPoint(ArrayList<WayPoint> wayPoints, movementTarget target) {
+        for(int i=0; i < wayPoints.size() - 1; i++) {
+            if(wayPoints.get(i).getMovementTarget().equals())
+        }
     }
 
 
