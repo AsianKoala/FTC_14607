@@ -15,9 +15,20 @@ public class RobotMovement {
         accurate
     }
 
+    private static boolean distanceCompleted;
+    private static boolean turnCompleted;
+    public static boolean goToPositionCompleted = distanceCompleted && turnCompleted;
 
-    public static void goToPosition(double targetX, double targetY, double point_angle, double movement_speed, double point_speed, double adjustSpeed) {
+
+    public static void goToPosition(double targetX, double targetY, double point_angle, double movement_speed, double point_speed) {
+
+        // init bools for movement (if we have to loop this then we know we havent reached targ position so init bool)
+        distanceCompleted = false;
+        turnCompleted = false;
+
+
         //get our distance away from the point
+
         double distanceToPoint = Math.sqrt(Math.pow(targetX-scaledWorldXPos,2) + Math.pow(targetY-scaledWorldYPos,2));
 
         double angleToPoint = Math.atan2(targetY-scaledWorldYPos,targetX-scaledWorldXPos);
@@ -37,11 +48,11 @@ public class RobotMovement {
         //every movement has two states, the fast "gunning" section and the slow refining part. turn this var off when close to target
 
         double radToTarget = AngleWrap(point_angle - scaledWorldHeadingRad);
-        double movementTurnUnscaled = 0;
+        double turnPower = 0;
 
         if(ourTurnStates == turnStates.speed) {
             if(Math.abs(radToTarget) > toDegrees(10)) {
-                movementTurnUnscaled = radToTarget > 0 ? point_speed : -point_speed;
+                turnPower = radToTarget > 0 ? point_speed : -point_speed;
             }
 
             else {
@@ -50,22 +61,30 @@ public class RobotMovement {
         }
 
         if(ourTurnStates == turnStates.accurate) {
-            if(Math.abs(radToTarget) > 0) {
-                double accMovement = point_speed * radToTarget / toRadians(10);
-                movementTurnUnscaled = Range.clip(accMovement, -point_speed, point_speed);
-            }
+                turnPower = point_speed * radToTarget / toRadians(10);
+                turnPower = Range.clip(turnPower, -point_speed, point_speed);
         }
 
 
-        if(Math.abs(movementTurnUnscaled) < 0.001) {
-            movementTurnUnscaled = 0;
-        }
-
-
-
-        movementTurn = movementTurnUnscaled;
+        movementTurn = turnPower;
         movementX = movement_x_power;
         movementY = movement_y_power;
 
+
+
+
+        // use this to check if are movements are complete
+        // these are false anyways at the beginning of every loop
+        distanceCompleted = true;
+        turnCompleted = true;
+
+    }
+
+
+
+    public static void stopMovement() {
+        movementX = 0;
+        movementY = 0;
+        movementTurn = 0;
     }
 }

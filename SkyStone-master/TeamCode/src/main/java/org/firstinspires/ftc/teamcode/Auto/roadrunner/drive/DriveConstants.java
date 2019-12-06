@@ -18,7 +18,7 @@ public class DriveConstants {
      * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
      */
 
-    private static final double TICKS_PER_REV = 537.6;
+    public static final double TICKS_PER_REV = 537.6;
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update

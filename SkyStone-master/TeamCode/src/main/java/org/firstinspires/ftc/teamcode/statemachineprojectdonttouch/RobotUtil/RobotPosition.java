@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.OdometryModule;
 
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.TICKS_PER_REV;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
 
 
@@ -11,29 +12,17 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
  */
 public class RobotPosition {
 
-
-    public static double scaledWorldXPos = 0.0;
-    public static double scaledWorldYPos = 0.0;
-    public static double scaledWorldHeadingRad = 0.0;
-    public static double worldXPos = 0.0;
-    public static double worldYPos = 0.0;
-    public static double worldHeadingRad = 0.0;
-    public static Pose2d worldPose = new Pose2d(0,0,0);
+    public static double worldXPos, worldYPos, worldHeadingRad, scaledWorldYPos, scaledWorldXPos, scaledWorldHeadingRad;
+    public static Pose2d worldPose;
 
 
-    public static void initPose(Pose2d pose) {
-        worldXPos = pose.getX();
-        worldYPos = pose.getY();
-        worldHeadingRad = pose.getHeading();
-        worldPose = pose;
 
 
-        scaledWorldYPos = worldXPos + 72;
-        scaledWorldXPos = -worldYPos + 72;
-        scaledWorldHeadingRad = Math.PI + AngleWrap(worldHeadingRad);
-    }
 
 
+    private OdometryModule leftEncoder, rightEncoder, middleEncoder;
+
+    // call this to update pose, input roadrunner pose
     public static void giveMePose(Pose2d pose) {
         worldXPos = pose.getX();
         worldYPos = pose.getY();
@@ -43,9 +32,10 @@ public class RobotPosition {
 
         scaledWorldYPos = worldXPos + 72;
         scaledWorldXPos = -worldYPos + 72;
-        scaledWorldHeadingRad = Math.PI + AngleWrap(worldHeadingRad);
+        scaledWorldHeadingRad = Math.PI/2 + AngleWrap(worldHeadingRad);
     }
 
-
-
+    private static double encoderTicksToInches(int ticks) {
+        return 2 * 2 * Math.PI  * ticks / TICKS_PER_REV;
+    }
 }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,6 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.util.ArrayList;
 
+
+@Deprecated
 @Autonomous(name = "Red Auto", group = "Firefly")
 public class RedAuto extends LinearOpMode {
 

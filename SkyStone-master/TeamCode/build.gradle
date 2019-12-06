@@ -13,14 +13,14 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android-extensions'
 
 
 dependencies {
     //NOTE: this is the correct version, the below screenshot is outdated
     implementation 'org.openftc:rev-extensions-2:1.2'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'org.openftc:ftc-opmode-tuner-common:0.22'
 
 }

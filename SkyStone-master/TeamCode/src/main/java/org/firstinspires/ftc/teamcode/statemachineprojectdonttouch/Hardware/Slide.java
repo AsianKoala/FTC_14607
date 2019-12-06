@@ -7,6 +7,8 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;
 
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.psuedoHomer;
+
 public class Slide {
     private ExpansionHubMotor leftSlide;
     private ExpansionHubMotor rightSlide;
@@ -20,16 +22,12 @@ public class Slide {
     private PIDCoefficients initCoeffs = new PIDCoefficients(P,I,D);
 
     private boolean isDebugging = true;
-    private int newPosition;
-    private int oldPosition;
+    private double newTarget;
 
     STATES states = STATES.HOME;
     private enum STATES {
-        PSEUDOHOME,
         HOME,
         CUSTOM,
-        OUT,
-        OLDPOS
     }
 
 
@@ -56,70 +54,19 @@ public class Slide {
 
 
 
-
-    private void setTargetPosition(int newPosition) {
-        this.newPosition = newPosition;
+    public void goPsuedoHome() {
+        newTarget = psuedoHomer;
     }
 
-    private void applyPIDCoeffs() {
-        leftSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
-        rightSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
-    }
-
-    private void recordOldPos() {
-        oldPosition = getLeftSlidePosition();
-    }
-
-
-
-
-    private void HandleMovements() {
-        if(states == STATES.HOME) {
-            recordOldPos();
-            setTargetPosition(13);
+    public void goCustom(double newTarget, boolean increment) {
+        if(increment) {
+            this.newTarget = newTarget + leftSlide.getCurrentPosition();
         }
 
-        if(states == STATES.PSEUDOHOME) {
-            recordOldPos();
-            setTargetPosition(25);
-        }
-
-        if(states == STATES.OUT) {
-            setTargetPosition(-500);
-        }
-
-        if(states == STATES.OLDPOS) {
-            setTargetPosition(oldPosition);
-        }
-
-        if(states == STATES.CUSTOM) {
-
+        else {
+            this.newTarget = newTarget;
         }
     }
-
-
-
-
-
-
-    public double getNewPosition() {
-        return newPosition;
-    }
-
-    public int getLeftSlidePosition() {
-        return leftSlide.getCurrentPosition();
-    }
-
-    public int getRightSlidePosition() {
-        return rightSlide.getCurrentPosition();
-    }
-
-    public void setPIDCoeffs(double p, double i, double d) {
-        P = p;
-        I = i;
-        D = d;
-    }
-
 
     public void setDebugging(boolean debugging) {
         isDebugging = debugging;
@@ -127,43 +74,15 @@ public class Slide {
 
 
 
-    public void goHome() { states = STATES.HOME;}
-    public void goPsuedohome() { states = STATES.PSEUDOHOME;}
-    public void goOut() { states = STATES.OUT;}
-
-    public void manualMovement(int newPosition, boolean isIncremental) {
-        if(isIncremental){
-            setTargetPosition(leftSlide.getCurrentPosition() + newPosition);
-        }
-
-        else {
-            setTargetPosition(newPosition);
-        }
-
-        states = STATES.CUSTOM;
-    }
-
-
-    public void goOld() { states = STATES.OLDPOS; }
-
-
 
 
 
     public void update() {
 
-        HandleMovements();
 
-        if (Math.abs(leftSlide.getCurrentPosition() - newPosition) > 10 || Math.abs(rightSlide.getCurrentPosition() - newPosition) > 10) {
-
-            if (isDebugging) {
-                applyPIDCoeffs();
-            }
-
-            leftSlide.setTargetPosition( newPosition);
-            rightSlide.setTargetPosition( newPosition);
-
-
+        if(Math.abs(newTarget - leftSlide.getCurrentPosition()) > 10 || Math.abs(newTarget - rightSlide.getCurrentPosition()) > 10) {
+            leftSlide.setTargetPosition((int)(newTarget));
+            rightSlide.setTargetPosition((int)(newTarget));
             leftSlide.setPower(1);
             rightSlide.setPower(1);
         }
@@ -182,7 +101,6 @@ public class Slide {
             myRobot.telemetry.addData("current state", states);
             myRobot.telemetry.addData("LS motor target pos", leftSlide.getTargetPosition());
             myRobot.telemetry.addData("RS motor target pos", rightSlide.getTargetPosition());
-            myRobot.telemetry.addData("data target position", newPosition);
             myRobot.telemetry.addData("PID GAINS", new PIDCoefficients(P,I,D));
         }
     }

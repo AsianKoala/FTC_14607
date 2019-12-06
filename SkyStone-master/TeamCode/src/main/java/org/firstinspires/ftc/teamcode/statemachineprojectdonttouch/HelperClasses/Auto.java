@@ -4,7 +4,8 @@ import android.os.SystemClock;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.DriveTrain;
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+
+
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
 
@@ -12,11 +13,8 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 /**
  * base class for auto opmodes
  */
-@Autonomous(name = "auto statemachine")
-public class Auto extends Firefly {
-
-    private DriveTrain thisDriveTrain = super.myDriveTrain;
-
+@Autonomous(name = "auto statemachine deebug")
+public abstract class Auto extends Firefly {
 
     public double stateStartTime = 0;
     public int currStage = 0; // current stage
@@ -68,16 +66,10 @@ public class Auto extends Firefly {
     
     
 
-    private Pose2d startingPose;
-
-    public void initPosition(Pose2d pose) {
-        startingPose = pose;
-    }
-
-
 
     @Override
     public void init() {
+        super.init();
     }
 
 
@@ -87,10 +79,6 @@ public class Auto extends Firefly {
     @Override
     public void init_loop() {
         super.init_loop();
-        //set position
-       // if(everythingInit) {
-        //    setPose(startingPose);
-      //  }
         telemetry.addLine("auto inited");
     }
 
@@ -98,19 +86,20 @@ public class Auto extends Firefly {
     @Override
     public void start() {
         super.start();
-        // set position again
         stageFinished = true;
         currStage = 0;
         currTimeMillis = SystemClock.uptimeMillis();
+        giveMePose(new Pose2d(0,0,0));
     }
+
 
     @Override
     public void loop() {
         super.loop();
-     //   MainStateMachine();
+        MainStateMachine();
     }
 
-    // override this
-  //  public abstract void MainStateMachine();
+   public abstract void MainStateMachine();
 
 }
+

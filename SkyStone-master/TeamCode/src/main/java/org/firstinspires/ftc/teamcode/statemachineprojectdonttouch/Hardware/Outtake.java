@@ -26,11 +26,11 @@ public class Outtake {
 
 
 
-    double flipperPosition;
-    double gripperPosition;
-    double rotaterPosition;
-    double leftSlamPosition;
-    double rightSlamPosition;
+    private double flipperPosition;
+    private double gripperPosition;
+    private double rotaterPosition;
+    private double leftSlamPosition;
+    private double rightSlamPosition;
 
 
 
@@ -102,6 +102,8 @@ public class Outtake {
         gripper.setPosition(gripperPosition);
         rotater.setPosition(rotaterPosition);
         flipper.setPosition(flipperPosition);
+        leftSlam.setPosition(leftSlamPosition);
+        rightSlam.setPosition(rightSlamPosition);
 
 
 
@@ -111,11 +113,15 @@ public class Outtake {
         robot.telemetry.addData("gripper position", gripper.getPosition());
         robot.telemetry.addData("rotater position", rotater.getPosition());
         robot.telemetry.addData("flipper position", flipper.getPosition());
+        robot.telemetry.addData("left slam position", leftSlam.getPosition());
+        robot.telemetry.addData("right slam position", rightSlam.getPosition());
 
         if(isDebugging) {
             robot.telemetry.addData("gripper target position", gripperPosition);
             robot.telemetry.addData("rotater target position", rotaterPosition);
             robot.telemetry.addData("flipper target position", flipperPosition);
+            robot.telemetry.addData("left slam target position", leftSlamPosition);
+            robot.telemetry.addData("right slam target position", rightSlamPosition);
         }
 
 
