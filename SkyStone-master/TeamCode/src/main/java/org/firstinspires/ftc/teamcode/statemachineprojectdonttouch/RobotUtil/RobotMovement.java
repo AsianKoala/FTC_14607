@@ -171,14 +171,15 @@ public class RobotMovement {
     }
 
 
-    public static void followCurve(ArrayList<WayPoint> wayPoints) {
+    public static boolean followCurve(ArrayList<WayPoint> wayPoints) {
         WayPoint targetWayPoint = wayPoints.get(currMovementStage);
+        WayPoint endWayPoint = wayPoints.get(wayPoints.size() -1);
+        boolean endResult;
 
-
-
-
-        if(currMovementStage == wayPoints.size()-1) {
-
+        if(currMovementStage == wayPoints.size() -1) {
+            if(gunToPosition(endWayPoint.targetX, endWayPoint.targetY, endWayPoint.movementSpeed, endWayPoint.pointAngle, endWayPoint.pointSpeed, endWayPoint.slowDownRadians, endWayPoint.slowDownErrorMax, true)) {
+                currMovementStage = 1000000000;     // im pretty sure we wont have a path with these many waypoints but ok
+            }
         }
 
 
@@ -187,7 +188,11 @@ public class RobotMovement {
             currMovementStage++;
         }
 
+
+
         targetWayPoint = wayPoints.get(currMovementStage);
+
+        return currMovementStage > wayPoints.size() - 1;
     }
 
 
