@@ -125,13 +125,11 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         telemetry.update();
     }
 
-    // run until the end of the match (driver presses STOP)
+
     public void loop() {
 
 
         // tunable opmode vars
-
-
 
 
 
@@ -142,15 +140,18 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
          * INTAKE CONTROL
          *
          */
-
+        double intakeMultiplier = 0.75;
+        if(gamepad2.left_stick_button) {
+            intakeMultiplier = 1;
+        }
         double leftIntakePower = gamepad2.left_stick_y - gamepad2.left_stick_x;
         double rightIntakePower = gamepad2.left_stick_y + gamepad2.left_stick_x;
         if(Math.abs(leftIntakePower) < 0.1 || Math.abs(rightIntakePower) < 0.1) {
             leftIntake.setPower(0);
             rightIntake.setPower(0);
         }else {
-            leftIntake.setPower( 1 * -leftIntakePower);
-            rightIntake.setPower( 1 * -rightIntakePower);
+            leftIntake.setPower( intakeMultiplier * -leftIntakePower);
+            rightIntake.setPower( intakeMultiplier * -rightIntakePower);
         }
 
 
@@ -427,7 +428,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
         double slideMultiplier = 100;
         if(gamepad2.right_stick_button) {
-            slideMultiplier = 25;
+            slideMultiplier = 50;
         }
 
 
