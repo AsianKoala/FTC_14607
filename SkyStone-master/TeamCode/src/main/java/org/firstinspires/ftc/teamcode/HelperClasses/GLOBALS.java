@@ -5,11 +5,11 @@ import static java.lang.Math.*;
 
 public  class GLOBALS {
 
-    public final static double flipperHome =  0.95;
-    public final static double flipperOut = 0.31;
-    public final static double flipperBetween = 0.8347;
-    public final static double rotaterHome = 0.279;
-    public final static double rotaterOut = 0.95;
+    public  final static double flipperHome =  0.15;
+    public final  static double flipperOut = 0.8513;
+    public  final static double flipperBetween = 0.3;
+    public   static double rotaterHome = 0.279;
+    public  static double rotaterOut = 0.95;
     public final static double gripperHome = 0.82;
     public final static double gripperGrip = 0.19;
 

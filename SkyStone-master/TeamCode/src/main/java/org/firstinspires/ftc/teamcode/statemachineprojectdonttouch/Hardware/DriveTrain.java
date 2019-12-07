@@ -174,13 +174,13 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
 
         double scaleAmt = 1;
-        double biggestPower = rawFL;
+        double biggestPower = Math.abs(rawFL);
 
-        if(Math.abs(rawBL) > Math.abs(biggestPower)) { rawBL = biggestPower; }
-        if(Math.abs(rawFR) > Math.abs(biggestPower)) { rawFR = biggestPower; }
-        if(Math.abs(rawBR) > Math.abs(biggestPower)) { rawBR = biggestPower; }
+        if(Math.abs(rawBL) > (biggestPower)) { biggestPower = rawBL; }
+        if(Math.abs(rawFR) > (biggestPower)) { biggestPower = rawFR; }
+        if(Math.abs(rawBR) > (biggestPower)) { biggestPower = rawBR; }
         if(biggestPower > 1.0) {
-            scaleAmt = Math.abs(1.0 / biggestPower);
+            scaleAmt = 1.0/biggestPower;
         }
 
         rawFL *= scaleAmt;

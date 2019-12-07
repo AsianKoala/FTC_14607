@@ -18,10 +18,6 @@ public class RobotPosition {
 
 
 
-
-
-    private OdometryModule leftEncoder, rightEncoder, middleEncoder;
-
     // call this to update pose, input roadrunner pose
     public static void giveMePose(Pose2d pose) {
         worldXPos = pose.getX();
@@ -32,10 +28,11 @@ public class RobotPosition {
 
         scaledWorldYPos = worldXPos + 72;
         scaledWorldXPos = -worldYPos + 72;
-        scaledWorldHeadingRad = Math.PI/2 + AngleWrap(worldHeadingRad);
+        scaledWorldHeadingRad = AngleWrap(worldHeadingRad) - Math.PI/2;
     }
 
     private static double encoderTicksToInches(int ticks) {
         return 2 * 2 * Math.PI  * ticks / TICKS_PER_REV;
     }
+
 }

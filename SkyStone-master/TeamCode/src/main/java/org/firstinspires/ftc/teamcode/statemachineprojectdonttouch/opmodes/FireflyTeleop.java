@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.TimeProfiler;
@@ -36,6 +37,7 @@ public class FireflyTeleop extends Firefly {
     @Override
     public void start() {
         super.start();
+        giveMePose(new Pose2d(24,24, Math.toRadians(90)));
     }
 
 

@@ -47,6 +47,9 @@ public class SlidePIDTuner extends TunableOpMode {
 
         telemetry.addLine("starting PID at: " +P+", " + I + ", " + D);
         telemetry.update();
+
+
+
     }
     
     @Override
@@ -59,8 +62,8 @@ public class SlidePIDTuner extends TunableOpMode {
     @Override
     public void loop() {
 
-   //     flipperBetween = getDouble("flipperBetween");
-     //   flipperHome = getDouble("flipperHome");
+        rotaterOut = getDouble("rotaterOut");
+        rotaterHome = getDouble("rotaterHome");
         P = getDouble("P");
         I = getDouble("I");
         D = getDouble("D");

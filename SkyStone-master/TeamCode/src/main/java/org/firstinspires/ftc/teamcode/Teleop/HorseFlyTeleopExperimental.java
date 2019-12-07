@@ -31,7 +31,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
      * TODO: add field centric drive that charlie coded
      * TODO: add more state machine stuff so its easier for the driver to use robot
      * TODO: add more stuff that makes it easier for driver to drive
-     */
+     */        double thime =0;
 
     private ExpansionHubMotor leftFront;
     private ExpansionHubMotor rightFront;
@@ -149,8 +149,8 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
             leftIntake.setPower(0);
             rightIntake.setPower(0);
         }else {
-            leftIntake.setPower( 0.5 * -leftIntakePower);
-            rightIntake.setPower( 0.5 * -rightIntakePower);
+            leftIntake.setPower( 1 * -leftIntakePower);
+            rightIntake.setPower( 1 * -rightIntakePower);
         }
 
 
@@ -173,7 +173,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         }
 
         else {
-            motorPower = 0.95;
+            motorPower = 1;
         }
 
         double threshold = 0.157; // deadzone
@@ -213,11 +213,9 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         if(gamepad2.right_trigger > 0.5) {
             flipper.setPosition(flipperHome);
         }
-
         if(gamepad2.left_trigger > 0.5) {
             flipper.setPosition(flipperOut);
         }
-
 
 
         // rotater arm control
@@ -308,7 +306,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
                 break;
             //flip
             case 3:
-                if(System.currentTimeMillis() - chime >= 100)//amount of time rotation takes
+                if(System.currentTimeMillis() - chime >= 2000)//amount of time rotation takes
                 {
                     rotaterReady();
                     chime = System.currentTimeMillis();
@@ -328,7 +326,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
             // cock to intermediate
             case 5:
-                if(System.currentTimeMillis() - chime >= 300) {
+                if(System.currentTimeMillis() - chime >= 2000) {
                     flipper.setPosition(flipperBetween);
                     /*gripper.setPosition(gripperHome);*/
                 }
@@ -363,7 +361,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
             //task 2: lift up
             case 2:
-                if(System.currentTimeMillis() - time >= toMidTime)
+                if(System.currentTimeMillis() - time >= 2000)
                 {
                     newSlideLeft = liftIncrement;
                     newSlideRight = liftIncrement;
@@ -414,7 +412,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
             //flip out
             case 4:
-                if(System.currentTimeMillis() - time >= toBackTime)
+                if(System.currentTimeMillis() - time >= 2000)
                 {
                     flipper.setPosition(0.25);
                     count = 0;
@@ -427,13 +425,13 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
          * slide powers here
          */
 
-        double slideMultiplier = 1;
-        if(gamepad2.left_stick_button) {
-            slideMultiplier = 0.25;
+        double slideMultiplier = 100;
+        if(gamepad2.right_stick_button) {
+            slideMultiplier = 25;
         }
 
 
-        double increment = gamepad2.right_stick_y * 100 * slideMultiplier;
+        double increment = gamepad2.right_stick_y * slideMultiplier;
         if(Math.abs(increment) > 25) {
             newSlideLeft = leftSlide.getCurrentPosition() + increment;
             newSlideRight = rightSlide.getCurrentPosition() + increment;
@@ -488,12 +486,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
                 , leftFront.getPower(), rightFront.getPower(), leftRear.getPower(), rightRear.getPower());
     }
 
-    /**
-     * @return whether or not the intake motors are busy
-     */
 
-    public boolean intakeBusy() {
-        return leftIntake.isBusy() || rightIntake.isBusy();}
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
         leftIntake.setPower(leftIntakePower);

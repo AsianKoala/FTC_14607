@@ -357,7 +357,7 @@ public class Firefly extends TunableOpMode {
 
     // ready
     private void scaledPositionTelemetry() {
-        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
+        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(Math.toDegrees(scaledWorldHeadingRad)));
     }
 
 
