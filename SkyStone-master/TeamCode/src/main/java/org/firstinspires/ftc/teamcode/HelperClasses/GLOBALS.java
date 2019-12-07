@@ -15,9 +15,9 @@ public  class GLOBALS {
     public final static double gripperGrip = 0.19;
 
 
-    public  static double P = 10.9;
-    public  static double I = 0;
-    public  static double D = 0;
+    public  static double P = 15;
+    public  static double I = 0.005;
+    public  static double D = 6.2045;
 
 
 

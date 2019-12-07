@@ -52,13 +52,27 @@ public class MovementTest extends Auto {
              if(stageFinished) {
                  initStateVars();
              }
-             telemetry.addData("scaled world heading", Math.toDegrees(scaledWorldHeadingRad));
-             pointAngle(Math.toRadians(45),1.0,Math.toRadians(10));
 
-             if(timedOut(5000)) {
-                 nextStage(progStates.stop.ordinal());
+             mecanumPower(0,0.5,0);
+             if(timedOut(2000)) {
+                 nextStage(progStates.forward.ordinal());
              }
          }
+
+
+         if(currStage == progStates.forward.ordinal()) {
+             if(stageFinished) {
+                 initStateVars();
+             }
+
+             gunToPosition(stageStartingXPos + 24, stageStartingYPos, 1, 0, 0, 0, 0,true);
+            if(timedOut(2000)) {
+                nextStage(progStates.stop.ordinal());
+            }
+
+         }
+
+
 
 
 

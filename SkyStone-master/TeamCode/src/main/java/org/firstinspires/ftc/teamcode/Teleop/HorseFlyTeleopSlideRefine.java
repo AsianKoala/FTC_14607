@@ -18,7 +18,7 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import java.util.ArrayList;
 
 
-@TeleOp(name = "slide refined teleop")
+@TeleOp(name = "")
 public class HorseFlyTeleopSlideRefine extends TunableOpMode {
 
     /**

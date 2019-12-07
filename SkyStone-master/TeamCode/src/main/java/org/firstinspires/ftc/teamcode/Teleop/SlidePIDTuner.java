@@ -61,7 +61,9 @@ public class SlidePIDTuner extends TunableOpMode {
 
    //     flipperBetween = getDouble("flipperBetween");
      //   flipperHome = getDouble("flipperHome");
-        double psuedoHome = getDouble("psuedoHome");
+        P = getDouble("P");
+        I = getDouble("I");
+        D = getDouble("D");
 
 
         // flipper arm control
@@ -118,7 +120,7 @@ public class SlidePIDTuner extends TunableOpMode {
         }
 
         if(gamepad2.b) {
-            newSlidePosition =  -psuedoHome;
+            newSlidePosition =  -50;
         }
         if(gamepad2.dpad_up) {
             newSlidePosition = -300;
