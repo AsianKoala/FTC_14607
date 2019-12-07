@@ -189,14 +189,16 @@ public class RobotMovement {
         }
 
 
-
-        targetWayPoint = wayPoints.get(currMovementStage);
-
         return currMovementStage > wayPoints.size() - 1;
     }
 
 
 
+    public static void mecanumPower(double x, double y, double turn) {
+        movementX = x;
+        movementY = y;
+        movementTurn = turn;
+    }
 
 
 

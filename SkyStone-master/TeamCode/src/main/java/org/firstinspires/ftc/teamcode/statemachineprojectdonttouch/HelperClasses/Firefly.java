@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses;
 
+import android.annotation.SuppressLint;
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
@@ -17,6 +18,7 @@ import org.openftc.revextensions2.RevBulkData;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.giveMePose;
 
 /**
@@ -53,7 +55,6 @@ public class Firefly extends TunableOpMode {
     public boolean isImuInit = false;
 
     public boolean everythingInit = false;
-
 
     /**
      * called when driver hits init
@@ -147,28 +148,27 @@ public class Firefly extends TunableOpMode {
 
         getRevBulkData();
 
-
         if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
             everythingInit = true;
+            fullInitTime = currTimeMillis;
+
         }
 
     }
 
 
-
-    private long timeBeforeCheck = SystemClock.uptimeMillis();
-
-
+    private long fullInitTime = 0;
+    private boolean p = true;
     @Override
     public void init_loop() {
         currTimeMillis = SystemClock.uptimeMillis();
-        getRevBulkData();
-//        mySlide.update();
 
-        if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
-            myDetector.update();
-        }
-        telemetry.addData("millis until full init", currTimeMillis - timeBeforeCheck);
+
+
+        getRevBulkData();
+        myDetector.update();
+
+        telemetry.addData("full init time sec", fullInitTime / 1000);
         telemetry.addData("all inited", everythingInit);
     }
 
@@ -235,7 +235,6 @@ public class Firefly extends TunableOpMode {
 
         currTimeMillis = SystemClock.uptimeMillis();
         elapsedMillisThisUpdate = (int)(currTimeMillis - lastLoopTime);
-        lastLoopTime = currTimeMillis;
 
 
 
@@ -246,25 +245,15 @@ public class Firefly extends TunableOpMode {
         myDriveTrain.update(); // updates roadrunner pose using motor encoder values
         tp1.markEnd();
 
+
         tp3.markStart();
         giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp3.markEnd();
 
-        currTimeMillis = SystemClock.uptimeMillis();
-        tp4.markStart();
-        if(currTimeMillis - lastLoopTime > 16) {    // update if 16 ms passed
-            myDriveTrain.updatee();
-        }
-        tp4.markEnd();
 
-        /**
-         * referencing above ^
-         * the reason we have to do myDriveTrain.update(); (roadrunner super method) and do
-         * RobotPosition.giveMePose is because we convert the pose estimate obtained through rr into vars
-         * that are used for everything besides roadrunner movement methods.
-         * robot position is actually pretty useless since we dont use any other movement methods
-         * **** ROBOT POSITION DOES NOT SET ANYTHING, RATHER CONVERTS RR POSE TO OUR VALUES ****
-         */
+        tp4.markStart();
+        myDriveTrain.updatee();
+        tp4.markEnd();
 
 
         tp5.markStart();
@@ -282,6 +271,9 @@ public class Firefly extends TunableOpMode {
         tp7.markEnd();
 
 
+        tp8.markStart();
+        drivePowerTelem();
+        tp8.markEnd();
 
 
 
@@ -293,7 +285,7 @@ public class Firefly extends TunableOpMode {
 
 
 
-
+        lastLoopTime = SystemClock.uptimeMillis();
 
         // in millis
         addSpace();
@@ -341,7 +333,28 @@ public class Firefly extends TunableOpMode {
         catch(Exception e) {}
     }
 
+    @SuppressLint("DefaultLocale")
+    private String mecanumPowers() {
+        return String.format(
+                "\n" +
+                        "(%.1f)---(%.1f)\n" +
+                        "|   Front   |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "(%.1f)---(%.1f)\n"
+                , myDriveTrain.frontLeft.getPower(), myDriveTrain.frontRight.getPower(), myDriveTrain.backLeft.getPower(), myDriveTrain.backRight.getPower());
+    }
 
+
+
+    private void drivePowerTelem() {
+        addSpace();
+        telemetry.addLine("------------- ROBOT VISUAL ---------------");
+        telemetry.addData("movementX", movementX);
+        telemetry.addData("movementY", movementY);
+        telemetry.addData("movementTurn", movementTurn);
+        telemetry.addLine(mecanumPowers());
+    }
 
 
 
@@ -355,7 +368,7 @@ public class Firefly extends TunableOpMode {
     }
 
 
-    public void debugMode(boolean debugMode) {
+    protected void debugMode(boolean debugMode) {
             myDriveTrain.setDebugging(debugMode);
             mySlide.setDebugging(debugMode);
             myIntake.setDebugging(debugMode);

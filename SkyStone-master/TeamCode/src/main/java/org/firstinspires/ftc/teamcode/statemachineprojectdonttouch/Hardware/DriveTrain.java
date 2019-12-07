@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware;
 
 import android.annotation.SuppressLint;
+import android.os.SystemClock;
 import android.sax.StartElementListener;
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -192,8 +193,6 @@ public class DriveTrain extends SampleMecanumDriveBase {
         frontRight.setPower(rawFR);
         backLeft.setPower(rawBL);
         backRight.setPower(rawBR);
-
-
     }
     
 
@@ -203,17 +202,6 @@ public class DriveTrain extends SampleMecanumDriveBase {
     }
 
 
-    @SuppressLint("DefaultLocale")
-    private String mecanumPowers() {
-        return String.format(
-                "\n" +
-                        "(%.1f)---(%.1f)\n" +
-                        "|   Front   |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "(%.1f)---(%.1f)\n"
-                , frontLeft.getPower(), frontRight.getPower(), backLeft.getPower(), backRight.getPower());
-    }
 
 
 
@@ -222,13 +210,13 @@ public class DriveTrain extends SampleMecanumDriveBase {
      * but we do for teleop so slap this shit in here
      */
 
+    private long loopTime = 0;
     public void updatee() {
+        if(SystemClock.uptimeMillis() - loopTime < 16) {
+            return;
+        }
+        loopTime = SystemClock.uptimeMillis();
+
         driveMecanum(movementX, movementY, movementTurn); // the robot will only move if we change movementX, movementY, or movementTurn
-        myRobot.addSpace();
-        myRobot.telemetry.addLine("------------- ROBOT VISUAL ---------------");
-        myRobot.telemetry.addData("movementX", movementX);
-        myRobot.telemetry.addData("movementY", movementY);
-        myRobot.telemetry.addData("movementTurn", movementTurn);
-        myRobot.telemetry.addLine(mecanumPowers());
     }
 }
