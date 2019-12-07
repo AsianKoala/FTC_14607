@@ -14,8 +14,6 @@ public class FireflyTeleop extends Firefly {
      * variable declaration
      */
 
-    private double newSlideLeft = 0;
-    private double newSlideRight = 0;
 
     private int count = 0;
     private double time = 0;
@@ -87,11 +85,12 @@ public class FireflyTeleop extends Firefly {
 
         tp9.markStart();
         positionTelemetry();
+        scaledPositionTelemetry();
         tp9.markEnd();
 
 
 
-
+        addSpace();
         telemetry.addLine("-------------- FIREFLY TELEOP TELEMETRY -----------------");
         telemetry.addLine("tOp profiler 1: " + tp1.getAverageTimePerUpdateMillis());
         telemetry.addLine("tOp profiler 2: " + tp2.getAverageTimePerUpdateMillis());
@@ -105,7 +104,7 @@ public class FireflyTeleop extends Firefly {
 
     }
 
-
+// ready
     /**
      * teleop user control
      */
@@ -120,23 +119,30 @@ public class FireflyTeleop extends Firefly {
     }
 
 
-
+// ready
     public void gamepadTelem() {
-        telemetry.addData("gpad 1 ls y", gamepad1.left_stick_y);
-        telemetry.addData("gpad 1 ls x", gamepad1.left_stick_x);
-        telemetry.addData("gpad 1 rs x", gamepad1.right_stick_x);
+        telemetry.addData("gpad 1 ls y: ", gamepad1.left_stick_y);
+        telemetry.addData("gpad 1 ls x: ", gamepad1.left_stick_x);
+        telemetry.addData("gpad 1 rs x: ", gamepad1.right_stick_x);
     }
 
 
-
+// ready
     public void positionTelemetry() {
         telemetry.addLine("xPos: " + df.format(worldXPos) +
                 " yPos: "+ df.format(worldYPos) +
                 " heading: " + df.format(worldHeadingRad));
     }
 
+    // ready
+    private void scaledPositionTelemetry() {
+        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
+    }
+
+
 
     private void servoControl() {
+
         if(gamepad2.dpad_down) {
             myOuttake.flipMid();
         }
@@ -153,6 +159,8 @@ public class FireflyTeleop extends Firefly {
             myOuttake.flipOut();
         }
 
+
+
         if(gamepad2.left_bumper) {
             myOuttake.rotaterOut();
         }
@@ -161,6 +169,8 @@ public class FireflyTeleop extends Firefly {
             myOuttake.rotaterReady();
         }
 
+
+
         if(gamepad2.a) {
             myOuttake.grip();
         }
@@ -168,6 +178,8 @@ public class FireflyTeleop extends Firefly {
         if(gamepad2.y) {
             myOuttake.gripReady();
         }
+
+
 
         if(gamepad1.a) {
             myOuttake.grabFoundation();
@@ -186,17 +198,19 @@ public class FireflyTeleop extends Firefly {
      */
     private void slideControl() {
 
+        // custom control
+
         double increment = gamepad2.right_stick_y * 100;
 
-        if(Math.abs(increment) > 25) { mySlide.manualMovement((int)increment, true); }
-        if(gamepad2.x) { mySlide.goPsuedohome(); }
-        if(gamepad2.b) { mySlide.goHome(); }
+        if(Math.abs(increment) > 25) { mySlide.goCustom(increment, true); }
+        if(gamepad2.x) { mySlide.goPsuedoHome(); }
+        if(gamepad2.b) { mySlide.goPsuedoHome(); }
+
+
 
 
 
         // automated slide control
-
-
 
         if(gamepad2.dpad_left) {
             count = 1;
@@ -219,7 +233,8 @@ public class FireflyTeleop extends Firefly {
             // task 2: lift up
             case 2:
                 if(System.currentTimeMillis() - time >= toMidTime){
-                    mySlide.manualMovement(liftIncrement, false);
+                    mySlide.goCustom(liftIncrement, false);
+
                     time = System.currentTimeMillis();
                     count++;
                 }
@@ -249,32 +264,28 @@ public class FireflyTeleop extends Firefly {
         switch(counter) {
             case 1:
                 // task 1: lift up a bit
-                myOuttake.grip();
-                mySlide.manualMovement(liftIncrementer, false);
+                myOuttake.gripReady();
+                myOuttake.rotaterReady();
+                mySlide.goCustom(liftIncrementer, false);
+
                 chime = System.currentTimeMillis();
                 counter++;
                 break;
 
+
             case 2:
                 // task 2: flip back
-                if(System.currentTimeMillis() - chime >= toLiftTimeTo) {
+                if(System.currentTimeMillis() - chime >= 750) {
                     myOuttake.flipReady();
+                    chime = System.currentTimeMillis();
                     counter++;
                 }
                 break;
 
             case 3:
-                // task 3: rotate around
-                if(System.currentTimeMillis() - chime >= toBackTimeTo) {
-                    myOuttake.rotaterReady();
-                    counter++;
-                }
-                break;
+                mySlide.goPsuedoHome();
 
-            case 4:
-                // task 4: psuedo home
-                mySlide.goPsuedohome();
-                myOuttake.gripReady();
+                chime = System.currentTimeMillis();
                 counter = 0;
                 break;
         }
@@ -292,8 +303,8 @@ public class FireflyTeleop extends Firefly {
         double leftIntakePower = gamepad2.left_stick_y - gamepad2.left_stick_x;
         double rightIntakePower = gamepad2.left_stick_y + gamepad2.left_stick_x;
 
-        myIntake.manualControl(leftIntakePower > 0.1 ? 0.5 * -leftIntakePower : 0,
-                rightIntakePower > 0.1 ? 0.5 * -rightIntakePower : 0);
+        myIntake.manualControl( (Math.abs(leftIntakePower) < 0.1 ? 0 : 0.5 * -leftIntakePower),
+                (Math.abs(rightIntakePower) < 0.1 ? 0 : 0.5 * -rightIntakePower));
 
     }
 

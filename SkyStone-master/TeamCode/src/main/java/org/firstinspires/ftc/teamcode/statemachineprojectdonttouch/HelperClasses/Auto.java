@@ -13,7 +13,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 /**
  * base class for auto opmodes
  */
-@Autonomous(name = "auto statemachine")
+@Autonomous(name = "auto statemachine deebug")
 public abstract class Auto extends Firefly {
 
     public double stateStartTime = 0;
@@ -89,7 +89,9 @@ public abstract class Auto extends Firefly {
         stageFinished = true;
         currStage = 0;
         currTimeMillis = SystemClock.uptimeMillis();
+        giveMePose(new Pose2d(0,0,0));
     }
+
 
     @Override
     public void loop() {
@@ -98,6 +100,8 @@ public abstract class Auto extends Firefly {
     }
 
    public abstract void MainStateMachine();
+
+
 
 }
 

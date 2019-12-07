@@ -5,7 +5,7 @@ import static java.lang.Math.*;
 
 public  class GLOBALS {
 
-    public  final static double flipperHome =  0.95;
+    public final static double flipperHome =  0.95;
     public final static double flipperOut = 0.31;
     public final static double flipperBetween = 0.8347;
     public final static double flipperBetweenBetween = (flipperBetween + flipperOut)/2;
@@ -32,14 +32,22 @@ public  class GLOBALS {
 
     public final static int liftIncrement = -200;
     public final static int liftIncrementer = -500;
-    public static double psuedoHomer = -50;
+    public static double   psuedoHomer = -50;
 
 
 
 
 
 
-    //ok these arent constants but stfu
+
+
+
+
+
+
+
+
+
 
     public static double movementX = 0;
     public static double movementY = 0;
@@ -77,7 +85,7 @@ public  class GLOBALS {
 
 
     public static double AngleWrap(double angle) {
-        while(angle < Math.PI) {
+        while(angle <= -Math.PI) {
             angle += 2 * Math.PI;
         }
 
@@ -100,6 +108,12 @@ public  class GLOBALS {
 
         return angle;
     }
+
+
+
+
+
+
 
     /**
      * get it

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,11 @@ import java.io.PrintWriter;
 import static java.lang.System.currentTimeMillis;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
+/**
+ * ok we literally dont use this so ima disable it
+ */
+@Deprecated
+@Disabled
 @TeleOp(name = "Big Kahuna Experimental")
 public class Bugflyexperimental extends OpMode {
 
