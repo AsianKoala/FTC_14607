@@ -19,7 +19,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.giveMePose;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
 /**
  * this is the base state machine used for teleop and auto
@@ -297,6 +297,9 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("outtake profiler: " + tp5.getAverageTimePerUpdateMillis());
         telemetry.addLine("slide profiler: " + tp6.getAverageTimePerUpdateMillis());
         telemetry.addLine("intake profiler: " + tp7.getAverageTimePerUpdateMillis());
+        positionTelemetry();
+        scaledPositionTelemetry();
+
     }
 
 
@@ -345,6 +348,17 @@ public class Firefly extends TunableOpMode {
                 , myDriveTrain.frontLeft.getPower(), myDriveTrain.frontRight.getPower(), myDriveTrain.backLeft.getPower(), myDriveTrain.backRight.getPower());
     }
 
+
+    private void positionTelemetry() {
+        telemetry.addLine("xPos: " + df.format(worldXPos) +
+                " yPos: "+ df.format(worldYPos) +
+                " heading: " + df.format(worldHeadingRad));
+    }
+
+    // ready
+    private void scaledPositionTelemetry() {
+        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
+    }
 
 
     private void drivePowerTelem() {
