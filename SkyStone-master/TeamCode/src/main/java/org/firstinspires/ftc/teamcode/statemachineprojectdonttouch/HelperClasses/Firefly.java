@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.Teleop.opencvSkystoneDetector;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.BetterRobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
@@ -280,6 +281,15 @@ public class Firefly extends TunableOpMode {
         tp7.markStart();
         myIntake.update();
         tp7.markEnd();
+
+
+        tp8.markStart();
+        BetterRobotPosition.giveMeEncoders(myDriveTrain.frontLeft.getCurrentPosition(),
+                myDriveTrain.frontRight.getCurrentPosition(), myDriveTrain.backRight.getCurrentPosition(), myDriveTrain.backLeft.getCurrentPosition(),
+                imu.getAngularOrientation().firstAngle);
+        tp8.markEnd();
+
+
 
 
 

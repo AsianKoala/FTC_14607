@@ -82,7 +82,7 @@ public class RobotMovement {
 
 
 
-    public static boolean gunToPosition(double targetX, double targetY, double movementSpeed, double pointAngle, double pointSpeed, double slowDownTurnRad, double slowDownMovementFromTurnErrorMax, boolean stop ) {
+    public static boolean gunToPosition(double targetX, double targetY, double pointAngle, double movementSpeed, double pointSpeed, double slowDownTurnRad, double slowDownMovementFromTurnErrorMax, boolean stop ) {
 
 
         double distanceToTarget = Math.hypot(scaledWorldXPos - targetX, scaledWorldYPos - targetY);

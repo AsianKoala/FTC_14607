@@ -4,7 +4,10 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.OdometryModule;
 
 import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.TICKS_PER_REV;
+import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.inchesToEncoderTicks;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.worldYPos;
 
 
 /**
@@ -12,7 +15,8 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
  */
 public class RobotPosition {
 
-    public static double worldXPos, worldYPos, worldHeadingRad, scaledWorldYPos, scaledWorldXPos, scaledWorldHeadingRad;
+    private static double worldXPos, worldYPos, worldHeadingRad;
+    public static double scaledWorldYPos, scaledWorldXPos, scaledWorldHeadingRad;
     public static Pose2d worldPose;
 
 
@@ -35,7 +39,20 @@ public class RobotPosition {
         scaledWorldHeadingRad = Math.PI/2 + AngleWrap(worldHeadingRad);
     }
 
-    private static double encoderTicksToInches(int ticks) {
+
+    public static void giveMeScaledPos(Pose2d pose) {
+        scaledWorldXPos = pose.getX();
+        scaledWorldYPos = pose.getY();
+        scaledWorldHeadingRad = pose.getHeading();
+    }
+
+    public static double encoderTicksToInches(int ticks) {
         return 2 * 2 * Math.PI  * ticks / TICKS_PER_REV;
     }
+
+
+
+
 }
+
+
