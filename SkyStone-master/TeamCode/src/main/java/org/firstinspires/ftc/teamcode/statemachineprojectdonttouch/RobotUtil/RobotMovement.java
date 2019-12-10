@@ -15,29 +15,33 @@ import static java.lang.Math.*;
 
 public class RobotMovement {
 
-    private static final double smallAdjustSpeed = 0.135; // idk change this later ig ?
-
-
-    private enum movementStates {
-        iAmSpeed,
-        accurate;
-
-        private static movementStates[] vals = values();
-        public movementStates next(){
-            return vals[(this.ordinal()+1) % vals.length];
-        }
+    private static turnStates ourTurnStates = turnStates.speed;
+    private enum turnStates {
+        speed,
+        accurate
     }
 
-    private static movementStates turnStates = movementStates.iAmSpeed;
-    private static movementStates xStates = movementStates.iAmSpeed;
-    private static movementStates yStates = movementStates.iAmSpeed;
+
+
+
+    public static void mecanumPower(double x, double y, double turn) {
+        movementX = x;
+        movementY = y;
+        movementTurn = turn;
+    }
+
+
+
+
 
     public static void goToPosition(double targetX, double targetY, double point_angle, double movement_speed, double point_speed) {
+
         //get our distance away from the point
+
         double distanceToPoint = Math.sqrt(Math.pow(targetX-scaledWorldXPos,2) + Math.pow(targetY-scaledWorldYPos,2));
 
         double angleToPoint = Math.atan2(targetY-scaledWorldYPos,targetX-scaledWorldXPos);
-        double deltaAngleToPoint = AngleWrap(angleToPoint-(worldHeadingRad-Math.toRadians(90)));
+        double deltaAngleToPoint = AngleWrap(angleToPoint-(scaledWorldHeadingRad));
         //x and y components required to move toward the next point (with angle correction)
         double relative_x_to_point = Math.cos(deltaAngleToPoint) * distanceToPoint;
         double relative_y_to_point = Math.sin(deltaAngleToPoint) * distanceToPoint;
@@ -46,111 +50,52 @@ public class RobotMovement {
         double relative_abs_y = Math.abs(relative_y_to_point);
 
 
-
-
         //preserve the shape (ratios) of our intended movement direction but scale it by movement_speed
         double movement_x_power = (relative_x_to_point / (relative_abs_y+relative_abs_x)) * movement_speed;
         double movement_y_power = (relative_y_to_point / (relative_abs_y+relative_abs_x)) * movement_speed;
 
         //every movement has two states, the fast "gunning" section and the slow refining part. turn this var off when close to target
-        if(yStates == movementStates.iAmSpeed) {
-            if(relative_abs_y < 3) {
-                yStates = yStates.next();
-            }
-        }
-   
-        if(yStates == movementStates.accurate){
-            movement_y_power = Range.clip(((relative_y_to_point/8.0) * 0.15),-0.15,0.15);
-        }
 
-        if(xStates == movementStates.iAmSpeed) {
-            if(relative_abs_x < 3) {
-                xStates = xStates.next();
-            }
-        }
-
-        if(xStates == movementStates.accurate){
-            movement_x_power = Range.clip(((relative_x_to_point/2.5) * smallAdjustSpeed),-smallAdjustSpeed,smallAdjustSpeed);
-        }
-
-        double rad_to_target = AngleWrap(point_angle-scaledWorldHeadingRad);
+        double radToTarget = AngleWrap(point_angle - scaledWorldHeadingRad);
         double turnPower = 0;
 
-        //every movement has two states, the fast "gunning" section and the slow refining part. turn this var off when close to target
-        if(turnStates == movementStates.iAmSpeed) {
-            turnPower = rad_to_target > 0 ? point_speed : -point_speed;
-            if(Math.abs(rad_to_target) < Math.toRadians(3.0)) {
-                yStates = yStates.next();
+        if(ourTurnStates == turnStates.speed) {
+            if(Math.abs(radToTarget) > toDegrees(10)) {
+                turnPower = radToTarget > 0 ? point_speed : -point_speed;
+            }
+
+            else {
+                ourTurnStates = turnStates.accurate;
             }
         }
 
-        if(turnStates == movementStates.accurate){
-            //this is a var that will go from 0 to 1 in the course of 10 degrees from the target
-            turnPower = (rad_to_target/Math.toRadians(10)) * smallAdjustSpeed;
-            turnPower = Range.clip(turnPower,-smallAdjustSpeed,smallAdjustSpeed);
+        if(ourTurnStates == turnStates.accurate) {
+            turnPower = point_speed * radToTarget / toRadians(10);
+            turnPower = Range.clip(turnPower, -point_speed, point_speed);
         }
+
 
         movementTurn = turnPower;
         movementX = movement_x_power;
         movementY = movement_y_power;
 
-        allComponentsMinPower();
-    }
-
-
-
-
-
-    // ok fine i stole this from gf BUT still its like only one thing dont get mad
-    private static void allComponentsMinPower() {
-        if(Math.abs(movementX) > Math.abs(movementY)){
-            if(Math.abs(movementX) > Math.abs(movementTurn)){
-                movementX = minPower(movementX,0.1);
-            }else{
-                movementTurn = minPower(movementTurn,0.1);
-            }
-        }else{
-            if(Math.abs(movementY) > Math.abs(movementTurn)){
-                movementY = minPower(movementY, 0.1);
-            }else{
-                movementTurn = minPower(movementTurn,0.1);
-            }
-        }
-    }
-
-
-    public static double minPower(double val, double min){
-        if(val >= 0 && val <= min){
-            return min;
-        }
-        if(val < 0 && val > -min){
-            return -min;
-        }
-        return val;
-    }
-
-
-
-
-    //point_angle is the relative point angle. 90 means face towards it
-    public static void pointAngle(double point_angle, double point_speed, double decelerationRadians) {
-        double relativePointAngle = AngleWrap(point_angle-scaledWorldHeadingRad);
-
-        double turnSpeed = (relativePointAngle/decelerationRadians)*point_speed;
-        movementTurn = Range.clip(turnSpeed,-point_speed,point_speed);
-
-        allComponentsMinPower();
-
-        // smooth as jello
-        movementTurn *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(3),0,1);
 
     }
 
 
 
+    public static void pointAngle(double pointAngle, double pointSpeed, double deccelRad) {
+        double relativePointAngle = AngleWrap(pointAngle - scaledWorldHeadingRad);
+
+        double turnSpeed = (relativePointAngle/deccelRad) * pointSpeed;
+
+        movementTurn = Range.clip(turnSpeed, -pointSpeed, pointSpeed);
+        movementTurn = Range.clip(Math.abs(relativePointAngle)/ Math.toRadians(3), 0,1);
+    }
 
 
-    public static boolean gunToPosition(double targetX, double targetY, double movementSpeed, double pointAngle, double pointSpeed, double slowDownTurnRad, double slowDownMovementFromTurnErrorMax, boolean stop ) {
+
+    public static boolean gunToPosition(double targetX, double targetY, double pointAngle, double movementSpeed, double pointSpeed, double slowDownTurnRad, double slowDownMovementFromTurnErrorMax, boolean stop ) {
 
 
         double distanceToTarget = Math.hypot(scaledWorldXPos - targetX, scaledWorldYPos - targetY);
@@ -257,16 +202,14 @@ public class RobotMovement {
         }
 
 
+
+        targetWayPoint = wayPoints.get(currMovementStage);
+
         return currMovementStage > wayPoints.size() - 1;
     }
 
 
 
-    public static void mecanumPower(double x, double y, double turn) {
-        movementX = x;
-        movementY = y;
-        movementTurn = turn;
-    }
 
 
 

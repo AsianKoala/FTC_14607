@@ -21,7 +21,9 @@ public class AutoLayout extends Auto {
     private boolean safePark = true;
 
     public enum progStates {
-        move,
+        forward,
+        turn,
+        strafe,
         stop
     }
 
@@ -56,7 +58,7 @@ public class AutoLayout extends Auto {
     public void start() {
         super.start();
         giveMePose(blueFoundationStart);
-        currStage = progStates.move.ordinal();
+        currStage = progStates.forward.ordinal();
     }
 
 
@@ -135,18 +137,52 @@ public class AutoLayout extends Auto {
     @Override
     public void MainStateMachine() {
 
-        if(currStage == progStates.move.ordinal()) {
+        if(currStage == progStates.forward.ordinal()) {
             if(stageFinished) {
                 initStateVars();
             }
 
-            if(timedOut(5000)) {
+            mecanumPower(0,0.5,0);
+
+            if(timedOut(2000)) {
                 nextStage();
             }
         }
 
-        if(currStage == progStates.stop.ordinal()) {
+        if(currStage == progStates.turn.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+            }
+
+            mecanumPower(0,0,0.5);
+
+            if(timedOut(2000)) {
+                nextStage();
+            }
+        }
+
+
+        if(currStage == progStates.strafe.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+            }
+
+            mecanumPower(0.5,0,0);
+
+            if(timedOut(2000)) {
+                nextStage();
+            }
+        }
+
+        if(currStage == progStates.strafe.ordinal()) {
             stopMovement();
+            telemetry.addLine("requesting opmode stop");
+            telemetry.addLine("requesting opmode stop");
+
+            telemetry.addLine("requesting opmode stop");
+requestOpModeStop();
+
+
         }
 
 

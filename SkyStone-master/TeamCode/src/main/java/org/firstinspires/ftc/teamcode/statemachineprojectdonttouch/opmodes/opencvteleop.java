@@ -1,11 +1,12 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 
 
-import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -17,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class opencvSkystoneDetector  {
+@TeleOp
+public class opencvteleop  extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 
     //0 means skystone, 1 means yellow stone
@@ -26,13 +28,15 @@ public class opencvSkystoneDetector  {
     private static int valLeft = -1;
     private static int valRight = -1;
 
-    private static float rectHeight = 3f/8f;
-    private static float rectWidth = 1/8f;
+    private static float rectHeight = .6f/8f;
+    private static float rectWidth = 1.5f/8f;
 
+    private static float offsetX = 0f/8f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
+    private static float offsetY = 0f/8f;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
 
-    private static float[] midPos = {4f/8f, 2.7f/8f};//0 = col, 1 = row
-    private static float[] leftPos = {2f/8f, 2.7f/8f};
-    private static float[] rightPos = {6f/8f, 2.7f/8f};
+    private static float[] midPos = {4f/8f+offsetX, 4f/8f+offsetY};//0 = col, 1 = row
+    private static float[] leftPos = {2f/8f+offsetX, 4f/8f+offsetY};
+    private static float[] rightPos = {6f/8f+offsetX, 4f/8f+offsetY};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     private final int rows = 640;
@@ -43,25 +47,22 @@ public class opencvSkystoneDetector  {
 
     private int cameraMonitorViewId;
 
-    
 
-    public opencvSkystoneDetector(Firefly myRobot, int id) {
-        this.myRobot = myRobot;
-        cameraMonitorViewId = id;
-    }
-    
+
+
+
     public void initCamera() {
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(new StageSwitchingPipeline());
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.SIDEWAYS_LEFT);
     }
-    
-    public void update() {
-        myRobot.telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
-        myRobot.telemetry.addData("skystone pos", ourSkystonePosition);
-        myRobot.telemetry.addData("Height", rows);
-        myRobot.telemetry.addData("Width", cols);
+
+    public void runOpMode() {
+        waitForStart();
+        telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
+        telemetry.addData("Height", rows);
+        telemetry.addData("Width", cols);
 
 
         if(valLeft == 0) {
@@ -164,7 +165,7 @@ public class opencvSkystoneDetector  {
                     new Point(
                             input.cols()*(leftPos[0]-rectWidth/2),
                             input.rows()*(leftPos[1]-rectHeight/2)),
-                            new Point(
+                    new Point(
                             input.cols()*(leftPos[0]+rectWidth/2),
                             input.rows()*(leftPos[1]+rectHeight/2)),
                     new Scalar(0, 255, 0), 3);

@@ -3,19 +3,24 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Auto;
 
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.blueFoundationStart;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotMovement.*;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.giveMePose;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.scaledWorldHeadingRad;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
 @Autonomous
 public class MovementTest extends Auto {
+    public boolean completedMovement(double targetX, double targetY) {
+        return Math.hypot(targetX - scaledWorldXPos, targetY - scaledWorldYPos) < 2;
+    }
 
-    private enum progStates {
-        openLoopForward,
-        forward,
-        turn,
-        back,
+    enum progStates {
+        firstMovement,
+        fourthMovement,
+        fifthMovement,
+        sixthMovement,
+        seventhMovement,
+        eighthMovement,
+        ninthMovement,
         stop
     }
 
@@ -36,7 +41,6 @@ public class MovementTest extends Auto {
     @Override
     public void start() {
         super.start();
-        giveMePose(blueFoundationStart);
     }
 
     @Override
@@ -45,40 +49,25 @@ public class MovementTest extends Auto {
     }
 
 
-
     @Override
     public void MainStateMachine() {
-         if(currStage == progStates.openLoopForward.ordinal()) {
-             if(stageFinished) {
-                 initStateVars();
-             }
-
-             mecanumPower(0,0.5,0);
-             if(timedOut(2000)) {
-                 nextStage(progStates.forward.ordinal());
-             }
-         }
-
-
-         if(currStage == progStates.forward.ordinal()) {
-             if(stageFinished) {
-                 initStateVars();
-             }
-
-             gunToPosition(stageStartingXPos + 24, stageStartingYPos, 1, 0, 0, 0, 0,true);
-            if(timedOut(2000)) {
-                nextStage(progStates.stop.ordinal());
+        if(currStage == progStates.firstMovement.ordinal()) {
+            if(stageFinished) {
+                initStateVars();
+                scaledWorldXPos = 0;
+                scaledWorldYPos = 0;
+                scaledWorldHeadingRad = 0;
             }
 
-         }
+            gunToPosition(20,0,1,0,0.5,0,0,true);
 
+            if(completedMovement(20,0)) {
+                nextStage(progStates.stop.ordinal());
+            }
+        }
 
-
-
-
-         if(currStage == progStates.stop.ordinal()) {
-             stopMovement();
-             telemetry.addLine("robot is done uwu");
-         }
+        if(currStage == progStates.stop.ordinal()) {
+            stopMovement();
+        }
     }
 }
