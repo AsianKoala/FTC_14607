@@ -97,23 +97,22 @@ public class TestAuto extends Auto {
                     initStateVars();
                 }
 
-                goToRRPosition(stageStartingXPos, stageStartingYPos + 24, 0, 0.5, 0.5);
+                pointRRAngle(Math.toRadians(-90), 0.5, Math.toRadians(10));
+                myIntake.turnOnIntake();
 
-                if (completedMovement(stageStartingXPos, stageStartingYPos + 24)) {
+
+                if(Math.abs(stageStartingAngleRad - worldHeadingRad) > Math.toRadians(90)){
                     nextStage();
                 }
             }
 
             if(currStage == progStates.secondMovement.ordinal()) {
-                if(stageFinished) {
-                    initStateVars();
-                }
 
-                pointRRAngle(Math.toRadians(90), 0.5, Math.toRadians(30));
+                mecanumPower(0.5, 0, 0);
 
-                if(stageStartingAngleRad - worldHeadingRad < Math.toRadians(3)) {
-                    requestOpModeStop();
-                }
+               if(timedOut(500)) {
+                   requestOpModeStop();
+               }
             }
 
             if(currStage == progStates.thirdMovement.ordinal()) {
@@ -121,25 +120,15 @@ public class TestAuto extends Auto {
                     initStateVars();
                 }
 
-                goToRRPosition(stageStartingXPos + 12, stageStartingYPos + 24, Math.toRadians(45), 0.5, 0.5);
+                mecanumPower(-0.5,0,0);
 
-                if(completedMovement(stageStartingXPos + 12, stageStartingYPos + 24)) {
+                if(timedOut(250)) {
                     nextStage();
                 }
             }
 
             if(currStage == progStates.fourthMovement.ordinal()) {
-                if(stageFinished) {
-                    initStateVars();
-                }
-
-                gunToRRPosition(stageStartingXPos - 12, stageStartingYPos - 24, 0, 0.5, 0, 0, 0, true);
-                pointRRAngle(Math.toRadians(0), 0.5, Math.toRadians(15));
-
-                if(completedMovement(stageStartingXPos -12, stageStartingYPos - 24)) {
-                    requestOpModeStop();
-                }
-
+                requestOpModeStop();
             }
         }
     }
