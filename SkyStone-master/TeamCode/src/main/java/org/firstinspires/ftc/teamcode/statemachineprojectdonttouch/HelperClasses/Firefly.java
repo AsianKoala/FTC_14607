@@ -83,7 +83,7 @@ public class Firefly extends TunableOpMode {
         parameters = new BNO055IMU.Parameters();
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
-        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.NPN);
 
 
         class IMUInitter implements Runnable {
@@ -146,7 +146,7 @@ public class Firefly extends TunableOpMode {
         mySlide.update();
         myIntake.update();
 
-        getRevBulkData();
+//        getRevBulkData();
 
 
         if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
@@ -163,7 +163,7 @@ public class Firefly extends TunableOpMode {
     @Override
     public void init_loop() {
         currTimeMillis = SystemClock.uptimeMillis();
-        getRevBulkData();
+//        getRevBulkData();
 //        mySlide.update();
 
         if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
@@ -225,13 +225,12 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("UPS: " + updatesPerSecond);
 
         long timeBefore = SystemClock.uptimeMillis();
-        tp2.markStart();
-        //get all the bulk data
-        getRevBulkData();
-        tp2.markEnd();
-
-        long timeAfter = SystemClock.uptimeMillis();
-        telemetry.addData("Bulk data time: ", (timeAfter-timeBefore));
+//        tp2.markStart();
+//        getRevBulkData();
+//        tp2.markEnd();
+//
+//        long timeAfter = SystemClock.uptimeMillis();
+//        telemetry.addData("Bulk data time: ", (timeAfter-timeBefore));
 
 
         currTimeMillis = SystemClock.uptimeMillis();
@@ -243,29 +242,20 @@ public class Firefly extends TunableOpMode {
 
         // now updating the state machines starts
 
+
         tp1.markStart();
-        myDriveTrain.update(); // updates roadrunner pose using motor encoder values
+        myDriveTrain.updatePoseEstimate(); // updates roadrunner pose using motor encoder values
         tp1.markEnd();
+
 
         tp3.markStart();
         giveMePose(myDriveTrain.getPoseEstimate()); // updates worldXPos etc. from roadrunner pose
         tp3.markEnd();
 
-        currTimeMillis = SystemClock.uptimeMillis();
-        tp4.markStart();
-        if(currTimeMillis - lastLoopTime > 16) {    // update if 16 ms passed
-            myDriveTrain.updatee();
-        }
-        tp4.markEnd();
 
-        /**
-         * referencing above ^
-         * the reason we have to do myDriveTrain.update(); (roadrunner super method) and do
-         * RobotPosition.giveMePose is because we convert the pose estimate obtained through rr into vars
-         * that are used for everything besides roadrunner movement methods.
-         * robot position is actually pretty useless since we dont use any other movement methods
-         * **** ROBOT POSITION DOES NOT SET ANYTHING, RATHER CONVERTS RR POSE TO OUR VALUES ****
-         */
+        tp4.markStart();
+        myDriveTrain.updatee();
+        tp4.markEnd();
 
 
         tp5.markStart();
@@ -290,6 +280,8 @@ public class Firefly extends TunableOpMode {
         tp8.markEnd();
 
 
+        BetterRobotPosition.dumbfuck();
+
 
 
 
@@ -304,17 +296,16 @@ public class Firefly extends TunableOpMode {
 
 
 
-
         // in millis
         addSpace();
-        telemetry.addLine("---------------- FIREFLY BASE CLASS TELEM ---------------");
-        telemetry.addLine("rr localization profiler: " + tp1.getAverageTimePerUpdateMillis());
-        telemetry.addLine("bulk data profiler: " + tp2.getAverageTimePerUpdateMillis());
-        telemetry.addLine("localization conversion profiler: " + tp3.getAverageTimePerUpdateMillis());
-        telemetry.addLine("drivetrain power profiler: " + tp4.getAverageTimePerUpdateMillis());
-        telemetry.addLine("outtake profiler: " + tp5.getAverageTimePerUpdateMillis());
-        telemetry.addLine("slide profiler: " + tp6.getAverageTimePerUpdateMillis());
-        telemetry.addLine("intake profiler: " + tp7.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("---------------- FIREFLY BASE CLASS TELEM ---------------");
+//        telemetry.addLine("rr localization profiler: " + tp1.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("bulk data profiler: " + tp2.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("localization conversion profiler: " + tp3.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("drivetrain power profiler: " + tp4.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("outtake profiler: " + tp5.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("slide profiler: " + tp6.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("intake profiler: " + tp7.getAverageTimePerUpdateMillis());
     }
 
 
@@ -322,34 +313,34 @@ public class Firefly extends TunableOpMode {
 
 
 
-    /**
-     * gets all the data from the expansion hubs in one command
-     */
-    public void getRevBulkData() {
-        RevBulkData newMasterData;
-
-        try {
-            newMasterData = master.getBulkInputData();
-            if(newMasterData != null) {
-                masterData = newMasterData;
-            }
-        }
-        catch(Exception e) {
-            // dont do anything if we get exception
-        }
-
-
-        RevBulkData newSlaveData;
-
-        try {
-            newSlaveData = slave.getBulkInputData();
-            if(newSlaveData != null) {
-                slaveData = newSlaveData;
-            }
-        }
-
-        catch(Exception e) {}
-    }
+//    /**
+//     * gets all the data from the expansion hubs in one command
+//     */
+//    public void getRevBulkData() {
+//        RevBulkData newMasterData;
+//
+//        try {
+//            newMasterData = master.getBulkInputData();
+//            if(newMasterData != null) {
+//                masterData = newMasterData;
+//            }
+//        }
+//        catch(Exception e) {
+//            // dont do anything if we get exception
+//        }
+//
+//
+//        RevBulkData newSlaveData;
+//
+//        try {
+//            newSlaveData = slave.getBulkInputData();
+//            if(newSlaveData != null) {
+//                slaveData = newSlaveData;
+//            }
+//        }
+//
+//        catch(Exception e) {}
+//    }
 
 
 

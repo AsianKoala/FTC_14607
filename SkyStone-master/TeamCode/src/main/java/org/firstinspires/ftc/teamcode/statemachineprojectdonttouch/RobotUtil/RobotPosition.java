@@ -20,10 +20,6 @@ public class RobotPosition {
 
 
 
-
-
-    private OdometryModule leftEncoder, rightEncoder, middleEncoder;
-
     // call this to update pose, input roadrunner pose
     public static void giveMePose(Pose2d pose) {
         worldXPos = pose.getX();
@@ -52,4 +48,3 @@ public class RobotPosition {
 
 
 }
-
