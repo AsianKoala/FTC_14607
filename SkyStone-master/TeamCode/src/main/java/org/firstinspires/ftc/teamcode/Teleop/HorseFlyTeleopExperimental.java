@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 //BASED OFF OF AUTOMATED TELEOP DOES NOT ACCOUNT FOR NEW RESTRUCTURING
 
 import android.annotation.SuppressLint;
+import android.os.SystemClock;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,8 +15,11 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.scaledWorldHeadingRad;
 
 import java.util.ArrayList;
+
 
 
 @TeleOp(name = "main teleop")
@@ -27,7 +31,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
      * TODO: add field centric drive that charlie coded
      * TODO: add more state machine stuff so its easier for the driver to use robot
      * TODO: add more stuff that makes it easier for driver to drive
-     */
+     */        double thime =0;
 
     private ExpansionHubMotor leftFront;
     private ExpansionHubMotor rightFront;
@@ -47,8 +51,8 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
 
     public final static long toMidTime = 450;
-    public final static long liftTime = 200;
-    public final static long toBackTime = 750;
+    public final static long liftTime = 200;//is for rotater now
+    public final static long toBackTime = 750;// is for flipper now
 
     public final static long toLiftTimeTo = 400;
     public final static long toBackTimeTo = 700;
@@ -114,20 +118,18 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         /*
          * HOME THE FLIP AND GRIP SERVO
          */
-         flipReady();
-         rotaterReady();
-         gripReady();
+        flipReady();
+        rotaterReady();
+        gripReady();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
-    // run until the end of the match (driver presses STOP)
+
     public void loop() {
 
 
         // tunable opmode vars
-
-
 
 
 
@@ -138,25 +140,31 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
          * INTAKE CONTROL
          *
          */
-
+        double intakeMultiplier = 0.75;
+        if(gamepad2.left_stick_button) {
+            intakeMultiplier = 1;
+        }
         double leftIntakePower = gamepad2.left_stick_y - gamepad2.left_stick_x;
         double rightIntakePower = gamepad2.left_stick_y + gamepad2.left_stick_x;
         if(Math.abs(leftIntakePower) < 0.1 || Math.abs(rightIntakePower) < 0.1) {
             leftIntake.setPower(0);
             rightIntake.setPower(0);
         }else {
-            leftIntake.setPower( 0.5 * -leftIntakePower);
-            rightIntake.setPower( 0.5 * -rightIntakePower);
+            leftIntake.setPower( intakeMultiplier * -leftIntakePower);
+            rightIntake.setPower( intakeMultiplier * -rightIntakePower);
         }
 
 
 
 
         /**
-         *
-         *
-         * DRIVE MOTORS CONTROL
-         *
+
+
+
+          DRIVE MOTORS CONTROL
+
+
+
          */
 
         double motorPower;
@@ -169,7 +177,7 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         }
 
         else {
-            motorPower = 0.95;
+            motorPower = 1;
         }
 
         double threshold = 0.157; // deadzone
@@ -209,11 +217,9 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
         if(gamepad2.right_trigger > 0.5) {
             flipper.setPosition(flipperHome);
         }
-
         if(gamepad2.left_trigger > 0.5) {
             flipper.setPosition(flipperOut);
         }
-
 
 
         // rotater arm control
@@ -278,34 +284,35 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
             //task 1: lift up
             //need to test, this step should not be necesssary
             case 1:
-                    gripper.setPosition(gripperGrip);
-                    newSlideLeft = liftIncrementer;//height should not be hardcoded, fix after PID tuned
-                    newSlideRight = liftIncrementer;
+                gripper.setPosition(gripperGrip);
+                newSlideLeft = liftIncrementer;//height should not be hardcoded, fix after PID tuned
+                newSlideRight = liftIncrementer;
 
                 //none of :
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
-                    leftSlide.setPower(1);
-                    rightSlide.setPower(1);
+                leftSlide.setTargetPosition((int)(newSlideLeft));
+                rightSlide.setTargetPosition((int)(newSlideRight));
+                leftSlide.setPower(1);
+                rightSlide.setPower(1);
                 //this is necessary? coded later already
 
-                    chime = System.currentTimeMillis();
-                    counter++;
-                    break;
+                chime = System.currentTimeMillis();
+                counter++;
+                break;
 
             //rotate
             case 2:
-                if(System.currentTimeMillis() - chime >= 100)//lift is super fast, can also rotate on the way up
+                if(System.currentTimeMillis() - chime >= 750)//lift is super fast, can also rotate on the way up
                 {
-                    rotaterReady();
+
+                    flipper.setPosition(0.95);
                     counter++;
                 }
                 break;
             //flip
             case 3:
-                if(System.currentTimeMillis() - chime >= 750)//amount of time rotation takes
+                if(System.currentTimeMillis() - chime >= 2000)//amount of time rotation takes
                 {
-                    flipper.setPosition(0.95);
+                    rotaterReady();
                     chime = System.currentTimeMillis();
                     counter++;
                 }
@@ -321,35 +328,20 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
                 counter++;
                 break;
 
-            // grip to home
+            // cock to intermediate
             case 5:
-                if(System.currentTimeMillis() - chime >= 300) {
-                    gripper.setPosition(gripperHome);
+                if(System.currentTimeMillis() - chime >= 2000) {
+                    flipper.setPosition(flipperBetween);
+                    /*gripper.setPosition(gripperHome);*/
                 }
                 counter++;
                 break;
-           // lift to home
+            // gripper close;
             case 6:
-                oldSlideLeft = leftSlide.getCurrentPosition();
-                oldSlideRight = rightSlide.getCurrentPosition();
-                newSlideLeft = psuedoHomer;
-                newSlideRight = psuedoHomer;
-                gripReady();
+                grip();
                 counter = 0;
                 break;
         }
-        /**
-         * 2.99
-         * 0.042
-         * 3.6
-         *
-         * 2.99
-         * 0.042
-         * 3.6
-         * 2.99
-         * 0.042
-         * 3.6
-         */
 
 
         /**
@@ -359,17 +351,21 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
          *
          */
 
-        switch(count)
+        switch(count)//DPAD RIGHT
         {
-            //task 1: flip to center
+            //task 1: cock to intermediate
             case 1:
-                flipper.setPosition(0.6);
+                flipper.setPosition(flipperBetween);
                 time = System.currentTimeMillis();
                 count++;
                 break;
+                /*flipper.setPosition(0.6);
+                time = System.currentTimeMillis();*/
+            //move lift up
+
             //task 2: lift up
             case 2:
-                if(System.currentTimeMillis() - time >= toMidTime)
+                if(System.currentTimeMillis() - time >= 2000)
                 {
                     newSlideLeft = liftIncrement;
                     newSlideRight = liftIncrement;
@@ -380,23 +376,49 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
                     time = System.currentTimeMillis();
                     count++;
                 }
+                /*leftSlide.setTargetPosition((int)(-200));
+                rightSlide.setTargetPosition((int)(-200));
+                if(System.currentTimeMillis() - time >= toMidTime)
+                {
+                    rotaterOut();
+                }
+                count++;*/
                 break;
-            //task 3: flip back
+                /*if(System.currentTimeMillis() - time >= toMidTime)
+                {
+                    newSlideLeft = liftIncrement;
+                    newSlideRight = liftIncrement;
+                    leftSlide.setTargetPosition((int)(newSlideLeft));
+                    rightSlide.setTargetPosition((int)(newSlideRight));
+                    leftSlide.setPower(1);
+                    rightSlide.setPower(1);
+                    time = System.currentTimeMillis();
+                    count++;
+                }
+                break;*/
+            //task 3: rotate out
             case 3:
                 if(System.currentTimeMillis() - time >= liftTime)
                 {
-                    flipper.setPosition(0.25);
+                    rotaterOut();
                     time = System.currentTimeMillis();
                     count++;
                 }
 
                 break;
 
+        /*    case 4:
+                if(System.currentTimeMillis() - time >= 100) {
+                    flipper.setPosition(flipperBetweenBetween);
+                    time = System.currentTimeMillis();
+                    count++;
+                }*/
 
+            //flip out
             case 4:
-                if(System.currentTimeMillis() - time >= toBackTime)
+                if(System.currentTimeMillis() - time >= 2000)
                 {
-                    rotaterOut();
+                    flipper.setPosition(0.25);
                     count = 0;
                 }
                 break;
@@ -407,8 +429,13 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
          * slide powers here
          */
 
-        double increment = gamepad2.right_stick_y * 100;
+        double slideMultiplier = 100;
+        if(gamepad2.right_stick_button) {
+            slideMultiplier = 50;
+        }
 
+
+        double increment = gamepad2.right_stick_y * slideMultiplier;
         if(Math.abs(increment) > 25) {
             newSlideLeft = leftSlide.getCurrentPosition() + increment;
             newSlideRight = rightSlide.getCurrentPosition() + increment;
@@ -463,15 +490,18 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
                 , leftFront.getPower(), rightFront.getPower(), leftRear.getPower(), rightRear.getPower());
     }
 
-    /**
-     * @return whether or not the intake motors are busy
-     */
 
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
         leftIntake.setPower(leftIntakePower);
         rightIntake.setPower(rightIntakePower);
     }
+
+
+    public void stopIntake() { setIntakePowers(0,0);}
+
+
+    // ready
 
 
 

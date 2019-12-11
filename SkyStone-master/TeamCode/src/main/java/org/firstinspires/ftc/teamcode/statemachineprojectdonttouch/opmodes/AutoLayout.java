@@ -21,9 +21,9 @@ public class AutoLayout extends Auto {
     private boolean safePark = true;
 
     public enum progStates {
-        move,
+        forward,
         turn,
-        guntoposition,
+        strafe,
         stop
     }
 
@@ -48,7 +48,6 @@ public class AutoLayout extends Auto {
         if(gamepad1.b) {
             safePark = false;
         }
-        telemetry.addLine("pepeD");
         telemetry.addLine("a is true, b is false");
         telemetry.addData("safe parking?", safePark);
         telemetry.update();
@@ -59,7 +58,7 @@ public class AutoLayout extends Auto {
     public void start() {
         super.start();
         giveMePose(blueFoundationStart);
-        currStage = progStates.move.ordinal();
+        currStage = progStates.forward.ordinal();
     }
 
 
@@ -101,20 +100,20 @@ public class AutoLayout extends Auto {
 
         telemetry.addLine("------------- AUTO PROFILER TELEM ---------");
         telemetry.addLine("loop profiler " + allTimeProfilers.get(0).getAverageTimePerUpdateMillis());
-        telemetry.addLine("position telem profiler: " + allTimeProfilers.get(1).getAverageTimePerUpdateMillis());
-        telemetry.addLine("scaled pos telem profiler: " + allTimeProfilers.get(2).getAverageTimePerUpdateMillis());
+        telemetry.addLine(positionTelemetry());
+        telemetry.addLine(scaledPositionTelemetry());
     }
 
 
 
-    private void positionTelemetry() {
-        telemetry.addLine("xPos: " + df.format(worldXPos) +
+    private String positionTelemetry() {
+        return ("xPos: " + df.format(worldXPos) +
                 "yPos: "+ df.format(worldYPos) +
                 "heading: " + df.format(worldHeadingRad));
     }
 
-    private void scaledPositionTelemetry() {
-        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
+    private String scaledPositionTelemetry() {
+        return ("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
     }
 
 
@@ -138,57 +137,52 @@ public class AutoLayout extends Auto {
     @Override
     public void MainStateMachine() {
 
-        if(currStage == progStates.move.ordinal()) {
-            if (stageFinished) {
+        if(currStage == progStates.forward.ordinal()) {
+            if(stageFinished) {
                 initStateVars();
-                giveMePose(blueFoundationStart);
             }
 
+            mecanumPower(0,0.5,0);
 
-            goToPosition(stageStartingXPos+24, stageStartingYPos, stageStartingAngleRad, 1, 1);
-
-            if(scaledWorldXPos < 2) {
+            if(timedOut(2000)) {
                 nextStage();
             }
-
         }
-
 
         if(currStage == progStates.turn.ordinal()) {
             if(stageFinished) {
                 initStateVars();
             }
 
+            mecanumPower(0,0,0.5);
 
-            pointAngle(Math.toRadians(45), 0.5, Math.toRadians(10));
-
-            if(Math.abs(stageStartingAngleRad - scaledWorldHeadingRad) == Math.PI/4) {
+            if(timedOut(2000)) {
                 nextStage();
             }
         }
 
 
-        if(currStage == progStates.guntoposition.ordinal()) {
+        if(currStage == progStates.strafe.ordinal()) {
             if(stageFinished) {
                 initStateVars();
             }
 
-            gunToPosition(24,24, 1, Math.toRadians(-90), 1, Math.toRadians(10), 10,  true);
+            mecanumPower(0.5,0,0);
 
-
-            if(Math.hypot(24 - scaledWorldXPos, 24 - scaledWorldYPos) < 2) {
+            if(timedOut(2000)) {
                 nextStage();
             }
         }
 
-
-        if(currStage == progStates.stop.ordinal()) {
-            initStateVars();
+        if(currStage == progStates.strafe.ordinal()) {
             stopMovement();
-            telemetry.addLine("shutting off in 5 seconds");
-            if(timedOut(5000)) {
-                requestOpModeStop();
-            }
+            telemetry.addLine("requesting opmode stop");
+            telemetry.addLine("requesting opmode stop");
+
+            telemetry.addLine("requesting opmode stop");
+requestOpModeStop();
+
+
         }
 
 

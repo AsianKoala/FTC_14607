@@ -296,9 +296,9 @@ public class Firefly extends TunableOpMode {
 
 
         // check for debug mode and tune pid gains
-  //      tp7.markStart();
-   //     debugMode();
-    //    tp7.markStart();
+        //      tp7.markStart();
+        //     debugMode();
+        //    tp7.markStart();
 
 
 
@@ -358,18 +358,18 @@ public class Firefly extends TunableOpMode {
 
     private void tuneSlidePID() {
 
-    //        double p = getInt("P");
-      //      double i = getInt("I");
+        //        double p = getInt("P");
+        //      double i = getInt("I");
         //    double d = getInt("D");
         //    mySlide.setPIDCoeffs(p, i, d);
     }
 
 
     public void debugMode(boolean debugMode) {
-            myDriveTrain.setDebugging(debugMode);
-            mySlide.setDebugging(debugMode);
-            myIntake.setDebugging(debugMode);
-            myOuttake.setDebugging(debugMode);
+        myDriveTrain.setDebugging(debugMode);
+        mySlide.setDebugging(debugMode);
+        myIntake.setDebugging(debugMode);
+        myOuttake.setDebugging(debugMode);
     }
 
 

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Auto;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.TimeProfiler;
@@ -12,8 +14,10 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePosition;
 
+@Autonomous(name = "e")
 public class BlueAuto extends Auto {
     private enum progStates {
+
         firstMovement,
         secondMovement,
         thirdMovement,

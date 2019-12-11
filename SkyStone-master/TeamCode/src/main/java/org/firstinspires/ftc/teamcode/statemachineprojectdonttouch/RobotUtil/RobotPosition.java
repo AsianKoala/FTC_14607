@@ -6,8 +6,6 @@ import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses
 import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.TICKS_PER_REV;
 import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.inchesToEncoderTicks;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.worldYPos;
 
 
 /**
@@ -15,7 +13,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
  */
 public class RobotPosition {
 
-    private static double worldXPos, worldYPos, worldHeadingRad;
+    public static double worldXPos, worldYPos, worldHeadingRad;
     public static double scaledWorldYPos, scaledWorldXPos, scaledWorldHeadingRad;
     public static Pose2d worldPose;
 
@@ -54,5 +52,4 @@ public class RobotPosition {
 
 
 }
-
 

@@ -21,6 +21,19 @@ public class RobotMovement {
         accurate
     }
 
+
+
+
+    public static void mecanumPower(double x, double y, double turn) {
+        movementX = x;
+        movementY = y;
+        movementTurn = turn;
+    }
+
+
+
+
+
     public static void goToPosition(double targetX, double targetY, double point_angle, double movement_speed, double point_speed) {
 
         //get our distance away from the point
@@ -57,8 +70,8 @@ public class RobotMovement {
         }
 
         if(ourTurnStates == turnStates.accurate) {
-                turnPower = point_speed * radToTarget / toRadians(10);
-                turnPower = Range.clip(turnPower, -point_speed, point_speed);
+            turnPower = point_speed * radToTarget / toRadians(10);
+            turnPower = Range.clip(turnPower, -point_speed, point_speed);
         }
 
 

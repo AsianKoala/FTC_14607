@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.TimeProfiler;
 
@@ -36,6 +38,7 @@ public class FireflyTeleop extends Firefly {
     @Override
     public void start() {
         super.start();
+        giveMePose(new Pose2d(24,24, Math.toRadians(90)));
     }
 
 
@@ -83,12 +86,6 @@ public class FireflyTeleop extends Firefly {
         tp6.markEnd();
 
 
-        tp9.markStart();
-        positionTelemetry();
-        scaledPositionTelemetry();
-        tp9.markEnd();
-
-
 
         addSpace();
         telemetry.addLine("-------------- FIREFLY TELEOP TELEMETRY -----------------");
@@ -124,19 +121,6 @@ public class FireflyTeleop extends Firefly {
         telemetry.addData("gpad 1 ls y: ", gamepad1.left_stick_y);
         telemetry.addData("gpad 1 ls x: ", gamepad1.left_stick_x);
         telemetry.addData("gpad 1 rs x: ", gamepad1.right_stick_x);
-    }
-
-
-// ready
-    public void positionTelemetry() {
-        telemetry.addLine("xPos: " + df.format(worldXPos) +
-                " yPos: "+ df.format(worldYPos) +
-                " heading: " + df.format(worldHeadingRad));
-    }
-
-    // ready
-    private void scaledPositionTelemetry() {
-        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
     }
 
 

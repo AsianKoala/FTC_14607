@@ -5,19 +5,18 @@ import static java.lang.Math.*;
 
 public  class GLOBALS {
 
-    public final static double flipperHome =  0.95;
-    public final static double flipperOut = 0.31;
-    public final static double flipperBetween = 0.8347;
-    public final static double flipperBetweenBetween = (flipperBetween + flipperOut)/2;
-    public final static double rotaterHome = 0.279;
-    public final static double rotaterOut = 0.95;
+    public  final static double flipperHome =  0.15;
+    public final  static double flipperOut = 0.8513;
+    public  final static double flipperBetween = 0.3;
+    public   static double rotaterHome = 0.279;
+    public  static double rotaterOut = 0.95;
     public final static double gripperHome = 0.82;
     public final static double gripperGrip = 0.19;
 
 
-    public  static double P = 10.9;
-    public  static double I = 0;
-    public  static double D = 0;
+    public  static double P = 15;
+    public  static double I = 0.005;
+    public  static double D = 6.2045;
 
 
 
@@ -33,16 +32,6 @@ public  class GLOBALS {
     public final static int liftIncrement = -200;
     public final static int liftIncrementer = -500;
     public static double   psuedoHomer = -50;
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -75,9 +64,6 @@ public  class GLOBALS {
         SKYSTONE,
         PARK
     }
-
-
-
 
 
 
@@ -122,10 +108,6 @@ public  class GLOBALS {
      * red
      *
      * it
-     *
-     *
-     *
-     *
      *
      * ill lead myself out
      *
