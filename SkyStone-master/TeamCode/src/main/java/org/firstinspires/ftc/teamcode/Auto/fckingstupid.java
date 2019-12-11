@@ -69,7 +69,6 @@ public class fckingstupid extends LinearOpMode {
         rightSlam = hardwareMap.get(Servo.class, "rightSlam");
 
 
-
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightRear.setDirection(DcMotor.Direction.REVERSE);
         rightIntake.setDirection(DcMotor.Direction.REVERSE);

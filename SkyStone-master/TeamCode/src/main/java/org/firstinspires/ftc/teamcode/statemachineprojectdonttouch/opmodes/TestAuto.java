@@ -27,7 +27,6 @@ public class TestAuto extends Auto {
     }
 
 
-
     private boolean completedMovement(double targetX, double targetY) {
         return Math.hypot(targetX - worldXPos, targetY - worldYPos) < 2;
     }
@@ -35,7 +34,6 @@ public class TestAuto extends Auto {
     private boolean completedCurveMovement(double targetX, double targetY) {
         return Math.hypot(targetX - worldXPos, targetY - worldYPos) < 5;
     }
-
 
 
     @Override
@@ -54,10 +52,9 @@ public class TestAuto extends Auto {
     @Override
     public void start() {
         super.start();
-       giveMePose(new Pose2d(0,0,0));
+        giveMePose(new Pose2d(0, 0, 0));
         currStage = progStates.firstMovement.ordinal();
     }
-
 
 
     TimeProfiler loopProfiler = new TimeProfiler(500);
@@ -86,49 +83,15 @@ public class TestAuto extends Auto {
     }
 
 
-
-
     @Override
     public void MainStateMachine() {
-        if (ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.LEFT) {
+        if (ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.RIGHT) {
             if (currStage == progStates.firstMovement.ordinal()) {
-                if (stageFinished) {
-                    giveMePose(new Pose2d(0, 0, 0));
-                    initStateVars();
+                mecanumPower(0, 0, 0.1);
+
+                if (Math.abs(worldHeadingRad) >= Math.toRadians(90)) {
+                    requestOpModeStop();
                 }
-
-                pointRRAngle(Math.toRadians(-90), 0.5, Math.toRadians(10));
-                myIntake.turnOnIntake();
-
-
-                if(Math.abs(stageStartingAngleRad - worldHeadingRad) > Math.toRadians(90)){
-                    nextStage();
-                }
-            }
-
-            if(currStage == progStates.secondMovement.ordinal()) {
-
-                mecanumPower(0.5, 0, 0);
-
-               if(timedOut(500)) {
-                   requestOpModeStop();
-               }
-            }
-
-            if(currStage == progStates.thirdMovement.ordinal()) {
-                if(stageFinished) {
-                    initStateVars();
-                }
-
-                mecanumPower(-0.5,0,0);
-
-                if(timedOut(250)) {
-                    nextStage();
-                }
-            }
-
-            if(currStage == progStates.fourthMovement.ordinal()) {
-                requestOpModeStop();
             }
         }
     }
