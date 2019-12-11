@@ -431,12 +431,12 @@ public class HorseFlyTeleopExperimental extends TunableOpMode {
 
         double slideMultiplier = 100;
         if(gamepad2.right_stick_button) {
-            slideMultiplier = 50;
+            slideMultiplier = 25;
         }
 
 
         double increment = gamepad2.right_stick_y * slideMultiplier;
-        if(Math.abs(increment) > 25) {
+        if(Math.abs(increment) > 5) {
             newSlideLeft = leftSlide.getCurrentPosition() + increment;
             newSlideRight = rightSlide.getCurrentPosition() + increment;
         }

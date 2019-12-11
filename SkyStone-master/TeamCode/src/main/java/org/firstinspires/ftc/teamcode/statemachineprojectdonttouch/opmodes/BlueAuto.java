@@ -14,7 +14,7 @@ import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotU
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePosition;
 
-@Autonomous(name = "e")
+@Autonomous(name = "hot juicy auto")
 public class BlueAuto extends Auto {
     private enum progStates {
 

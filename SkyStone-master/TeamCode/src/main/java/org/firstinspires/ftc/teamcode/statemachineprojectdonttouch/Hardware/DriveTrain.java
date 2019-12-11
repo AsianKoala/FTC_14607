@@ -144,9 +144,6 @@ public class DriveTrain extends SampleMecanumDriveBase {
     }
 
 
-    public void startPose(Pose2d pose) {
-        setPoseEstimate(pose);
-    }
 
 
 
@@ -161,10 +158,10 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
     public void driveMecanum(double xPower,double yPower,double turnPower) {
 
-        double rawFL = -yPower-turnPower-xPower*1.5;
-        double rawBL = yPower-turnPower- xPower*1.5;
-        double rawBR = -yPower+turnPower-xPower*1.5;
-        double rawFR = yPower+turnPower-xPower*1.5;
+        double rawFL = -yPower+turnPower-xPower*1.5;
+        double rawBL = yPower+turnPower- xPower*1.5;
+        double rawBR = -yPower-turnPower-xPower*1.5;
+        double rawFR = yPower-turnPower-xPower*1.5;
 
 
         double scaleAmt = 1;

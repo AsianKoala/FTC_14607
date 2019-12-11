@@ -117,7 +117,7 @@ public class FireflyTeleop extends Firefly {
 
         movementY =  Math.abs(-gamepad1.left_stick_y) > threshold ? -gamepad1.left_stick_y * scale : 0;
         movementX = Math.abs(gamepad1.left_stick_x) > threshold ? gamepad1.left_stick_x * scale : 0;
-        movementTurn = Math.abs(gamepad1.right_stick_x) > threshold ? gamepad1.right_stick_x * scale : 0;
+        movementTurn = Math.abs(gamepad1.right_stick_x) > threshold ? -gamepad1.right_stick_x * scale : 0;
     }
 
 
