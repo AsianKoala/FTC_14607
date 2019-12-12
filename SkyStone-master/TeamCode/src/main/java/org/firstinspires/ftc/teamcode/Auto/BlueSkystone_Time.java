@@ -38,9 +38,8 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePosition;
 
 
-@Deprecated
 @Autonomous(name = "Blue Skystone TIME", group = "Firefly")
-public class BlueAuto extends LinearOpMode {
+public class BlueSkystone_Time extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
@@ -85,12 +84,10 @@ public class BlueAuto extends LinearOpMode {
     private static float rectHeight = .6f/8f;
     private static float rectWidth = 1.5f/8f;
 
-    private static float offsetX = 0f/8f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
-    private static float offsetY = 0f/8f;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
 
-    private static float[] midPos = {4f/8f+offsetX, 4f/8f+offsetY};//0 = col, 1 = row
-    private static float[] leftPos = {2f/8f+offsetX, 4f/8f+offsetY};
-    private static float[] rightPos = {6f/8f+offsetX, 4f/8f+offsetY};
+    private static float[] midPos = {4f/8f, 2.7f/8f};//0 = col, 1 = row
+    private static float[] leftPos = {2f/8f, 2.7f/8f};
+    private static float[] rightPos = {6f/8f, 2.7f/8f};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     private final int rows = 640;
@@ -145,7 +142,7 @@ public class BlueAuto extends LinearOpMode {
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();//open camera
         phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
-        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
+        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.SIDEWAYS_LEFT);//display on RC
         //width, height
         //width = height in this case, because camera is in portrait mode.
 
@@ -162,8 +159,8 @@ public class BlueAuto extends LinearOpMode {
                 ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.MIDDLE;
             }        
         }
+
         phoneCam.closeCameraDevice();
-        runtime.reset();
 
         if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.MIDDLE) {
             xPower = 0.5;
