@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -75,7 +76,7 @@ public class BlueSkystone extends LinearOpMode {
 
 
 
-        RRDrive robot = new RRDrive(hardwareMap);
+        SampleMecanumDriveREV robot = new SampleMecanumDriveREV(hardwareMap);
 
         if(valLeft == 0) {
             ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.LEFT;
@@ -96,7 +97,21 @@ public class BlueSkystone extends LinearOpMode {
         runtime.reset();
 
 
+        Trajectory forward = new TrajectoryBuilder(new Pose2d(0,0,0), DriveConstants.BASE_CONSTRAINTS)
+                .forward(24)
+                .back(24)
+                .strafeLeft(24)
+                .strafeRight(24)
+                .build();
 
+
+        robot.followTrajectorySync(forward);
+
+        robot.turnSync(90);
+
+        while(robot.isBusy()) {
+
+        }
 
 
 
