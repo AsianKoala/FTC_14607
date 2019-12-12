@@ -22,17 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Created by maryjaneb  on 11/13/2016.
- *
- * nerverest ticks
- * 60 1680
- * 40 1120
- * 20 560
- *
- * monitor: 640 x 480
- *YES
- */
 @Autonomous(name= "opencvSkystoneDetector", group="Sky autonomous")
 public class openCVTesting extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -47,9 +36,9 @@ public class openCVTesting extends LinearOpMode {
     private static float rectWidth = 1f/8f;
 
 
-    private static float[] midPos = {4f/8f, 3.2f/8f};//0 = col, 1 = row
-    private static float[] leftPos = {2f/8f, 3.2f/8f};
-    private static float[] rightPos = {6f/8f, 3.2f/8f};
+    private static float[] midPos = {4f/8f, 2.7f/8f};//0 = col, 1 = row
+    private static float[] leftPos = {2f/8f, 2.7f/8f};
+    private static float[] rightPos = {6f/8f, 2.7f/8f};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     private final int rows = 640;

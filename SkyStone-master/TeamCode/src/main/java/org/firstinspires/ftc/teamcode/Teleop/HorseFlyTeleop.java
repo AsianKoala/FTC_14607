@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 
 @TeleOp(name = "main teleop")
-public class HorseFlyTeleopExperimental extends TunableOpMode {
+public class HorseFlyTeleop extends TunableOpMode {
 
     /**
      * LIST OF TODOS
