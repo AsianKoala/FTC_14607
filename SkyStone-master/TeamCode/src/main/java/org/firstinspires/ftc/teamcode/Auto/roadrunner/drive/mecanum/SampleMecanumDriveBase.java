@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.*;
+import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.*;
 
 /*
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are

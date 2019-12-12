@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.opmodes;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.TimeProfiler;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.BetterRobotPosition;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
@@ -25,7 +28,7 @@ public class FireflyTeleop extends Firefly {
     @Override
     public void init() {
         super.init();
-        debugMode(true);
+        debugMode(false);
     }
 
     @Override
@@ -36,6 +39,7 @@ public class FireflyTeleop extends Firefly {
     @Override
     public void start() {
         super.start();
+        giveMePose(new Pose2d(24,24, Math.toRadians(90)));
     }
 
 
@@ -62,45 +66,43 @@ public class FireflyTeleop extends Firefly {
         teleopDrivetrainControl();
         tp2.markEnd();
 
-
         tp3.markStart();
-        slideControl();
+        allPositionTelemetry();
         tp3.markEnd();
 
 
-        tp4.markStart();
-        intakeControl();
-        tp4.markEnd();
+//        tp3.markStart();
+//        slideControl();
+//        tp3.markEnd();
+//
+//
+//        tp4.markStart();
+//        intakeControl();
+//        tp4.markEnd();
+//
+//
+//        tp5.markStart();
+//        servoControl();
+//        tp5.markEnd();
 
 
-        tp5.markStart();
-        servoControl();
-        tp5.markEnd();
-
-
-        tp6.markStart();
-        gamepadTelem();
-        tp6.markEnd();
-
-
-        tp9.markStart();
-        positionTelemetry();
-        scaledPositionTelemetry();
-        tp9.markEnd();
-
-
-
-        addSpace();
-        telemetry.addLine("-------------- FIREFLY TELEOP TELEMETRY -----------------");
-        telemetry.addLine("tOp profiler 1: " + tp1.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 2: " + tp2.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 3: " + tp3.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 4: " + tp4.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 5: " + tp5.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 6: " + tp6.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 7: " + tp7.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 8: " + tp8.getAverageTimePerUpdateMillis());
-        telemetry.addLine("tOp profiler 9: " + tp9.getAverageTimePerUpdateMillis());
+//        tp6.markStart();
+//        gamepadTelem();
+//        tp6.markEnd();
+//
+//
+//
+//        addSpace();
+//        telemetry.addLine("-------------- FIREFLY TELEOP TELEMETRY -----------------");
+//        telemetry.addLine("tOp profiler 1: " + tp1.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 2: " + tp2.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 3: " + tp3.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 4: " + tp4.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 5: " + tp5.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 6: " + tp6.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 7: " + tp7.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 8: " + tp8.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("tOp profiler 9: " + tp9.getAverageTimePerUpdateMillis());
 
     }
 
@@ -115,7 +117,7 @@ public class FireflyTeleop extends Firefly {
 
         movementY =  Math.abs(-gamepad1.left_stick_y) > threshold ? -gamepad1.left_stick_y * scale : 0;
         movementX = Math.abs(gamepad1.left_stick_x) > threshold ? gamepad1.left_stick_x * scale : 0;
-        movementTurn = Math.abs(gamepad1.right_stick_x) > threshold ? gamepad1.right_stick_x * scale : 0;
+        movementTurn = Math.abs(gamepad1.right_stick_x) > threshold ? -gamepad1.right_stick_x * scale : 0;
     }
 
 
@@ -124,19 +126,6 @@ public class FireflyTeleop extends Firefly {
         telemetry.addData("gpad 1 ls y: ", gamepad1.left_stick_y);
         telemetry.addData("gpad 1 ls x: ", gamepad1.left_stick_x);
         telemetry.addData("gpad 1 rs x: ", gamepad1.right_stick_x);
-    }
-
-
-// ready
-    public void positionTelemetry() {
-        telemetry.addLine("xPos: " + df.format(worldXPos) +
-                " yPos: "+ df.format(worldYPos) +
-                " heading: " + df.format(worldHeadingRad));
-    }
-
-    // ready
-    private void scaledPositionTelemetry() {
-        telemetry.addLine("scaled xPos: " + df.format(scaledWorldXPos) + "scaled yPos: " + df.format(scaledWorldYPos) + "scaled heading: " + df.format(scaledWorldHeadingRad));
     }
 
 
@@ -307,5 +296,24 @@ public class FireflyTeleop extends Firefly {
                 (Math.abs(rightIntakePower) < 0.1 ? 0 : 0.5 * -rightIntakePower));
 
     }
+
+
+
+    public void allPositionTelemetry() {
+        telemetry.addData("rr world x pos ", worldXPos);
+        telemetry.addData("rr world y pos ", worldYPos);
+        telemetry.addData("rr world heading ", Math.toDegrees(BetterRobotPosition.worldAngleRad));
+        addSpace();
+        telemetry.addData("scaled world x pos ", scaledWorldXPos);
+        telemetry.addData("scaled world y pos ", scaledWorldYPos);
+        telemetry.addData("scaled world heading ", Math.toDegrees(BetterRobotPosition.worldAngleRad));
+        addSpace();
+        telemetry.addData("custom world x pos ", BetterRobotPosition.worldXPosition);
+        telemetry.addData("custom world y pos ", BetterRobotPosition.worldYPosition);
+        telemetry.addData("custom world heading ", Math.toDegrees(BetterRobotPosition.worldAngleRad));
+    }
+
+
+
 
 }

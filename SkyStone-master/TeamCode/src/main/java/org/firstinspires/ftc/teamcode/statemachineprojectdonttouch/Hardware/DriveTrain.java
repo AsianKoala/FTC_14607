@@ -1,21 +1,14 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware;
 
-import android.annotation.SuppressLint;
 import android.os.SystemClock;
-import android.sax.StartElementListener;
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.LynxOptimizedI2cFactory;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.Firefly;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
@@ -24,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.*;
+import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.*;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 public class DriveTrain extends SampleMecanumDriveBase {
@@ -150,9 +143,6 @@ public class DriveTrain extends SampleMecanumDriveBase {
     }
 
 
-    public void startPose(Pose2d pose) {
-        setPoseEstimate(pose);
-    }
 
 
 
@@ -167,20 +157,20 @@ public class DriveTrain extends SampleMecanumDriveBase {
 
     public void driveMecanum(double xPower,double yPower,double turnPower) {
 
-        double rawFL = yPower+turnPower+xPower*1.5;
+        double rawFL = -yPower+turnPower-xPower*1.5;
         double rawBL = yPower+turnPower- xPower*1.5;
-        double rawBR = yPower-turnPower+xPower*1.5;
+        double rawBR = -yPower-turnPower-xPower*1.5;
         double rawFR = yPower-turnPower-xPower*1.5;
 
 
         double scaleAmt = 1;
-        double biggestPower = rawFL;
+        double biggestPower = Math.abs(rawFL);
 
-        if(Math.abs(rawBL) > Math.abs(biggestPower)) { rawBL = biggestPower; }
-        if(Math.abs(rawFR) > Math.abs(biggestPower)) { rawFR = biggestPower; }
-        if(Math.abs(rawBR) > Math.abs(biggestPower)) { rawBR = biggestPower; }
+        if(Math.abs(rawBL) > (biggestPower)) { biggestPower = rawBL; }
+        if(Math.abs(rawFR) > (biggestPower)) { biggestPower = rawFR; }
+        if(Math.abs(rawBR) > (biggestPower)) { biggestPower = rawBR; }
         if(biggestPower > 1.0) {
-            scaleAmt = Math.abs(1.0 / biggestPower);
+            scaleAmt = 1.0/biggestPower;
         }
 
         rawFL *= scaleAmt;

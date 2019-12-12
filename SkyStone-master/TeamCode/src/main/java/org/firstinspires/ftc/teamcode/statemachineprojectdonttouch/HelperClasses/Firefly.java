@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses;
 
-import android.annotation.SuppressLint;
 import android.os.SystemClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
@@ -10,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.Teleop.opencvSkystoneDetector;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.*;
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.BetterRobotPosition;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
@@ -18,7 +18,6 @@ import org.openftc.revextensions2.RevBulkData;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.giveMePose;
 
 /**
@@ -56,6 +55,7 @@ public class Firefly extends TunableOpMode {
 
     public boolean everythingInit = false;
 
+
     /**
      * called when driver hits init
      */
@@ -83,7 +83,7 @@ public class Firefly extends TunableOpMode {
         parameters = new BNO055IMU.Parameters();
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
-        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.NPN);
 
 
         class IMUInitter implements Runnable {
@@ -146,29 +146,30 @@ public class Firefly extends TunableOpMode {
         mySlide.update();
         myIntake.update();
 
-        getRevBulkData();
+//        getRevBulkData();
+
 
         if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
             everythingInit = true;
-            fullInitTime = currTimeMillis;
-
         }
 
     }
 
 
-    private long fullInitTime = 0;
-    private boolean p = true;
+
+    private long timeBeforeCheck = SystemClock.uptimeMillis();
+
+
     @Override
     public void init_loop() {
         currTimeMillis = SystemClock.uptimeMillis();
+//        getRevBulkData();
+//        mySlide.update();
 
-
-
-        getRevBulkData();
-        myDetector.update();
-
-        telemetry.addData("full init time sec", fullInitTime / 1000);
+        if(myDetector != null && myOuttake != null && mySlide!=null && myIntake != null && myDriveTrain != null) {
+            myDetector.update();
+        }
+        telemetry.addData("millis until full init", currTimeMillis - timeBeforeCheck);
         telemetry.addData("all inited", everythingInit);
     }
 
@@ -224,25 +225,26 @@ public class Firefly extends TunableOpMode {
         telemetry.addLine("UPS: " + updatesPerSecond);
 
         long timeBefore = SystemClock.uptimeMillis();
-        tp2.markStart();
-        //get all the bulk data
-        getRevBulkData();
-        tp2.markEnd();
-
-        long timeAfter = SystemClock.uptimeMillis();
-        telemetry.addData("Bulk data time: ", (timeAfter-timeBefore));
+//        tp2.markStart();
+//        getRevBulkData();
+//        tp2.markEnd();
+//
+//        long timeAfter = SystemClock.uptimeMillis();
+//        telemetry.addData("Bulk data time: ", (timeAfter-timeBefore));
 
 
         currTimeMillis = SystemClock.uptimeMillis();
         elapsedMillisThisUpdate = (int)(currTimeMillis - lastLoopTime);
+        lastLoopTime = currTimeMillis;
 
 
 
 
         // now updating the state machines starts
 
+
         tp1.markStart();
-        myDriveTrain.update(); // updates roadrunner pose using motor encoder values
+        myDriveTrain.updatePoseEstimate(); // updates roadrunner pose using motor encoder values
         tp1.markEnd();
 
 
@@ -272,31 +274,38 @@ public class Firefly extends TunableOpMode {
 
 
         tp8.markStart();
-        drivePowerTelem();
+        BetterRobotPosition.giveMeEncoders(myDriveTrain.frontLeft.getCurrentPosition(),
+                myDriveTrain.frontRight.getCurrentPosition(), myDriveTrain.backRight.getCurrentPosition(), myDriveTrain.backLeft.getCurrentPosition(),
+                imu.getAngularOrientation().firstAngle);
         tp8.markEnd();
+
+
+        BetterRobotPosition.dumbfuck();
+
+
+
 
 
 
         // check for debug mode and tune pid gains
-  //      tp7.markStart();
-   //     debugMode();
-    //    tp7.markStart();
+        //      tp7.markStart();
+        //     debugMode();
+        //    tp7.markStart();
 
 
 
 
-        lastLoopTime = SystemClock.uptimeMillis();
 
         // in millis
         addSpace();
-        telemetry.addLine("---------------- FIREFLY BASE CLASS TELEM ---------------");
-        telemetry.addLine("rr localization profiler: " + tp1.getAverageTimePerUpdateMillis());
-        telemetry.addLine("bulk data profiler: " + tp2.getAverageTimePerUpdateMillis());
-        telemetry.addLine("localization conversion profiler: " + tp3.getAverageTimePerUpdateMillis());
-        telemetry.addLine("drivetrain power profiler: " + tp4.getAverageTimePerUpdateMillis());
-        telemetry.addLine("outtake profiler: " + tp5.getAverageTimePerUpdateMillis());
-        telemetry.addLine("slide profiler: " + tp6.getAverageTimePerUpdateMillis());
-        telemetry.addLine("intake profiler: " + tp7.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("---------------- FIREFLY BASE CLASS TELEM ---------------");
+//        telemetry.addLine("rr localization profiler: " + tp1.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("bulk data profiler: " + tp2.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("localization conversion profiler: " + tp3.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("drivetrain power profiler: " + tp4.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("outtake profiler: " + tp5.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("slide profiler: " + tp6.getAverageTimePerUpdateMillis());
+//        telemetry.addLine("intake profiler: " + tp7.getAverageTimePerUpdateMillis());
     }
 
 
@@ -304,75 +313,54 @@ public class Firefly extends TunableOpMode {
 
 
 
-    /**
-     * gets all the data from the expansion hubs in one command
-     */
-    public void getRevBulkData() {
-        RevBulkData newMasterData;
-
-        try {
-            newMasterData = master.getBulkInputData();
-            if(newMasterData != null) {
-                masterData = newMasterData;
-            }
-        }
-        catch(Exception e) {
-            // dont do anything if we get exception
-        }
-
-
-        RevBulkData newSlaveData;
-
-        try {
-            newSlaveData = slave.getBulkInputData();
-            if(newSlaveData != null) {
-                slaveData = newSlaveData;
-            }
-        }
-
-        catch(Exception e) {}
-    }
-
-    @SuppressLint("DefaultLocale")
-    private String mecanumPowers() {
-        return String.format(
-                "\n" +
-                        "(%.1f)---(%.1f)\n" +
-                        "|   Front   |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "(%.1f)---(%.1f)\n"
-                , myDriveTrain.frontLeft.getPower(), myDriveTrain.frontRight.getPower(), myDriveTrain.backLeft.getPower(), myDriveTrain.backRight.getPower());
-    }
+//    /**
+//     * gets all the data from the expansion hubs in one command
+//     */
+//    public void getRevBulkData() {
+//        RevBulkData newMasterData;
+//
+//        try {
+//            newMasterData = master.getBulkInputData();
+//            if(newMasterData != null) {
+//                masterData = newMasterData;
+//            }
+//        }
+//        catch(Exception e) {
+//            // dont do anything if we get exception
+//        }
+//
+//
+//        RevBulkData newSlaveData;
+//
+//        try {
+//            newSlaveData = slave.getBulkInputData();
+//            if(newSlaveData != null) {
+//                slaveData = newSlaveData;
+//            }
+//        }
+//
+//        catch(Exception e) {}
+//    }
 
 
-
-    private void drivePowerTelem() {
-        addSpace();
-        telemetry.addLine("------------- ROBOT VISUAL ---------------");
-        telemetry.addData("movementX", movementX);
-        telemetry.addData("movementY", movementY);
-        telemetry.addData("movementTurn", movementTurn);
-        telemetry.addLine(mecanumPowers());
-    }
 
 
 
 
     private void tuneSlidePID() {
 
-    //        double p = getInt("P");
-      //      double i = getInt("I");
+        //        double p = getInt("P");
+        //      double i = getInt("I");
         //    double d = getInt("D");
         //    mySlide.setPIDCoeffs(p, i, d);
     }
 
 
-    protected void debugMode(boolean debugMode) {
-            myDriveTrain.setDebugging(debugMode);
-            mySlide.setDebugging(debugMode);
-            myIntake.setDebugging(debugMode);
-            myOuttake.setDebugging(debugMode);
+    public void debugMode(boolean debugMode) {
+        myDriveTrain.setDebugging(debugMode);
+        mySlide.setDebugging(debugMode);
+        myIntake.setDebugging(debugMode);
+        myOuttake.setDebugging(debugMode);
     }
 
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.encoderTicksToInches;
 
 /*
  * Simple mecanum drive hardware implementation for Modern Robotics hardware.

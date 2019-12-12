@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.roadrunner.drive;
+package org.firstinspires.ftc.teamcode.Auto;
 
 //import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.config.Config;
@@ -25,7 +25,7 @@ public class DriveConstants {
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = null;
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(5,0.1,1);
     /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
@@ -34,6 +34,7 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience.
      */
+
     public static double WHEEL_RADIUS = 2;
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
     public static double TRACK_WIDTH = 1; // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
@@ -57,7 +58,7 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints( // TODO: CHANGE THESE
-            30.0, 30.0, 0.0,
+            45, 30.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 

@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.DriveTrain;
 
-
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePosition;
 import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
 
 
@@ -80,6 +80,11 @@ public abstract class Auto extends Firefly {
     public void init_loop() {
         super.init_loop();
         telemetry.addLine("auto inited");
+        telemetry.addData("SKYSTONE POSITION", ourSkystonePosition);
+        telemetry.addData("SKYSTONE POSITION", ourSkystonePosition);
+        telemetry.addData("SKYSTONE POSITION", ourSkystonePosition);
+        telemetry.addData("SKYSTONE POSITION", ourSkystonePosition);
+        telemetry.addData("SKYSTONE POSITION", ourSkystonePosition);
     }
 
 
@@ -100,7 +105,6 @@ public abstract class Auto extends Firefly {
     }
 
    public abstract void MainStateMachine();
-
 
 
 }

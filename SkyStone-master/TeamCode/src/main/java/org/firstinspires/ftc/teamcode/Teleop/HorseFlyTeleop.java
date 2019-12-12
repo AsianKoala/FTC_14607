@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 //BASED OFF OF AUTOMATED TELEOP DOES NOT ACCOUNT FOR NEW RESTRUCTURING
 
 import android.annotation.SuppressLint;
+import android.os.SystemClock;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,12 +15,15 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
+import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.scaledWorldHeadingRad;
 
 import java.util.ArrayList;
 
 
-@TeleOp(name = "slide refined teleop")
-public class HorseFlyTeleopSlideRefine extends TunableOpMode {
+
+@TeleOp(name = "main teleop")
+public class HorseFlyTeleop extends TunableOpMode {
 
     /**
      * LIST OF TODOS
@@ -27,7 +31,7 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
      * TODO: add field centric drive that charlie coded
      * TODO: add more state machine stuff so its easier for the driver to use robot
      * TODO: add more stuff that makes it easier for driver to drive
-     */
+     */        double thime =0;
 
     private ExpansionHubMotor leftFront;
     private ExpansionHubMotor rightFront;
@@ -46,9 +50,20 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
 
 
 
+    public final static long toMidTime = 450;
+    public final static long liftTime = 200;//is for rotater now
+    public final static long toBackTime = 750;// is for flipper now
 
+    public final static long toLiftTimeTo = 400;
+    public final static long toBackTimeTo = 700;
 
-    private double newSlideTarget;
+    public final static int liftIncrement = -200;
+    public final static int liftIncrementer = -500;
+
+    private double oldSlideLeft = 0;
+    private double oldSlideRight = 0;
+    private double newSlideLeft = 0;
+    private double newSlideRight = 0;
 
     public static long time = 0;
     public static int count = 0;
@@ -110,13 +125,11 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
         telemetry.update();
     }
 
-    // run until the end of the match (driver presses STOP)
+
     public void loop() {
 
 
         // tunable opmode vars
-
-
 
 
 
@@ -127,25 +140,31 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
          * INTAKE CONTROL
          *
          */
-
+        double intakeMultiplier = 0.75;
+        if(gamepad2.left_stick_button) {
+            intakeMultiplier = 1;
+        }
         double leftIntakePower = gamepad2.left_stick_y - gamepad2.left_stick_x;
         double rightIntakePower = gamepad2.left_stick_y + gamepad2.left_stick_x;
         if(Math.abs(leftIntakePower) < 0.1 || Math.abs(rightIntakePower) < 0.1) {
             leftIntake.setPower(0);
             rightIntake.setPower(0);
         }else {
-            leftIntake.setPower( 0.5 * -leftIntakePower);
-            rightIntake.setPower( 0.5 * -rightIntakePower);
+            leftIntake.setPower( intakeMultiplier * -leftIntakePower);
+            rightIntake.setPower( intakeMultiplier * -rightIntakePower);
         }
 
 
 
 
         /**
-         *
-         *
-         * DRIVE MOTORS CONTROL
-         *
+
+
+
+          DRIVE MOTORS CONTROL
+
+
+
          */
 
         double motorPower;
@@ -158,7 +177,7 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
         }
 
         else {
-            motorPower = 0.95;
+            motorPower = 1;
         }
 
         double threshold = 0.157; // deadzone
@@ -198,11 +217,9 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
         if(gamepad2.right_trigger > 0.5) {
             flipper.setPosition(flipperHome);
         }
-
         if(gamepad2.left_trigger > 0.5) {
             flipper.setPosition(flipperOut);
         }
-
 
 
         // rotater arm control
@@ -252,55 +269,6 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
 
 
 
-        /**
-         *
-         *
-         * FLIP OUT
-         *
-         */
-
-        switch(count)
-        {
-            //task 1: flip to center
-            case 1:
-                flipper.setPosition(flipperBetween);
-                time = System.currentTimeMillis();
-                count++;
-                break;
-            //task 2: lift up
-            case 2:
-                if(System.currentTimeMillis() - time >= toMidTime)
-                {
-                    newSlideTarget = liftIncrement;
-
-                    time = System.currentTimeMillis();
-                    count++;
-                }
-                break;
-            //task 3: flip back
-            case 3:
-                if(System.currentTimeMillis() - time >= liftTime)
-                {
-                    flipper.setPosition(flipperOut);
-                    time = System.currentTimeMillis();
-                    count++;
-                }
-
-                break;
-
-
-            case 4:
-                if(System.currentTimeMillis() - time >= toBackTime)
-                {
-                    rotaterOut();
-                    count = 0;
-                }
-                break;
-        }
-
-
-
-
 
         /**
          *
@@ -316,9 +284,16 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
             //task 1: lift up
             //need to test, this step should not be necesssary
             case 1:
-                gripReady();
-                rotaterReady();
-                newSlideTarget = liftIncrementer;
+                gripper.setPosition(gripperGrip);
+                newSlideLeft = liftIncrementer;//height should not be hardcoded, fix after PID tuned
+                newSlideRight = liftIncrementer;
+
+                //none of :
+                leftSlide.setTargetPosition((int)(newSlideLeft));
+                rightSlide.setTargetPosition((int)(newSlideRight));
+                leftSlide.setPower(1);
+                rightSlide.setPower(1);
+                //this is necessary? coded later already
 
                 chime = System.currentTimeMillis();
                 counter++;
@@ -326,52 +301,162 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
 
             //rotate
             case 2:
-                if(System.currentTimeMillis() - chime >= 750)//amount of time rotation takes
+                if(System.currentTimeMillis() - chime >= 750)//lift is super fast, can also rotate on the way up
                 {
-                    flipper.setPosition(flipperHome);
+
+                    flipper.setPosition(0.95);
+                    counter++;
+                }
+                break;
+            //flip
+            case 3:
+                if(System.currentTimeMillis() - chime >= 2000)//amount of time rotation takes
+                {
+                    rotaterReady();
                     chime = System.currentTimeMillis();
                     counter++;
                 }
 
                 break;
             //pseudo home lift
-            case 3:
-
-                newSlideTarget = psuedoHomer;
-
+            case 4:
+                leftSlide.setTargetPosition((int)psuedoHomer);//changed to pseudo home
+                rightSlide.setTargetPosition((int)psuedoHomer);
+                leftSlide.setPower(0.75);
+                rightSlide.setPower(0.75);
                 chime = System.currentTimeMillis();
-                counter = 0;
+                counter++;
                 break;
 
+            // cock to intermediate
+            case 5:
+                if(System.currentTimeMillis() - chime >= 2000) {
+                    flipper.setPosition(flipperBetween);
+                    /*gripper.setPosition(gripperHome);*/
+                }
+                counter++;
+                break;
+            // gripper close;
+            case 6:
+                grip();
+                counter = 0;
+                break;
         }
 
 
+        /**
+         *
+         *
+         * FLIP OUT
+         *
+         */
+
+        switch(count)//DPAD RIGHT
+        {
+            //task 1: cock to intermediate
+            case 1:
+                flipper.setPosition(flipperBetween);
+                time = System.currentTimeMillis();
+                count++;
+                break;
+                /*flipper.setPosition(0.6);
+                time = System.currentTimeMillis();*/
+            //move lift up
+
+            //task 2: lift up
+            case 2:
+                if(System.currentTimeMillis() - time >= 2000)
+                {
+                    newSlideLeft = liftIncrement;
+                    newSlideRight = liftIncrement;
+                    leftSlide.setTargetPosition((int)(newSlideLeft));
+                    rightSlide.setTargetPosition((int)(newSlideRight));
+                    leftSlide.setPower(1);
+                    rightSlide.setPower(1);
+                    time = System.currentTimeMillis();
+                    count++;
+                }
+                /*leftSlide.setTargetPosition((int)(-200));
+                rightSlide.setTargetPosition((int)(-200));
+                if(System.currentTimeMillis() - time >= toMidTime)
+                {
+                    rotaterOut();
+                }
+                count++;*/
+                break;
+                /*if(System.currentTimeMillis() - time >= toMidTime)
+                {
+                    newSlideLeft = liftIncrement;
+                    newSlideRight = liftIncrement;
+                    leftSlide.setTargetPosition((int)(newSlideLeft));
+                    rightSlide.setTargetPosition((int)(newSlideRight));
+                    leftSlide.setPower(1);
+                    rightSlide.setPower(1);
+                    time = System.currentTimeMillis();
+                    count++;
+                }
+                break;*/
+            //task 3: rotate out
+            case 3:
+                if(System.currentTimeMillis() - time >= liftTime)
+                {
+                    rotaterOut();
+                    time = System.currentTimeMillis();
+                    count++;
+                }
+
+                break;
+
+        /*    case 4:
+                if(System.currentTimeMillis() - time >= 100) {
+                    flipper.setPosition(flipperBetweenBetween);
+                    time = System.currentTimeMillis();
+                    count++;
+                }*/
+
+            //flip out
+            case 4:
+                if(System.currentTimeMillis() - time >= 2000)
+                {
+                    flipper.setPosition(0.25);
+                    count = 0;
+                }
+                break;
+        }
 
 
         /**
          * slide powers here
          */
 
-        double increment = gamepad2.right_stick_y * 100;
+        double slideMultiplier = 100;
+        if(gamepad2.right_stick_button) {
+            slideMultiplier = 25;
+        }
 
-        if(Math.abs(increment) > 25) {
-            newSlideTarget = leftSlide.getCurrentPosition() + increment;
+
+        double increment = gamepad2.right_stick_y * slideMultiplier;
+        if(Math.abs(increment) > 5) {
+            newSlideLeft = leftSlide.getCurrentPosition() + increment;
+            newSlideRight = rightSlide.getCurrentPosition() + increment;
         }
         if(gamepad2.x) {
-            newSlideTarget = psuedoHomer;
+            oldSlideLeft = leftSlide.getCurrentPosition();
+            oldSlideRight = rightSlide.getCurrentPosition();
+            newSlideLeft = -25;
+            newSlideRight = -25;
         }
 
         if(gamepad2.b) {
-            newSlideTarget = psuedoHomer;
+            oldSlideLeft = leftSlide.getCurrentPosition();
+            oldSlideRight = rightSlide.getCurrentPosition();
+            newSlideLeft = -25.0/2;
+            newSlideRight = -25.0/2;
         }
 
-
-        /**
-         * let this handle ALL movement
-         */
-        if(Math.abs(newSlideTarget - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideTarget - rightSlide.getCurrentPosition()) > 10) {
-            leftSlide.setTargetPosition((int)(newSlideTarget));
-            rightSlide.setTargetPosition((int)(newSlideTarget));
+        if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
+            leftSlide.setTargetPosition((int)(newSlideLeft));
+            rightSlide.setTargetPosition((int)(newSlideRight));
             leftSlide.setPower(1);
             rightSlide.setPower(1);
         }
@@ -405,15 +490,18 @@ public class HorseFlyTeleopSlideRefine extends TunableOpMode {
                 , leftFront.getPower(), rightFront.getPower(), leftRear.getPower(), rightRear.getPower());
     }
 
-    /**
-     * @return whether or not the intake motors are busy
-     */
 
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {
         leftIntake.setPower(leftIntakePower);
         rightIntake.setPower(rightIntakePower);
     }
+
+
+    public void stopIntake() { setIntakePowers(0,0);}
+
+
+    // ready
 
 
 
