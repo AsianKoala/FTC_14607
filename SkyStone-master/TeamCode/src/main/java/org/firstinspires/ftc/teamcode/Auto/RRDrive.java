@@ -190,6 +190,13 @@ public class RRDrive extends SampleMecanumDriveBase {
                 , FL.getPower(), FR.getPower(), BL.getPower(), BR.getPower());
     }
 
+    public void driveMecanum(double xPower,double yPower,double  zPower) {
+        yPower = -yPower;
+        FR.setPower(1 * (((-yPower) + (xPower)) + -zPower));
+        BL.setPower(1 * (((-yPower) + (-xPower)) + zPower));
+        FL.setPower(1 * (((-yPower) + (xPower)) + zPower));
+        BR.setPower(1 * (((-yPower) + (-xPower)) + -zPower));
+    }
 
 
     public void setIntakePowers(double leftIntakePower, double rightIntakePower) {

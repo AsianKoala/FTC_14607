@@ -39,7 +39,7 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePo
 
 
 @Autonomous(name = "Blue Skystone TIME", group = "Firefly")
-public class BlueSkystone_Time extends LinearOpMode {
+public class BlueSkystoneTime extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
