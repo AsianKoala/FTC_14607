@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -32,10 +36,15 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePosition;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.psuedoHomer;
+
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
 @Autonomous(name = "Blue Skystone TIME", group = "Firefly")
@@ -53,22 +62,12 @@ public class BlueSkystoneTime extends LinearOpMode {
     private DcMotor rightRear;
     private DcMotor leftIntake;
     private DcMotor rightIntake;
-    private DcMotor leftSlide;
-    private DcMotor rightSlide;
+    private ExpansionHubMotor leftSlide;
+    private ExpansionHubMotor rightSlide;
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
+    private BNO055IMU imu;
 
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
-
-
-
-
-    private final double flipperHome =  0.95;
-    private final double flipperOut = 0.25;
-    private final double flipperBetween = (flipperHome + flipperOut)/2;
-    private final double rotaterHome = 0.279;
-    private final double rotaterOut = 0.95;
-    private final double gripperHome = 0.41;
-    private final double gripperGrip = 0.2;
 
     private double oldSlideLeft = 0;
     private double oldSlideRight = 0;
@@ -85,9 +84,9 @@ public class BlueSkystoneTime extends LinearOpMode {
     private static float rectWidth = 1.5f/8f;
 
 
-    private static float[] midPos = {4f/8f, 2.7f/8f};//0 = col, 1 = row
-    private static float[] leftPos = {2f/8f, 2.7f/8f};
-    private static float[] rightPos = {6f/8f, 2.7f/8f};
+    private static float[] midPos = {4.3f/8f, 2.7f/8f};//0 = col, 1 = row
+    private static float[] leftPos = {2.3f/8f, 2.7f/8f};
+    private static float[] rightPos = {6.3f/8f, 2.7f/8f};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     private final int rows = 640;
@@ -95,8 +94,23 @@ public class BlueSkystoneTime extends LinearOpMode {
 
     OpenCvCamera phoneCam;
 
+    public  final static double flipperHome =  0.15;
+    public final  static double flipperOut = 0.8513;
+    public  final static double flipperBetween = 0.3;
+    public   static double rotaterHome = 0.279;
+    public  static double rotaterOut = 0.95;
+    public final static double gripperHome = 0.82;
+    public final static double gripperGrip = 0.19;
+
+    public  static double P = 15;
+    public  static double I = 0.005;
+    public  static double D = 6.2045;
+
     @Override
     public void runOpMode() throws InterruptedException {
+
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         leftFront = hardwareMap.get(DcMotor.class, "FL");
         leftRear = hardwareMap.get(DcMotor.class, "BL");
@@ -104,8 +118,8 @@ public class BlueSkystoneTime extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "BR");
         leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");
         rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");
-        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
+        leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
 
         gripper = hardwareMap.get(Servo.class, "gripper");
         flipper = hardwareMap.get(Servo.class, "flipper");
@@ -125,11 +139,24 @@ public class BlueSkystoneTime extends LinearOpMode {
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        leftSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
+        rightSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
+
 
         driveMotors.add(leftRear);
         driveMotors.add(leftFront);
         driveMotors.add(rightFront);
         driveMotors.add(rightRear);
+
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
+
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+
+
 
         double yPower = 0;
         double xPower = 0;
@@ -146,6 +173,12 @@ public class BlueSkystoneTime extends LinearOpMode {
         //width, height
         //width = height in this case, because camera is in portrait mode.
 
+
+
+        flipper.setPosition(flipperBetween);
+        rotater.setPosition(rotaterHome);
+        gripper.setPosition(gripperHome);
+
         while(!isStarted() && !isStopRequested()) {
             if(valLeft == 0) {
                 ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.LEFT;
@@ -160,26 +193,38 @@ public class BlueSkystoneTime extends LinearOpMode {
             }        
         }
 
+        double startHeading = imu.getAngularOrientation().firstAngle;
+        double heading = getHeading(startHeading);
+
         phoneCam.closeCameraDevice();
 
+        leftSlide.setTargetPosition(-25);//changed to pseudo home
+        rightSlide.setTargetPosition(-25);
+        leftSlide.setPower(0.75);
+        rightSlide.setPower(0.75);
+
         if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.MIDDLE) {
-            xPower = 0.5;
+            xPower = -0.3;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(200);
             
             xPower = 0;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
+            sleep(1000);
+
+            leftIntake.setPower(-0.7);
+            rightIntake.setPower(-0.7);
             sleep(1000);
 
             xPower = 0;
             yPower = 0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(2000);
 
             xPower = 0;
             yPower = 0;
@@ -187,36 +232,11 @@ public class BlueSkystoneTime extends LinearOpMode {
             driveMecanum(xPower, yPower, zPower);
             sleep(500);
 
-            xPower = 0;
-            yPower = 0;
-            zPower = -0.5;
-            driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
-            
-
-            xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
-            sleep(500);
-            
-            leftIntake.setPower(-0.75);
-            rightIntake.setPower(-0.75);
+            leftIntake.setPower(-1);
+            rightIntake.setPower(-1);
             sleep(1000);
 
-            xPower = 0.5;
-            yPower = 0.5;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
-
             xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
-            sleep(500);
-
-            xPower = -0.5;
             yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -224,7 +244,119 @@ public class BlueSkystoneTime extends LinearOpMode {
 
             leftIntake.setPower(0);
             rightIntake.setPower(0);
-            sleep(1000);
+
+            flipper.setPosition(flipperHome);
+            gripper.setPosition(gripperGrip);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(500);
+
+            ///////////////
+            xPower = 0;
+            yPower = 0;
+            zPower = -0.5;
+            driveMecanum(xPower, yPower, zPower);
+            while(opModeIsActive() && getHeading(startHeading)>-Math.PI/2){
+                telemetry.addData("imu heading", getHeading(startHeading));
+                telemetry.update();
+            }
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = 0.25;
+            driveMecanum(xPower, yPower, zPower);
+            while(opModeIsActive() && getHeading(startHeading)<-Math.PI/2){
+
+            }
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            //////////////////////
+
+            xPower = 0;
+            yPower = 0.5;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(3200);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(500);
+
+
+
+            ///////////////
+            xPower = 0;
+            yPower = 0;
+            zPower = 0.5;
+            driveMecanum(xPower, yPower, zPower);
+            while(opModeIsActive() && getHeading(startHeading)<0){
+                telemetry.addData("imu heading", getHeading(startHeading));
+                telemetry.update();
+            }
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = -0.25;
+            driveMecanum(xPower, yPower, zPower);
+            while(opModeIsActive() && getHeading(startHeading)>0){
+
+            }
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            //////////////////////
+
+            xPower = 0;
+            yPower = 0.3;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(2000);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(500);
+
+            grabFoundation();
+            sleep(2000);
+
+            xPower = 0;
+            yPower = -0.3;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(2000);
+
+            xPower = 0;
+            yPower = -0.2;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(1500);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(500);
+
+            ungrabFoundation();
+
 
         }else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.LEFT) {
 
@@ -234,6 +366,10 @@ public class BlueSkystoneTime extends LinearOpMode {
             // oops
         }
 
+    }
+
+    public double getHeading(double startHeading){
+        return -(imu.getAngularOrientation().firstAngle-startHeading);
     }
     public void driveMecanum(double xPower,double yPower,double  zPower) {
         yPower = -yPower;

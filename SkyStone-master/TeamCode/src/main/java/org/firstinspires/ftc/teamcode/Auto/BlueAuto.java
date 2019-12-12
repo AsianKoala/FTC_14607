@@ -30,6 +30,7 @@ public class BlueAuto extends LinearOpMode {
     private DcMotor rightSlide;
     private Servo flipper, gripper, rotater, leftSlam, rightSlam;
 
+
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
 
 
