@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -95,7 +96,7 @@ public class BlueSkystone extends LinearOpMode {
         runtime.reset();
 
 
-        Trajectory test = new TrajectoryBuilder()
+
 
 
 
