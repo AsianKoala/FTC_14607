@@ -44,7 +44,7 @@ public class RRDrive extends SampleMecanumDriveBase {
         // TODO: adjust the names of the following hardware devices to match your configuration
         // for simplicity, we assume that the desired IMU and drive motors are on the same hub
         // if your motors are split between hubs, **you will need to add another bulk read**
-        master = hardwareMap.get(ExpansionHubEx.class, "hub");
+        master = hardwareMap.get(ExpansionHubEx.class, "master");
         slave = hardwareMap.get(ExpansionHubEx.class, "follower");
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
