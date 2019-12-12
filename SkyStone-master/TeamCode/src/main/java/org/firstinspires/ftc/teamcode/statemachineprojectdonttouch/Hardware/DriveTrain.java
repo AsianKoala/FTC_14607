@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.*;
+import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.*;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 public class DriveTrain extends SampleMecanumDriveBase {

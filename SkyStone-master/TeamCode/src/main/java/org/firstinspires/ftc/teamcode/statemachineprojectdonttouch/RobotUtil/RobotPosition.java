@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.HelperClasses.OdometryModule;
 
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.TICKS_PER_REV;
-import static org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.DriveConstants.inchesToEncoderTicks;
+import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.TICKS_PER_REV;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.AngleWrap;
 
 
