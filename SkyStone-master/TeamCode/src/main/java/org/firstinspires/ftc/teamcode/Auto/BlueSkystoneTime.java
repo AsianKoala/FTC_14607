@@ -96,7 +96,7 @@ public class BlueSkystoneTime extends LinearOpMode {
 
     public  final static double flipperHome =  0.15;
     public final  static double flipperOut = 0.8513;
-    public  final static double flipperBetween = 0.3;
+    public  final static double flipperBetween = 0.15;
     public   static double rotaterHome = 0.279;
     public  static double rotaterOut = 0.95;
     public final static double gripperHome = 0.82;
@@ -285,7 +285,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(3200);
+            sleep(2400);
 
             xPower = 0;
             yPower = 0;
@@ -326,7 +326,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(2000);
+            sleep(750);
 
             xPower = 0;
             yPower = 0;
@@ -338,7 +338,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             sleep(2000);
 
             xPower = 0;
-            yPower = -0.3;
+            yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
             sleep(2000);
@@ -347,7 +347,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = -0.2;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
+            sleep(2000);
 
             xPower = 0;
             yPower = 0;
