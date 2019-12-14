@@ -96,7 +96,7 @@ public class BlueSkystoneTime extends LinearOpMode {
 
     public  final static double flipperHome =  0.15;
     public final  static double flipperOut = 0.8513;
-    public  final static double flipperBetween = 0.15;
+    public  final static double flipperBetween = 0.3;
     public   static double rotaterHome = 0.279;
     public  static double rotaterOut = 0.95;
     public final static double gripperHome = 0.82;
@@ -175,7 +175,7 @@ public class BlueSkystoneTime extends LinearOpMode {
 
 
 
-        flipper.setPosition(flipperBetween);
+        flipper.setPosition(0.22);
         rotater.setPosition(rotaterHome);
         gripper.setPosition(gripperHome);
 
@@ -198,8 +198,8 @@ public class BlueSkystoneTime extends LinearOpMode {
 
         phoneCam.closeCameraDevice();
 
-        leftSlide.setTargetPosition(-25);//changed to pseudo home
-        rightSlide.setTargetPosition(-25);
+        leftSlide.setTargetPosition(-10);//changed to pseudo home
+        rightSlide.setTargetPosition(-10);
         leftSlide.setPower(0.75);
         rightSlide.setPower(0.75);
 
@@ -214,11 +214,11 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(100);
 
             leftIntake.setPower(-0.7);
             rightIntake.setPower(-0.7);
-            sleep(1000);
+            sleep(250);
 
             xPower = 0;
             yPower = 0.5;
@@ -230,11 +230,11 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(500);
+            sleep(250);
 
             leftIntake.setPower(-1);
             rightIntake.setPower(-1);
-            sleep(1000);
+            sleep(250);
 
             xPower = 0;
             yPower = -0.5;
@@ -242,17 +242,16 @@ public class BlueSkystoneTime extends LinearOpMode {
             driveMecanum(xPower, yPower, zPower);
             sleep(1500);
 
-            leftIntake.setPower(0);
-            rightIntake.setPower(0);
 
             flipper.setPosition(flipperHome);
-            gripper.setPosition(gripperGrip);
 
             xPower = 0;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
             sleep(500);
+            gripper.setPosition(gripperGrip);
+
 
             ///////////////
             xPower = 0;
@@ -277,21 +276,30 @@ public class BlueSkystoneTime extends LinearOpMode {
             }
             xPower = 0;
             yPower = 0;
+            zPower = -0.25;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(100);
+            xPower = 0;
+            yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
+            sleep(100);
             //////////////////////
+
+            leftIntake.setPower(0);
+            rightIntake.setPower(0);
 
             xPower = 0;
             yPower = 0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(2400);
+            sleep(2750);
 
             xPower = 0;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(500);
+            sleep(250);
 
 
 
@@ -326,7 +334,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(750);
+            sleep(1000);
 
             xPower = 0;
             yPower = 0;
@@ -335,34 +343,123 @@ public class BlueSkystoneTime extends LinearOpMode {
             sleep(500);
 
             grabFoundation();
-            sleep(2000);
+            sleep(1100);
 
             xPower = 0;
-            yPower = -0.5;
+            yPower = -0.65;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(2000);
+            sleep(1200);
 
             xPower = 0;
             yPower = -0.2;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(2000);
+            sleep(600);
 
             xPower = 0;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(500);
+            sleep(250);
 
             ungrabFoundation();
 
+            xPower = 0.5;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(1850);
 
-        }else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.LEFT) {
+            xPower = 0;
+            yPower = 0.5;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(700);
 
-        }else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.RIGHT) {
+            xPower = -0.5;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(1200);
 
-        }else {
+            xPower = 0.5;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(300);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+
+            flipper.setPosition(flipperBetween);
+            sleep(600);
+
+            leftSlide.setTargetPosition(-400);//changed to pseudo home
+            rightSlide.setTargetPosition(-400);
+            leftSlide.setPower(0.75);
+            rightSlide.setPower(0.75);
+
+            ///////////////
+            xPower = 0;
+            yPower = 0;
+            zPower = 0.75;
+            driveMecanum(xPower, yPower, zPower);
+            while(opModeIsActive() && getHeading(startHeading)<-5*Math.PI/4 && getHeading(startHeading)>-Math.PI/4){
+                telemetry.addData("imu heading", getHeading(startHeading));
+                telemetry.update();
+            }
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = -0.6;
+            driveMecanum(xPower, yPower, zPower);
+            while(opModeIsActive() && getHeading(startHeading)>-5*Math.PI/4){
+
+            }
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            //////////////////////
+
+            rotater.setPosition(rotaterHome);
+            flipper.setPosition(0.7);
+            sleep(1000);
+            gripper.setPosition(gripperHome);
+            sleep(1500);
+            flipper.setPosition(flipperBetween);
+            sleep(1500);
+            leftSlide.setTargetPosition(-20);//changed to pseudo home
+            rightSlide.setTargetPosition(-20);
+            leftSlide.setPower(0.75);
+            rightSlide.setPower(0.75);
+            sleep(1000);
+
+            xPower = 0;
+            yPower = 0.5;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+            sleep(200);
+
+            xPower = 0;
+            yPower = 0;
+            zPower = 0;
+            driveMecanum(xPower, yPower, zPower);
+
+
+
+        } else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.LEFT) {
+
+        } else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.RIGHT) {
+
+        } else {
             // oops
         }
 
