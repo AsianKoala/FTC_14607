@@ -8,6 +8,9 @@ public  class GLOBALS {
     public  final static double flipperHome =  0.15;
     public final  static double flipperOut = 0.8513;
     public  final static double flipperBetween = 0.3;
+    public final static double capUp = .9;
+    public final static double capBetween = 0.6;
+    public final static double capDown = .1;
     public   static double rotaterHome = 0.279;
     public  static double rotaterOut = 0.95;
     public final static double gripperHome = 0.82;

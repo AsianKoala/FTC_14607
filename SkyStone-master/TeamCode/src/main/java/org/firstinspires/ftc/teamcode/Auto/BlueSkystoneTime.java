@@ -64,7 +64,7 @@ public class BlueSkystoneTime extends LinearOpMode {
     private DcMotor rightIntake;
     private ExpansionHubMotor leftSlide;
     private ExpansionHubMotor rightSlide;
-    private Servo flipper, gripper, rotater, leftSlam, rightSlam;
+    private Servo flipper, gripper, rotater, leftSlam, rightSlam, capstone;
     private BNO055IMU imu;
 
     private ArrayList<DcMotor> driveMotors = new ArrayList<>();
@@ -126,6 +126,7 @@ public class BlueSkystoneTime extends LinearOpMode {
         rotater = hardwareMap.get(Servo.class, "rotater");
         leftSlam = hardwareMap.get(Servo.class, "leftSlam");
         rightSlam = hardwareMap.get(Servo.class, "rightSlam");
+        capstone = hardwareMap.get(Servo.class, "capstone");
 
 
 
@@ -174,7 +175,7 @@ public class BlueSkystoneTime extends LinearOpMode {
         //width = height in this case, because camera is in portrait mode.
 
 
-
+        capstone.setPosition(0.9);
         flipper.setPosition(0.22);
         rotater.setPosition(rotaterHome);
         gripper.setPosition(gripperHome);
