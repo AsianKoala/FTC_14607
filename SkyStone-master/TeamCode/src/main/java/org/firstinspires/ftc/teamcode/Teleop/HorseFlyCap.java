@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 
 
-@TeleOp(name = "oi cabpitch")
+@TeleOp(name = "MAIN teleop control")
 public class HorseFlyCap extends TunableOpMode {
 
     /**
@@ -118,6 +118,7 @@ public class HorseFlyCap extends TunableOpMode {
         /*
          * HOME THE FLIP AND GRIP SERVO
          */
+        capstone.setPosition(capBetween);
         flipReady();
         rotaterReady();
         gripReady();
@@ -195,6 +196,14 @@ public class HorseFlyCap extends TunableOpMode {
             rightFront.setPower(0);
             leftRear.setPower(0);
             rightRear.setPower(0);
+        }
+
+        if(gamepad1.left_stick_button) {
+            capstone.setPosition(capBetween);
+        }else if(gamepad1.right_trigger > 0.5) {
+            capstone.setPosition(capDown);
+        }else{
+            capstone.setPosition(capUp);
         }
 
 

@@ -4,32 +4,19 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-
-import java.util.ArrayList;
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -38,17 +25,14 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePosition;
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.psuedoHomer;
-
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
-@Autonomous(name = "Blue Skystone TIME", group = "Firefly")
-public class BlueSkystoneTime extends LinearOpMode {
+@Autonomous(name = "Red Skystone TIME", group = "Firefly")
+public class RedSkystoneTime extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
@@ -205,7 +189,7 @@ public class BlueSkystoneTime extends LinearOpMode {
         rightSlide.setPower(0.75);
 
         if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.MIDDLE) {
-            xPower = -0.3;
+            xPower = 0.3;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -257,9 +241,9 @@ public class BlueSkystoneTime extends LinearOpMode {
             ///////////////
             xPower = 0;
             yPower = 0;
-            zPower = -0.5;
+            zPower = 0.5;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>-Math.PI/2){
+            while(opModeIsActive() && getHeading(startHeading)>-3*Math.PI/2 && getHeading(startHeading)>-7*Math.PI/4){
                 telemetry.addData("imu heading", getHeading(startHeading));
                 telemetry.update();
             }
@@ -270,14 +254,14 @@ public class BlueSkystoneTime extends LinearOpMode {
 
             xPower = 0;
             yPower = 0;
-            zPower = 0.25;
+            zPower = -0.25;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<-Math.PI/2){
+            while(opModeIsActive() && getHeading(startHeading)<-3*Math.PI/2){
 
             }
             xPower = 0;
             yPower = 0;
-            zPower = -0.25;
+            zPower = 0.25;
             driveMecanum(xPower, yPower, zPower);
             sleep(100);
             xPower = 0;
@@ -307,9 +291,9 @@ public class BlueSkystoneTime extends LinearOpMode {
             ///////////////
             xPower = 0;
             yPower = 0;
-            zPower = 0.5;
+            zPower = -0.5;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<0){
+            while(opModeIsActive() && getHeading(startHeading)<-Math.PI){
                 telemetry.addData("imu heading", getHeading(startHeading));
                 telemetry.update();
             }
@@ -320,9 +304,9 @@ public class BlueSkystoneTime extends LinearOpMode {
 
             xPower = 0;
             yPower = 0;
-            zPower = -0.25;
+            zPower = 0.25;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>0){
+            while(opModeIsActive() && getHeading(startHeading)>-Math.PI){
 
             }
             xPower = 0;
@@ -366,7 +350,7 @@ public class BlueSkystoneTime extends LinearOpMode {
 
             ungrabFoundation();
 
-            xPower = 0.5;
+            xPower = -0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -378,13 +362,13 @@ public class BlueSkystoneTime extends LinearOpMode {
             driveMecanum(xPower, yPower, zPower);
             sleep(700);
 
-            xPower = -0.5;
+            xPower = 0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
             sleep(1200);
 
-            xPower = 0.5;
+            xPower = -0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -406,9 +390,9 @@ public class BlueSkystoneTime extends LinearOpMode {
             ///////////////
             xPower = 0;
             yPower = 0;
-            zPower = 0.75;
+            zPower = -0.75;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<-5*Math.PI/4 && getHeading(startHeading)>-Math.PI/4){
+            while(opModeIsActive() && getHeading(startHeading)>-Math.PI/4 && getHeading(startHeading)<-5*Math.PI/4){
                 telemetry.addData("imu heading", getHeading(startHeading));
                 telemetry.update();
             }
@@ -417,17 +401,6 @@ public class BlueSkystoneTime extends LinearOpMode {
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
 
-            xPower = 0;
-            yPower = 0;
-            zPower = -0.6;
-            driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>-5*Math.PI/4){
-
-            }
-            xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
             //////////////////////
 
             rotater.setPosition(rotaterHome);

@@ -118,6 +118,7 @@ public class HorseFlyTeleop extends TunableOpMode {
         /*
          * HOME THE FLIP AND GRIP SERVO
          */
+
         flipReady();
         rotaterReady();
         gripReady();
