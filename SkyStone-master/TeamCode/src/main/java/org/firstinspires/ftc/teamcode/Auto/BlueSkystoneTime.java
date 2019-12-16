@@ -241,7 +241,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
+            sleep(1100); //1500 move
 
 
             flipper.setPosition(flipperHome);
@@ -335,7 +335,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(625); //1000 move
 
             xPower = 0;
             yPower = 0;
@@ -497,7 +497,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
+            sleep(1100); //1500 move
 
 
             flipper.setPosition(flipperHome);
@@ -602,7 +602,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(625); //1000 move
 
             xPower = 0;
             yPower = 0;
@@ -762,7 +762,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
+            sleep(1100); //1500 move
 
 
             flipper.setPosition(flipperHome);
@@ -867,7 +867,7 @@ public class BlueSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(625); //1000 move
 
             xPower = 0;
             yPower = 0;

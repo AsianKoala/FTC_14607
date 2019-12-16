@@ -83,8 +83,8 @@ public class RedSkystoneTime extends LinearOpMode {
     public  final static double flipperBetween = 0.3;
     public   static double rotaterHome = 0.279;
     public  static double rotaterOut = 0.95;
-    public final static double gripperHome = 0.82;
-    public final static double gripperGrip = 0.19;
+    public final static double gripperHome = 0.19;
+    public final static double gripperGrip = 0.82;
 
     public  static double P = 15;
     public  static double I = 0.005;
@@ -159,7 +159,7 @@ public class RedSkystoneTime extends LinearOpMode {
         //width = height in this case, because camera is in portrait mode.
 
 
-        capstone.setPosition(0.9);
+//        capstone.setPosition(0.9);
         flipper.setPosition(0.22);
         rotater.setPosition(rotaterHome);
         gripper.setPosition(gripperHome);
@@ -225,7 +225,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
+            sleep(1100); //move back 1500
 
 
             flipper.setPosition(flipperHome);
@@ -293,22 +293,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = -0.5;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading) < 5*Math.PI/4){
-                telemetry.addData("imu heading", getHeading(startHeading));
-                telemetry.update();
-            }
-            xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
-
-            xPower = 0;
-            yPower = 0;
-            zPower = 0.25;
-            driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>Math.PI){
-
-            }
+            sleep(850);
             xPower = 0;
             yPower = 0;
             zPower = 0;
@@ -319,7 +304,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(625); //move forward 1000
 
             xPower = 0;
             yPower = 0;
@@ -392,10 +377,11 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0.75;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<3*Math.PI/4 || getHeading(startHeading)>3*Math.PI/2){
-                telemetry.addData("imu heading", getHeading(startHeading));
-                telemetry.update();
-            }
+//            while(opModeIsActive() && getHeading(startHeading)<3*Math.PI/4 || getHeading(startHeading)>3*Math.PI/2){
+//                telemetry.addData("imu heading", getHeading(startHeading));
+//                telemetry.update();
+//            }
+            sleep(1150);
             xPower = 0;
             yPower = 0;
             zPower = 0;
@@ -470,7 +456,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
+            sleep(1100); //move back 1500
 
 
             flipper.setPosition(flipperHome);
@@ -491,15 +477,15 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(100);
+            sleep(250);
 
 
             ///////////////
             xPower = 0;
             yPower = 0;
-            zPower = -0.5;
+            zPower = 0.5;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>-Math.PI/2){
+            while(opModeIsActive() && ( getHeading(startHeading)<Math.PI/2 || getHeading(startHeading) > 3*Math.PI/2)){
                 telemetry.addData("imu heading", getHeading(startHeading));
                 telemetry.update();
             }
@@ -510,14 +496,14 @@ public class RedSkystoneTime extends LinearOpMode {
 
             xPower = 0;
             yPower = 0;
-            zPower = 0.25;
+            zPower = -0.25;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<-Math.PI/2){
+            while(opModeIsActive() && getHeading(startHeading)>Math.PI/2){
 
             }
             xPower = 0;
             yPower = 0;
-            zPower = -0.25;
+            zPower = 0.25;
             driveMecanum(xPower, yPower, zPower);
             sleep(100);
             xPower = 0;
@@ -547,24 +533,9 @@ public class RedSkystoneTime extends LinearOpMode {
             ///////////////
             xPower = 0;
             yPower = 0;
-            zPower = 0.5;
+            zPower = -0.5;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<0){
-                telemetry.addData("imu heading", getHeading(startHeading));
-                telemetry.update();
-            }
-            xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
-
-            xPower = 0;
-            yPower = 0;
-            zPower = -0.25;
-            driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>0){
-
-            }
+            sleep(850);
             xPower = 0;
             yPower = 0;
             zPower = 0;
@@ -575,7 +546,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(625); //move forward 1000
 
             xPower = 0;
             yPower = 0;
@@ -606,7 +577,7 @@ public class RedSkystoneTime extends LinearOpMode {
 
             ungrabFoundation();
 
-            xPower = 0.5;
+            xPower = -0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -618,13 +589,13 @@ public class RedSkystoneTime extends LinearOpMode {
             driveMecanum(xPower, yPower, zPower);
             sleep(700);
 
-            xPower = -0.5;
+            xPower = 0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
             sleep(1200);
 
-            xPower = 0.5;
+            xPower = -0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -648,26 +619,16 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0.75;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<-5*Math.PI/4 && getHeading(startHeading)>-Math.PI/4){
-                telemetry.addData("imu heading", getHeading(startHeading));
-                telemetry.update();
-            }
+//            while(opModeIsActive() && getHeading(startHeading)<3*Math.PI/4 || getHeading(startHeading)>3*Math.PI/2){
+//                telemetry.addData("imu heading", getHeading(startHeading));
+//                telemetry.update();
+//            }
+            sleep(1150);
             xPower = 0;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
 
-            xPower = 0;
-            yPower = 0;
-            zPower = -0.6;
-            driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>-5*Math.PI/4){
-
-            }
-            xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
             //////////////////////
 
             rotater.setPosition(rotaterHome);
@@ -735,7 +696,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = -0.5;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1500);
+            sleep(1100); //move back 1500
 
 
             flipper.setPosition(flipperHome);
@@ -756,15 +717,15 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(100);
+            sleep(250);
 
 
             ///////////////
             xPower = 0;
             yPower = 0;
-            zPower = -0.5;
+            zPower = 0.5;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>-Math.PI/2){
+            while(opModeIsActive() && ( getHeading(startHeading)<Math.PI/2 || getHeading(startHeading) > 3*Math.PI/2)){
                 telemetry.addData("imu heading", getHeading(startHeading));
                 telemetry.update();
             }
@@ -775,14 +736,14 @@ public class RedSkystoneTime extends LinearOpMode {
 
             xPower = 0;
             yPower = 0;
-            zPower = 0.25;
+            zPower = -0.25;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<-Math.PI/2){
+            while(opModeIsActive() && getHeading(startHeading)>Math.PI/2){
 
             }
             xPower = 0;
             yPower = 0;
-            zPower = -0.25;
+            zPower = 0.25;
             driveMecanum(xPower, yPower, zPower);
             sleep(100);
             xPower = 0;
@@ -812,24 +773,9 @@ public class RedSkystoneTime extends LinearOpMode {
             ///////////////
             xPower = 0;
             yPower = 0;
-            zPower = 0.5;
+            zPower = -0.5;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<0){
-                telemetry.addData("imu heading", getHeading(startHeading));
-                telemetry.update();
-            }
-            xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
-
-            xPower = 0;
-            yPower = 0;
-            zPower = -0.25;
-            driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>0){
-
-            }
+            sleep(850);
             xPower = 0;
             yPower = 0;
             zPower = 0;
@@ -840,7 +786,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0.3;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
-            sleep(1000);
+            sleep(625); //move forward 1000
 
             xPower = 0;
             yPower = 0;
@@ -871,7 +817,7 @@ public class RedSkystoneTime extends LinearOpMode {
 
             ungrabFoundation();
 
-            xPower = 0.5;
+            xPower = -0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -883,13 +829,13 @@ public class RedSkystoneTime extends LinearOpMode {
             driveMecanum(xPower, yPower, zPower);
             sleep(700);
 
-            xPower = -0.5;
+            xPower = 0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
             sleep(1200);
 
-            xPower = 0.5;
+            xPower = -0.5;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
@@ -913,26 +859,16 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0.75;
             driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)<-5*Math.PI/4 && getHeading(startHeading)>-Math.PI/4){
-                telemetry.addData("imu heading", getHeading(startHeading));
-                telemetry.update();
-            }
+//            while(opModeIsActive() && getHeading(startHeading)<3*Math.PI/4 || getHeading(startHeading)>3*Math.PI/2){
+//                telemetry.addData("imu heading", getHeading(startHeading));
+//                telemetry.update();
+//            }
+            sleep(1150);
             xPower = 0;
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
 
-            xPower = 0;
-            yPower = 0;
-            zPower = -0.6;
-            driveMecanum(xPower, yPower, zPower);
-            while(opModeIsActive() && getHeading(startHeading)>-5*Math.PI/4){
-
-            }
-            xPower = 0;
-            yPower = 0;
-            zPower = 0;
-            driveMecanum(xPower, yPower, zPower);
             //////////////////////
 
             rotater.setPosition(rotaterHome);
@@ -961,6 +897,7 @@ public class RedSkystoneTime extends LinearOpMode {
             yPower = 0;
             zPower = 0;
             driveMecanum(xPower, yPower, zPower);
+
         } else {
             // oops
         }
