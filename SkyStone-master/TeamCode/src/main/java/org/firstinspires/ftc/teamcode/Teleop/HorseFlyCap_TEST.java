@@ -2,28 +2,36 @@ package org.firstinspires.ftc.teamcode.Teleop;
 //BASED OFF OF AUTOMATED TELEOP DOES NOT ACCOUNT FOR NEW RESTRUCTURING
 
 import android.annotation.SuppressLint;
-import android.os.SystemClock;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
 import org.openftc.revextensions2.ExpansionHubMotor;
 
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.scaledWorldHeadingRad;
-
 import java.util.ArrayList;
 
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.D;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.I;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.P;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.capBetween;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.capDown;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.capUp;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.flipperBetween;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.flipperHome;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.flipperOut;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.gripperGrip;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.gripperHome;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.psuedoHomer;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.rotaterHome;
+import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.rotaterOut;
 
 
-@TeleOp(name = "MAIN teleop control")
-public class HorseFlyCap extends TunableOpMode {
+@TeleOp(name = "TELEOP TESTER")
+public class HorseFlyCap_TEST extends TunableOpMode {
 
     /**
      * LIST OF TODOS
@@ -205,6 +213,12 @@ public class HorseFlyCap extends TunableOpMode {
         }else{
             capstone.setPosition(capDown);
         }
+
+        telemetry.addData("fl encoder value: ", leftFront.getCurrentPosition());
+        telemetry.addData("fr encoder value: ", rightFront.getCurrentPosition());
+        telemetry.addData("bl encoder value: ", leftRear.getCurrentPosition());
+        telemetry.addData("br encoder value: ", rightRear.getCurrentPosition());
+        telemetry.update();
 
 
 
