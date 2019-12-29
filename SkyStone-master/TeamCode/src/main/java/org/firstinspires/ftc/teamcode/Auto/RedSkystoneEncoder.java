@@ -246,7 +246,9 @@ public class RedSkystoneEncoder extends LinearOpMode {
         leftIntake.setPower(-.7);
         rightIntake.setPower(-.7);
 
-        driveEncoders(2086, 2086, 2086, 2086, .9 , .9, .9, .9, 0.4);
+        driveEncodersForwardIMU(2086, 2086, 2086, 2086, .5, .5, .5, .5, 0.2, 5, 0);
+
+        rotateToSquare(0, 0.2, 1);
 
         leftIntake.setPower(-1);
         rightIntake.setPower(-1);
@@ -255,26 +257,34 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
         ungrabFoundation();
 
-        driveEncoders(1100, 1100, 1100, 1100, -.9, -.9, -.9, -.9, 0.4);
+        driveEncodersForwardIMU(1200, 1200, 1200, 1200, -.5, -.5, -.5, -.5, 0.2, 5, 0);
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
 
-        rotateToSquare(0, 0.3);
+        rotateToSquare(0, 0.2, 1);
+
+        rotateToSquare(0, 0.2, 1);
 
         sleep(1000);
 
-        driveEncoders(1100+3000, 1100+3000, 1100-3000, 1100-3000, .9, .9, -.9, -.9, 0.4);
+        driveEncodersStrafe(1200+3000, 1200+3000, 1200-3000, 1200-3000, .9, .9, -.9, -.9, 0.3, 6);
 
-        rotateToSquare(0, 0.3);
+        rotateToSquare(0, 0.2, 1);
 
         // DROP BLOCK HERE
 
         sleep(2500);
 
-        driveEncoders(1100, 1100, 1100, 1100, -.9, -.9, .9, .9, 0.4);
+        rotateToSquare(-90, 0.5, 4);
+        rotateToSquare(-90, 0.2, 1);
+        rotateToSquare(-90, 0.15, 1);
 
-        rotateToSquare(0, 0.3);
+        resetEncoders();
+
+        driveEncodersForwardIMU(3400, 3400, 3400, 3400, .8, .8, .8, .8, 0.2, 5, -90);
+
+        rotateToSquare(-90, 0.2, 1);
 
     }
 
@@ -283,7 +293,7 @@ public class RedSkystoneEncoder extends LinearOpMode {
     }
 
 
-    public void driveEncoders(int fl_target, int fr_target, int bl_target, int br_target, double flpower, double frpower, double blpower, double brpower, double minPower) {
+    public void driveEncodersForwardIMU(int fl_target, int fr_target, int bl_target, int br_target, double flpower, double frpower, double blpower, double brpower, double minPower, double timeoutSec, double targetHeading) {
         int fl_start = leftFront.getCurrentPosition();
         int fr_start = rightFront.getCurrentPosition();
         int bl_start = leftRear.getCurrentPosition();
@@ -301,8 +311,66 @@ public class RedSkystoneEncoder extends LinearOpMode {
         double real_bl_power = 0;
         double real_br_power = 0;
 
-        while(!(fl_reached && fr_reached && bl_reached && br_reached) && opModeIsActive()) {
-            double power = Math.max(Math.abs(flpower) * Math.min(Math.abs(leftFront.getCurrentPosition()-fl_start), Math.abs(fl_target-leftFront.getCurrentPosition())) / Math.abs(fl_target-fl_start) * 2, min_drive_motor_power);
+        double startTime = System.currentTimeMillis();
+
+        while(!(fl_reached && fr_reached && bl_reached && br_reached) && opModeIsActive() && (System.currentTimeMillis()-startTime)/1000 < timeoutSec) {
+
+            double powerLeft = Math.max(min_drive_motor_power + Math.abs(flpower-min_drive_motor_power) * Math.min(Math.abs(leftFront.getCurrentPosition()-fl_start), Math.abs(fl_target-leftFront.getCurrentPosition())) / Math.abs(fl_target-fl_start) * 2, min_drive_motor_power);
+            double powerRight = Math.max(min_drive_motor_power + Math.abs(flpower-min_drive_motor_power) * Math.min(Math.abs(leftFront.getCurrentPosition()-fl_start), Math.abs(fl_target-leftFront.getCurrentPosition())) / Math.abs(fl_target-fl_start) * 2, min_drive_motor_power);
+
+            if(Math.abs(leftFront.getCurrentPosition()-fl_start) >= Math.abs(fl_target-fl_start)) {
+                fl_reached = true;
+                fr_reached = true;
+                bl_reached = true;
+                br_reached = true;
+                real_fl_power = 0;
+            }
+            
+            if(getHeadingRaw180(startHeading) > targetHeading) {
+                powerRight += Math.abs(targetHeading-getHeadingRaw180(startHeading)) / 30 * powerRight;
+            } else {
+                powerLeft += Math.abs(targetHeading-getHeadingRaw180(startHeading)) / 30 * powerLeft;
+            }
+            
+            real_fl_power = Math.signum(flpower) * powerLeft;
+            real_fr_power = Math.signum(frpower) * powerRight;//Math.max(Math.abs(frpower) * Math.min(Math.abs(rightFront.getCurrentPosition()-fr_start), Math.abs(fr_target-rightFront.getCurrentPosition())) / Math.abs(fr_target-fr_start) * 2, min_drive_motor_power));
+            real_bl_power = (Math.signum(blpower) * powerLeft);//Math.max(Math.abs(blpower) * Math.min(Math.abs(leftRear.getCurrentPosition()-bl_start), Math.abs(bl_target-leftRear.getCurrentPosition())) / Math.abs(bl_target-bl_start) * 2, min_drive_motor_power));
+            real_br_power = (Math.signum(brpower) * powerRight);//Math.max(Math.abs(brpower) * Math.min(Math.abs(rightRear.getCurrentPosition()-br_start), Math.abs(br_target-rightRear.getCurrentPosition())) / Math.abs(br_target-br_start) * 2, min_drive_motor_power));
+            leftFront.setPower(real_fl_power);
+            leftRear.setPower(real_bl_power);
+            rightFront.setPower(real_fr_power);
+            rightRear.setPower(real_br_power);
+        }
+
+        leftFront.setPower(0);
+        leftRear.setPower(0);
+        rightFront.setPower(0);
+        rightRear.setPower(0);
+    }
+
+    public void driveEncodersStrafe(int fl_target, int fr_target, int bl_target, int br_target, double flpower, double frpower, double blpower, double brpower, double minPower, double timeoutSec) {
+        int fl_start = leftFront.getCurrentPosition();
+        int fr_start = rightFront.getCurrentPosition();
+        int bl_start = leftRear.getCurrentPosition();
+        int br_start = rightRear.getCurrentPosition();
+
+        double min_drive_motor_power = minPower;
+
+        boolean fl_reached = false;
+        boolean fr_reached = false;
+        boolean bl_reached = false;
+        boolean br_reached = false;
+
+        double real_fl_power = 0;
+        double real_fr_power = 0;
+        double real_bl_power = 0;
+        double real_br_power = 0;
+
+        double startTime = System.currentTimeMillis();
+
+        while(!(fl_reached && fr_reached && bl_reached && br_reached) && opModeIsActive() && (System.currentTimeMillis()-startTime)/1000 < timeoutSec) {
+
+            double power = Math.max(min_drive_motor_power + Math.abs(flpower-min_drive_motor_power) * Math.min(Math.abs(leftFront.getCurrentPosition()-fl_start), Math.abs(fl_target-leftFront.getCurrentPosition())) / Math.abs(fl_target-fl_start) * 2, min_drive_motor_power);
             if(Math.abs(leftFront.getCurrentPosition()-fl_start) >= Math.abs(fl_target-fl_start)) {
                 fl_reached = true;
                 real_fl_power = 0;
@@ -349,10 +417,11 @@ public class RedSkystoneEncoder extends LinearOpMode {
         return -raw;
     }
     
-    public void rotateToSquare(double targetHeading, double power){
+    public void rotateToSquare(double targetHeading, double power, double timeoutSec){
         double currentHeading;
         currentHeading = getHeadingRaw180(startHeading);
-        while(opModeIsActive() && currentHeading > targetHeading) {
+        double startTime = System.currentTimeMillis();
+        while(opModeIsActive() && currentHeading > targetHeading && (System.currentTimeMillis()-startTime)/1000 < timeoutSec) {
             currentHeading = getHeadingRaw180(startHeading);
             leftFront.setPower(-power);
             leftRear.setPower(-power);
@@ -361,7 +430,7 @@ public class RedSkystoneEncoder extends LinearOpMode {
             telemetry.addData("heading: ", currentHeading);
             telemetry.update();
         }
-        while(opModeIsActive() && currentHeading < targetHeading){
+        while(opModeIsActive() && currentHeading < targetHeading && (System.currentTimeMillis()-startTime)/1000 < timeoutSec){
             currentHeading = getHeadingRaw180(startHeading);
             leftFront.setPower(power);
             leftRear.setPower(power);
