@@ -36,6 +36,8 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
+    private double startHeading;
+
     OpenGLMatrix lastLocation = null;
 
     VuforiaLocalizer vuforia;
@@ -99,10 +101,14 @@ public class RedSkystoneEncoder extends LinearOpMode {
         leftRear.setTargetPosition(0);
         rightFront.setTargetPosition(0);
         rightRear.setTargetPosition(0);
-        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
@@ -189,6 +195,8 @@ public class RedSkystoneEncoder extends LinearOpMode {
         rotater.setPosition(rotaterHome);
         gripper.setPosition(gripperHome);
 
+        startHeading = getHeadingRaw180(0);
+
         while(!isStarted() && !isStopRequested()) {
             if(valLeft == 0) {
                 ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.LEFT;
@@ -200,11 +208,13 @@ public class RedSkystoneEncoder extends LinearOpMode {
     
             if(valMid == 0) {
                 ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.MIDDLE;
-            }        
+            }
+            telemetry.addData("heading: ", getHeadingRaw180(startHeading));
+            telemetry.update();
         }
 
-        double startHeading = imu.getAngularOrientation().firstAngle;
-        double heading = getHeading(startHeading);
+
+//        double heading = getHeadingRaw180(startHeading);
 
         phoneCam.closeCameraDevice();
 
@@ -232,50 +242,39 @@ public class RedSkystoneEncoder extends LinearOpMode {
     }
 
     public void middleStone(){
-        resetEncoders();
 
         leftIntake.setPower(-.7);
         rightIntake.setPower(-.7);
 
-        driveEncoders(2086, 2086, 2086, 2086, .25 , .25, .25, .25);
-
-        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()) {
-
-        }
+        driveEncoders(2086, 2086, 2086, 2086, .9 , .9, .9, .9, 0.4);
 
         leftIntake.setPower(-1);
         rightIntake.setPower(-1);
 
-        sleep(2500);
+        sleep(500);
 
-        driveEncoders(1040, 1040, 1040, 1040, -.25, -.25, -.25, -.25);
+        ungrabFoundation();
 
-        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()) {
-
-        }
+        driveEncoders(1100, 1100, 1100, 1100, -.9, -.9, -.9, -.9, 0.4);
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
 
-        resetEncoders();
+        rotateToSquare(0, 0.3);
 
-        sleep(2500);
+        sleep(1000);
 
-        driveEncoders(3000, 3000, -3000, -3000, .5, .5, -.5, -.5);
+        driveEncoders(1100+3000, 1100+3000, 1100-3000, 1100-3000, .9, .9, -.9, -.9, 0.4);
 
-        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()) {
-
-        }
+        rotateToSquare(0, 0.3);
 
         // DROP BLOCK HERE
 
         sleep(2500);
 
-        driveEncoders(0, 0, 0, 0, -.5, -.5, .5, .5);
+        driveEncoders(1100, 1100, 1100, 1100, -.9, -.9, .9, .9, 0.4);
 
-        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()) {
-
-        }
+        rotateToSquare(0, 0.3);
 
     }
 
@@ -284,19 +283,97 @@ public class RedSkystoneEncoder extends LinearOpMode {
     }
 
 
-    public void driveEncoders(int fl, int fr, int bl, int br, double flpower, double frpower, double blpower, double brpower) {
-        leftFront.setTargetPosition(fl);
-        leftRear.setTargetPosition(bl);
-        rightFront.setTargetPosition(fr);
-        rightRear.setTargetPosition(br);
-        leftFront.setPower(flpower);
-        leftRear.setPower(blpower);
-        rightFront.setPower(frpower);
-        rightRear.setPower(brpower);
+    public void driveEncoders(int fl_target, int fr_target, int bl_target, int br_target, double flpower, double frpower, double blpower, double brpower, double minPower) {
+        int fl_start = leftFront.getCurrentPosition();
+        int fr_start = rightFront.getCurrentPosition();
+        int bl_start = leftRear.getCurrentPosition();
+        int br_start = rightRear.getCurrentPosition();
+
+        double min_drive_motor_power = minPower;
+
+        boolean fl_reached = false;
+        boolean fr_reached = false;
+        boolean bl_reached = false;
+        boolean br_reached = false;
+
+        double real_fl_power = 0;
+        double real_fr_power = 0;
+        double real_bl_power = 0;
+        double real_br_power = 0;
+
+        while(!(fl_reached && fr_reached && bl_reached && br_reached) && opModeIsActive()) {
+            double power = Math.max(Math.abs(flpower) * Math.min(Math.abs(leftFront.getCurrentPosition()-fl_start), Math.abs(fl_target-leftFront.getCurrentPosition())) / Math.abs(fl_target-fl_start) * 2, min_drive_motor_power);
+            if(Math.abs(leftFront.getCurrentPosition()-fl_start) >= Math.abs(fl_target-fl_start)) {
+                fl_reached = true;
+                real_fl_power = 0;
+            } else {
+                real_fl_power = Math.signum(flpower) * power;
+            }
+            if(Math.abs(rightFront.getCurrentPosition()-fr_start) >= Math.abs(fr_target-fr_start)) {
+                fr_reached = true;
+                real_fr_power = 0;
+            } else {
+                real_fr_power = Math.signum(frpower) * power;//Math.max(Math.abs(frpower) * Math.min(Math.abs(rightFront.getCurrentPosition()-fr_start), Math.abs(fr_target-rightFront.getCurrentPosition())) / Math.abs(fr_target-fr_start) * 2, min_drive_motor_power));
+            }
+            if(Math.abs(leftRear.getCurrentPosition()-bl_start) >= Math.abs(bl_target-bl_start)) {
+                bl_reached = true;
+                real_bl_power = 0;
+            } else {
+                real_bl_power = (Math.signum(blpower) * power);//Math.max(Math.abs(blpower) * Math.min(Math.abs(leftRear.getCurrentPosition()-bl_start), Math.abs(bl_target-leftRear.getCurrentPosition())) / Math.abs(bl_target-bl_start) * 2, min_drive_motor_power));
+            }
+            if(Math.abs(rightRear.getCurrentPosition()-br_start) >= Math.abs(br_target-br_start)) {
+                br_reached = true;
+                real_br_power = 0;
+            } else {
+                real_br_power = (Math.signum(brpower) * power);//Math.max(Math.abs(brpower) * Math.min(Math.abs(rightRear.getCurrentPosition()-br_start), Math.abs(br_target-rightRear.getCurrentPosition())) / Math.abs(br_target-br_start) * 2, min_drive_motor_power));
+            }
+            leftFront.setPower(real_fl_power);
+            leftRear.setPower(real_bl_power);
+            rightFront.setPower(real_fr_power);
+            rightRear.setPower(real_br_power);
+        }
+
+        leftFront.setPower(0);
+        leftRear.setPower(0);
+        rightFront.setPower(0);
+        rightRear.setPower(0);
     }
 
-    public double getHeading(double startHeading){
-        return (2*Math.PI)-(imu.getAngularOrientation().firstAngle-startHeading);
+    public double getHeadingRaw180(double startHeading){
+        double raw = Math.toDegrees(imu.getAngularOrientation().firstAngle)+startHeading;
+//        if(raw > 180) {
+//            return -(360-raw);
+//        } else {
+//            return raw;
+//        }
+        return -raw;
+    }
+    
+    public void rotateToSquare(double targetHeading, double power){
+        double currentHeading;
+        currentHeading = getHeadingRaw180(startHeading);
+        while(opModeIsActive() && currentHeading > targetHeading) {
+            currentHeading = getHeadingRaw180(startHeading);
+            leftFront.setPower(-power);
+            leftRear.setPower(-power);
+            rightFront.setPower(power);
+            rightRear.setPower(power);
+            telemetry.addData("heading: ", currentHeading);
+            telemetry.update();
+        }
+        while(opModeIsActive() && currentHeading < targetHeading){
+            currentHeading = getHeadingRaw180(startHeading);
+            leftFront.setPower(power);
+            leftRear.setPower(power);
+            rightFront.setPower(-power);
+            rightRear.setPower(-power);
+            telemetry.addData("heading: ", currentHeading);
+            telemetry.update();
+        }
+        leftFront.setPower(0);
+        leftRear.setPower(0);
+        rightFront.setPower(0);
+        rightRear.setPower(0);
     }
     public void driveMecanum(double xPower,double yPower,double  zPower) {
         yPower = -yPower;

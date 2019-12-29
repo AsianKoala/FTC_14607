@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 //import com.acmerobotics.dashboard.config.Config;
+import android.graphics.drawable.Icon;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
@@ -23,9 +24,16 @@ public class DriveConstants {
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
+     *
+     *
      */
+
+    public static double P_const = 10;
+    public static double I_const = 3; // DEFAULT AT 0.1
+    public static double D_const = 1;
+
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(5,0.1,1);
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(P_const, I_const,D_const);
     /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
@@ -35,9 +43,10 @@ public class DriveConstants {
      * convenience.
      */
 
-    public static double WHEEL_RADIUS = 2;
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 1; // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
+    public static double WHEEL_RADIUS = 1.968505;
+    public static double GEAR_RATIO = 1; // TODO: TO COMPENSATE FOR +25% ERROR
+
+    public static double TRACK_WIDTH = 12.95; // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -45,9 +54,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
-    public static double kA = 0; // we can leave this tuff untied
-    public static double kStatic = 0;
+    public static double kV = 0.01455;// / rpmToVelocity(getMaxRpm());
+    public static double kA = 0.00074; // we can leave this tuff untied
+    public static double kStatic = 0.08009;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -58,8 +67,8 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints( // TODO: CHANGE THESE
-            45, 30.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+            15, 15.0, 0.0,
+            Math.toRadians(60), Math.toRadians(60), 0.0
     );
 
 

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Auto.RRDrive;
+import org.firstinspires.ftc.teamcode.HelperClasses.FireFly;
 import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
 
 /*
@@ -14,11 +15,11 @@ import org.firstinspires.ftc.teamcode.HelperClasses.HouseFly;
 @Config
 @Autonomous(group = "drive")
 public class StraightTest extends LinearOpMode {
-    public static double DISTANCE = 60;
+    public static double DISTANCE = 48;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RRDrive drive = new RRDrive(hardwareMap);
+        FireFly drive = new FireFly(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder()
                 .forward(DISTANCE)

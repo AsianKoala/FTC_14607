@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
+import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.Intake;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;
@@ -218,6 +219,16 @@ public class HorseFlyCap_TEST extends TunableOpMode {
         telemetry.addData("fr encoder value: ", rightFront.getCurrentPosition());
         telemetry.addData("bl encoder value: ", leftRear.getCurrentPosition());
         telemetry.addData("br encoder value: ", rightRear.getCurrentPosition());
+        telemetry.addData("P: ", leftFront.getPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).p);
+        telemetry.addData("I: ", leftFront.getPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).i);
+        telemetry.addData("D: ", leftFront.getPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).d);
+//
+//        double raw = Math.toDegrees((2*Math.PI)-(imu.getAngularOrientation().firstAngle-0));
+//        if(raw > 180) {
+//            telemetry.addData("heading from angle:", -(360-raw));
+//        } else {
+//            telemetry.addData("heading from angle:", (raw));
+//        }
         telemetry.update();
 
 

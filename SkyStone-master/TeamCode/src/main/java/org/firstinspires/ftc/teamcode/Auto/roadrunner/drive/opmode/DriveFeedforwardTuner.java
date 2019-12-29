@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.LoggingUtil;
+import org.firstinspires.ftc.teamcode.HelperClasses.FireFly;
 
 import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.getMaxRpm;
 import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.rpmToVelocity;
@@ -33,7 +34,7 @@ public class DriveFeedforwardTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        FireFly drive = new FireFly(hardwareMap);
 
         NanoClock clock = NanoClock.system();
 
