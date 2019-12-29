@@ -192,8 +192,8 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
 //        capstone.setPosition(0.9);
         flipper.setPosition(0.22);
-        rotater.setPosition(rotaterHome);
-        gripper.setPosition(gripperHome);
+        rotater.setPosition(GLOBALS.rotaterHome);
+        gripper.setPosition(GLOBALS.gripperHome);
 
         startHeading = getHeadingRaw180(0);
 
@@ -246,35 +246,87 @@ public class RedSkystoneEncoder extends LinearOpMode {
         leftIntake.setPower(-.7);
         rightIntake.setPower(-.7);
 
-        driveEncodersForwardIMU(2086, 2086, 2086, 2086, .5, .5, .5, .5, 0.2, 5, 0);
+        driveEncodersForwardIMU(2086, 2086, 2086, 2086, .5, .5, .5, .5, 0.3, 5, 0);
 
         rotateToSquare(0, 0.2, 1);
 
         leftIntake.setPower(-1);
         rightIntake.setPower(-1);
 
-        sleep(500);
-
         ungrabFoundation();
 
-        driveEncodersForwardIMU(1200, 1200, 1200, 1200, -.5, -.5, -.5, -.5, 0.2, 5, 0);
+        driveEncodersForwardIMU(1200, 1200, 1200, 1200, -.5, -.5, -.5, -.5, 0.3, 5, 0);
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
 
         rotateToSquare(0, 0.2, 1);
 
+        leftIntake.setPower(-1);
+        rightIntake.setPower(-1);
+
         rotateToSquare(0, 0.2, 1);
 
-        sleep(1000);
+        leftIntake.setPower(0);
+        rightIntake.setPower(0);
 
-        driveEncodersStrafe(1200+3000, 1200+3000, 1200-3000, 1200-3000, .9, .9, -.9, -.9, 0.3, 6);
+        driveEncodersStrafe(1200+3000, 1200+3000, 1200-3000, 1200-3000, .9, .9, -1, -1, 0.4, 6);
+
+        leftIntake.setPower(-1);
+        rightIntake.setPower(-1);
 
         rotateToSquare(0, 0.2, 1);
 
         // DROP BLOCK HERE
 
-        sleep(2500);
+        flipper.setPosition(GLOBALS.flipperHome);
+        gripper.setPosition(GLOBALS.gripperGrip);
+        sleep(250);
+
+        leftIntake.setPower(0);
+        rightIntake.setPower(0);
+
+        leftIntake.setPower(0.6);
+        rightIntake.setPower(0.6);
+
+
+        gripper.setPosition(GLOBALS.gripperHome);
+        sleep(500);
+        gripper.setPosition(GLOBALS.gripperGrip);
+        sleep(500);
+        flipper.setPosition(GLOBALS.flipperBetween);
+        sleep(250);
+
+        leftSlide.setTargetPosition(-400);
+        rightSlide.setTargetPosition(-400);
+        leftSlide.setPower(0.9);
+        rightSlide.setPower(0.9);
+        sleep(250);
+
+        leftIntake.setPower(0);
+        rightIntake.setPower(0);
+
+        rotater.setPosition(GLOBALS.rotaterOut);
+        sleep(500);
+        flipper.setPosition(GLOBALS.flipperOut);
+        sleep(500);
+        gripper.setPosition(GLOBALS.gripperHome);
+        sleep(500);
+
+        // DONE DROPPING FIRST STONE
+
+        gripper.setPosition(GLOBALS.gripperHome);
+        flipper.setPosition(GLOBALS.flipperBetween);
+        sleep(500);
+        rotater.setPosition(GLOBALS.rotaterHome);
+        sleep(500);
+
+        leftSlide.setTargetPosition(-10);
+        rightSlide.setTargetPosition(-10);
+        leftSlide.setPower(0.5);
+        rightSlide.setPower(0.5);
+        sleep(500);
+
 
         rotateToSquare(-90, 0.5, 4);
         rotateToSquare(-90, 0.2, 1);
@@ -282,9 +334,29 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
         resetEncoders();
 
-        driveEncodersForwardIMU(3400, 3400, 3400, 3400, .8, .8, .8, .8, 0.2, 5, -90);
+        driveEncodersForwardIMU(3300, 3300, 3300, 3300, .8, .8, .8, .8, 0.2, 5, -90);
 
         rotateToSquare(-90, 0.2, 1);
+
+        driveEncodersStrafe(650+3300, 650+3300, -650+3300, -650+3300, .6, .6, -.6, -.6, 0.4, 6);
+
+        rotateToSquare(-90, 0.2, 1);
+
+        driveEncodersForwardIMU(300+650+3300, 300+650+3300, 300-650+3300, 300-650+3300, .9, .9, .9, .9, 0.3, 5, -90);
+
+        rotateToSquare(-90, 0.2, 1);
+
+        driveEncodersStrafe(650+3300, 650+3300, -650+3300, -650+3300, -.6, -.6, .6, .6, 0.4, 6);
+
+        rotateToSquare(-90, 0.2, 1);
+
+        resetEncoders();
+
+        driveEncodersForwardIMU(-3300, -3300, -3300, -3300, -1, -1, -1, -1, 0.5, 5, -90);
+
+        rotateToSquare(0, 0.5, 4);
+        rotateToSquare(0, 0.2, 1);
+
 
     }
 

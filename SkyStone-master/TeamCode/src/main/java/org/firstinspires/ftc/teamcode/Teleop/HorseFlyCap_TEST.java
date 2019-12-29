@@ -395,7 +395,7 @@ public class HorseFlyCap_TEST extends TunableOpMode {
             case 1:
                 flipper.setPosition(flipperBetween);
                 time = System.currentTimeMillis();
-                count++;
+                telemetry.addData("Count State", 1);
                 break;
                 /*flipper.setPosition(0.6);
                 time = System.currentTimeMillis();*/
