@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
-import org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.Hardware.Intake;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.util.ArrayList;

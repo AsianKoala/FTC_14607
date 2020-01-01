@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive.mecanum.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive2.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.LynxModuleUtil;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -21,7 +21,6 @@ import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.*;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.D;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve

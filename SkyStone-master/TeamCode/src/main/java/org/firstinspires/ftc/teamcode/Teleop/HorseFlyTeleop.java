@@ -15,8 +15,6 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.*;
-import static org.firstinspires.ftc.teamcode.statemachineprojectdonttouch.RobotUtil.RobotPosition.scaledWorldHeadingRad;
 
 import java.util.ArrayList;
 
