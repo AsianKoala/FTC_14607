@@ -71,9 +71,13 @@ public class RedSkystoneEncoder extends LinearOpMode {
     private static float rectWidth = 1.5f/8f;
 
 
-    private static float[] midPos = {4.3f/8f, 2.7f/8f};//0 = col, 1 = row
-    private static float[] leftPos = {2.3f/8f, 2.7f/8f};
-    private static float[] rightPos = {6.3f/8f, 2.7f/8f};
+    private static float[] midPos = {4.2f/8f, 3.4f/8f};//0 = col, 1 = row
+    private static float[] leftPos = {2.5f/8f, 3.4f/8f}; //2.7f/8f
+    private static float[] rightPos = {5.9f/8f, 3.4f/8f};
+//
+//    private static float[] midPos = {4.3f/8f, 2.0f/8f};//0 = col, 1 = row
+//    private static float[] leftPos = {2.3f/8f, 2.0f/8f}; //2.7f/8f
+//    private static float[] rightPos = {6.3f/8f, 2.0f/8f};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     private final int rows = 640;
@@ -202,14 +206,17 @@ public class RedSkystoneEncoder extends LinearOpMode {
         while(!isStarted() && !isStopRequested()) {
             if(valLeft == 0) {
                 ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.LEFT;
+                telemetry.addData("skystone: ", "left");
             }
 
             if(valRight == 0) {
                 ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.RIGHT;
+                telemetry.addData("skystone: ", "right");
             }
     
             if(valMid == 0) {
                 ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.MIDDLE;
+                telemetry.addData("skystone: ", "middle");
             }
             telemetry.addData("heading: ", getHeadingRaw180(startHeading));
             telemetry.update();
@@ -228,11 +235,11 @@ public class RedSkystoneEncoder extends LinearOpMode {
         rightSlide.setPower(0.75);
 
         if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.MIDDLE) {
-            middleStone();
+            foundStone(2);
         } else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.LEFT) {
-            leftStone();
+            foundStone(1);
         } else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.RIGHT) {
-            rightStone();
+            foundStone(3);
         } else {
             // oops
         }
@@ -243,7 +250,17 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
     }
 
-    public void middleStone(){
+    public void foundStone(int position){
+        // TODO: POSITION 1 = LEFT, POSITION 2 = MIDDLE, POSITION 3 = RIGHT
+        if(position == 1) {
+            driveEncodersStrafeIMU(-400, -400, 400, 400, -0.4, -0.4, 0.4, 0.4, 0.25, 6, 0, false);
+            resetEncoders();
+        } else if(position == 2) {
+
+        } else if(position == 3) {
+            driveEncodersStrafeIMU(275, 275, -275, -275, 0.4, 0.4, -0.4, -0.4, 0.25, 6, 0, true);
+            resetEncoders();
+        }
 
         leftIntake.setPower(-.7);
         rightIntake.setPower(-.7);
@@ -304,9 +321,9 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
         sleep(200);
         gripper.setPosition(GLOBALS.gripperGrip);
-        sleep(500);
+        sleep(550); // 500
         flipper.setPosition(GLOBALS.flipperBetween);
-        sleep(250);
+        sleep(450); // 250
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
@@ -324,7 +341,7 @@ public class RedSkystoneEncoder extends LinearOpMode {
         rightIntake.setPower(0);
 
         rotater.setPosition(GLOBALS.rotaterOut);
-        sleep(700); // 500
+        sleep(900); // 700
         flipper.setPosition(GLOBALS.flipperOut);
         sleep(500);
         gripper.setPosition(GLOBALS.gripperHome);
@@ -360,16 +377,16 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
         rotateToSquare(-90, 0.2, 1);
         
-        //700 strafe
+        //700 strafe to 760 and then,,,
 
-        driveEncodersStrafeIMU(760+3350, 760+3350, -760+3350, -760+3350, .6, .6, -.6, -.6, 0.4, 6, -90, true);
+        driveEncodersStrafeIMU(835+3350, 835+3350, -835+3350, -835+3350, .6, .6, -.6, -.6, 0.4, 6, -90, true);
 
         leftIntake.setPower(-0.7);
         rightIntake.setPower(-0.7);
 
         rotateToSquare(-90, 0.2, 1);
 
-        driveEncodersForwardIMU(300+760+3350, 300+760+3350, 300-760+3350, 300-760+3350, .9, .9, .9, .9, 0.3, 5, -90, true);
+        driveEncodersForwardIMU(300+835+3350, 300+835+3350, 300-835+3350, 300-835+3350, .9, .9, .9, .9, 0.3, 5, -90, true);
 
         leftIntake.setPower(-1);
         rightIntake.setPower(-1);
@@ -380,8 +397,8 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
         flipper.setPosition(GLOBALS.flipperHome);
 
-        // was 700
-        driveEncodersStrafeIMU(-750, -750, 750, 750, -.6, -.6, .6, .6, 0.3, 4, -90, false);
+        // was 700 then 750 then ,,,
+        driveEncodersStrafeIMU(-835, -835, 835, 835, -.6, -.6, .6, .6, 0.3, 4, -90, false);
 
         gripper.setPosition(GLOBALS.gripperGrip);
 
@@ -396,7 +413,12 @@ public class RedSkystoneEncoder extends LinearOpMode {
         resetEncoders();
 
         // -3300
-        driveEncodersForwardIMU(-3300, -3300, -3300, -3300, -1, -1, -1, -1, 0.8, 5, -90, false);
+        if(position == 3 || position == 2) {
+            driveEncodersForwardIMU(-3300, -3300, -3300, -3300, -1, -1, -1, -1, 0.8, 5, -90, false);
+        } else {
+            driveEncodersForwardIMU(-3900, -3900, -3900, -3900, -1, -1, -1, -1, 0.8, 5, -90, false);
+
+        }
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
@@ -416,14 +438,20 @@ public class RedSkystoneEncoder extends LinearOpMode {
         grabFoundation();
         sleep(500);
 
+        leftFront.setPower(0);
+        leftRear.setPower(0);
+        rightFront.setPower(0);
+        rightRear.setPower(0);
+        sleep(300);
+
         leftFront.setPower(-0.6);
         leftRear.setPower(-0.6);
         rightFront.setPower(-0.6);
         rightRear.setPower(-0.6);
 
-        sleep(500);
+        sleep(750); // was 500
 
-        rotateToSquare(100, 0.65, 4);
+        rotateToSquare(95, 0.65, 4);
 
 //        leftFront.setPower(-0.1);
 //        leftRear.setPower(-0.1);
@@ -449,7 +477,7 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
         resetEncoders();
 
-        driveEncodersForwardIMU(-2100, -2100, -2100, -2100, -.6, -.6, -.6, -.6, 0.5, 5, 90, false);
+        driveEncodersForwardIMU(-1050, -1050, -1050, -1050, -.6, -.6, -.6, -.6, 0.5, 5, 90, false);
 
 
 
@@ -724,11 +752,11 @@ public class RedSkystoneEncoder extends LinearOpMode {
                 flipper.setPosition(GLOBALS.flipperBetween);
             }
 
-            if((System.currentTimeMillis()-startTime) > 1000) {
+            if((System.currentTimeMillis()-startTime) > 1200) { // 1000
                 rotater.setPosition(GLOBALS.rotaterHome);
             }
 
-            if((System.currentTimeMillis()-startTime) > 1250) {
+            if((System.currentTimeMillis()-startTime) > 1550) { // 1250 1450
                 leftSlide.setTargetPosition(-10);
                 rightSlide.setTargetPosition(-10);
                 leftSlide.setPower(0.5);
@@ -750,11 +778,11 @@ public class RedSkystoneEncoder extends LinearOpMode {
                 flipper.setPosition(GLOBALS.flipperBetween);
             }
 
-            if((System.currentTimeMillis()-startTime) > 500) {
+            if((System.currentTimeMillis()-startTime) > 1200) {
                 rotater.setPosition(GLOBALS.rotaterHome);
             }
 
-            if((System.currentTimeMillis()-startTime) > 1250) {
+            if((System.currentTimeMillis()-startTime) > 1550) {
                 leftSlide.setTargetPosition(-10);
                 rightSlide.setTargetPosition(-10);
                 leftSlide.setPower(0.5);
@@ -767,6 +795,25 @@ public class RedSkystoneEncoder extends LinearOpMode {
         rightFront.setPower(0);
         rightRear.setPower(0);
 
+//        leftSlide.setTargetPosition(-10);
+//        rightSlide.setTargetPosition(-10);
+//        leftSlide.setPower(0.5);
+//        rightSlide.setPower(0.5);
+
+        while((System.currentTimeMillis()-startTime) < 500) {
+
+        }
+        gripper.setPosition(GLOBALS.gripperHome);
+        flipper.setPosition(GLOBALS.flipperBetween);
+
+        while((System.currentTimeMillis()-startTime) < 1200) {
+
+        }
+        rotater.setPosition(GLOBALS.rotaterHome);
+
+        while((System.currentTimeMillis()-startTime) < 1550) {
+
+        }
         leftSlide.setTargetPosition(-10);
         rightSlide.setTargetPosition(-10);
         leftSlide.setPower(0.5);

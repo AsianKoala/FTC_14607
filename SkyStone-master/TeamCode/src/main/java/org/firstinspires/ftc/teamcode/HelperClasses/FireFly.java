@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.HelperClasses;
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -126,6 +127,8 @@ public class FireFly extends SampleMecanumDriveBase {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
+
+//        setLocalizer(new MecanumLocalizer());
 
         // TODO: reverse any motors using DcMotor.setDirection()
 

@@ -28,12 +28,22 @@ public class DriveConstants {
      *
      */
 
-    public static double P_const = 10;
-    public static double I_const = 3; // DEFAULT AT 0.1
-    public static double D_const = 1;
+    public static double P_const_v = 10;
+    public static double I_const_v = 0; // DEFAULT AT 0.1
+    public static double D_const_v = 4; //5
+
+    public static double P_const_t = 3;//2;
+    public static double I_const_t = 0; // DEFAULT AT 0.1
+    public static double D_const_t = 0.1;
+
+    public static double P_const_h = 0;
+    public static double I_const_h = 0; // DEFAULT AT 0.1
+    public static double D_const_h = 0;
 
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(P_const, I_const,D_const);
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(P_const_v, I_const_v,D_const_v);
+    public static final PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(P_const_t, I_const_t,D_const_t);
+    public static final PIDCoefficients HEADING_PID = new PIDCoefficients(P_const_h, I_const_h,D_const_h);
     /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
@@ -46,7 +56,7 @@ public class DriveConstants {
     public static double WHEEL_RADIUS = 1.968505;
     public static double GEAR_RATIO = 1; // TODO: TO COMPENSATE FOR +25% ERROR
 
-    public static double TRACK_WIDTH = 12.95; // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
+    public static double TRACK_WIDTH = 10.75; // 13.007 // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -54,9 +64,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.01455;// / rpmToVelocity(getMaxRpm());
-    public static double kA = 0.00074; // we can leave this tuff untied
-    public static double kStatic = 0.08009;
+    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());//0.01455;// / rpmToVelocity(getMaxRpm());
+    public static double kA = 0;//0.00074; // we can leave this tuff untied
+    public static double kStatic = 0;//0.08009;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -67,8 +77,8 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints( // TODO: CHANGE THESE
-            15, 15.0, 0.0,
-            Math.toRadians(60), Math.toRadians(60), 0.0
+            40, 20, 0.0,
+            Math.toRadians(120), Math.toRadians(120), 0.0
     );
 
 

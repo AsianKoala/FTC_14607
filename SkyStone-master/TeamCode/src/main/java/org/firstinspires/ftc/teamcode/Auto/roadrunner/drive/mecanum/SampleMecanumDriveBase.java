@@ -33,8 +33,8 @@ import static org.firstinspires.ftc.teamcode.Auto.DriveConstants.*;
  */
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+//    public static PIDCoefficients TRANSLATIONAL_PID;// = new PIDCoefficients(0, 0, 0);
+//    public static PIDCoefficients HEADING_PID;// = new PIDCoefficients(0, 0, 0);
 
 
     public enum Mode {
@@ -59,7 +59,11 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private double lastTimestamp;
 
     public SampleMecanumDriveBase() {
+
         super(kV, kA, kStatic, TRACK_WIDTH);
+
+//        TRANSLATIONAL_PID = LOCAL_TRANSLATIONAL_PID;
+//        HEADING_PID = LOCAL_HEADING_PID;
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
