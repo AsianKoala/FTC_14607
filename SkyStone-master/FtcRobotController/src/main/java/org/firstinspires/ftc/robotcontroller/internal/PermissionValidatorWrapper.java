@@ -33,7 +33,6 @@ import android.Manifest;
 import android.os.Bundle;
 
 import com.qualcomm.ftcrobotcontroller.R;
-import com.qualcomm.ftcrobotcontroller.*;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
 import org.firstinspires.ftc.robotcore.internal.system.PermissionValidatorActivity;

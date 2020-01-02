@@ -5,6 +5,9 @@ import android.graphics.drawable.Icon;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.hardware.motors.*;
+
 
 /*
  * Constants shared between multiple drive types.
@@ -19,7 +22,10 @@ public class DriveConstants {
      * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
      */
 
-    public static final double TICKS_PER_REV = 537.6;
+    private static final MotorConfigurationType MOTOR_CONFIG =
+            MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
+
+//    public static final double TICKS_PER_REV = 537.6;
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
@@ -28,7 +34,7 @@ public class DriveConstants {
      *
      */
 
-    public static double P_const_v = 20;
+    public static double P_const_v = 30;
     public static double I_const_v = 0; // DEFAULT AT 0.1
     public static double D_const_v = 5; //5
 
@@ -54,9 +60,9 @@ public class DriveConstants {
      */
 
     public static double WHEEL_RADIUS = 1.968505;
-    public static double GEAR_RATIO = 1; // TODO: TO COMPENSATE FOR +25% ERROR
+    public static double GEAR_RATIO = 99.5/19.2; // TODO: TO COMPENSATE FOR +25% ERROR
 
-    public static double TRACK_WIDTH = 10.75; // 13.007 // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
+    public static double TRACK_WIDTH = 13.007; // 13.007 // 10.75 // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -83,12 +89,34 @@ public class DriveConstants {
 
 
 
-    public static double encoderTicksToInches(int ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
-    }
+//    public static double encoderTicksToInches(int ticks) {
+//        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+//    }
+//
+//    public static double inchesToEncoderTicks(double inches) {
+//        return (inches * TICKS_PER_REV) / (2 * WHEEL_RADIUS * Math.PI * WHEEL_RADIUS);
+//    }
+//
+//    public static double rpmToVelocity(double rpm) {
+//        return rpm * GEAR_RATIO * 2 * Math.PI * WHEEL_RADIUS / 60.0;
+//    }
+//
+//    public static double getMaxRpm() {
+//        return 312;
+//    }
+//
+//    public static double getTicksPerSec() {
+//        // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
+//        return (getMaxRpm() * TICKS_PER_REV / 60.0);
+//    }
+//
+//    public static double getMotorVelocityF() {
+//        // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
+//        return 32767 / getTicksPerSec();
+//    }
 
-    public static double inchesToEncoderTicks(double inches) {
-        return (inches * TICKS_PER_REV) / (2 * WHEEL_RADIUS * Math.PI * WHEEL_RADIUS);
+    public static double encoderTicksToInches(double ticks) {
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
     }
 
     public static double rpmToVelocity(double rpm) {
@@ -96,12 +124,13 @@ public class DriveConstants {
     }
 
     public static double getMaxRpm() {
-        return 312;
+        return MOTOR_CONFIG.getMaxRPM() *
+                (RUN_USING_ENCODER ? MOTOR_CONFIG.getAchieveableMaxRPMFraction() : 1.0);
     }
 
     public static double getTicksPerSec() {
         // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
-        return (getMaxRpm() * TICKS_PER_REV / 60.0);
+        return (MOTOR_CONFIG.getMaxRPM() * MOTOR_CONFIG.getTicksPerRev() / 60.0);
     }
 
     public static double getMotorVelocityF() {

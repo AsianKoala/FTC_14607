@@ -1,18 +1,13 @@
 //
 // build.gradle in FtcRobotController
 //
-
 apply plugin: 'com.android.library'
-//apply plugin: 'kotlin-android'
-//apply plugin: 'kotlin-android-extensions'
-
 
 android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 28
-        multiDexEnabled true
+        targetSdkVersion 26
     }
 
     compileSdkVersion 28
@@ -27,12 +22,6 @@ repositories {
     flatDir {
         dirs '../libs'
     }
-    mavenCentral()
 }
 
 apply from: 'build.release.gradle'
-dependencies {
-    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:multidex:1.0.3'
-
-}

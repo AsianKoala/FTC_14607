@@ -101,8 +101,13 @@ public class FireFly extends SampleMecanumDriveBase {
         capstone = hardwareMap.get(Servo.class, "capstone");
 
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
+//        rightFront.setDirection(DcMotor.Direction.REVERSE);
+//        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        // TODO: UPDATE EVERYTHING ELSE TO NEW GOBILDA 5202 MOTOR CONFIG VALUES + ENCODERS
+
+
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
 
