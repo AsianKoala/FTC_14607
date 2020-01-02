@@ -38,11 +38,11 @@ public class DriveConstants {
     public static double I_const_v = 0; // DEFAULT AT 0.1
     public static double D_const_v = 5; //5
 
-    public static double P_const_t = 1;//2;
+    public static double P_const_t = 0;// 1 2;
     public static double I_const_t = 0; // DEFAULT AT 0.1
-    public static double D_const_t = 0.01;
+    public static double D_const_t = 0;
 
-    public static double P_const_h = 0;
+    public static double P_const_h = 0; // 1
     public static double I_const_h = 0; // DEFAULT AT 0.1
     public static double D_const_h = 0;
 
@@ -62,7 +62,7 @@ public class DriveConstants {
     public static double WHEEL_RADIUS = 1.968505;
     public static double GEAR_RATIO = 99.5/19.2; // TODO: TO COMPENSATE FOR +25% ERROR
 
-    public static double TRACK_WIDTH = 13.007; // 13.007 // 10.75 // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
+    public static double TRACK_WIDTH = 14.75; // 13.007 // 10.75 // 14.25 // TODO: CHANGE THIS ONCE TRACK WIDTH CALCULATED
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -83,8 +83,8 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints( // TODO: CHANGE THESE
-            40, 20, 0.0,
-            Math.toRadians(120), Math.toRadians(120), 0.0
+            40, 20, 0.0, // 40 20 // 40 30
+            Math.toRadians(180), Math.toRadians(180), 0.0 //120 120
     );
 
 

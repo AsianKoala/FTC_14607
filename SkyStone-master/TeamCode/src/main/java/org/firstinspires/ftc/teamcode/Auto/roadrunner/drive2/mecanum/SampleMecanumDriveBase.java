@@ -193,6 +193,11 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
             }
         }
 
+
+//        // TODO: TELEMETRY STUFF
+//
+//        packet.put("targetVeloctity", motionState)
+
         dashboard.sendTelemetryPacket(packet);
     }
 

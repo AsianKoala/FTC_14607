@@ -20,6 +20,13 @@ public class FollowerPIDTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDriveBase drive = new FireFly(hardwareMap);
+        telemetry.addData("translational p: ",drive.TRANSLATIONAL_PID.kP);
+        telemetry.addData("translational i: ",drive.TRANSLATIONAL_PID.kI);
+        telemetry.addData("translational d: ",drive.TRANSLATIONAL_PID.kD);
+        telemetry.addData("heading p: ",drive.HEADING_PID.kP);
+        telemetry.addData("heading i: ",drive.HEADING_PID.kI);
+        telemetry.addData("heading d: ",drive.HEADING_PID.kD);
+        telemetry.update();
 
         drive.setPoseEstimate(new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0));
 

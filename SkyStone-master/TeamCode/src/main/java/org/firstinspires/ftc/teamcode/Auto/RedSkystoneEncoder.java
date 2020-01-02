@@ -252,8 +252,8 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
     public void foundStone(int position){
         // TODO: POSITION 1 = LEFT, POSITION 2 = MIDDLE, POSITION 3 = RIGHT
-        if(position == 1) {
-            driveEncodersStrafeIMU(-400, -400, 400, 400, -0.4, -0.4, 0.4, 0.4, 0.25, 6, 0, false);
+        if(position == 1) { // was 400 but was a bit too much
+            driveEncodersStrafeIMU(-325, -325, 325, 325, -0.4, -0.4, 0.4, 0.4, 0.25, 6, 0, false);
             resetEncoders();
         } else if(position == 2) {
 
@@ -273,11 +273,14 @@ public class RedSkystoneEncoder extends LinearOpMode {
         rightIntake.setPower(-1);
 
         ungrabFoundation();
+
+        sleep(250); //TODO: MIGHT RUN OUT OF TIME
         
         
         // TODO: COMPENSATE, ORIGINALLY 1200
+        // 1550 barely scrapes the edge of the skybridge
 
-        driveEncodersForwardIMU(1550, 1550, 1550, 1550, -.4, -.4, -.4, -.4, 0.25, 5, 0, false);
+        driveEncodersForwardIMU(1400, 1400, 1400, 1400, -.4, -.4, -.4, -.4, 0.25, 5, 0, false);
 
         leftIntake.setPower(-0.7);
         rightIntake.setPower(-0.7);
@@ -300,7 +303,7 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
 
 
-        driveEncodersStrafeIMU(1550+3000, 1550+3000, 1550-3000, 1550-3000, 1, 1, -1, -1, 0.5, 6, 0, true);
+        driveEncodersStrafeIMU(1400+3000, 1400+3000, 1400-3000, 1400-3000, 1, 1, -1, -1, 0.5, 6, 0, true);
 
         flipper.setPosition(GLOBALS.flipperHome);
 
@@ -373,20 +376,34 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
         resetEncoders();
 
-        driveEncodersForwardIMU(3350, 3350, 3350, 3350, 1, 1, 1, 1, 0.4, 4.5, -90, true);
+        if(position != 1){
+            driveEncodersForwardIMU(3350, 3350, 3350, 3350, 1, 1, 1, 1, 0.4, 4.5, -90, true);
+        } else {
+            driveEncodersForwardIMU(3250, 3250, 3250, 3250, 1, 1, 1, 1, 0.4, 4.5, -90, true);
+        }
 
         rotateToSquare(-90, 0.2, 1);
         
-        //700 strafe to 760 and then,,,
+        //700 strafe to 760 and then,,, 8 3 5,,,, 8 8 5,,,
 
-        driveEncodersStrafeIMU(835+3350, 835+3350, -835+3350, -835+3350, .6, .6, -.6, -.6, 0.4, 6, -90, true);
+        if(position != 1){
+            driveEncodersStrafeIMU(895+3350, 895+3350, -895+3350, -895+3350, .6, .6, -.6, -.6, 0.4, 6, -90, true);
+        } else {
+            driveEncodersStrafeIMU(895+3250, 895+3250, -895+3250, -895+3250, .6, .6, -.6, -.6, 0.4, 6, -90, true);
+        }
 
-        leftIntake.setPower(-0.7);
-        rightIntake.setPower(-0.7);
+
+        leftIntake.setPower(-0.5);
+        rightIntake.setPower(-0.5);
 
         rotateToSquare(-90, 0.2, 1);
 
-        driveEncodersForwardIMU(300+835+3350, 300+835+3350, 300-835+3350, 300-835+3350, .9, .9, .9, .9, 0.3, 5, -90, true);
+        if(position != 1){
+            driveEncodersForwardIMU(300+895+3350, 300+895+3350, 300-895+3350, 300-895+3350, .9, .9, .9, .9, 0.3, 5, -90, true);
+        } else {
+            driveEncodersForwardIMU(300+895+3250, 300+895+3250, 300-895+3250, 300-895+3250, .9, .9, .9, .9, 0.3, 5, -90, true);
+        }
+
 
         leftIntake.setPower(-1);
         rightIntake.setPower(-1);
@@ -398,7 +415,7 @@ public class RedSkystoneEncoder extends LinearOpMode {
         flipper.setPosition(GLOBALS.flipperHome);
 
         // was 700 then 750 then ,,,
-        driveEncodersStrafeIMU(-835, -835, 835, 835, -.6, -.6, .6, .6, 0.3, 4, -90, false);
+        driveEncodersStrafeIMU(-895, -895, 895, 895, -.6, -.6, .6, .6, 0.3, 4, -90, false);
 
         gripper.setPosition(GLOBALS.gripperGrip);
 
@@ -407,8 +424,8 @@ public class RedSkystoneEncoder extends LinearOpMode {
 
 
 
-        leftIntake.setPower(0.3);
-        rightIntake.setPower(0.3);
+        leftIntake.setPower(0.7); // was 0.3
+        rightIntake.setPower(0.7);
 
         resetEncoders();
 
