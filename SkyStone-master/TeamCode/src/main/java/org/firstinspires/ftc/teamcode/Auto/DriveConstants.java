@@ -28,13 +28,13 @@ public class DriveConstants {
      *
      */
 
-    public static double P_const_v = 10;
+    public static double P_const_v = 20;
     public static double I_const_v = 0; // DEFAULT AT 0.1
-    public static double D_const_v = 4; //5
+    public static double D_const_v = 5; //5
 
-    public static double P_const_t = 3;//2;
+    public static double P_const_t = 1;//2;
     public static double I_const_t = 0; // DEFAULT AT 0.1
-    public static double D_const_t = 0.1;
+    public static double D_const_t = 0.01;
 
     public static double P_const_h = 0;
     public static double I_const_h = 0; // DEFAULT AT 0.1

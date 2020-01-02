@@ -23,6 +23,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Auto.DriveConstants;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.DashboardUtil;
 
 import java.util.ArrayList;
@@ -34,8 +35,8 @@ import java.util.List;
  */
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = DriveConstants.TRANSLATIONAL_PID;
+    public static PIDCoefficients HEADING_PID = DriveConstants.HEADING_PID;
 
 
     public enum Mode {
