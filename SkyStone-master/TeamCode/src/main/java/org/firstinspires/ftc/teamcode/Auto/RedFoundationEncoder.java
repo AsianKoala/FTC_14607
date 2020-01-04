@@ -6,18 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -31,8 +26,8 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.ourSkystonePosition;
 
 
-@Autonomous(name = "REAL Red Double Skystone", group = "Firefly")
-public class RedSkystoneEncoder extends LinearOpMode {
+@Autonomous(name = "REAL Red Foundation", group = "Firefly")
+public class RedFoundationEncoder extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
@@ -186,15 +181,6 @@ public class RedSkystoneEncoder extends LinearOpMode {
         telemetry.addData("Ready.", 0);
         telemetry.update();
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDevice();//open camera
-        phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
-        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.SIDEWAYS_LEFT);//display on RC
-        //width, height
-        //width = height in this case, because camera is in portrait mode.
-
-
 //        capstone.setPosition(0.9);
         flipper.setPosition(0.22);
         rotater.setPosition(GLOBALS.rotaterHome);
@@ -203,46 +189,61 @@ public class RedSkystoneEncoder extends LinearOpMode {
         startHeading = getHeadingRaw180(0);
         lastAngleFound = startHeading;
 
-        while(!isStarted() && !isStopRequested()) {
-            if(valLeft == 0) {
-                ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.LEFT;
-                telemetry.addData("skystone: ", "left");
-            }
-
-            if(valRight == 0) {
-                ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.RIGHT;
-                telemetry.addData("skystone: ", "right");
-            }
-    
-            if(valMid == 0) {
-                ourSkystonePosition = GLOBALS.SKYSTONE_POSITION.MIDDLE;
-                telemetry.addData("skystone: ", "middle");
-            }
-            telemetry.addData("heading: ", getHeadingRaw180(startHeading));
-            telemetry.update();
-        }
-
-
-//        double heading = getHeadingRaw180(startHeading);
-
-        phoneCam.closeCameraDevice();
-
-        grabFoundation();
-
         leftSlide.setTargetPosition(-10);//changed to pseudo home
         rightSlide.setTargetPosition(-10);
         leftSlide.setPower(0.75);
         rightSlide.setPower(0.75);
 
-        if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.MIDDLE) {
-            foundStone(2);
-        } else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.LEFT) {
-            foundStone(1);
-        } else if(ourSkystonePosition == GLOBALS.SKYSTONE_POSITION.RIGHT) {
-            foundStone(3);
-        } else {
-            // oops
+        startHeading = getHeadingRaw180(0);
+        lastAngleFound = startHeading;
+
+        while(!isStarted() && !isStopRequested()) {
+            telemetry.addData("heading: ", getHeadingRaw180(startHeading));
+            telemetry.update();
         }
+
+        driveEncodersStrafeIMU(225, 225, -225, -225, 0.4, 0.4, -0.4, -0.4, 0.25, 6, 0, true);
+        resetEncoders();
+
+        driveEncodersForwardIMU(1700, 1700, 1700, 1700, .4, .4, .4, .4, 0.25, 5, 0, true); // 0.4
+
+//        rotateToSquare(0, 0.2, 1);
+
+        grabFoundation();
+
+        sleep(2000);
+
+        resetEncoders();
+
+        driveEncodersForwardIMU(-1000, -1000, -1000, -1000, -.5, -.5, -.5, -.5, 0.4, 5, 0, true); // 0.4
+
+        rotateToSquare(92, 0.65, 7);
+        rotateToSquare(92, 0.3, 4);
+        rotateToSquare(92, 0.2, 4);
+
+        leftFront.setPower(0.4);
+        leftRear.setPower(0.4);
+        rightFront.setPower(0.4);
+        rightRear.setPower(0.4);
+
+        ungrabFoundation();
+
+        sleep(2000);
+
+        leftFront.setPower(0);
+        leftRear.setPower(0);
+        rightFront.setPower(0);
+        rightRear.setPower(0);
+
+        resetEncoders();
+
+        driveEncodersStrafeIMU(1000, 1000, -1000, -1000, 0.4, 0.4, -0.4, -0.4, 0.25, 6, 90, true);
+
+        resetEncoders();
+
+        driveEncodersForwardIMU(-1150, -1150, -1150, -1150, -.6, -.6, -.6, -.6, 0.5, 5, 90, false);
+
+        // end
 
     }
 
@@ -251,130 +252,6 @@ public class RedSkystoneEncoder extends LinearOpMode {
     }
 
     public void foundStone(int position){
-        // TODO: POSITION 1 = LEFT, POSITION 2 = MIDDLE, POSITION 3 = RIGHT
-        if(position == 1) { // was 400 but was a bit too much
-            driveEncodersStrafeIMU(-325, -325, 325, 325, -0.4, -0.4, 0.4, 0.4, 0.25, 6, 0, false);
-            resetEncoders();
-        } else if(position == 2) {
-
-        } else if(position == 3) {
-            driveEncodersStrafeIMU(275, 275, -275, -275, 0.4, 0.4, -0.4, -0.4, 0.25, 6, 0, true);
-            resetEncoders();
-        }
-
-        leftIntake.setPower(-.7);
-        rightIntake.setPower(-.7);
-
-        driveEncodersForwardIMU(2086, 2086, 2086, 2086, .4, .4, .4, .4, 0.25, 5, 0, true); // 0.4
-
-        rotateToSquare(0, 0.2, 1);
-
-        leftIntake.setPower(-1);
-        rightIntake.setPower(-1);
-
-        ungrabFoundation();
-
-        sleep(250); //TODO: MIGHT RUN OUT OF TIME
-        
-        
-        // TODO: COMPENSATE, ORIGINALLY 1200
-        // 1550 barely scrapes the edge of the skybridge
-
-        driveEncodersForwardIMU(1400, 1400, 1400, 1400, -.4, -.4, -.4, -.4, 0.25, 5, 0, false);
-
-        leftIntake.setPower(-0.7);
-        rightIntake.setPower(-0.7);
-
-        rotateToSquare(0, 0.2, 1);
-
-        leftIntake.setPower(-1);
-        rightIntake.setPower(-1);
-
-
-//        gripper.setPosition(GLOBALS.gripperGrip);
-//        gripper.setPosition(GLOBALS.gripperHome);
-
-        ///////////////
-
-
-//
-//        leftIntake.setPower(-0.1);
-//        rightIntake.setPower(-0.1);
-
-
-
-        driveEncodersStrafeIMU(1400+3000, 1400+3000, 1400-3000, 1400-3000, 1, 1, -1, -1, 0.5, 6, 0, true);
-
-        flipper.setPosition(GLOBALS.flipperHome);
-
-//        leftIntake.setPower(-1);
-//        rightIntake.setPower(-1);
-
-        rotateToSquare(0, 0.2, 1);
-
-        // DROP BLOCK HERE
-
-//        flipper.setPosition(GLOBALS.flipperHome);
-//        gripper.setPosition(GLOBALS.gripperGrip);
-//        sleep(250);
-
-        /////////////////////////
-
-
-
-        sleep(200);
-        gripper.setPosition(GLOBALS.gripperGrip);
-        sleep(550); // 500
-        flipper.setPosition(GLOBALS.flipperBetween);
-        sleep(450); // 250
-
-        leftIntake.setPower(0);
-        rightIntake.setPower(0);
-
-        leftIntake.setPower(0.3);
-        rightIntake.setPower(0.3);
-
-        leftSlide.setTargetPosition(-400);
-        rightSlide.setTargetPosition(-400);
-        leftSlide.setPower(0.9);
-        rightSlide.setPower(0.9);
-        sleep(250);
-
-        leftIntake.setPower(0);
-        rightIntake.setPower(0);
-
-        rotater.setPosition(GLOBALS.rotaterOut);
-        sleep(900); // 700
-        flipper.setPosition(GLOBALS.flipperOut);
-        sleep(500);
-        gripper.setPosition(GLOBALS.gripperHome);
-
-        /////////////////////////////////
-
-
-
-//        sleep(500);
-
-        // DONE DROPPING FIRST STONE
-
-//        gripper.setPosition(GLOBALS.gripperHome);
-//        flipper.setPosition(GLOBALS.flipperBetween);
-//        sleep(500);
-//        rotater.setPosition(GLOBALS.rotaterHome);
-//        sleep(500);
-//
-//        leftSlide.setTargetPosition(-10);
-//        rightSlide.setTargetPosition(-10);
-//        leftSlide.setPower(0.5);
-//        rightSlide.setPower(0.5);
-//        sleep(500);
-
-
-        rotateToSquareResetLift(-90, 0.5, 5);
-        rotateToSquare(-90, 0.2, 1);
-        rotateToSquare(-90, 0.15, 1);
-
-        resetEncoders();
 
         if(position != 1){
             driveEncodersForwardIMU(3350, 3350, 3350, 3350, 1, 1, 1, 1, 0.4, 4.5, -90, true);

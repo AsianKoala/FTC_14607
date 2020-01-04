@@ -29,7 +29,7 @@ import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 public class FireFly extends SampleMecanumDriveBase {
     private ExpansionHubEx master;
     private ExpansionHubEx follower;
-    private ExpansionHubMotor leftFront, leftRear, rightRear, rightFront;
+    public ExpansionHubMotor leftFront, leftRear, rightRear, rightFront;
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 

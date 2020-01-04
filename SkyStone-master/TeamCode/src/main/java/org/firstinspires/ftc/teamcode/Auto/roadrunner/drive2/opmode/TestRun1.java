@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Auto.roadrunner.drive2.opmode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import kotlin.Unit;
 import org.firstinspires.ftc.teamcode.Auto.roadrunner.drive2.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.HelperClasses.FireFly;
 
@@ -29,12 +30,13 @@ public class TestRun1 extends LinearOpMode {
                 drive.trajectoryBuilder()
                         .splineTo(new Pose2d(-24, -48, 90))
                         .splineTo(new Pose2d(-44, -22, 160))
-                        .setReversed(true)
+                        .reverse()
+//                        .addMarker(2.0){return;}
                         .splineTo(new Pose2d(24, -36, 180))
                         .setReversed(false)
                         .splineTo(new Pose2d(-48, -36, 180))
                         .splineTo(new Pose2d(-62, -24, 160))
-                        .setReversed(true)
+                        .reverse()
                         .splineTo(new Pose2d(-24, -36, 180))
                         .splineTo(new Pose2d(48, -36, 180))
 //                        .setReversed(false)
