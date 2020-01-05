@@ -1,9 +1,4 @@
 # FTC_14607
 
-master - 9/10 newest code, stablest code
-
-neil - newest code (most of the time) but also broken a lot of the time
-
-backup - a backup if we somehow mess up the repo 
-
-every other branch - pretty irrelevant   ¯\_(ツ)_/¯
+FTC Team 14607 Robot Uprising's code for the 2019-2020 Skystone season.
+Follow us @FTC14607
