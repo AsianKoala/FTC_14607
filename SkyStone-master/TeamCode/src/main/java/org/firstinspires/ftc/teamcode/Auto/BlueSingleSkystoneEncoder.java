@@ -66,9 +66,9 @@ public class BlueSingleSkystoneEncoder extends LinearOpMode {
     private static float rectWidth = 1.5f/8f;
 
 
-    private static float[] midPos = {4.65f/8f, 3.4f/8f};//0 = col, 1 = row
-    private static float[] leftPos = {2.95f/8f, 3.4f/8f}; //2.7f/8f
-    private static float[] rightPos = {6.35f/8f, 3.4f/8f};
+    private static float[] midPos = {4.65f/8f, 2.2f/8f};//0 = col, 1 = row
+    private static float[] leftPos = {2.95f/8f, 2.2f/8f}; //2.7f/8f
+    private static float[] rightPos = {6.35f/8f, 2.2f/8f};
 //
 //    private static float[] midPos = {4.3f/8f, 2.0f/8f};//0 = col, 1 = row
 //    private static float[] leftPos = {2.3f/8f, 2.0f/8f}; //2.7f/8f

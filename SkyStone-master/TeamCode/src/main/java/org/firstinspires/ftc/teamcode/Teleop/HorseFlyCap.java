@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
+import org.firstinspires.ftc.teamcode.Auto.DriveConstants;
+import org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
@@ -289,70 +291,7 @@ public class HorseFlyCap extends TunableOpMode {
          */
 
 
-        switch(counter)
-        {
-            //gripper let go first?
-            //task 1: lift up
-            //need to test, this step should not be necesssary
-            case 1:
-                gripper.setPosition(gripperGrip);
-                newSlideLeft = liftIncrementer;//height should not be hardcoded, fix after PID tuned
-                newSlideRight = liftIncrementer;
 
-                //none of :
-                leftSlide.setTargetPosition((int)(newSlideLeft));
-                rightSlide.setTargetPosition((int)(newSlideRight));
-                leftSlide.setPower(1);
-                rightSlide.setPower(1);
-                //this is necessary? coded later already
-
-                chime = System.currentTimeMillis();
-                counter++;
-                break;
-
-            //rotate
-            case 2:
-                if(System.currentTimeMillis() - chime >= 750)//lift is super fast, can also rotate on the way up
-                {
-
-                    flipper.setPosition(0.95);
-                    counter++;
-                }
-                break;
-            //flip
-            case 3:
-                if(System.currentTimeMillis() - chime >= 2000)//amount of time rotation takes
-                {
-                    rotaterReady();
-                    chime = System.currentTimeMillis();
-                    counter++;
-                }
-
-                break;
-            //pseudo home lift
-            case 4:
-                leftSlide.setTargetPosition((int)psuedoHomer);//changed to pseudo home
-                rightSlide.setTargetPosition((int)psuedoHomer);
-                leftSlide.setPower(0.75);
-                rightSlide.setPower(0.75);
-                chime = System.currentTimeMillis();
-                counter++;
-                break;
-
-            // cock to intermediate
-            case 5:
-                if(System.currentTimeMillis() - chime >= 2000) {
-                    flipper.setPosition(flipperBetween);
-                    /*gripper.setPosition(gripperHome);*/
-                }
-                counter++;
-                break;
-            // gripper close;
-            case 6:
-                grip();
-                counter = 0;
-                break;
-        }
 
 
         /**
@@ -362,78 +301,7 @@ public class HorseFlyCap extends TunableOpMode {
          *
          */
 
-        switch(count)//DPAD RIGHT
-        {
-            //task 1: cock to intermediate
-            case 1:
-                flipper.setPosition(flipperBetween);
-                time = System.currentTimeMillis();
-                count++;
-                break;
-                /*flipper.setPosition(0.6);
-                time = System.currentTimeMillis();*/
-            //move lift up
 
-            //task 2: lift up
-            case 2:
-                if(System.currentTimeMillis() - time >= 2000)
-                {
-                    newSlideLeft = liftIncrement;
-                    newSlideRight = liftIncrement;
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
-                    leftSlide.setPower(1);
-                    rightSlide.setPower(1);
-                    time = System.currentTimeMillis();
-                    count++;
-                }
-                /*leftSlide.setTargetPosition((int)(-200));
-                rightSlide.setTargetPosition((int)(-200));
-                if(System.currentTimeMillis() - time >= toMidTime)
-                {
-                    rotaterOut();
-                }
-                count++;*/
-                break;
-                /*if(System.currentTimeMillis() - time >= toMidTime)
-                {
-                    newSlideLeft = liftIncrement;
-                    newSlideRight = liftIncrement;
-                    leftSlide.setTargetPosition((int)(newSlideLeft));
-                    rightSlide.setTargetPosition((int)(newSlideRight));
-                    leftSlide.setPower(1);
-                    rightSlide.setPower(1);
-                    time = System.currentTimeMillis();
-                    count++;
-                }
-                break;*/
-            //task 3: rotate out
-            case 3:
-                if(System.currentTimeMillis() - time >= liftTime)
-                {
-                    rotaterOut();
-                    time = System.currentTimeMillis();
-                    count++;
-                }
-
-                break;
-
-            /*case 4:
-                if(System.currentTimeMillis() - time >= 100) {
-                    flipper.setPosition(flipperBetweenBetween);
-                    time = System.currentTimeMillis();
-                    count++;
-                }*/
-
-            //flip out
-            case 4:
-                if(System.currentTimeMillis() - time >= 2000)
-                {
-                    flipper.setPosition(0.25);
-                    count = 0;
-                }
-                break;
-        }
 
 
         /*
@@ -554,11 +422,11 @@ public class HorseFlyCap extends TunableOpMode {
      * gripper controls
      */
     public void grip() {
-        gripper.setPosition(gripperGrip);
+        gripper.setPosition(GLOBALS.gripperHome);
     }
 
     public void gripReady() {
-        gripper.setPosition(gripperHome);
+        gripper.setPosition(GLOBALS.gripperGrip);
     }
 
 

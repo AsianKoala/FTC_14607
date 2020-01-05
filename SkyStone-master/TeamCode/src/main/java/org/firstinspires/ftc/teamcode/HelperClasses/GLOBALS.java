@@ -14,7 +14,7 @@ public  class GLOBALS {
     public   static double rotaterHome = 0.279;
     public  static double rotaterOut = 0.95;
     public final static double gripperHome = 0.82; //
-    public final static double gripperGrip = 0.19; // WAS 0.19
+    public final static double gripperGrip = 0.22; // TODO: WAS 0.19
 
 
     public  static double P = 15;

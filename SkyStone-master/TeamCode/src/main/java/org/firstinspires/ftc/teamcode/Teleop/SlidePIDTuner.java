@@ -18,6 +18,9 @@ public class SlidePIDTuner extends TunableOpMode {
     private ExpansionHubMotor rightSlide;
     private ExpansionHubServo flipper,gripper,rotater;
     private ArrayList<ExpansionHubMotor> allMotors = new ArrayList<>();
+
+    double gripperGrip = 0.5;
+    double gripperHome = 0.5;
     
 ;
     private double newSlidePosition;
@@ -67,6 +70,9 @@ public class SlidePIDTuner extends TunableOpMode {
         P = getDouble("P");
         I = getDouble("I");
         D = getDouble("D");
+
+        gripperGrip = getDouble("gripperGrip");
+        gripperHome = getDouble("gripperHome");
 
 
         // flipper arm control
