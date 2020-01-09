@@ -308,16 +308,24 @@ public class HorseFlyCap extends TunableOpMode {
          * slide powers here
          */
 
-        double slideMultiplier = 100;
+        double slideMultiplier = 80; //todo:100
         if(gamepad2.right_stick_button) {
-            slideMultiplier = 25;
+            slideMultiplier = 20;
         }
 
 
         double increment = gamepad2.right_stick_y * slideMultiplier;
         if(Math.abs(increment) > 5) {
-            newSlideLeft = leftSlide.getCurrentPosition() + increment;
-            newSlideRight = rightSlide.getCurrentPosition() + increment;
+            if(leftSlide.getCurrentPosition()+increment < -15 && rightSlide.getCurrentPosition()+increment < -15)
+            {
+                newSlideLeft = leftSlide.getCurrentPosition() + increment;
+                newSlideRight = rightSlide.getCurrentPosition() + increment;
+
+            }
+            else{
+                // stop slides from going down too much
+            }
+
         }
         if(gamepad2.x) {
             oldSlideLeft = leftSlide.getCurrentPosition();
