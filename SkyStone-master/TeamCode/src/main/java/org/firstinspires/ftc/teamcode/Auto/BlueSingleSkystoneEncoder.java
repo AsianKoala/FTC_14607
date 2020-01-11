@@ -282,6 +282,9 @@ public class BlueSingleSkystoneEncoder extends LinearOpMode {
         leftIntake.setPower(-0.7);
         rightIntake.setPower(-0.7);
 
+
+        rotateToSquare(15, 0.5, 3); //todo: take out !!!
+//        rotateToSquare(0, 0.3, 3); //todo: take out !!!
         rotateToSquare(0, 0.2, 1);
 
         leftIntake.setPower(-1);
@@ -289,15 +292,17 @@ public class BlueSingleSkystoneEncoder extends LinearOpMode {
 
         resetEncoders();
 
+//        sleep(250); //todo: take out !!!
+
 
         // originally no additions to encoder values to tweak
         if(position == 3) {
-            driveEncodersStrafeIMU(-3725 -400, -3725 -400, 3725 +400, 3725 +400, -0.8, -0.8, 0.8, 0.8, 0.5, 8, 0, false);
+            driveEncodersStrafeIMU(-3725 -400, -3725 -400, 3725 +400, 3725 +400, -0.8, -0.8, 0.8, 0.8, 0.3 /* 0.5*/, 8, 0, false); //todo: before belt issue was 0.5 min 0.8 max
         } else if(position == 2) {
-            driveEncodersStrafeIMU(-3400 -400, -3400 -400, 3400 +400, 3400 +400, -0.8, -0.8, 0.8, 0.8, 0.5, 8, 0, false);
+            driveEncodersStrafeIMU(-3400 -400, -3400 -400, 3400 +400, 3400 +400, -0.8, -0.8, 0.8, 0.8, 0.3 /* 0.5*/, 8, 0, false);
         } else if(position == 1) {
             // -3125 -400
-            driveEncodersStrafeIMU(-3125 -300, -3125 -300, 3125 +300, 3125 +300, -0.8, -0.8, 0.8, 0.8, 0.5, 8, 0, false);
+            driveEncodersStrafeIMU(-3125 -300, -3125 -300, 3125 +300, 3125 +300, -0.8, -0.8, 0.8, 0.8, 0.3 /* 0.5*/, 8, 0, false);
         }
 
         resetEncoders();
@@ -307,7 +312,8 @@ public class BlueSingleSkystoneEncoder extends LinearOpMode {
         leftIntake.setPower(0);
         rightIntake.setPower(0);
 
-        driveEncodersForwardIMU(500, 500, 500, 500, .4, .4, .4, .4, 0.25, 5, 0, true); // 0.4
+        // todo: was 500 and worked but shortened for less risk of touching other foundation
+        driveEncodersForwardIMU(350, 350, 350, 350, .4, .4, .4, .4, 0.25, 5, 0, true); // 0.4
 
         grabFoundation();
 

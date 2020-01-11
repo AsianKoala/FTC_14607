@@ -98,7 +98,8 @@ public class HorseFlyCap extends TunableOpMode {
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
 
 
-
+        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         leftSlide.setTargetPosition(0);
@@ -108,6 +109,7 @@ public class HorseFlyCap extends TunableOpMode {
 
         leftSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
         rightSlide.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDCoefficients(P,I,D));
+
 
 
 
@@ -141,7 +143,7 @@ public class HorseFlyCap extends TunableOpMode {
          * INTAKE CONTROL
          *
          */
-        double intakeMultiplier = 0.75;
+        double intakeMultiplier = 0.60; //todo: was 0.75
         if(gamepad2.left_stick_button) {
             intakeMultiplier = 1;
         }
@@ -337,21 +339,26 @@ public class HorseFlyCap extends TunableOpMode {
         if(gamepad2.b) {
             oldSlideLeft = leftSlide.getCurrentPosition();
             oldSlideRight = rightSlide.getCurrentPosition();
-            newSlideLeft = -25.0/2;
-            newSlideRight = -25.0/2;
+            newSlideLeft = -14;
+            newSlideRight = -14;
         }
 
-        if(Math.abs(newSlideLeft - leftSlide.getCurrentPosition()) > 10 || Math.abs(newSlideRight - rightSlide.getCurrentPosition()) > 10) {
+        if(newSlideLeft - leftSlide.getTargetPosition() < 0 || newSlideRight - rightSlide.getTargetPosition() < 0) {
             leftSlide.setTargetPosition((int)(newSlideLeft));
             rightSlide.setTargetPosition((int)(newSlideRight));
             leftSlide.setPower(1);
             rightSlide.setPower(1);
+        } else if(newSlideLeft - leftSlide.getTargetPosition() > 0 || newSlideRight - rightSlide.getTargetPosition() > 0) {
+            leftSlide.setTargetPosition((int)(newSlideLeft));
+            rightSlide.setTargetPosition((int)(newSlideRight));
+            leftSlide.setPower(0.3);
+            rightSlide.setPower(0.3);
         }
-
-        else {
-            leftSlide.setPower(0);
-            rightSlide.setPower(0);
-        }
+//
+//        else {
+//            leftSlide.setPower(0);
+//            rightSlide.setPower(0);
+//        }
 
 
         telemetry.addData("flipper pos", flipper.getPosition());

@@ -7,7 +7,7 @@ public  class GLOBALS {
 
     public  final static double flipperHome =  0.12; // todo : WAS 0.15
     public final  static double flipperOut = 0.8513; // todo : WAS 0.8513
-    public  final static double flipperBetween = 0.28; // tODO: WAS 0.3
+    public  final static double flipperBetween = 0.27; // tODO: WAS 0.3 todo: after first chance it was 0.28
     public final static double capUp = .9;
     public final static double capBetween = 0.6;
     public final static double capDown = .1;
