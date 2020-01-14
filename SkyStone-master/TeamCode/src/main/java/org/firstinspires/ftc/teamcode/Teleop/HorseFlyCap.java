@@ -41,7 +41,7 @@ public class HorseFlyCap extends TunableOpMode {
     private ExpansionHubMotor rightIntake;
     private ExpansionHubMotor leftSlide;
     private ExpansionHubMotor rightSlide;
-    private Servo flipper, gripper, rotater, leftSlam, rightSlam, capstone;
+    private Servo flipper, gripper, rotater, leftSlam, rightSlam, capstone, park;
 
     private ArrayList<ExpansionHubMotor> driveMotors = new ArrayList<>();
 
@@ -71,6 +71,9 @@ public class HorseFlyCap extends TunableOpMode {
     public static long chime = 0;
     public static int counter = 0;
 
+    private double capPosition = 0.75;
+    private double parkPosition = 0.83;
+
 
     @Override
     public void init() {
@@ -90,6 +93,8 @@ public class HorseFlyCap extends TunableOpMode {
         leftSlam = hardwareMap.get(Servo.class, "leftSlam");
         rightSlam = hardwareMap.get(Servo.class, "rightSlam");
         capstone = hardwareMap.get(Servo.class, "capstone");
+
+        park = hardwareMap.get(Servo.class, "park");
 
 
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -124,6 +129,10 @@ public class HorseFlyCap extends TunableOpMode {
         flipReady();
         rotaterReady();
         gripReady();
+
+        park.setPosition(parkPosition);
+        capstone.setPosition(capPosition);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -200,12 +209,31 @@ public class HorseFlyCap extends TunableOpMode {
             rightRear.setPower(0);
         }
 
-        if(gamepad1.left_stick_button) {
-            capstone.setPosition(capBetween);
-        }else if(gamepad1.right_trigger > 0.5) {
-            capstone.setPosition(capUp);
-        }else{
-            capstone.setPosition(capDown);
+//        if(gamepad1.left_stick_button) {
+//            capstone.setPosition(capBetween);
+//        }else if(gamepad1.right_trigger > 0.5) {
+//            capstone.setPosition(capUp);
+//        }else{
+//            capstone.setPosition(capDown);
+//        }
+        if(gamepad1.left_trigger > 0.5) {
+            capPosition+=0.01;
+            capstone.setPosition(capPosition);
+        }
+
+        if(gamepad1.right_trigger > 0.5) {
+            capPosition-=0.01;
+            capstone.setPosition(capPosition);
+        }
+
+        if(gamepad1.dpad_down) {
+            parkPosition+=0.025;
+            park.setPosition(parkPosition);
+        }
+
+        if(gamepad1.dpad_up) {
+            parkPosition-=0.025;
+            park.setPosition(parkPosition);
         }
 
 
@@ -279,6 +307,8 @@ public class HorseFlyCap extends TunableOpMode {
         {
 //            capstone.setPosition(capDown);
         }
+
+
 
 
 
