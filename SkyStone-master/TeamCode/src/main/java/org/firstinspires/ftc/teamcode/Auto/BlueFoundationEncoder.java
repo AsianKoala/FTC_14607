@@ -182,9 +182,6 @@ public class BlueFoundationEncoder extends LinearOpMode {
         rotater.setPosition(GLOBALS.rotaterHome);
         gripper.setPosition(GLOBALS.gripperHome);
 
-        startHeading = getHeadingRaw180(0);
-        lastAngleFound = startHeading;
-
         leftSlide.setTargetPosition(-10);//changed to pseudo home
         rightSlide.setTargetPosition(-10);
         leftSlide.setPower(0.75);
@@ -196,6 +193,9 @@ public class BlueFoundationEncoder extends LinearOpMode {
             telemetry.addData("heading: ", getHeadingRaw180(startHeading));
             telemetry.update();
         }
+
+        startHeading = getHeadingRaw180(0);
+        lastAngleFound = startHeading;
 
         startHeading = getHeadingRaw180(0);
         lastAngleFound = startHeading;

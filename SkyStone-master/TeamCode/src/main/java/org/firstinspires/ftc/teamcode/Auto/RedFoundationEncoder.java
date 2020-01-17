@@ -186,9 +186,6 @@ public class RedFoundationEncoder extends LinearOpMode {
         rotater.setPosition(GLOBALS.rotaterHome);
         gripper.setPosition(GLOBALS.gripperHome);
 
-        startHeading = getHeadingRaw180(0);
-        lastAngleFound = startHeading;
-
         leftSlide.setTargetPosition(-10);//changed to pseudo home
         rightSlide.setTargetPosition(-10);
         leftSlide.setPower(0.75);
@@ -201,6 +198,9 @@ public class RedFoundationEncoder extends LinearOpMode {
             telemetry.addData("heading: ", getHeadingRaw180(startHeading));
             telemetry.update();
         }
+
+        startHeading = getHeadingRaw180(0);
+        lastAngleFound = startHeading;
 
         driveEncodersStrafeIMU(225, 225, -225, -225, 0.4, 0.4, -0.4, -0.4, 0.25, 6, 0, true);
         resetEncoders();
