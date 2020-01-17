@@ -192,7 +192,7 @@ public class RedFoundationEncoder extends LinearOpMode {
         rightSlide.setPower(0.75);
 
         while(!isStarted() && !isStopRequested()) {
-            telemetry.addData("heading: ", getHeadingRaw180(startHeading));
+            telemetry.addData("heading: ", getHeadingRaw180(0));
             telemetry.update();
         }
 
