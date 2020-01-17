@@ -190,7 +190,7 @@ public class BlueFoundationEncoder extends LinearOpMode {
 
 
         while(!isStarted() && !isStopRequested()) {
-            telemetry.addData("heading: ", getHeadingRaw180(startHeading));
+            telemetry.addData("heading: ", getHeadingRaw180(0));
             telemetry.update();
         }
 
