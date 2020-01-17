@@ -196,10 +196,7 @@ public class BlueFoundationEncoder extends LinearOpMode {
 
         startHeading = getHeadingRaw180(0);
         lastAngleFound = startHeading;
-
-        startHeading = getHeadingRaw180(0);
-        lastAngleFound = startHeading;
-
+        
         driveEncodersStrafeIMU(-225, -225, 225, 225, -0.4, -0.4, 0.4, 0.4, 0.25, 6, 0, false);
         resetEncoders();
 
