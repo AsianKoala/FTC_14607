@@ -202,13 +202,14 @@ public class RedFoundationEncoder extends LinearOpMode {
         driveEncodersStrafeIMU(225, 225, -225, -225, 0.4, 0.4, -0.4, -0.4, 0.25, 6, 0, true);
         resetEncoders();
 
-        driveEncodersForwardIMU(1700, 1700, 1700, 1700, .4, .4, .4, .4, 0.25, 5, 0, true); // 0.4
+        // 1700
+        driveEncodersForwardIMU(1550, 1550, 1550, 1550, .4, .4, .4, .4, 0.25, 5, 0, true); // 0.4
 
 //        rotateToSquare(0, 0.2, 1);
 
         grabFoundation();
 
-        sleep(2000);
+        sleep(1500); //2000
 
         resetEncoders();
 
@@ -721,11 +722,11 @@ public class RedFoundationEncoder extends LinearOpMode {
 
     public void grabFoundation() {
         leftSlam.setPosition(0.9);
-        rightSlam.setPosition(0.1);
+        rightSlam.setPosition(0.05); // 0.1
     }
 
     public void ungrabFoundation() {
-        leftSlam.setPosition(0.1);
+        leftSlam.setPosition(0.05); // 0.1
         rightSlam.setPosition(0.9);
     }
 

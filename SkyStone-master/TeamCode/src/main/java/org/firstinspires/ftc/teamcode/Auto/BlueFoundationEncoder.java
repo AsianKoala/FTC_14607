@@ -719,11 +719,11 @@ public class BlueFoundationEncoder extends LinearOpMode {
 
     public void grabFoundation() {
         leftSlam.setPosition(0.9);
-        rightSlam.setPosition(0.1);
+        rightSlam.setPosition(0.05);
     }
 
     public void ungrabFoundation() {
-        leftSlam.setPosition(0.1);
+        leftSlam.setPosition(0.05);
         rightSlam.setPosition(0.9);
     }
 
