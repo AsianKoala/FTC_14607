@@ -73,9 +73,8 @@ public class BaseAuto extends BaseOpMode {
 
     /**
      * pretty sure this wont work lol
-     * @return
      */
-    public double getHeadingRad360(){
+    protected double getHeadingRad360(){
         return (imu.getAngularOrientation().firstAngle)+startingHeading;
     }
 
@@ -85,6 +84,9 @@ public class BaseAuto extends BaseOpMode {
     /**
      * movement stuff
      */
+
+    
+
 
 
 
