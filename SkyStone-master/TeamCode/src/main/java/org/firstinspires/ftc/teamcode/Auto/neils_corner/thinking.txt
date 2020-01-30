@@ -1,0 +1,13 @@
+all teleops extend from baseopmode
+baseopmode extends baseopmode
+all autos extend from baseauto
+
+
+baseopmode
+-----
+initialize all hardware stuff
+
+
+baseauto
+-----
+initialize cv shit
