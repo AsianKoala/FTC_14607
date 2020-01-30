@@ -85,8 +85,49 @@ public class BaseAuto extends BaseOpMode {
      * movement stuff
      */
 
-    
 
+    public void driveMecanum(double xPower,double yPower,double turnPower) {
+
+        double rawFL = -yPower+turnPower-xPower*1.5;
+        double rawBL = yPower+turnPower- xPower*1.5;
+        double rawBR = -yPower-turnPower-xPower*1.5;
+        double rawFR = yPower-turnPower-xPower*1.5;
+
+
+        double scaleAmt = 1;
+        double biggestPower = Math.abs(rawFL);
+
+        if(Math.abs(rawBL) > (biggestPower)) { biggestPower = rawBL; }
+        if(Math.abs(rawFR) > (biggestPower)) { biggestPower = rawFR; }
+        if(Math.abs(rawBR) > (biggestPower)) { biggestPower = rawBR; }
+        if(biggestPower > 1.0) {
+            scaleAmt = 1.0/biggestPower;
+        }
+
+        rawFL *= scaleAmt;
+        rawFR *= scaleAmt;
+        rawBL *= scaleAmt;
+        rawBR *= scaleAmt;
+
+
+        leftFront.setPower(rawFL);
+        rightFront.setPower(rawFR);
+        leftRear.setPower(rawBL);
+        rightRear.setPower(rawBR);
+    }
+
+
+
+
+    protected void verticalMovement(double inches, double maxSpeed, double prefAngle, double timeout, boolean stop) {
+        double startingY = getWorldY();
+        double startingX = getWorldX();
+
+        while(getMotorBulkDataPosition(masterHub, verticalModule) - startingY < inches) {
+
+            
+        }
+    }
 
 
 
