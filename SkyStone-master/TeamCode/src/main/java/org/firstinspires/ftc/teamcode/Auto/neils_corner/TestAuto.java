@@ -10,6 +10,13 @@ public class TestAuto extends BaseAuto {
         super.runOpMode();
 
         setStartingPosition(new Point(0,0));
+
+        waitForStart();
+        phoneCam.closeCameraDevice();
+
+
+
+        // do something
     }
 
 
