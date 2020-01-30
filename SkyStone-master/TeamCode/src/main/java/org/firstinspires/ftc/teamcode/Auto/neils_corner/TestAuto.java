@@ -15,13 +15,7 @@ public class TestAuto extends BaseAuto {
         phoneCam.closeCameraDevice();
 
 
-
-        // do something
+        goToPosition(0,24, 0, 0.5, 0.5,  Math.toRadians(15), true);
     }
-
-
-
-
-
 
 }

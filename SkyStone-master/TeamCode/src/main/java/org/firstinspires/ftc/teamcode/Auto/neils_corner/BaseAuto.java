@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto.neils_corner;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.teamcode.HelperClasses.ppProject.company.Range;
 import org.jetbrains.annotations.NotNull;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -74,7 +75,7 @@ public class BaseAuto extends BaseOpMode {
     /**
      * pretty sure this wont work lol
      */
-    protected double getHeadingRad360(){
+    protected double getHeadingRad180(){
         return (imu.getAngularOrientation().firstAngle)+startingHeading;
     }
 
@@ -86,6 +87,12 @@ public class BaseAuto extends BaseOpMode {
      */
 
 
+    /**
+     * basic apply dimensional power method
+     * @param xPower horizontal power
+     * @param yPower vertical
+     * @param turnPower turning
+     */
     public void driveMecanum(double xPower,double yPower,double turnPower) {
 
         double rawFL = -yPower+turnPower-xPower*1.5;
@@ -119,15 +126,80 @@ public class BaseAuto extends BaseOpMode {
 
 
 
-    protected void verticalMovement(double inches, double maxSpeed, double prefAngle, double timeout, boolean stop) {
-        double startingY = getWorldY();
-        double startingX = getWorldX();
 
-        while(getMotorBulkDataPosition(masterHub, verticalModule) - startingY < inches) {
+    protected void goToPosition(double targetX, double targetY, double pointAngle, double movementSpeed, double turnSpeed, double slowDownTurnRad, boolean stop) {
 
-            
+        double distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
+        double startHeading = getHeadingRad180();
+
+        double movement_x = 0;
+        double movement_y = 0;
+        double movement_turn = 0;
+
+
+        while(distanceToTarget > 0.5) {
+
+            double angleToTarget = Math.atan2(targetY - getWorldY(), targetX - getWorldX());
+
+            double relativeAngleToTarget = AngleWrap(angleToTarget - (getHeadingRad180() - Math.toRadians(90)));
+
+
+            double deltaX = targetX - getWorldX();
+            double deltaY = targetY - getWorldY();
+            double absDeltaX = Math.abs(deltaX);
+            double absDeltaY = Math.abs(deltaY);
+
+
+            double xMovementComponent = (deltaX / (absDeltaX + absDeltaY));
+            double yMovementComponent = (deltaY / (absDeltaX + absDeltaY));
+
+            /**
+             * deccel over 12 in
+             */
+            if(stop) {
+                xMovementComponent = deltaX / 12;
+                yMovementComponent = deltaY / 12;
+            }
+
+            movement_x = Range.clip(xMovementComponent, -movementSpeed, movementSpeed);
+            movement_y = Range.clip(yMovementComponent, -movementSpeed, movementSpeed);
+
+
+            /**
+             * now deal with all the turning correction
+             */
+            double relativeTurnAngle = relativeAngleToTarget - Math.toRadians(180) + pointAngle;
+
+            movement_turn = Range.clip(relativeTurnAngle / slowDownTurnRad, -turnSpeed, turnSpeed);
+
+
+            if(distanceToTarget < 12) {
+                movement_turn = 0;
+            }
+
+
+
+            // if something fucked up
+            if(startHeading - getHeadingRad180() > Math.toRadians(120)) {
+                return;
+            }
+
+
+            driveMecanum(movement_x, movement_y, movement_turn);
+            distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
         }
     }
+
+
+//    protected void verticalMovement(double inches, double maxSpeed, double prefAngle, double timeout, boolean stop) {
+//        double startingY = getWorldY();
+//        double startingX = getWorldX();
+//
+//        while(getMotorBulkDataPosition(masterHub, verticalModule) - startingY < inches) {
+//
+//            double distanceToTarget =
+//        }
+//    }
 
 
 
