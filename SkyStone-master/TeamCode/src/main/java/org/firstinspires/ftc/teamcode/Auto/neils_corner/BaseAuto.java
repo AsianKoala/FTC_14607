@@ -276,7 +276,7 @@ public class BaseAuto extends TunableLinearOpMode {
 
 
 
-    
+    // something
     /**
      * basic apply dimensional power method
      * @param xPower horizontal power
