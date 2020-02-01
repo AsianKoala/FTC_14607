@@ -28,7 +28,7 @@ public class BaseAuto extends BaseOpMode {
 
 
 
-    OpenCvCamera phoneCam;
+    protected OpenCvCamera phoneCam;
 
 
 
@@ -125,70 +125,76 @@ public class BaseAuto extends BaseOpMode {
 
 
 
+    protected void lineFor(double inches, double maxSpeed, double timeout) {
+        double distanceTraveled = 0;
+        while(opModeIsActive() && Math.abs(inches - distanceTraveled) < 0.25) {
 
-
-    protected void goToPosition(double targetX, double targetY, double pointAngle, double movementSpeed, double turnSpeed, double slowDownTurnRad, boolean stop) {
-
-        double distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
-        double startHeading = getHeadingRad180();
-
-        double movement_x = 0;
-        double movement_y = 0;
-        double movement_turn = 0;
-
-
-        while(distanceToTarget > 0.5) {
-
-            double angleToTarget = Math.atan2(targetY - getWorldY(), targetX - getWorldX());
-
-            double relativeAngleToTarget = AngleWrap(angleToTarget - (getHeadingRad180() - Math.toRadians(90)));
-
-
-            double deltaX = targetX - getWorldX();
-            double deltaY = targetY - getWorldY();
-            double absDeltaX = Math.abs(deltaX);
-            double absDeltaY = Math.abs(deltaY);
-
-
-            double xMovementComponent = (deltaX / (absDeltaX + absDeltaY));
-            double yMovementComponent = (deltaY / (absDeltaX + absDeltaY));
-
-            /**
-             * deccel over 12 in
-             */
-            if(stop) {
-                xMovementComponent = deltaX / 12;
-                yMovementComponent = deltaY / 12;
-            }
-
-            movement_x = Range.clip(xMovementComponent, -movementSpeed, movementSpeed);
-            movement_y = Range.clip(yMovementComponent, -movementSpeed, movementSpeed);
-
-
-            /**
-             * now deal with all the turning correction
-             */
-            double relativeTurnAngle = relativeAngleToTarget - Math.toRadians(180) + pointAngle;
-
-            movement_turn = Range.clip(relativeTurnAngle / slowDownTurnRad, -turnSpeed, turnSpeed);
-
-
-            if(distanceToTarget < 12) {
-                movement_turn = 0;
-            }
-
-
-
-            // if something fucked up
-            if(startHeading - getHeadingRad180() > Math.toRadians(120)) {
-                return;
-            }
-
-
-            driveMecanum(movement_x, movement_y, movement_turn);
-            distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
         }
     }
+
+    //i dont think we can use this because we dont have 3 wheel odometry
+//    protected void goToPosition(double targetX, double targetY, double pointAngle, double movementSpeed, double turnSpeed, double slowDownTurnRad, boolean stop) {
+//
+//        double distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
+//        double startHeading = getHeadingRad180();
+//
+//        double movement_x;
+//        double movement_y;
+//        double movement_turn;
+//
+//
+//        while(distanceToTarget > 0.5 && Math.abs(pointAngle - getHeadingRad180()) < Math.toRadians(2)) {
+//
+//            double angleToTarget = Math.atan2(targetY - getWorldY(), targetX - getWorldX());
+//
+//            double relativeAngleToTarget = AngleWrap(angleToTarget - (getHeadingRad180() - Math.toRadians(90)));
+//
+//
+//            double deltaX = targetX - getWorldX();
+//            double deltaY = targetY - getWorldY();
+//            double absDeltaX = Math.abs(deltaX);
+//            double absDeltaY = Math.abs(deltaY);
+//
+//
+//            double xMovementComponent = (deltaX / (absDeltaX + absDeltaY));
+//            double yMovementComponent = (deltaY / (absDeltaX + absDeltaY));
+//
+//            /**
+//             * deccel over 12 in
+//             */
+//            if(stop) {
+//                xMovementComponent = deltaX / 12;
+//                yMovementComponent = deltaY / 12;
+//            }
+//
+//            movement_x = Range.clip(xMovementComponent, -movementSpeed, movementSpeed);
+//            movement_y = Range.clip(yMovementComponent, -movementSpeed, movementSpeed);
+//
+//
+//            /**
+//             * now deal with all the turning correction
+//             */
+//            double relativeTurnAngle = relativeAngleToTarget - Math.toRadians(180) + pointAngle;
+//
+//            movement_turn = Range.clip(relativeTurnAngle / slowDownTurnRad, -turnSpeed, turnSpeed);
+//
+//
+//            if(distanceToTarget < 12) {
+//                movement_turn = 0;
+//            }
+//
+//
+//
+//            // if something fucked up
+//            if(startHeading - getHeadingRad180() > Math.toRadians(120)) {
+//                return;
+//            }
+//
+//
+//            driveMecanum(movement_x, movement_y, movement_turn);
+//            distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
+//        }
+//    }
 
 
 //    protected void verticalMovement(double inches, double maxSpeed, double prefAngle, double timeout, boolean stop) {

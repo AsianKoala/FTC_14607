@@ -11,11 +11,18 @@ public class TestAuto extends BaseAuto {
 
         setStartingPosition(new Point(0,0));
 
-        waitForStart();
+
+
+        while(!isStarted() && !isStopRequested()) {
+
+        }
+
         phoneCam.closeCameraDevice();
 
 
         goToPosition(0,24, 0, 0.5, 0.5,  Math.toRadians(15), true);
+        goToPosition(10,24,0,0.5,0.5, Math.toRadians(15), true);
+        goToPosition(10,24,Math.toRadians(90),0, 0.5, Math.toRadians(15), true);
     }
 
 }

@@ -65,8 +65,44 @@ public class BaseOpMode extends LinearOpMode {
         imu.initialize(new BNO055IMU.Parameters());
         // TODO: BNO055IMUUtil.remapAxes(imu, something something);
 
-
-
     }
 
+
+
+
+
+
+
+    protected void gamepadControl() {
+
+        double motorPower;
+        if(gamepad1.left_bumper) {
+            motorPower = 0.5;
+        }
+
+        else if(gamepad1.right_bumper) {
+            motorPower = 0.25;
+        }
+
+        else {
+            motorPower = 1;
+        }
+
+        double threshold = 0.157; // deadzone
+        if(Math.abs(gamepad1.left_stick_y) > threshold || Math.abs(gamepad1.left_stick_x) > threshold || Math.abs(gamepad1.right_stick_x) > threshold)
+        {
+            rightFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
+            leftRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            leftFront.setPower(motorPower * (((-gamepad1.left_stick_y) + (gamepad1.left_stick_x)) + gamepad1.right_stick_x));
+            rightRear.setPower(motorPower * (((-gamepad1.left_stick_y) + (-gamepad1.left_stick_x)) + -gamepad1.right_stick_x));
+        }
+
+        else
+        {
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftRear.setPower(0);
+            rightRear.setPower(0);
+        }
+    }
 }

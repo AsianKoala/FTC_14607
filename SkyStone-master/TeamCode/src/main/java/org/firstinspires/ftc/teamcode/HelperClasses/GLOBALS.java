@@ -105,7 +105,7 @@ public  class GLOBALS {
      * @param ticks
      * @return
      */
-    public static double encoderTicksToInches(int ticks) {
+    public static double encoderTicksToInches(double ticks) {
         return odometryWheelRadius * 2 * Math.PI * ticks / TICKS_PER_REV;
     }
 
