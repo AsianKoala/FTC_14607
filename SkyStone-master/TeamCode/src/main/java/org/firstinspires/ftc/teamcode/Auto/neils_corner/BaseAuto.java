@@ -46,9 +46,6 @@ public class BaseAuto extends BaseOpMode {
 
 
 
-    private Point startingPosition;
-    protected void setStartingPosition(Point startingPosition) { this.startingPosition = startingPosition; }
-
     private double startingHeading;
     protected void setStartingHeading(double startingHeading) { this.startingHeading = startingHeading; }
 
@@ -132,13 +129,13 @@ public class BaseAuto extends BaseOpMode {
     }
 
 
-    protected double getWorldX() {
-        return startingPosition.x + encoderTicksToInches(getMotorBulkDataPosition(masterHub, horizontalModule));
-    }
-
-    protected double getWorldY() {
-        return startingPosition.y + encoderTicksToInches(getMotorBulkDataPosition(masterHub, verticalModule));
-    }
+//    protected double getWorldX() {
+//        return startingPosition.x + encoderTicksToInches(getMotorBulkDataPosition(masterHub, horizontalModule));
+//    }
+//
+//    protected double getWorldY() {
+//        return startingPosition.y + encoderTicksToInches(getMotorBulkDataPosition(masterHub, verticalModule));
+//    }
 
     /**
      * pretty sure this wont work lol
