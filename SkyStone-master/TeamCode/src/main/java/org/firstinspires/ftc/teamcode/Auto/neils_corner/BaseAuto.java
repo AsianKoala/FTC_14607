@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto.neils_corner;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode;
+import org.firstinspires.ftc.teamcode.HelperClasses.ppProject.company.Range;
 import org.jetbrains.annotations.NotNull;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -12,7 +10,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
@@ -21,28 +18,7 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 
-public class BaseAuto extends TunableLinearOpMode {
-
-    protected ExpansionHubMotor leftFront, leftRear, rightFront, rightRear;
-    protected ExpansionHubMotor horizontalModule, verticalModule;
-    protected ExpansionHubMotor leftSlide, rightSlide;
-
-
-    protected ArrayList<ExpansionHubMotor> driveMotors = new ArrayList<ExpansionHubMotor>() {{
-        add(leftFront);
-        add(leftRear);
-        add(rightFront);
-        add(rightRear);
-    }};
-
-
-    protected BNO055IMU imu;
-
-    protected ExpansionHubEx masterHub, slaveHub;
-
-
-
-
+public class BaseAuto extends BaseOpMode {
 
     private Point startingPosition;
     protected void setStartingPosition(Point startingPosition) { this.startingPosition = startingPosition; }
@@ -52,45 +28,13 @@ public class BaseAuto extends TunableLinearOpMode {
 
 
 
-    protected OpenCvCamera phoneCam;
+    OpenCvCamera phoneCam;
 
 
 
     @Override
     public void runOpMode() {
-        leftFront = hardwareMap.get(ExpansionHubMotor.class, "leftFront");
-        leftRear = hardwareMap.get(ExpansionHubMotor.class, "leftRear");
-        rightFront = hardwareMap.get(ExpansionHubMotor.class, "rightFront");
-        rightRear = hardwareMap.get(ExpansionHubMotor.class, "rightRear");
-        horizontalModule = hardwareMap.get(ExpansionHubMotor.class, "horizontalModule");
-        verticalModule = hardwareMap.get(ExpansionHubMotor.class, "verticalModule");
-        leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
-        rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
-        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
-
-
-        for(ExpansionHubMotor motor : driveMotors) {
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-
-        horizontalModule.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        verticalModule.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-        imu.initialize(new BNO055IMU.Parameters());
-        // TODO: BNO055IMUUtil.remapAxes(imu, something something);
-
-
-
+        super.runOpMode(); // linky boi
 
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -130,9 +74,8 @@ public class BaseAuto extends TunableLinearOpMode {
 
     /**
      * pretty sure this wont work lol
-     * @return
      */
-    public double getHeadingRad360(){
+    protected double getHeadingRad180(){
         return (imu.getAngularOrientation().firstAngle)+startingHeading;
     }
 
@@ -142,6 +85,121 @@ public class BaseAuto extends TunableLinearOpMode {
     /**
      * movement stuff
      */
+
+
+    /**
+     * basic apply dimensional power method
+     * @param xPower horizontal power
+     * @param yPower vertical
+     * @param turnPower turning
+     */
+    public void driveMecanum(double xPower,double yPower,double turnPower) {
+
+        double rawFL = -yPower+turnPower-xPower*1.5;
+        double rawBL = yPower+turnPower- xPower*1.5;
+        double rawBR = -yPower-turnPower-xPower*1.5;
+        double rawFR = yPower-turnPower-xPower*1.5;
+
+
+        double scaleAmt = 1;
+        double biggestPower = Math.abs(rawFL);
+
+        if(Math.abs(rawBL) > (biggestPower)) { biggestPower = rawBL; }
+        if(Math.abs(rawFR) > (biggestPower)) { biggestPower = rawFR; }
+        if(Math.abs(rawBR) > (biggestPower)) { biggestPower = rawBR; }
+        if(biggestPower > 1.0) {
+            scaleAmt = 1.0/biggestPower;
+        }
+
+        rawFL *= scaleAmt;
+        rawFR *= scaleAmt;
+        rawBL *= scaleAmt;
+        rawBR *= scaleAmt;
+
+
+        leftFront.setPower(rawFL);
+        rightFront.setPower(rawFR);
+        leftRear.setPower(rawBL);
+        rightRear.setPower(rawBR);
+    }
+
+
+
+
+
+    protected void goToPosition(double targetX, double targetY, double pointAngle, double movementSpeed, double turnSpeed, double slowDownTurnRad, boolean stop) {
+
+        double distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
+        double startHeading = getHeadingRad180();
+
+        double movement_x = 0;
+        double movement_y = 0;
+        double movement_turn = 0;
+
+
+        while(distanceToTarget > 0.5) {
+
+            double angleToTarget = Math.atan2(targetY - getWorldY(), targetX - getWorldX());
+
+            double relativeAngleToTarget = AngleWrap(angleToTarget - (getHeadingRad180() - Math.toRadians(90)));
+
+
+            double deltaX = targetX - getWorldX();
+            double deltaY = targetY - getWorldY();
+            double absDeltaX = Math.abs(deltaX);
+            double absDeltaY = Math.abs(deltaY);
+
+
+            double xMovementComponent = (deltaX / (absDeltaX + absDeltaY));
+            double yMovementComponent = (deltaY / (absDeltaX + absDeltaY));
+
+            /**
+             * deccel over 12 in
+             */
+            if(stop) {
+                xMovementComponent = deltaX / 12;
+                yMovementComponent = deltaY / 12;
+            }
+
+            movement_x = Range.clip(xMovementComponent, -movementSpeed, movementSpeed);
+            movement_y = Range.clip(yMovementComponent, -movementSpeed, movementSpeed);
+
+
+            /**
+             * now deal with all the turning correction
+             */
+            double relativeTurnAngle = relativeAngleToTarget - Math.toRadians(180) + pointAngle;
+
+            movement_turn = Range.clip(relativeTurnAngle / slowDownTurnRad, -turnSpeed, turnSpeed);
+
+
+            if(distanceToTarget < 12) {
+                movement_turn = 0;
+            }
+
+
+
+            // if something fucked up
+            if(startHeading - getHeadingRad180() > Math.toRadians(120)) {
+                return;
+            }
+
+
+            driveMecanum(movement_x, movement_y, movement_turn);
+            distanceToTarget = Math.hypot(targetX - getWorldX(), targetY - getWorldY());
+        }
+    }
+
+
+//    protected void verticalMovement(double inches, double maxSpeed, double prefAngle, double timeout, boolean stop) {
+//        double startingY = getWorldY();
+//        double startingX = getWorldX();
+//
+//        while(getMotorBulkDataPosition(masterHub, verticalModule) - startingY < inches) {
+//
+//            double distanceToTarget =
+//        }
+//    }
 
 
 
