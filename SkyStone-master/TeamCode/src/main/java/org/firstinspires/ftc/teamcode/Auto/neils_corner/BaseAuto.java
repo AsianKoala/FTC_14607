@@ -145,6 +145,10 @@ public class BaseAuto extends TunableLinearOpMode {
         return (imu.getAngularOrientation().firstAngle)+startingHeading;
     }
 
+    protected double subtractAngle(double a1, double a2) {
+        return AngleWrap(a1 - a2);
+    }
+
 
 
 
@@ -157,8 +161,11 @@ public class BaseAuto extends TunableLinearOpMode {
      *
      * @param inches full distance traveled
      * @param movementSpeed max speed
-     * @param startUpInches
+     * @param startUpInches no
      * @param slowDownInches inches away to start
+     * @param slowDownTurnRad no
+     * @param minSpeed no
+     * @param turnSpeed no
      */
     protected void verticalMovement(double inches, double movementSpeed, double minSpeed, double startUpInches, double slowDownInches, double  turnSpeed, double slowDownTurnRad) {
         double scaledVerticalDistanceTraveled = 0;
@@ -169,7 +176,53 @@ public class BaseAuto extends TunableLinearOpMode {
         double startHeading = getHeadingRad180();
 
 
-        while(scaledVerticalDistanceTraveled <  inches && opModeIsActive()) {
+        while(Math.abs(inches - scaledVerticalDistanceTraveled) < 0.25 && opModeIsActive()) {
+            double x_component;
+            double y_component;
+
+
+            if(scaledVerticalDistanceTraveled < startUpInches) {
+                y_component = scaledVerticalDistanceTraveled / startUpInches + minSpeed;
+            } else {
+                y_component = (inches - scaledVerticalDistanceTraveled) / slowDownInches;
+            }
+
+            x_component = -scaledHorizontalDistanceTraveled / 0.75; // 0.75 is horizontal slow down start
+
+
+
+            x_component = Range.clip(x_component, -movementSpeed, movementSpeed);
+            y_component = Range.clip(y_component, -movementSpeed, movementSpeed);
+
+
+
+
+            double radToTarget = AngleWrap(getHeadingRad180() - startHeading);
+
+            double turn_component = Range.clip(radToTarget / slowDownTurnRad, -turnSpeed, turnSpeed);
+
+
+
+            driveMecanum(x_component, y_component, turn_component);
+
+
+            scaledVerticalDistanceTraveled = getScaledVerticalEncoder() - verticalStart;
+            scaledHorizontalDistanceTraveled = getScaledHorizontalEncoder() - horizontalStart;
+        }
+    }
+    
+    
+    
+    protected void horizontalMovement(double inches, double movementSpeed, double minSpeed, double startUpInches, double slowDownInches, double turnSpeed, double slowDownTurnRad) {
+        double scaledVerticalDistanceTraveled = 0;
+        double scaledHorizontalDistanceTraveled = 0;
+        double verticalStart = getScaledVerticalEncoder();
+        double horizontalStart = getScaledHorizontalEncoder();
+
+        double startHeading = getHeadingRad180();
+
+
+        while(Math.abs(scaledHorizontalDistanceTraveled - inches) < 0.25 && opModeIsActive()) {
             double x_component;
             double y_component;
 
@@ -180,7 +233,7 @@ public class BaseAuto extends TunableLinearOpMode {
                 x_component = (inches - scaledVerticalDistanceTraveled) / slowDownInches;
             }
 
-            y_component = -scaledHorizontalDistanceTraveled / 0.75; // 0.75 is horizontal slow down start
+            y_component = -scaledVerticalDistanceTraveled / 0.75; // 0.75 is horizontal slow down start
 
 
 
@@ -206,12 +259,24 @@ public class BaseAuto extends TunableLinearOpMode {
 
 
 
+    protected void turn(double angle, double turnSpeed, double slowDownTurnAngle) {
+
+        while(Math.toDegrees(subtractAngle(getHeadingRad180(), angle)) < 2 && opModeIsActive()) {
+
+            double radToTarget = subtractAngle(getHeadingRad180(), angle);
+
+            double turnComponent = Range.clip(radToTarget / slowDownTurnAngle, -turnSpeed, turnSpeed);
+
+
+
+            driveMecanum(0,0,turnComponent);
+        }
+    }
 
 
 
 
-
-
+    
     /**
      * basic apply dimensional power method
      * @param xPower horizontal power
