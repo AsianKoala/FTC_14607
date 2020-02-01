@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Auto.neils_corner;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode;
 import org.firstinspires.ftc.teamcode.HelperClasses.ppProject.company.Range;
 import org.jetbrains.annotations.NotNull;
 import org.opencv.core.*;
@@ -21,7 +22,7 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 
-public class BaseAuto extends BaseOpMode {
+public class BaseAuto extends TunableLinearOpMode {
 
     protected ExpansionHubMotor leftFront, leftRear, rightFront, rightRear;
     protected ExpansionHubMotor horizontalModule, verticalModule;
