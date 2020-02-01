@@ -98,8 +98,21 @@ public  class GLOBALS {
         return angle;
     }
 
+    private static final double odometryWheelRadius = 1.1811;
+    private static final double TICKS_PER_REV = 2048; // TODO: recheck this
+    /**
+     * for odometry bruv
+     * @param ticks
+     * @return
+     */
+    public static double encoderTicksToInches(double ticks) {
+        return odometryWheelRadius * 2 * Math.PI * ticks / TICKS_PER_REV;
+    }
 
 
+    public static double inchesToEncoderTicks() {
+        return 0; // TODO:
+    }
 
 
 
