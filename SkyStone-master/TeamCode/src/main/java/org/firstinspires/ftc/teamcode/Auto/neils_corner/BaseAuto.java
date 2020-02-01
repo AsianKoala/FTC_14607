@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Auto.neils_corner;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode;
 import org.jetbrains.annotations.NotNull;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -9,6 +12,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
@@ -17,7 +21,28 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.HelperClasses.GLOBALS.*;
 
 
-public class BaseAuto extends BaseOpMode {
+public class BaseAuto extends TunableLinearOpMode {
+
+    protected ExpansionHubMotor leftFront, leftRear, rightFront, rightRear;
+    protected ExpansionHubMotor horizontalModule, verticalModule;
+    protected ExpansionHubMotor leftSlide, rightSlide;
+
+
+    protected ArrayList<ExpansionHubMotor> driveMotors = new ArrayList<ExpansionHubMotor>() {{
+        add(leftFront);
+        add(leftRear);
+        add(rightFront);
+        add(rightRear);
+    }};
+
+
+    protected BNO055IMU imu;
+
+    protected ExpansionHubEx masterHub, slaveHub;
+
+
+
+
 
     private Point startingPosition;
     protected void setStartingPosition(Point startingPosition) { this.startingPosition = startingPosition; }
@@ -27,13 +52,45 @@ public class BaseAuto extends BaseOpMode {
 
 
 
-    OpenCvCamera phoneCam;
+    protected OpenCvCamera phoneCam;
 
 
 
     @Override
     public void runOpMode() {
-        super.runOpMode(); // linky boi
+        leftFront = hardwareMap.get(ExpansionHubMotor.class, "leftFront");
+        leftRear = hardwareMap.get(ExpansionHubMotor.class, "leftRear");
+        rightFront = hardwareMap.get(ExpansionHubMotor.class, "rightFront");
+        rightRear = hardwareMap.get(ExpansionHubMotor.class, "rightRear");
+        horizontalModule = hardwareMap.get(ExpansionHubMotor.class, "horizontalModule");
+        verticalModule = hardwareMap.get(ExpansionHubMotor.class, "verticalModule");
+        leftSlide = hardwareMap.get(ExpansionHubMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(ExpansionHubMotor.class, "rightSlide");
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
+        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
+
+
+        for(ExpansionHubMotor motor : driveMotors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        horizontalModule.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        verticalModule.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        imu.initialize(new BNO055IMU.Parameters());
+        // TODO: BNO055IMUUtil.remapAxes(imu, something something);
+
+
+
 
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
