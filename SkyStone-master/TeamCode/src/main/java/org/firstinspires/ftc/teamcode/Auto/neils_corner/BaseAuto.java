@@ -167,8 +167,6 @@ public class BaseAuto extends TunableLinearOpMode {
         double startHeading = getHeadingRad180();
 
 
-        this.ourStatus = methodStatus;
-
 
         while(Math.abs(inches - scaledVerticalDistanceTraveled) < 0.25 && opModeIsActive()) {
             double x_component;
@@ -198,6 +196,7 @@ public class BaseAuto extends TunableLinearOpMode {
 
 
 
+            handleSubMethods(methodStatus);
             driveMecanum(x_component, y_component, turn_component);
 
 
@@ -259,8 +258,6 @@ public class BaseAuto extends TunableLinearOpMode {
         fifthMovement
     }
 
-    STATUS ourStatus = STATUS.firstMovement;
-
     static ArrayList<subMethod> subMethods = new ArrayList<>();
 
     abstract class subMethod {
@@ -274,12 +271,9 @@ public class BaseAuto extends TunableLinearOpMode {
         abstract void overrideMe();
     }
 
-
-
-
-    protected void handleSubMethods() {
+    protected void handleSubMethods(STATUS currStatus) {
         for(subMethod e : subMethods) {
-            if(e.subMethodStatus == ourStatus) {
+            if(e.subMethodStatus == currStatus) {
                 e.overrideMe();
             }
         }
