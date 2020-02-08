@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.Auto.neils_corner.test;
+package org.firstinspires.ftc.teamcode.Auto.neil.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.Auto.neils_corner.BaseAuto;
+import org.firstinspires.ftc.teamcode.Auto.neil.BaseAuto;
 
 
 /**
@@ -31,6 +31,9 @@ public class AutoTest extends BaseAuto {
                 moveSlideOrSomething();
             }
         };
+
+        
+
 
 
         verticalMovement(48, 0.5, 0.25, 4, 4, 0.75, Math.toRadians(20), STATUS.firstMovement);

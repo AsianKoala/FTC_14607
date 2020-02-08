@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.neils_corner;
+package org.firstinspires.ftc.teamcode.Auto.neil;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -139,6 +139,38 @@ public class BaseAuto extends TunableLinearOpMode {
 
 
 
+    protected enum STATUS {
+        firstMovement,
+        secondMovement,
+        thirdMovement,
+        fourthMovement,
+        fifthMovement
+    }
+
+    private static ArrayList<subMethod> subMethods = new ArrayList<>();
+
+
+    protected abstract static class subMethod {
+        STATUS subMethodStatus;
+
+        protected subMethod(STATUS status) {
+            this.subMethodStatus = status;
+            subMethods.add(this);
+        }
+
+        protected abstract void overrideMe();
+    }
+
+
+
+    private void handleSubMethods(STATUS currStatus) {
+        for(subMethod e : subMethods) {
+            if(e.subMethodStatus == currStatus) {
+                e.overrideMe();
+            }
+        }
+    }
+
 
 
 
@@ -249,43 +281,6 @@ public class BaseAuto extends TunableLinearOpMode {
             scaledHorizontalDistanceTraveled = getScaledHorizontalEncoder() - horizontalStart;
         }
     }
-
-
-
-    protected enum STATUS {
-        firstMovement,
-        secondMovement,
-        thirdMovement,
-        fourthMovement,
-        fifthMovement
-    }
-
-    private static ArrayList<subMethod> subMethods = new ArrayList<>();
-
-
-    protected abstract static class subMethod {
-        STATUS subMethodStatus;
-
-        protected subMethod(STATUS status) {
-            this.subMethodStatus = status;
-            subMethods.add(this);
-        }
-
-        protected abstract void overrideMe();
-    }
-
-
-
-    private void handleSubMethods(STATUS currStatus) {
-        for(subMethod e : subMethods) {
-            if(e.subMethodStatus == currStatus) {
-                e.overrideMe();
-            }
-        }
-    }
-
-
-
 
 
 
