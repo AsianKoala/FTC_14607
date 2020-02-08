@@ -158,13 +158,16 @@ public class BaseAuto extends TunableLinearOpMode {
      * @param minSpeed no
      * @param turnSpeed no
      */
-    protected void verticalMovement(double inches, double movementSpeed, double minSpeed, double startUpInches, double slowDownInches, double  turnSpeed, double slowDownTurnRad) {
+    protected void verticalMovement(double inches, double movementSpeed, double minSpeed, double startUpInches, double slowDownInches, double  turnSpeed, double slowDownTurnRad, STATUS methodStatus) {
         double scaledVerticalDistanceTraveled = 0;
         double scaledHorizontalDistanceTraveled = 0;
         double verticalStart = getScaledVerticalEncoder();
         double horizontalStart = getScaledHorizontalEncoder();
 
         double startHeading = getHeadingRad180();
+
+
+        this.ourStatus = methodStatus;
 
 
         while(Math.abs(inches - scaledVerticalDistanceTraveled) < 0.25 && opModeIsActive()) {
@@ -248,14 +251,23 @@ public class BaseAuto extends TunableLinearOpMode {
         }
     }
 
+    enum STATUS {
+        firstMovement,
+        secondMovement,
+        thirdMovement,
+        fourthMovement,
+        fifthMovement
+    }
+
+    STATUS ourStatus = STATUS.firstMovement;
 
     static ArrayList<subMethod> subMethods = new ArrayList<>();
 
     abstract class subMethod {
-        int signature;
+        STATUS subMethodStatus;
 
-        subMethod(int sig) {
-            this.signature = sig;
+        subMethod(STATUS status) {
+            this.subMethodStatus = status;
             subMethods.add(this);
         }
 
@@ -263,20 +275,11 @@ public class BaseAuto extends TunableLinearOpMode {
     }
 
 
-    class sumMethods extends subMethod {
-        sumMethods(int sig) {
-            super(sig);
-        }
 
-        @Override
-        void overrideMe() {
 
-        }
-    }
-
-    protected void handleSubMethods(int i) {
+    protected void handleSubMethods() {
         for(subMethod e : subMethods) {
-            if(e.signature == i) {
+            if(e.subMethodStatus == ourStatus) {
                 e.overrideMe();
             }
         }
