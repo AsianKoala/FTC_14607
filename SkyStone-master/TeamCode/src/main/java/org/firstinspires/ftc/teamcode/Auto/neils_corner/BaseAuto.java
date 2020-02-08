@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode;
 import org.firstinspires.ftc.teamcode.HelperClasses.ppProject.company.Range;
-import org.jetbrains.annotations.NotNull;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -44,11 +43,6 @@ public class BaseAuto extends TunableLinearOpMode {
 
 
 
-
-
-
-    private double startingHeading;
-    protected void setStartingHeading(double startingHeading) { this.startingHeading = startingHeading; }
 
 
     OpenCvCamera phoneCam;
@@ -130,24 +124,21 @@ public class BaseAuto extends TunableLinearOpMode {
     }
 
 
-//    protected double getWorldX() {
-//        return startingPosition.x + encoderTicksToInches(getMotorBulkDataPosition(masterHub, horizontalModule));
-//    }
-//
-//    protected double getWorldY() {
-//        return startingPosition.y + encoderTicksToInches(getMotorBulkDataPosition(masterHub, verticalModule));
-//    }
+
 
     /**
      * pretty sure this wont work lol
      */
     protected double getHeadingRad180(){
-        return (imu.getAngularOrientation().firstAngle)+startingHeading;
+        return (imu.getAngularOrientation().firstAngle);
     }
 
     protected double subtractAngle(double a1, double a2) {
         return AngleWrap(a1 - a2);
     }
+
+
+
 
 
 
@@ -184,8 +175,9 @@ public class BaseAuto extends TunableLinearOpMode {
             if(scaledVerticalDistanceTraveled < startUpInches) {
                 y_component = scaledVerticalDistanceTraveled / startUpInches + minSpeed;
             } else {
-                y_component = (inches - scaledVerticalDistanceTraveled) / slowDownInches;
+                y_component = (inches - scaledVerticalDistanceTraveled) / slowDownInches + minSpeed;
             }
+
 
             x_component = -scaledHorizontalDistanceTraveled / 0.75; // 0.75 is horizontal slow down start
 
@@ -248,7 +240,6 @@ public class BaseAuto extends TunableLinearOpMode {
             double turn_component = Range.clip(radToTarget / slowDownTurnRad, -turnSpeed, turnSpeed);
 
 
-
             driveMecanum(x_component, y_component, turn_component);
 
 
@@ -256,6 +247,45 @@ public class BaseAuto extends TunableLinearOpMode {
             scaledHorizontalDistanceTraveled = getScaledHorizontalEncoder() - horizontalStart;
         }
     }
+
+
+    static ArrayList<subMethod> subMethods = new ArrayList<>();
+
+    abstract class subMethod {
+        int signature;
+
+        subMethod(int sig) {
+            this.signature = sig;
+            subMethods.add(this);
+        }
+
+        abstract void overrideMe();
+    }
+
+
+    class sumMethods extends subMethod {
+        sumMethods(int sig) {
+            super(sig);
+        }
+
+        @Override
+        void overrideMe() {
+
+        }
+    }
+
+    protected void handleSubMethods(int i) {
+        for(subMethod e : subMethods) {
+            if(e.signature == i) {
+                e.overrideMe();
+            }
+        }
+    }
+
+
+
+
+
 
 
 
