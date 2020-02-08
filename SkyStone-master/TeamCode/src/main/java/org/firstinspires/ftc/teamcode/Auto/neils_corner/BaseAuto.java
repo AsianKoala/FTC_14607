@@ -250,7 +250,9 @@ public class BaseAuto extends TunableLinearOpMode {
         }
     }
 
-    enum STATUS {
+
+
+    protected enum STATUS {
         firstMovement,
         secondMovement,
         thirdMovement,
@@ -258,9 +260,9 @@ public class BaseAuto extends TunableLinearOpMode {
         fifthMovement
     }
 
-    static ArrayList<subMethod> subMethods = new ArrayList<>();
+    private static ArrayList<subMethod> subMethods = new ArrayList<>();
 
-    abstract class subMethod {
+    protected abstract static class subMethod {
         STATUS subMethodStatus;
 
         subMethod(STATUS status) {
@@ -278,8 +280,6 @@ public class BaseAuto extends TunableLinearOpMode {
             }
         }
     }
-
-
 
 
 
