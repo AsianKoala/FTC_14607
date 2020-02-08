@@ -45,7 +45,7 @@ public class BaseAuto extends TunableLinearOpMode {
 
 
 
-    OpenCvCamera phoneCam;
+    protected OpenCvCamera phoneCam;
 
     @Override
     public void runOpMode() {
@@ -262,18 +262,21 @@ public class BaseAuto extends TunableLinearOpMode {
 
     private static ArrayList<subMethod> subMethods = new ArrayList<>();
 
+
     protected abstract static class subMethod {
         STATUS subMethodStatus;
 
-        subMethod(STATUS status) {
+        protected subMethod(STATUS status) {
             this.subMethodStatus = status;
             subMethods.add(this);
         }
 
-        abstract void overrideMe();
+        protected abstract void overrideMe();
     }
 
-    protected void handleSubMethods(STATUS currStatus) {
+
+
+    private void handleSubMethods(STATUS currStatus) {
         for(subMethod e : subMethods) {
             if(e.subMethodStatus == currStatus) {
                 e.overrideMe();
