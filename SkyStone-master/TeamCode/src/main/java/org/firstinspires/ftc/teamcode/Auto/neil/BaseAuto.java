@@ -158,15 +158,14 @@ public class BaseAuto extends TunableLinearOpMode {
             subMethods.add(this);
         }
 
-        protected abstract void overrideMe();
+        protected abstract void method();
     }
 
 
-
-    private void handleSubMethods(STATUS currStatus) {
+    private static void handleSubMethods(STATUS currStatus) {
         for(subMethod e : subMethods) {
             if(e.subMethodStatus == currStatus) {
-                e.overrideMe();
+                e.method();
             }
         }
     }

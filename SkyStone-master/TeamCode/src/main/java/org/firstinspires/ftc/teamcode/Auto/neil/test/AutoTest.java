@@ -27,12 +27,12 @@ public class AutoTest extends BaseAuto {
 
         subMethod sMethod = new subMethod(STATUS.firstMovement) {
             @Override
-            protected void overrideMe() {
+            protected void method() {
                 moveSlideOrSomething();
             }
         };
 
-        
+
 
 
 
