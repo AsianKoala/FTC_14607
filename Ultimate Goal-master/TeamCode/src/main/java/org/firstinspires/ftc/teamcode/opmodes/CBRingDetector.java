@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.test.auto.vision;
+package org.firstinspires.ftc.teamcode.opmodes;
+
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode;
 
@@ -15,7 +17,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 
-
+@TeleOp
 public class CBRingDetector extends TunableLinearOpMode {
 
     OpenCvInternalCamera phoneCam;
