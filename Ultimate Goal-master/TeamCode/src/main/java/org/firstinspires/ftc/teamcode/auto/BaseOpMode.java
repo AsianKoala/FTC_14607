@@ -13,7 +13,7 @@ public class BaseOpMode extends TunableOpMode {
 
     @Override
     public void init() {
-        
+
     }
 
     @Override
