@@ -24,7 +24,7 @@ public class CBRingDetector extends TunableLinearOpMode {
     @Override
     public void runOpMode() {
 
-        // literally just last yrs code for starting up the camrea and initing everyhting
+        // literally just last yrs code for starting up the camera and initializing everything
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         pipeline = new RingDetectorPipeline();
@@ -114,7 +114,7 @@ public class CBRingDetector extends TunableLinearOpMode {
             Core.extractChannel(YCrCb, Cb, 2);
         }
 
-        // just makes sure shit is initialized so it doesnt break later on
+        // just makes sure shit is initialized so it doesn't break later on
         @Override
         public void init(Mat firstFrame) {
             rgbToCb(firstFrame);
@@ -136,7 +136,7 @@ public class CBRingDetector extends TunableLinearOpMode {
             * It also shows the differences in OpenCV code
             * https://www.learnopencv.com/color-spaces-in-opencv-cpp-python/
             *
-            * We only need the Cb channel from the colorspace since that reflects
+            * We only need the Cb channel from the color-space since that reflects
             * the yellow-orange color the best
             * */
 
@@ -154,7 +154,7 @@ public class CBRingDetector extends TunableLinearOpMode {
             * until i realized that i could simply make rectangles based on the initial points that i made
             * yeah.. kinda stupid of me
             *
-            * since the rectangles will be overlapped i thought its better to make them a seperate color
+            * since the rectangles will be overlapped i thought its better to make them a separate color/thickness
             */
 
             // big region for 4 rings
