@@ -2,11 +2,8 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.auto.BaseOpMode;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
-
-import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.util.Globals.*;
 
@@ -15,12 +12,12 @@ public class DriveTrain extends Hardware {
     private ExpansionHubMotor leftFront, rightFront, leftBack, rightBack;
     private ExpansionHubMotor[] motors;
 
-    public DriveTrain(ExpansionHubMotor leftFront, ExpansionHubMotor rightFront, ExpansionHubMotor  leftBack, ExpansionHubMotor rightBack) {
+    public DriveTrain(ExpansionHubMotor LF, ExpansionHubMotor RF, ExpansionHubMotor  LB, ExpansionHubMotor RB) {
 
-        this.leftFront = leftFront;
-        this.rightFront = rightFront;
-        this.leftBack = leftBack;
-        this.rightBack = rightBack;
+        this.leftFront = LF;
+        this.rightFront = RF;
+        this.leftBack = LB;
+        this.rightBack = RB;
 
         motors = new ExpansionHubMotor[]{leftFront, leftBack, rightFront, rightBack};
 
@@ -58,7 +55,7 @@ public class DriveTrain extends Hardware {
     }
 
     @Override
-    public void debugUpdate() {
+    protected void debugUpdate() {
         for(int i=0; i<3; i++)
             parentOpMode.telemetry.addData(motors[i] + " amps drawn", motors[i].getCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
         for(int i=0; i<3; i++)
