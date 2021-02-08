@@ -1,4 +1,4 @@
-# socials 
+# socials :flushed:
 
 discord: asiank0ala#8008
 
