@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Odometry {
     public static final double TICKS_PER_INCH = 1103.8839;
+    final double radiusOfRotation = 16.0;
 
     private int prevVertical;
     private int prevHorizontal;
@@ -41,14 +42,29 @@ public class Odometry {
     }
 
     public void update(double heading) {
-        double deltaY = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
-        double deltaX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
+//        double deltaY = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
+//        double deltaX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
+//        double deltaAngle = MathUtil.angleWrap(heading - prevHeading);
+//
+//        double newHeading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
+//        currentPosition.x += - (Math.cos(newHeading) * deltaY) + (Math.sin(newHeading) * deltaX);
+//        currentPosition.y += - (Math.sin(newHeading) * deltaY) - (Math.cos(newHeading) * deltaX);
+//        currentPosition.heading = newHeading;
+//
+//        prevHorizontal = odometrySet.getHorizontalTicks();
+//        prevVertical = odometrySet.getVerticalTicks();
+//        prevHeading = currentPosition.heading;
+
+        double deltaLeftVertical = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
         double deltaAngle = MathUtil.angleWrap(heading - prevHeading);
 
-        double newHeading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
-        currentPosition.x += - (Math.cos(newHeading) * deltaY) + (Math.sin(newHeading) * deltaX);
-        currentPosition.y += - (Math.sin(newHeading) * deltaY) - (Math.cos(newHeading) * deltaX);
-        currentPosition.heading = newHeading;
+        double deltaVirtualRightVertical = (deltaAngle * radiusOfRotation + deltaLeftVertical) / TICKS_PER_INCH;
+        double relativeY = (deltaLeftVertical + deltaVirtualRightVertical) / 2.0;
+        double relativeX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
+
+        currentPosition.heading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
+        currentPosition.x += - (Math.cos(currentPosition.heading) * relativeY) + (Math.sin(currentPosition.heading) * relativeX);
+        currentPosition.y += - (Math.sin(currentPosition.heading) * relativeY) - (Math.sin(currentPosition.heading) * relativeX);
 
         prevHorizontal = odometrySet.getHorizontalTicks();
         prevVertical = odometrySet.getVerticalTicks();
