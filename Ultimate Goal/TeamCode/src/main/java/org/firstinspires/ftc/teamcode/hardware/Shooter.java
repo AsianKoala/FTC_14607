@@ -11,7 +11,7 @@ public class Shooter extends Hardware {
         this.rightShooter = rightShooter;
         rightShooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        Hardware.allHardwareComponents.add(this);
+//        Hardware.allHardwareComponents.add(this);
     }
 
     public void turnOn() {

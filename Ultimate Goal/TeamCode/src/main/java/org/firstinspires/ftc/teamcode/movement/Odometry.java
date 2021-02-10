@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class Odometry {
     public static final double TICKS_PER_INCH = 1103.8839;
-    final double radiusOfRotation = 12.5;
 
     private int prevVertical;
     private int prevHorizontal;
@@ -58,11 +57,11 @@ public class Odometry {
         double deltaLeftVertical = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
         double deltaAngle = MathUtil.angleWrap(heading - prevHeading);
 
-        double deltaVirtualRightVertical = (deltaAngle * radiusOfRotation + deltaLeftVertical) / TICKS_PER_INCH;
+        double deltaVirtualRightVertical = (deltaAngle * 10 + deltaLeftVertical) / TICKS_PER_INCH;
         double relativeY = (deltaLeftVertical + deltaVirtualRightVertical) / 2.0;
 
         double relativeX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
-//        relativeX = (relativeX + (deltaAngle * radiusOfRotation + relativeX)) / 2.0;
+        relativeX = (relativeX + (deltaAngle * 12.35 + relativeX)) / 2.0;
 
         currentPosition.heading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
         currentPosition.x += - (Math.cos(currentPosition.heading) * relativeY) + (Math.sin(currentPosition.heading) * relativeX);

@@ -11,7 +11,7 @@ public class Intake extends Hardware {
         this.rightIntake = rightIntake;
         rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        Hardware.allHardwareComponents.add(this);
+//        Hardware.allHardwareComponents.add(this);
     }
 
     public void turnOn() {

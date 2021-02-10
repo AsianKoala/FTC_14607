@@ -9,7 +9,7 @@ public class RingCirculatorThingIdk extends Hardware {
     public RingCirculatorThingIdk(ExpansionHubMotor mover) {
         this.mover = mover;
 
-        Hardware.allHardwareComponents.add(this);
+//        Hardware.allHardwareComponents.add(this);
     }
 
     public void turnOn() {
