@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.movement;
 
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.opmodes.Robot;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Odometry {
     public static final double TICKS_PER_INCH = 1103.8839;
-
+public static Robot opMode;
     private int prevVertical;
     private int prevHorizontal;
     private double prevHeading;
@@ -40,7 +41,7 @@ public class Odometry {
     public void setGlobalPosition(Point newPosition) {
         currentPosition = new Pose(newPosition, currentPosition.heading);
     }
-
+double biggestDeltaAngle = 0;
     public void update(double heading) {
 //        double deltaY = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
 //        double deltaX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
@@ -55,8 +56,13 @@ public class Odometry {
 //        prevVertical = odometrySet.getVerticalTicks();
 //        prevHeading = currentPosition.heading;
 
+
         double deltaLeftVertical = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
         double deltaAngle = MathUtil.angleWrap(heading - prevHeading);
+if(Math.abs(deltaAngle) > Math.abs(biggestDeltaAngle)) {
+    biggestDeltaAngle=deltaAngle;
+}
+opMode.telemetry.addLine("biggest delta angle: " + biggestDeltaAngle);
 
         double deltaVirtualRightVertical = (deltaAngle * 11.5 + deltaLeftVertical) / TICKS_PER_INCH;
         double relativeY = (deltaLeftVertical + deltaVirtualRightVertical) / 2.0;
@@ -70,8 +76,8 @@ public class Odometry {
 
         double xAngleScale = -1 / Math.PI;
         double yAngleScale = -1 / Math.PI;
-        currentPosition.x += MathUtil.angleWrap(deltaAngle) * xAngleScale * Math.abs(DriveTrain.movementTurn);
-        currentPosition.y += MathUtil.angleWrap(deltaAngle) * yAngleScale * Math.abs(DriveTrain.movementTurn);
+        currentPosition.x += MathUtil.angleWrap(deltaAngle) * xAngleScale;
+        currentPosition.y += MathUtil.angleWrap(deltaAngle) * yAngleScale;
 
 
         prevHorizontal = odometrySet.getHorizontalTicks();
