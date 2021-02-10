@@ -41,7 +41,7 @@ public static Robot opMode;
     public void setGlobalPosition(Point newPosition) {
         currentPosition = new Pose(newPosition, currentPosition.heading);
     }
-double biggestDeltaAngle = 0;
+
     public void update(double heading) {
 //        double deltaY = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
 //        double deltaX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
@@ -56,34 +56,66 @@ double biggestDeltaAngle = 0;
 //        prevVertical = odometrySet.getVerticalTicks();
 //        prevHeading = currentPosition.heading;
 
+        
+        double currXEncoder = odometrySet.getHorizontalTicks();
+        double currYEncoder = odometrySet.getVerticalTicks();
 
-        double deltaLeftVertical = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
         double deltaAngle = MathUtil.angleWrap(heading - prevHeading);
-if(Math.abs(deltaAngle) > Math.abs(biggestDeltaAngle)) {
-    biggestDeltaAngle=deltaAngle;
-}
-opMode.telemetry.addLine("biggest delta angle: " + biggestDeltaAngle);
-
-        double deltaVirtualRightVertical = (deltaAngle * 11.5 + deltaLeftVertical) / TICKS_PER_INCH;
-        double relativeY = (deltaLeftVertical + deltaVirtualRightVertical) / 2.0;
-
-        double relativeX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
-        relativeX = (relativeX + (deltaAngle * 12.3 + relativeX)) / 2.0;
-
         currentPosition.heading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
-        currentPosition.x += - (Math.cos(currentPosition.heading) * relativeY) + (Math.sin(currentPosition.heading) * relativeX);
-        currentPosition.y += - (Math.sin(currentPosition.heading) * relativeY) - (Math.sin(currentPosition.heading) * relativeX);
 
-        double xAngleScale = -1 / Math.PI;
-        double yAngleScale = -1 / Math.PI;
-        currentPosition.x += MathUtil.angleWrap(deltaAngle) * xAngleScale;
-        currentPosition.y += MathUtil.angleWrap(deltaAngle) * yAngleScale;
+        double xEncoderDelta = currXEncoder - prevHorizontal;
+        double yEncoderDelta = currYEncoder - prevVertical;
+        double xWheelDelta = xEncoderDelta / TICKS_PER_INCH;
+        double yWheelDelta = yEncoderDelta / TICKS_PER_INCH;
 
+        double xTrackWidth = 8;
+        double yTrackWidth = 8;
+
+        double xPrediction = xTrackWidth * deltaAngle;
+        double yPrediction = yTrackWidth * deltaAngle;
+
+        double r_x = xWheelDelta - xPrediction;
+        double r_y = yWheelDelta - yPrediction;
+
+        updatePosition(new Pose(r_x, r_y, deltaAngle));
 
         prevHorizontal = odometrySet.getHorizontalTicks();
         prevVertical = odometrySet.getVerticalTicks();
         prevHeading = currentPosition.heading;
     }
+
+
+    private void updatePosition(Pose deltaPose) {
+        double dtheta = deltaPose.heading;
+        double sineTerm, cosTerm;
+        if (approxEquals(dtheta, 0)) {
+            sineTerm = 1.0 - dtheta * dtheta / 6.0;
+            cosTerm = dtheta / 2.0;
+        } else {
+            sineTerm = Math.sin(dtheta) / dtheta;
+            cosTerm = (1 - Math.cos(dtheta)) / dtheta;
+        }
+
+        Point fieldPositionDelta = new Point(
+                sineTerm * deltaPose.x - cosTerm * deltaPose.y,
+                cosTerm * deltaPose.x + sineTerm * deltaPose.y
+        );
+
+        Pose fieldPoseDelta = new Pose(fieldPositionDelta.rotated(currentPosition.heading), deltaPose.heading);
+        currentPosition.add(fieldPoseDelta);
+    }
+    public static final double EPSILON = 1e-6;
+    public static boolean approxEquals(double d1, double d2) {
+        if (Double.isInfinite(d1)) {
+            // Infinity - infinity is NaN, so we need a special case
+            return d1 == d2;
+        } else {
+            return Math.abs(d1 - d2) < EPSILON;
+        }
+    }
+
+
+
 
 
     @NotNull

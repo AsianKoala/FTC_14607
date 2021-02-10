@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.movement;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 public class OdometrySet {
@@ -10,6 +12,8 @@ public class OdometrySet {
     public OdometrySet(ExpansionHubMotor vertical, ExpansionHubMotor horizontal) {
         this.vertical = vertical;
         this.horizontal = horizontal;
+        vertical.setDirection(DcMotorSimple.Direction.REVERSE);
+        horizontal.setDirection(DcMotorSimple.Direction.REVERSE);
         markCurrOffset();
     }
 

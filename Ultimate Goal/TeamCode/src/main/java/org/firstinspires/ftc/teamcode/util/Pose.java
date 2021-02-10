@@ -16,7 +16,9 @@ public class Pose extends Point implements Cloneable {
         this(p.x, p.y, heading);
     }
 
-
+    public Pose add(Pose p2) {
+        return new Pose(x + p2.x, y + p2.y, heading + p2.heading);
+    }
 
     @NotNull
     @SuppressLint("DefaultLocale")
