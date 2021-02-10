@@ -57,20 +57,20 @@ public class Odometry {
         double deltaLeftVertical = (odometrySet.getVerticalTicks() - prevVertical) / TICKS_PER_INCH;
         double deltaAngle = MathUtil.angleWrap(heading - prevHeading);
 
-        double deltaVirtualRightVertical = (deltaAngle * 10 + deltaLeftVertical) / TICKS_PER_INCH;
+        double deltaVirtualRightVertical = (deltaAngle * 11.5 + deltaLeftVertical) / TICKS_PER_INCH;
         double relativeY = (deltaLeftVertical + deltaVirtualRightVertical) / 2.0;
 
         double relativeX = (odometrySet.getHorizontalTicks() - prevHorizontal) / TICKS_PER_INCH;
-        relativeX = (relativeX + (deltaAngle * 12.35 + relativeX)) / 2.0;
+        relativeX = (relativeX + (deltaAngle * 12.3 + relativeX)) / 2.0;
 
         currentPosition.heading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
         currentPosition.x += - (Math.cos(currentPosition.heading) * relativeY) + (Math.sin(currentPosition.heading) * relativeX);
         currentPosition.y += - (Math.sin(currentPosition.heading) * relativeY) - (Math.sin(currentPosition.heading) * relativeX);
 
-//        double xAngleScale = (Math.PI * 2) / (16.0 * 180);
-//        double yAngleScale = (Math.PI * 2) / (9.0 * 180);
-//        currentPosition.x += MathUtil.angleWrap(currentPosition.heading - startHeading) * xAngleScale;
-//        currentPosition.y += MathUtil.angleWrap(currentPosition.heading - startHeading) * yAngleScale;
+        double xAngleScale = -2.5 / Math.PI;
+        double yAngleScale = -4.4 / Math.PI;
+        currentPosition.x += MathUtil.angleWrap(currentPosition.heading - startHeading) * xAngleScale;
+        currentPosition.y += MathUtil.angleWrap(currentPosition.heading - startHeading) * yAngleScale;
 
 
         prevHorizontal = odometrySet.getHorizontalTicks();
