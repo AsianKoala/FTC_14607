@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.movement;
 
+import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -67,10 +68,10 @@ public class Odometry {
         currentPosition.x += - (Math.cos(currentPosition.heading) * relativeY) + (Math.sin(currentPosition.heading) * relativeX);
         currentPosition.y += - (Math.sin(currentPosition.heading) * relativeY) - (Math.sin(currentPosition.heading) * relativeX);
 
-        double xAngleScale = -2.5 / Math.PI;
-        double yAngleScale = -4.4 / Math.PI;
-        currentPosition.x += MathUtil.angleWrap(currentPosition.heading - startHeading) * xAngleScale;
-        currentPosition.y += MathUtil.angleWrap(currentPosition.heading - startHeading) * yAngleScale;
+        double xAngleScale = -1 / Math.PI;
+        double yAngleScale = -1 / Math.PI;
+        currentPosition.x += MathUtil.angleWrap(deltaAngle) * xAngleScale * Math.abs(DriveTrain.movementTurn);
+        currentPosition.y += MathUtil.angleWrap(deltaAngle) * yAngleScale * Math.abs(DriveTrain.movementTurn);
 
 
         prevHorizontal = odometrySet.getHorizontalTicks();
