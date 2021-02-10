@@ -36,7 +36,7 @@ public class Odometry {
         currentPosition = start;
     }
 
-    // very very dangerous
+    // no real reason to use this tbh
     public void setGlobalPosition(Point newPosition) {
         currentPosition = new Pose(newPosition, currentPosition.heading);
     }
@@ -67,6 +67,12 @@ public class Odometry {
         currentPosition.heading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
         currentPosition.x += - (Math.cos(currentPosition.heading) * relativeY) + (Math.sin(currentPosition.heading) * relativeX);
         currentPosition.y += - (Math.sin(currentPosition.heading) * relativeY) - (Math.sin(currentPosition.heading) * relativeX);
+
+//        double xAngleScale = (Math.PI * 2) / (16.0 * 180);
+//        double yAngleScale = (Math.PI * 2) / (9.0 * 180);
+//        currentPosition.x += MathUtil.angleWrap(currentPosition.heading - startHeading) * xAngleScale;
+//        currentPosition.y += MathUtil.angleWrap(currentPosition.heading - startHeading) * yAngleScale;
+
 
         prevHorizontal = odometrySet.getHorizontalTicks();
         prevVertical = odometrySet.getVerticalTicks();
