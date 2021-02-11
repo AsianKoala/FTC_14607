@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.movement;
+package org.firstinspires.ftc.teamcode.odometry;
 
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.opmodes.Robot;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
@@ -61,15 +60,15 @@ public static Robot opMode;
         double currYEncoder = odometrySet.getVerticalTicks();
 
         double deltaAngle = MathUtil.angleWrap(heading - prevHeading);
-        currentPosition.heading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
+        double newHeading = MathUtil.angleWrap(currentPosition.heading + deltaAngle);
 
         double xEncoderDelta = currXEncoder - prevHorizontal;
         double yEncoderDelta = currYEncoder - prevVertical;
         double xWheelDelta = xEncoderDelta / TICKS_PER_INCH;
         double yWheelDelta = yEncoderDelta / TICKS_PER_INCH;
 
-        double xTrackWidth = 8;
-        double yTrackWidth = 8;
+        double xTrackWidth = 10;
+        double yTrackWidth = 100;
 
         double xPrediction = xTrackWidth * deltaAngle;
         double yPrediction = yTrackWidth * deltaAngle;
@@ -77,7 +76,8 @@ public static Robot opMode;
         double r_x = xWheelDelta - xPrediction;
         double r_y = yWheelDelta - yPrediction;
 
-        updatePosition(new Pose(r_x, r_y, deltaAngle));
+        updatePosition(new Pose(r_x, r_y, deltaAngle), newHeading);
+        currentPosition.heading = newHeading;
 
         prevHorizontal = odometrySet.getHorizontalTicks();
         prevVertical = odometrySet.getVerticalTicks();
@@ -85,7 +85,7 @@ public static Robot opMode;
     }
 
 
-    private void updatePosition(Pose deltaPose) {
+    private void updatePosition(Pose deltaPose, double angle) {
         double dtheta = deltaPose.heading;
         double sineTerm, cosTerm;
         if (approxEquals(dtheta, 0)) {
@@ -101,9 +101,11 @@ public static Robot opMode;
                 cosTerm * deltaPose.x + sineTerm * deltaPose.y
         );
 
-        Pose fieldPoseDelta = new Pose(fieldPositionDelta.rotated(currentPosition.heading), deltaPose.heading);
-        currentPosition.add(fieldPoseDelta);
+        Pose fieldPoseDelta = new Pose(fieldPositionDelta.rotated(angle), deltaPose.heading);
+        currentPosition.x += fieldPoseDelta.x;
+        currentPosition.y += fieldPoseDelta.y;
     }
+
     public static final double EPSILON = 1e-6;
     public static boolean approxEquals(double d1, double d2) {
         if (Double.isInfinite(d1)) {

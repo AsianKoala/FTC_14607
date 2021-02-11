@@ -17,7 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
+import static org.firstinspires.ftc.teamcode.odometry.Odometry.*;
 
 public abstract class Auto extends Robot {
 

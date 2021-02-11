@@ -11,8 +11,9 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
-import org.firstinspires.ftc.teamcode.movement.Odometry;
-import org.firstinspires.ftc.teamcode.movement.OdometrySet;
+import org.firstinspires.ftc.teamcode.odometry.Odometry;
+import org.firstinspires.ftc.teamcode.odometry.OdometrySet;
+import org.firstinspires.ftc.teamcode.odometry.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
@@ -34,6 +35,7 @@ public class Robot extends TunableOpMode {
     private BNO055IMU imu;
     private double headingOffset;
 
+    TwoWheelTrackingLocalizer localizer;
 
     @Override
     public void init() {
@@ -48,12 +50,15 @@ public class Robot extends TunableOpMode {
 
         ExpansionHubMotor verticalOdometer = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
         ExpansionHubMotor horizontalOdometer = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
-        odometrySet = new OdometrySet(verticalOdometer, horizontalOdometer);
-        odometry = new Odometry(new Pose(0, 0, Math.toRadians(90)), odometrySet);
+//        odometrySet = new OdometrySet(verticalOdometer, horizontalOdometer);
+//        odometry = new Odometry(new Pose(0, 0, Math.toRadians(90)), odometrySet);
         initBNO055IMU(hardwareMap);
 
 //        intake = new Intake(null, null);
 //        shooter = new Shooter(null, null);
+
+        localizer = new TwoWheelTrackingLocalizer(hardwareMap);
+        TwoWheelTrackingLocalizer.setStartHeading(Math.toRadians(0));
     }
 
     @Override
@@ -71,7 +76,10 @@ public class Robot extends TunableOpMode {
     public void loop() {
 //        Hardware.updateAllHardwareComponents();
         driveTrain.update();
-        updateOdometryComponents();
+//        updateOdometryComponents();
+        double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
+        TwoWheelTrackingLocalizer.updateAngle(MathUtil.angleWrap(lastHeading + TwoWheelTrackingLocalizer.startHeading));
+        telemetry.addLine(localizer.getPoseEstimate().toString());
     }
 
 
@@ -79,6 +87,7 @@ public class Robot extends TunableOpMode {
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
         odometry.update(MathUtil.angleWrap(lastHeading + Odometry.startHeading));
         telemetry.addLine(odometry.toString());
+
     }
 
     private void initBNO055IMU(HardwareMap hardwareMap) {

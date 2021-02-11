@@ -4,9 +4,8 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
+import static org.firstinspires.ftc.teamcode.odometry.Odometry.*;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.movement.PPController;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -34,8 +33,6 @@ public class MainTeleOp extends Robot {
         super.start();
     }
 
-    double biggestY = 0;
-    double biggestX = 0;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -43,17 +40,6 @@ public class MainTeleOp extends Robot {
         super.loop();
         controlMovement();
         controlAnglePoint();
-
-        if(Math.abs(biggestY) < Math.abs(currentPosition.y)) {
-            biggestY = currentPosition.y;
-        }
-
-        if(Math.abs(biggestX) < Math.abs(currentPosition.x)) {
-            biggestX = currentPosition.x;
-        }
-
-
-        telemetry.addLine(String.format("biggestX: %.1f, biggestY: %.1f", biggestX, biggestY));
     }
 
     public void controlMovement() {

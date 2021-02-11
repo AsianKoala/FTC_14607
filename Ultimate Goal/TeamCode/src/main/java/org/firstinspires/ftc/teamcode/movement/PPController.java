@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.movement;
 import com.qualcomm.robotcore.util.Range;
 
 import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.*;
-import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
+import static org.firstinspires.ftc.teamcode.odometry.Odometry.*;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
 
 import org.firstinspires.ftc.teamcode.util.Point;
