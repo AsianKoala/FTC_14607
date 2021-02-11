@@ -123,15 +123,18 @@ public class MainTeleOp extends Robot {
                         0.6, Math.toRadians(40), 0.6, 1.5, true).withinBounds;
 
                 if (done) {
-                    nextStage();
+                    DriveTrain.stopMovement();
+                    currStage = shootingStages.TURNING;
                 }
             }
 
             if(currStage == shootingStages.TURNING) {
-                boolean done = pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45)).turnDelta_rad < Math.toRadians(2);
+                PPController.movementResult result = PPController.pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
 
-                if(done) {
-                    nextStage();
+                if(result.turnDelta_rad < Math.toRadians(2)) {
+                    DriveTrain.stopMovement();
+                    goToShootingPoint = false;
+                    currStage = shootingStages.MOVING;
                 }
             }
         }
