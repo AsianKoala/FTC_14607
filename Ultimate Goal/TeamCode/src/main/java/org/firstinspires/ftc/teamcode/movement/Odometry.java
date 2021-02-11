@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.movement;
 
 
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -110,21 +112,15 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     @NonNull
     @Override
     public List<Double> getWheelVelocities() {
-        // TODO: If your encoder velocity can exceed 32767 counts / second (such as the REV Through Bore and other
-        //  competing magnetic encoders), change Encoder.getRawVelocity() to Encoder.getCorrectedVelocity() to enable a
-        //  compensation method
-
         return Arrays.asList(
                 encoderTicksToInches(parallelEncoder.getCorrectedVelocity()),
                 encoderTicksToInches(perpendicularEncoder.getCorrectedVelocity())
         );
     }
 
-
     public static void setStartHeading(double angle) {
         startHeading = angle;
     }
-
 
     public void updateAngle(double angle) {
         currentPosition.heading = angle;
@@ -145,5 +141,12 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     public void update() {
         super.update();
         currentPosition = new Pose(getPoseEstimate());
+    }
+
+
+    @SuppressLint("DefaultLocale")
+    @Override
+    public String toString() {
+        return String.format("(%.1f, %.1f, %.1f)", currentPosition.x, currentPosition.y, Math.toDegrees(currentPosition.heading));
     }
 }
