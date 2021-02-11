@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class MainTeleOp extends Robot {
 
     private Point anglePoint;
-    private boolean headingControlled = false;
+    private boolean anglePointControlled = false;
     private boolean turnToGoal = false;
     private boolean goToShootingPoint = false;
 
@@ -82,10 +82,10 @@ public class MainTeleOp extends Robot {
         }
 
         if(gamepad1.y) {
-            headingControlled = !headingControlled;
+            anglePointControlled = !anglePointControlled;
         }
 
-        if(headingControlled) {
+        if(anglePointControlled) {
             PPController.movementResult result = PPController.pointPointTurn(anglePoint, 0.8, Math.toRadians(20));
             telemetry.addLine(String.format("movementR: %.2f", Math.toDegrees(result.turnDelta_rad)));
         }
@@ -138,7 +138,7 @@ public class MainTeleOp extends Robot {
 
     public void telemetryVars() {
         telemetry.addLine("anglePoint: " + anglePoint.toString());
-        telemetry.addLine("headingControlled: " + headingControlled);
+        telemetry.addLine("headingControlled: " + anglePointControlled);
         telemetry.addLine("turnToGoal: " + turnToGoal);
         telemetry.addLine("goToShootingPoint: " + goToShootingPoint);
     }

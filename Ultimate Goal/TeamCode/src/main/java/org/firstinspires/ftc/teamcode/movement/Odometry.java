@@ -127,19 +127,19 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     public void setStart(Pose start) {
         currentPosition = start;
         startPosition = currentPosition;
+        setPoseEstimate(new Pose2d(currentPosition.x, currentPosition.y, currentPosition.heading));
     }
 
     public void setGlobalPosition(Point newPos) {
         currentPosition.x = newPos.x;
         currentPosition.y = newPos.y;
+        setPoseEstimate(new Pose2d(currentPosition.x, currentPosition.y, currentPosition.heading));
     }
-
 
     @Override
     public void update() {
         super.update();
-        currentPosition.x = getPoseEstimate().getX() + startPosition.x;
-        currentPosition.y = getPoseEstimate().getY() + startPosition.y;
+        currentPosition = new Pose(getPoseEstimate());
     }
 
 

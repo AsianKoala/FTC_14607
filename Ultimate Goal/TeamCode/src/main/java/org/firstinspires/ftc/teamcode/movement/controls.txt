@@ -1,0 +1,27 @@
+
+gamepad diagram
+
+left trigger                                                            right trigger
+left bumper                                                             right bumper
+
+            dpad up                                                         y
+dpad left               dpad right                                      x       b
+            dpad down                                                       a
+
+
+                            leftJoy                     rightJoy
+
+
+
+gamepad 1
+
+
+turnToGoal                                                               goToShootingPosition
+low driveScale                                                             high driveScale
+
+            anglePoint y+6                                               anglePointControlled
+anglePoint x-6          anglePoint x+6                                        x     b
+            anglePoint y-6                                                       a
+
+
+                            leftJoy                     rightJoy
