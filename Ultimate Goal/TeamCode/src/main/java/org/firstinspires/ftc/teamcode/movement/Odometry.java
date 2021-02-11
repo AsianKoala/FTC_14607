@@ -68,9 +68,9 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     public static double PERPENDICULAR_X = 6.75;
     public static double PERPENDICULAR_Y = -4.25;
 
-    public static double startHeading;
 
     public static Pose currentPosition;
+    public static Pose startPosition;
 
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
@@ -126,7 +126,7 @@ public class Odometry extends TwoTrackingWheelLocalizer {
 
     public void setStart(Pose start) {
         currentPosition = start;
-        startHeading = currentPosition.heading;
+        startPosition = currentPosition;
     }
 
     public void setGlobalPosition(Point newPos) {
@@ -138,7 +138,8 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     @Override
     public void update() {
         super.update();
-        currentPosition = new Pose(getPoseEstimate());
+        currentPosition.x = getPoseEstimate().getX() + startPosition.x;
+        currentPosition.y = getPoseEstimate().getY() + startPosition.y;
     }
 
 
