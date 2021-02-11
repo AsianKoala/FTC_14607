@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import static org.firstinspires.ftc.teamcode.odometry.Odometry.*;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.PPController;
 import org.firstinspires.ftc.teamcode.util.Point;
@@ -20,7 +19,6 @@ public class MainTeleOp extends Robot {
         super.init();
         odometry.setStart(new Pose(0, 0, 0));
         anglePoint = new Point(0,0);
-        opMode = this;
     }
 
     @Override
