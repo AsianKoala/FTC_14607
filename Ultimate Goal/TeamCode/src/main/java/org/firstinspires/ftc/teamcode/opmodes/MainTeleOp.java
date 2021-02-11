@@ -5,15 +5,17 @@ import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import static org.firstinspires.ftc.teamcode.movement.PPController.*;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.movement.PPController;
+import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 @TeleOp(name="main teleop")
 public class MainTeleOp extends Robot {
 
-    public final Point anglePoint = new Point(0, 72);
-    public boolean anglePointControlled = false;
+//    public final Point anglePoint = new Point(0, 72);
+//    public boolean anglePointControlled = false;
     public boolean turnToGoal = false;
     public boolean goToShootingPoint = false;
 
@@ -59,9 +61,9 @@ public class MainTeleOp extends Robot {
     @Override
     public void loop() {
         super.loop();
-        controlJoystickMovement();
         controlAnglePointMovement();
         controlShootingMovement();
+        controlJoystickMovement();
         telemetryVars();
     }
 
@@ -120,7 +122,7 @@ public class MainTeleOp extends Robot {
         if (goToShootingPoint) {
             if(currStage == shootingStages.MOVING) {
                 boolean done = goToPosition(0, 0, 0.8, Math.toRadians(90),
-                        0.6, Math.toRadians(40), 0.6, 1.5, true).withinBounds;
+                        0.6, Math.toRadians(40), 0.6, 2, true).withinBounds;
 
                 if (done) {
                     DriveTrain.stopMovement();
@@ -142,10 +144,11 @@ public class MainTeleOp extends Robot {
 
 
     public void telemetryVars() {
-        telemetry.addLine("anglePoint: " + anglePoint.toString());
-        telemetry.addLine("headingControlled: " + anglePointControlled);
+//        telemetry.addLine("anglePoint: " + anglePoint.toString());
+//        telemetry.addLine("headingControlled: " + anglePointControlled);
         telemetry.addLine("turnToGoal: " + turnToGoal);
         telemetry.addLine("goToShootingPoint: " + goToShootingPoint);
+        telemetry.addLine("90diff: " + Math.toDegrees(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)));
     }
 
 
