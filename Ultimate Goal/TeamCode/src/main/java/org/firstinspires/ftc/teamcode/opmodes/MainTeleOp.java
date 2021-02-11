@@ -33,7 +33,7 @@ public class MainTeleOp extends Robot {
     @Override
     public void init() {
         super.init();
-        odometry.setStart(new Pose(0, -24, Math.toRadians(180)));
+        odometry.setStart(new Pose(-24, 0, Math.toRadians(180)));
         anglePoint = new Point(0,0);
     }
 
@@ -60,7 +60,7 @@ public class MainTeleOp extends Robot {
 
 
     public void controlMovement() {
-        double driveScale = 0.5 + (gamepad1.right_bumper ? 0.5 : 0) - (gamepad1.left_bumper ? 0.35 : 0);
+        double driveScale = 0.5 + (gamepad1.right_bumper ? 0.5 : 0) - (gamepad1.left_bumper ? 0.2 : 0);
         DriveTrain.movementY = -gamepad1.left_stick_y * driveScale;
         DriveTrain.movementX = gamepad1.left_stick_x * driveScale;
         DriveTrain.movementTurn = -gamepad1.right_stick_x * driveScale;
@@ -86,7 +86,7 @@ public class MainTeleOp extends Robot {
         }
 
         if(anglePointControlled) {
-            PPController.movementResult result = PPController.pointPointTurn(anglePoint, 0.8, Math.toRadians(20));
+            PPController.movementResult result = PPController.pointPointTurn(anglePoint, 0.8, Math.toRadians(40));
             telemetry.addLine(String.format("movementR: %.2f", Math.toDegrees(result.turnDelta_rad)));
         }
 
@@ -96,7 +96,7 @@ public class MainTeleOp extends Robot {
         }
 
         if(turnToGoal) {
-            PPController.movementResult result = PPController.pointAngle(Math.toRadians(90), 0.8, Math.toRadians(20));
+            PPController.movementResult result = PPController.pointAngle(Math.toRadians(90), 0.8, Math.toRadians(40));
             telemetry.addLine(String.format("movementR: %.2f", Math.toDegrees(result.turnDelta_rad)));
 
             if(result.turnDelta_rad < Math.toRadians(2)) {
