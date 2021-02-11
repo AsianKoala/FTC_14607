@@ -44,7 +44,6 @@ public class Robot extends TunableOpMode {
         driveTrain = new DriveTrain(frontLeft, backLeft, frontRight, backRight);
 
         odometry = new Odometry(hardwareMap);
-        Odometry.setStartHeading(Math.toRadians(0));
         initBNO055IMU(hardwareMap);
 
 //        intake = new Intake(null, null);
@@ -67,7 +66,6 @@ public class Robot extends TunableOpMode {
     public void loop() {
 //        Hardware.updateAllHardwareComponents();
         driveTrain.update();
-
         updateOdometryComponents();
     }
 

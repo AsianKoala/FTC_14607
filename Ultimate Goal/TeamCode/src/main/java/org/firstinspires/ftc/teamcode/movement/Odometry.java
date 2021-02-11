@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -118,9 +119,6 @@ public class Odometry extends TwoTrackingWheelLocalizer {
         );
     }
 
-    public static void setStartHeading(double angle) {
-        startHeading = angle;
-    }
 
     public void updateAngle(double angle) {
         currentPosition.heading = angle;
@@ -144,6 +142,7 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     }
 
 
+    @NotNull
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
