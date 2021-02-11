@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.movement.CurvePoint;
 import static org.firstinspires.ftc.teamcode.movement.PPController.*;
 import org.firstinspires.ftc.teamcode.util.*;
 import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.*;
-import static org.firstinspires.ftc.teamcode.odometry.Odometry.*;
+import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
 
 import java.util.ArrayList;
 
