@@ -24,4 +24,4 @@ anglePoint x-6          anglePoint x+6                                        x 
             anglePoint y-6                                                       a
 
 
-                            leftJoy                     rightJoy
+                            translation                    turning

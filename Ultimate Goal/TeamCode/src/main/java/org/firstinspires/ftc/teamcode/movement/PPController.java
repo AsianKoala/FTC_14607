@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class PPController {
 
 
-    public static movementResult goToPosition(double targetX, double targetY, double moveSpeed, double prefAngle, double turnSpeed, double slowDownTurnRadians, double slowDownMovementFromTurnError, boolean stop) {
+    public static movementResult goToPosition(double targetX, double targetY, double moveSpeed, double prefAngle, double turnSpeed, double slowDownTurnRadians, double slowDownMovementFromTurnError, double thresh, boolean stop) {
         double distance = Math.hypot(targetX - currentPosition.x, targetY - currentPosition.y);
 
         double absoluteAngleToTargetPoint = Math.atan2(targetY - currentPosition.y, targetX - currentPosition.x);
@@ -73,7 +73,7 @@ public class PPController {
         movementX *= errorTurnSoScaleDownMovement;
         movementY *= errorTurnSoScaleDownMovement;
 
-        return new movementResult(relativePointAngle,  targetX, targetY, 4);
+        return new movementResult(relativePointAngle,  targetX, targetY, thresh);
     }
 
 
@@ -102,8 +102,8 @@ public class PPController {
     }
 
 
-    public static boolean betterFollowCurve(ArrayList<CurvePoint> allPoints, double followAngle, Point anglePoint, boolean headingControlled){
-
+    public static boolean betterFollowCurve(ArrayList<CurvePoint> allPoints, double followAngle, Point anglePoint){
+        boolean headingControlled = !(anglePoint == null);
 
         //now we will extend the last line so that the pointing looks smooth at the end
         ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
@@ -167,7 +167,7 @@ public class PPController {
 
         goToPosition(followMe.x, followMe.y, followAngle,
                 followMe.moveSpeed,followMe.turnSpeed,
-                followMe.slowDownTurnRadians,0.2,true); // 0.275
+                followMe.slowDownTurnRadians,0.2,4, true); // 0.275
 
         //find the angle to that point using atan2
         double currFollowAngle = Math.atan2(pointToMe.y-currentPosition.y,pointToMe.x-currentPosition.x);
