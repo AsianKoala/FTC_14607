@@ -45,7 +45,7 @@ public class MainTeleOp extends Robot {
     @Override
     public void init() {
         super.init();
-        odometry.setStart(new Pose(24, -36, Math.toRadians(180)));
+        odometry.setStart(new Pose(0, 0, Math.toRadians(90)));
     }
 
     @Override
@@ -64,8 +64,8 @@ public class MainTeleOp extends Robot {
     @Override
     public void loop() {
         super.loop();
-        controlAnglePointMovement();
         controlShootingMovement();
+        controlAnglePointMovement();
         controlJoystickMovement();
         telemetryVars();
     }
@@ -150,14 +150,21 @@ public class MainTeleOp extends Robot {
             if(stageFinished) {
                 initProgVars();
             }
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint(stageStartPose.x, stageStartPose.y, 0, 0, 0, 0, 0, 0));
-            allPoints.add(new CurvePoint(0, 0, 0.8, 0.8,  10, 15, Math.toRadians(30), 0.6));
-            boolean done  = betterFollowCurve(allPoints, Math.toRadians(90), null, true, Math.toRadians(90));
+//            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint(stageStartPose.x, stageStartPose.y, 0, 0, 0, 0, 0, 0));
+//            allPoints.add(new CurvePoint(0, 0, 0.8, 0.8,  10, 15, Math.toRadians(30), 0.6));
+//            boolean done  = betterFollowCurve(allPoints, Math.toRadians(90), null, true, Math.toRadians(90));
+            boolean done = goToPosition(0, 0, 0.8, Math.toRadians(90), 0.8, Math.toRadians(40), 0.6, 2, true).withinBounds;
             if(done) {
-                DriveTrain.stopMovement();
-                goToShootingPoint = false;
-                stageFinished = true;
+                turnToGoal = true;
+                boolean doneAngle = Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
+
+                if(doneAngle) {
+                    DriveTrain.stopMovement();
+                    goToShootingPoint = false;
+                    stageFinished = true;
+                    turnToGoal = false;
+                }
             }
         }
     }
