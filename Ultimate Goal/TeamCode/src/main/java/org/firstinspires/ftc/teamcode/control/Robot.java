@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.control;
 
 
 import com.qualcomm.hardware.bosch.BNO055IMU;

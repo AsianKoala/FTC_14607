@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.control.Auto;
 import org.firstinspires.ftc.teamcode.movement.CurvePoint;
 import static org.firstinspires.ftc.teamcode.movement.PPController.*;
 import org.firstinspires.ftc.teamcode.util.*;

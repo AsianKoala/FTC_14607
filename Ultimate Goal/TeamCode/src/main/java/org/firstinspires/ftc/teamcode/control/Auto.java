@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.control;
 
 
 
@@ -21,9 +21,9 @@ import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
 
 public abstract class Auto extends Robot {
 
-    RingDetectorPipeline.RingAmount ringAmount;
-    OpenCvCamera phoneCam;
-    RingDetectorPipeline pipeline;
+    public RingDetectorPipeline.RingAmount ringAmount;
+    public OpenCvCamera phoneCam;
+    public RingDetectorPipeline pipeline;
 
     public int progState;
     public boolean stageFinished;
@@ -109,7 +109,7 @@ public abstract class Auto extends Robot {
 
 
 
-    static class RingDetectorPipeline extends OpenCvPipeline {
+    public static class RingDetectorPipeline extends OpenCvPipeline {
         int colorComponentNum;
         int threshold;
         public RingDetectorPipeline(boolean isCr, int threshold) {
@@ -117,7 +117,7 @@ public abstract class Auto extends Robot {
             this.threshold = threshold;
         }
 
-        enum RingAmount {
+        public enum RingAmount {
             NONE,
             ONE,
             FOUR,

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import static org.firstinspires.ftc.teamcode.movement.PPController.*;
+
+import org.firstinspires.ftc.teamcode.control.Robot;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.movement.PPController;
@@ -23,9 +25,6 @@ public class MainTeleOp extends Robot {
     private boolean turnReached = false;
     private boolean shootingZoneReached = false;
 
-    private boolean isTurnedTowardsGoal() {
-        return Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
-    }
 
 
     @Override
@@ -124,6 +123,11 @@ public class MainTeleOp extends Robot {
                 goToShootingPoint = false;
             }
         }
+    }
+
+
+    private boolean isTurnedTowardsGoal() {
+        return Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
     }
 
 
