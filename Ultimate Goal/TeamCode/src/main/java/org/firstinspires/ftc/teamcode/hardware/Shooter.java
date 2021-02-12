@@ -8,9 +8,9 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 public class Shooter extends Hardware {
     private final ExpansionHubMotor leftShooter, rightShooter;
     private double leftShooterPower, rightShooterPower;
-    public Shooter(ExpansionHubMotor leftShooter, ExpansionHubMotor rightShooter) {
-        this.leftShooter = leftShooter;
-        this.rightShooter = rightShooter;
+    public Shooter(ExpansionHubMotor leftShooterMotor, ExpansionHubMotor rightShooterMotor) {
+        this.leftShooter = leftShooterMotor;
+        this.rightShooter = rightShooterMotor;
         rightShooter.setDirection(DcMotorSimple.Direction.REVERSE);
         leftShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

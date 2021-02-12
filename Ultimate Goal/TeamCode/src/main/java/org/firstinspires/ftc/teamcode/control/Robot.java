@@ -11,20 +11,25 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
+import org.firstinspires.ftc.teamcode.hardware.Indexer;
+import org.firstinspires.ftc.teamcode.hardware.Intake;
+import org.firstinspires.ftc.teamcode.hardware.Shooter;
+import org.firstinspires.ftc.teamcode.hardware.WobbleGoalGrabber;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.openftc.revextensions2.ExpansionHubMotor;
-
+import org.openftc.revextensions2.ExpansionHubServo;
 
 
 public class Robot extends TunableOpMode {
 
     public DriveTrain driveTrain;
-//    public Intake intake;
-//    public Shooter shooter;
-//    public RingCirculatorThingIdk mover;
+    public Intake intake;
+    public Shooter shooter;
+    public Indexer indexer;
+    public WobbleGoalGrabber grabber;
 
     // odom shit
     public Odometry odometry;
@@ -46,8 +51,18 @@ public class Robot extends TunableOpMode {
         odometry = new Odometry(hardwareMap);
         initBNO055IMU(hardwareMap);
 
-//        intake = new Intake(null, null);
-//        shooter = new Shooter(null, null);
+        ExpansionHubMotor shooterLeft, shooterRight, intakeMotor, indexerMotor;
+        shooterLeft = hardwareMap.get(ExpansionHubMotor.class, "shooterLeft");
+        shooterRight = hardwareMap.get(ExpansionHubMotor.class, "shooterRight");
+        intakeMotor = hardwareMap.get(ExpansionHubMotor.class, "intake");
+        indexerMotor = hardwareMap.get(ExpansionHubMotor.class, "indexer");
+        shooter = new Shooter(shooterLeft, shooterRight);
+        intake = new Intake(intakeMotor);
+        indexer = new Indexer(indexerMotor);
+
+        ExpansionHubServo grabberServo;
+        grabberServo = hardwareMap.get(ExpansionHubServo.class, "grabber");
+        grabber = new WobbleGoalGrabber(grabberServo);
 
     }
 
