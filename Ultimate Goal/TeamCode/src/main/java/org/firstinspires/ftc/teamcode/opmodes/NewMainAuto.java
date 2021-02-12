@@ -84,8 +84,12 @@ public class NewMainAuto extends Auto {
             }
 
             // turn on intake and shoot
+            indexer.turnOn();
+            shooter.turnOn();
 
             if(timeCheck(3000)) {
+                shooter.turnOff();
+                indexer.turnOff();
                 if(ringAmount == RingDetectorPipeline.RingAmount.NONE) {
                     setStage(programStates.placeMarker.ordinal());
                 } else {
@@ -100,7 +104,7 @@ public class NewMainAuto extends Auto {
                 initProgVars();
             }
 
-
+            intake.turnOn();
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
             allPoints.add(new CurvePoint(0, -24, 0.2, 0.3, 10, 15, Math.toRadians(60), 0.8));
@@ -108,6 +112,7 @@ public class NewMainAuto extends Auto {
 
             if (done) {
                 stopMovement();
+                intake.turnOff();
                 nextStage();
             }
         }
@@ -125,11 +130,15 @@ public class NewMainAuto extends Auto {
 
             if(done) {
                 // start shooting
+                indexer.turnOn();
+                shooter.turnOn();
                 stopMovement();
             }
 
             if(timeCheck(3000)) {
                 nextStage();
+                shooter.turnOff();
+                indexer.turnOff();
             }
         }
 
@@ -157,6 +166,7 @@ public class NewMainAuto extends Auto {
 
             if(done) {
                 stopMovement();
+                grabber.release();
                 if(timeCheck(2000)) {
                     nextStage();
                 }
@@ -180,6 +190,7 @@ public class NewMainAuto extends Auto {
             if(done) {
                 // pick up with servo or somethign idfk
                 if (timeCheck(4500)) {
+                    grabber.grab();
                     stopMovement();
                     nextStage();
                 }
@@ -210,6 +221,7 @@ public class NewMainAuto extends Auto {
             if(done) {
                 stopMovement();
                 if(timeCheck(2000)) {
+                    grabber.release();
                     nextStage();
                 }
             }
