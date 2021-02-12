@@ -64,9 +64,9 @@ public class MainTeleOp extends Robot {
     @Override
     public void loop() {
         super.loop();
+        controlJoystickMovement();
         controlShootingMovement();
         controlAnglePointMovement();
-        controlJoystickMovement();
         telemetryVars();
     }
 
@@ -154,16 +154,22 @@ public class MainTeleOp extends Robot {
 //            allPoints.add(new CurvePoint(stageStartPose.x, stageStartPose.y, 0, 0, 0, 0, 0, 0));
 //            allPoints.add(new CurvePoint(0, 0, 0.8, 0.8,  10, 15, Math.toRadians(30), 0.6));
 //            boolean done  = betterFollowCurve(allPoints, Math.toRadians(90), null, true, Math.toRadians(90));
-            boolean done = goToPosition(0, 0, 0.8, Math.toRadians(90), 0.8, Math.toRadians(40), 0.6, 2, true).withinBounds;
+            boolean done = goToPosition(0, 0, 0.6, Math.toRadians(90), 0.6, Math.toRadians(45), 0.6, 2, true).withinBounds;
             if(done) {
-                turnToGoal = true;
-                boolean doneAngle = Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
+//                if(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading) > Math.toRadians(2)) {
+//                    turnToGoal = true;
+//                } else {
+//                    DriveTrain.stopMovement();
+//                    turnToGoal = false;
+//                    goToShootingPoint = false;
+//                    stageFinished = true;
+//                }
+                boolean doneTurn = pointAngle(Math.toRadians(90), 0.5, Math.toRadians(60)).turnDelta_rad < Math.toRadians(2);
 
-                if(doneAngle) {
+                if(doneTurn) {
                     DriveTrain.stopMovement();
                     goToShootingPoint = false;
                     stageFinished = true;
-                    turnToGoal = false;
                 }
             }
         }
