@@ -65,7 +65,7 @@ public class MainAuto extends Auto {
             }
 
             allPoints.add(new CurvePoint(-3, -6, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.7));
-            boolean isDone = betterFollowCurve(allPoints, Math.toRadians(90), new Point(3.5, 48));
+            boolean isDone = betterFollowCurve(allPoints, Math.toRadians(90), new Point(3.5, 48), false, 0);
 
             if(isDone) {
                 stopMovement();
@@ -100,7 +100,7 @@ public class MainAuto extends Auto {
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
             allPoints.add(new CurvePoint(0, -24, 0.2, 0.3, 10, 15, Math.toRadians(60), 0.8));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), new Point(2, 48));
+            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), new Point(2, 48), false, 0);
 
             if (done) {
                 stopMovement();
@@ -117,7 +117,7 @@ public class MainAuto extends Auto {
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
             allPoints.add(new CurvePoint(0, 0, 0.6, 0.6, 10, 15, Math.toRadians(60), 0.6));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), new Point(2, 48));
+            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), new Point(2, 48), false, 0);
 
             if(done) {
                 // start shooting
@@ -149,7 +149,7 @@ public class MainAuto extends Auto {
                     allPoints.add(new CurvePoint(-13, 36, 0.5, 0.5, 20, 25, Math.toRadians(60), 0.6));
                     break;
             }
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null);
+            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
 
             if(done) {
                 stopMovement();
@@ -171,7 +171,7 @@ public class MainAuto extends Auto {
             double scale = Range.clip((currentPosition.x - markerX)/24.0, 0.1, 1.0);
             allPoints.add(new CurvePoint(-6, 2, 0.6 * scale, 0.6, 20, 25, Math.toRadians(60), 0.6));
             allPoints.add(new CurvePoint(-6, -42, 0.6 * scale, 0.6, 20, 25, Math.toRadians(60), 0.6));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null);
+            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
 
             if(done) {
                 // pick up with servo or somethign idfk
@@ -201,7 +201,7 @@ public class MainAuto extends Auto {
                     allPoints.add(new CurvePoint(-10, 34, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
                     break;
             }
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null);
+            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
 
             if(done) {
                 stopMovement();
@@ -219,7 +219,7 @@ public class MainAuto extends Auto {
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
             allPoints.add(new CurvePoint(0, -3, 0.5, 0.5, 20, 25, Math.toRadians(30), 0.6));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null);
+            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
 
             if(ringAmount == RingDetectorPipeline.RingAmount.NONE) {
                 done = true;

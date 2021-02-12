@@ -102,8 +102,8 @@ public class PPController {
     }
 
 
-    public static boolean betterFollowCurve(ArrayList<CurvePoint> allPoints, double followAngle, Point anglePoint){
-        boolean headingControlled = !(anglePoint == null);
+    public static boolean betterFollowCurve(ArrayList<CurvePoint> allPoints, double followAngle, Point anglePoint, boolean headingControlled, double controlledHeading){
+        boolean anglePointControlled = !(anglePoint == null);
 
         //now we will extend the last line so that the pointing looks smooth at the end
         ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
@@ -176,10 +176,13 @@ public class PPController {
         currFollowAngle += angleWrap(followAngle - Math.toRadians(90));
 
         movementResult result;
-        if(headingControlled) {
+        if(anglePointControlled) {
             result = pointPointTurn(anglePoint, allPoints.get(currFollowIndex).turnSpeed, Math.toRadians(45));
+        } else if(headingControlled){
+            result = pointAngle(controlledHeading, 0.6, Math.toRadians(45));
         } else {
             result = pointAngle(currFollowAngle,allPoints.get(currFollowIndex).turnSpeed,Math.toRadians(45));
+
         }
 
         movementX *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
