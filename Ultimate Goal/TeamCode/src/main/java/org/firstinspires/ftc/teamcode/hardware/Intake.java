@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 public class Intake extends Hardware {
-    private final ExpansionHubMotor leftIntake, rightIntake;
-    public Intake(ExpansionHubMotor leftIntake, ExpansionHubMotor rightIntake) {
-        this.leftIntake = leftIntake;
-        this.rightIntake = rightIntake;
-        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-
-//        Hardware.allHardwareComponents.add(this);
+    private final ExpansionHubMotor intake;
+    private double intakePower;
+    public Intake(ExpansionHubMotor intake) {
+        this.intake = intake;
+        intakePower = 0;
     }
 
     public void turnOn() {
@@ -27,12 +23,11 @@ public class Intake extends Hardware {
     }
 
     private void setPower(double power) {
-        leftIntake.setPower(power);
-        rightIntake.setPower(power);
+        intakePower = power;
     }
 
     @Override
     public void update() {
-
+        intake.setPower(intakePower);
     }
 }

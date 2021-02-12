@@ -4,12 +4,10 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.openftc.revextensions2.ExpansionHubMotor;
 
-public class RingCirculatorThingIdk extends Hardware {
+public class Indexer extends Hardware {
     ExpansionHubMotor mover;
-    public RingCirculatorThingIdk(ExpansionHubMotor mover) {
+    public Indexer(ExpansionHubMotor mover) {
         this.mover = mover;
-
-//        Hardware.allHardwareComponents.add(this);
     }
 
     public void turnOn() {

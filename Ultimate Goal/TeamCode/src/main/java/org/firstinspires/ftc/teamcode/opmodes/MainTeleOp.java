@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
-import java.util.ArrayList;
 
 @TeleOp(name="main teleop")
 public class MainTeleOp extends Robot {
@@ -24,6 +23,9 @@ public class MainTeleOp extends Robot {
     private boolean turnReached = false;
     private boolean shootingZoneReached = false;
 
+    private boolean isTurnedTowardsGoal() {
+        return Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
+    }
 
 
     @Override
@@ -41,7 +43,6 @@ public class MainTeleOp extends Robot {
     public void start() {
         super.start();
     }
-
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -91,21 +92,12 @@ public class MainTeleOp extends Robot {
         }
 
         if(turnToGoal) {
-            PPController.movementResult result = pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
-            telemetry.addLine(String.format("movementR: %.2f", Math.toDegrees(result.turnDelta_rad)));
-
+            pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
             if(isTurnedTowardsGoal()) {
                 turnToGoal = false;
             }
         }
     }
-
-
-    /**
-     * Possible problems:
-     * -    DriveTrain.stopMovement
-     * -    Most likely problem: turnDeltaRad or movementResult are fucked so instead just do smth else
-     */
 
     public void controlShootingMovement() {
         if (gamepad1.right_trigger > 0.7) {
@@ -134,11 +126,6 @@ public class MainTeleOp extends Robot {
         }
     }
 
-    private boolean isTurnedTowardsGoal() {
-        return Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
-    }
-
-//
 
     public void telemetryVars() {
         telemetry.addLine("anglePoint: " + anglePoint.toString());

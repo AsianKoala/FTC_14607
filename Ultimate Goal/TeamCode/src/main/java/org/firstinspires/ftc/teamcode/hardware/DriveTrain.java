@@ -27,8 +27,6 @@ public class DriveTrain extends Hardware {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-
-//        Hardware.allHardwareComponents.add(this);
     }
 
     private void applyMovement() {
