@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import static org.firstinspires.ftc.teamcode.movement.PPController.*;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.movement.CurvePoint;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.movement.PPController;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
@@ -17,8 +16,8 @@ import java.util.ArrayList;
 @TeleOp(name="main teleop")
 public class MainTeleOp extends Robot {
 
-//    public final Point anglePoint = new Point(0, 72);
-//    public boolean anglePointControlled = false;
+    public final Point anglePoint = new Point(0, 72);
+    public boolean anglePointControlled = false;
     public boolean turnToGoal = false;
     public boolean goToShootingPoint = false;
 
@@ -64,27 +63,27 @@ public class MainTeleOp extends Robot {
 
     @SuppressLint("DefaultLocale")
     public void controlAnglePointMovement() {
-//        if(gamepad1.dpad_right) {
-//            anglePoint.x += 6;
-//        }
-//        if(gamepad1.dpad_left) {
-//            anglePoint.x -= 6;
-//        }
-//        if(gamepad1.dpad_up) {
-//            anglePoint.y += 6;
-//        }
-//        if(gamepad1.dpad_down) {
-//            anglePoint.y -= 6;
-//        }
-//
-//        if(gamepad1.y) {
-//            anglePointControlled = !anglePointControlled;
-//        }
-//
-//        if(anglePointControlled) {
-//            PPController.movementResult result = PPController.pointPointTurn(anglePoint, 0.8, Math.toRadians(40));
-//            telemetry.addLine(String.format("movementR: %.2f", Math.toDegrees(result.turnDelta_rad)));
-//        }
+        if(gamepad1.dpad_right) {
+            anglePoint.x += 6;
+        }
+        if(gamepad1.dpad_left) {
+            anglePoint.x -= 6;
+        }
+        if(gamepad1.dpad_up) {
+            anglePoint.y += 6;
+        }
+        if(gamepad1.dpad_down) {
+            anglePoint.y -= 6;
+        }
+
+        if(gamepad1.y) {
+            anglePointControlled = !anglePointControlled;
+        }
+
+        if(anglePointControlled) {
+            PPController.movementResult result = PPController.pointPointTurn(anglePoint, 0.8, Math.toRadians(40));
+            telemetry.addLine(String.format("movementR: %.2f", Math.toDegrees(result.turnDelta_rad)));
+        }
 
 
         if(gamepad1.left_trigger > 0.7) {
@@ -92,14 +91,21 @@ public class MainTeleOp extends Robot {
         }
 
         if(turnToGoal) {
-            PPController.movementResult result = PPController.pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
+            PPController.movementResult result = pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
             telemetry.addLine(String.format("movementR: %.2f", Math.toDegrees(result.turnDelta_rad)));
 
-            if(result.turnDelta_rad < Math.toRadians(2)) {
+            if(isTurnedTowardsGoal()) {
                 turnToGoal = false;
             }
         }
     }
+
+
+    /**
+     * Possible problems:
+     * -    DriveTrain.stopMovement
+     * -    Most likely problem: turnDeltaRad or movementResult are fucked so instead just do smth else
+     */
 
     public void controlShootingMovement() {
         if (gamepad1.right_trigger > 0.7) {
@@ -114,8 +120,8 @@ public class MainTeleOp extends Robot {
                     shootingZoneReached = true;
                 }
             } else if(!turnReached) {
-                boolean done = pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45)).turnDelta_rad < Math.toRadians(2);
-                if(done) {
+                pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
+                if(isTurnedTowardsGoal()) {
                     DriveTrain.stopMovement();
                     turnReached = true;
                 }
@@ -128,12 +134,15 @@ public class MainTeleOp extends Robot {
         }
     }
 
+    private boolean isTurnedTowardsGoal() {
+        return Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
+    }
 
 //
 
     public void telemetryVars() {
-//        telemetry.addLine("anglePoint: " + anglePoint.toString());
-//        telemetry.addLine("headingControlled: " + anglePointControlled);
+        telemetry.addLine("anglePoint: " + anglePoint.toString());
+        telemetry.addLine("headingControlled: " + anglePointControlled);
         telemetry.addLine("turnToGoal: " + turnToGoal);
         telemetry.addLine("goToShootingPoint: " + goToShootingPoint);
         telemetry.addLine("90diff: " + Math.toDegrees(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)));
