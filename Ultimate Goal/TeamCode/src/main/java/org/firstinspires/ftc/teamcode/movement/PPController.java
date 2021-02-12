@@ -55,7 +55,7 @@ public class PPController {
             movementTurn = 0;
         }
 
-        allComponentsMinPower();
+        minCheck();
 
 
         // smoothing
@@ -87,7 +87,7 @@ public class PPController {
         movementTurn = Range.clip(turnSpeed,-point_speed,point_speed);
 
         //make sure the largest component doesn't fall below it's minimum power
-        allComponentsMinPower();
+        minCheck();
 
         //smooths down the last bit to finally settle on an angle
         movementTurn *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(3),0,1);
@@ -108,7 +108,6 @@ public class PPController {
         //now we will extend the last line so that the pointing looks smooth at the end
         ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
 
-
         //first get which segment we are on
         indexPoint clippedToPath = clipToFollowPointPath(allPoints,currentPosition.x,currentPosition.y);
         int currFollowIndex = clippedToPath.index+1;
@@ -116,7 +115,6 @@ public class PPController {
         //get the point to follow
         CurvePoint followMe = getFollowPointPath(pathExtended,currentPosition.x,currentPosition.y,
                 allPoints.get(currFollowIndex).followDistance);
-
 
 
         //this will change the last point to be extended
@@ -139,7 +137,6 @@ public class PPController {
         pathExtended.set(pathExtended.size()-1, extended);
 
 
-
         //get the point to point to
         CurvePoint pointToMe = getFollowPointPath(pathExtended,currentPosition.x,currentPosition.y,
                 allPoints.get(currFollowIndex).pointLength);
@@ -159,15 +156,14 @@ public class PPController {
                         currentPosition.y-allPoints.get(allPoints.size()-1).y) < followMe.followDistance + 6){
             pepega = true;
             followMe.setPoint(allPoints.get(allPoints.size()-1).toPoint());
-
         }
-
-
 
 
         goToPosition(followMe.x, followMe.y, followAngle,
                 followMe.moveSpeed,followMe.turnSpeed,
                 followMe.slowDownTurnRadians,0.2,4, true); // 0.275
+
+
 
         //find the angle to that point using atan2
         double currFollowAngle = Math.atan2(pointToMe.y-currentPosition.y,pointToMe.x-currentPosition.x);
@@ -182,8 +178,8 @@ public class PPController {
             result = pointAngle(controlledHeading, 0.6, Math.toRadians(45));
         } else {
             result = pointAngle(currFollowAngle,allPoints.get(currFollowIndex).turnSpeed,Math.toRadians(45));
-
         }
+
 
         movementX *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
         movementY *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
@@ -191,7 +187,6 @@ public class PPController {
         if(pepega) {
             movementX *= Range.clip(Math.abs(followMe.x-currentPosition.x)/0.8,0.5,1); // 0.787
             movementY *= Range.clip(Math.abs(followMe.y-currentPosition.y)/0.8,0.5,1);
-
         }
 
         return clipedDistToFinalEnd < 4; //3
@@ -264,33 +259,36 @@ public class PPController {
 
 
     // util methods and classes
-    public static double min_movement = 0.1;
+    public static final double MIN_MOVEMENT = 0.1;
 
-    private static void allComponentsMinPower() {
-        if(Math.abs(movementX) > Math.abs(movementY)){
-            if(Math.abs(movementX) > Math.abs(movementTurn)){
-                movementX = minPower(movementX,min_movement);
-            }else{
-                movementTurn = minPower(movementTurn,min_movement);
+    private static void minCheck() {
+        if(Math.abs(movementX) > Math.abs(movementY)) {
+            if(Math.abs(movementX) > Math.abs(movementTurn)) {
+                if(movementX >= 0 && movementX <= MIN_MOVEMENT)
+                    movementX = MIN_MOVEMENT;
+                if(movementX < 0 && movementX > -MIN_MOVEMENT)
+                    movementX = -MIN_MOVEMENT;
+            } else {
+                if(movementTurn >= 0 && movementTurn <= MIN_MOVEMENT)
+                    movementTurn = MIN_MOVEMENT;
+                if(movementTurn < 0 && movementTurn > -MIN_MOVEMENT)
+                    movementTurn = -MIN_MOVEMENT;
             }
-        }else{
-            if(Math.abs(movementY) > Math.abs(movementTurn)){
-                movementY = minPower(movementY, min_movement);
-            }else{
-                movementTurn = minPower(movementTurn,min_movement);
+        } else {
+            if(Math.abs(movementY) > Math.abs(movementTurn)) {
+                if(movementY >= 0 && movementY <= MIN_MOVEMENT)
+                    movementY = MIN_MOVEMENT;
+                if(movementY < 0 && movementY > -MIN_MOVEMENT)
+                    movementY = -MIN_MOVEMENT;
+            } else {
+                if(movementTurn >= 0 && movementTurn <= MIN_MOVEMENT)
+                    movementTurn = MIN_MOVEMENT;
+                if(movementTurn < 0 && movementTurn > -MIN_MOVEMENT)
+                    movementTurn = -MIN_MOVEMENT;
             }
         }
     }
 
-    public static double minPower(double val, double min){
-        if(val >= 0 && val <= min){
-            return min;
-        }
-        if(val < 0 && val > -min){
-            return -min;
-        }
-        return val;
-    }
 
 
 
