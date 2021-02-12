@@ -22,23 +22,8 @@ public class MainTeleOp extends Robot {
     public boolean turnToGoal = false;
     public boolean goToShootingPoint = false;
 
-    // shooting vars
-
-//    private enum shootingStages {
-//        MOVING,
-//        TURNING
-//    }
-//
-//    private shootingStages currStage;
-//    private void nextStage() {
-//        DriveTrain.stopMovement();
-//        if(currStage == shootingStages.MOVING) {
-//            currStage = shootingStages.TURNING;
-//        } else {
-//            goToShootingPoint = false;
-//            currStage = shootingStages.MOVING;
-//        }
-//    }
+    private boolean turnReached = false;
+    private boolean shootingZoneReached = false;
 
 
 
@@ -56,7 +41,6 @@ public class MainTeleOp extends Robot {
     @Override
     public void start() {
         super.start();
-//        currStage = shootingStages.MOVING;
     }
 
 
@@ -65,8 +49,8 @@ public class MainTeleOp extends Robot {
     public void loop() {
         super.loop();
         controlJoystickMovement();
-        controlShootingMovement();
         controlAnglePointMovement();
+        controlShootingMovement();
         telemetryVars();
     }
 
@@ -122,65 +106,29 @@ public class MainTeleOp extends Robot {
             goToShootingPoint = true;
         }
 
-//        if (goToShootingPoint) {
-//            if(currStage == shootingStages.MOVING) {
-//                boolean done = goToPosition(0, 0, 0.8, Math.toRadians(90),
-//                        0.6, Math.toRadians(40), 0.6, 2, true).withinBounds;
-//
-//                if (done) {
-//                    DriveTrain.stopMovement();
-//                    currStage = shootingStages.TURNING;
-//                }
-//            }
-//
-//            if(currStage == shootingStages.TURNING) {
-//                PPController.movementResult result = PPController.pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
-//
-//                if(result.turnDelta_rad < Math.toRadians(2)) {
-//                    DriveTrain.stopMovement();
-//                    goToShootingPoint = false;
-//                    currStage = shootingStages.MOVING;
-//                }
-//            }
-//        }
-//        }
-
-
         if(goToShootingPoint) {
-            if(stageFinished) {
-                initProgVars();
-            }
-//            ArrayList<CurvePoint> allPoints = new ArrayList<>();
-//            allPoints.add(new CurvePoint(stageStartPose.x, stageStartPose.y, 0, 0, 0, 0, 0, 0));
-//            allPoints.add(new CurvePoint(0, 0, 0.8, 0.8,  10, 15, Math.toRadians(30), 0.6));
-//            boolean done  = betterFollowCurve(allPoints, Math.toRadians(90), null, true, Math.toRadians(90));
-            boolean done = goToPosition(0, 0, 0.6, Math.toRadians(90), 0.6, Math.toRadians(45), 0.6, 2, true).withinBounds;
-            if(done) {
-//                if(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading) > Math.toRadians(2)) {
-//                    turnToGoal = true;
-//                } else {
-//                    DriveTrain.stopMovement();
-//                    turnToGoal = false;
-//                    goToShootingPoint = false;
-//                    stageFinished = true;
-//                }
-                boolean doneTurn = pointAngle(Math.toRadians(90), 0.5, Math.toRadians(60)).turnDelta_rad < Math.toRadians(2);
-
-                if(doneTurn) {
+            if(!shootingZoneReached) {
+                boolean done = goToPosition(0, 0, 0.6, Math.toRadians(90), 0.6, Math.toRadians(45), 0.6, 2, true).withinBounds;
+                if(done) {
                     DriveTrain.stopMovement();
-                    goToShootingPoint = false;
-                    stageFinished = true;
+                    shootingZoneReached = true;
                 }
+            } else if(!turnReached) {
+                boolean done = pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45)).turnDelta_rad < Math.toRadians(2);
+                if(done) {
+                    DriveTrain.stopMovement();
+                    turnReached = true;
+                }
+            } else {
+                DriveTrain.stopMovement();
+                shootingZoneReached = false;
+                turnReached = false;
+                goToShootingPoint = false;
             }
         }
     }
 
-    private boolean stageFinished = true;
-    private Pose stageStartPose;
-    private void initProgVars() {
-        stageStartPose = Odometry.currentPosition;
-        stageFinished = false;
-    }
+
 //
 
     public void telemetryVars() {
@@ -189,6 +137,8 @@ public class MainTeleOp extends Robot {
         telemetry.addLine("turnToGoal: " + turnToGoal);
         telemetry.addLine("goToShootingPoint: " + goToShootingPoint);
         telemetry.addLine("90diff: " + Math.toDegrees(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)));
+        telemetry.addLine("shootingZoneReached: " + shootingZoneReached);
+        telemetry.addLine("turnReached: " + turnReached);
     }
 
 

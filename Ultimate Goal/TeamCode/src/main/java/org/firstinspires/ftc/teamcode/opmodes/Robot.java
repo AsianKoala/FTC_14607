@@ -58,13 +58,12 @@ public class Robot extends TunableOpMode {
 
     @Override
     public void start() {
-//        odometrySet.markCurrOffset();
-    }
 
+    }
 
     @Override
     public void loop() {
-//        Hardware.updateAllHardwareComponents();
+        telemetry.clear();
         driveTrain.update();
         updateOdometryComponents();
     }
