@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.util.Range;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 public class Indexer extends Hardware {
-    ExpansionHubMotor mover;
+    private final ExpansionHubMotor mover;
+    private double moverPower;
     public Indexer(ExpansionHubMotor mover) {
         this.mover = mover;
+        moverPower = 0;
     }
 
     public void turnOn() {
@@ -23,10 +25,11 @@ public class Indexer extends Hardware {
     }
 
     private void setPower(double power) {
-        mover.setPower(Range.clip(power, -1, 1));
+        moverPower = power;
     }
+
     @Override
     public void update() {
-
+        mover.setPower(moverPower);
     }
 }
