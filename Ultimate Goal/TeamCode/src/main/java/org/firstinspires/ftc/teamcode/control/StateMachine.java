@@ -22,10 +22,10 @@ public class StateMachine {
             stages.removeFirst();
             if(!done()) {
                 currStage = stages.getFirst();
-                currStage.stageVars.initialize();;
+                currStage.AUTO_START_VARS.initialize();
             }
         } else {
-            currStage.stage();
+            currStage.function();
         }
     }
 

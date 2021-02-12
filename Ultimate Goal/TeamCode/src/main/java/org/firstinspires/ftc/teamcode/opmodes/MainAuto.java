@@ -98,6 +98,7 @@ public class MainAuto extends Auto {
                 initProgVars();
             }
 
+
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
             allPoints.add(new CurvePoint(0, -24, 0.2, 0.3, 10, 15, Math.toRadians(60), 0.8));
