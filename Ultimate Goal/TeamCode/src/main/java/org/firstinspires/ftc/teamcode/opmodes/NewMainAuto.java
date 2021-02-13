@@ -14,7 +14,7 @@ import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.stopMovement;
 import static org.firstinspires.ftc.teamcode.movement.Odometry.currentPosition;
 import static org.firstinspires.ftc.teamcode.movement.PPController.betterFollowCurve;
 
-@Autonomous(name="main auto")
+@Autonomous(name="stupid fuck")
 public class NewMainAuto extends Auto {
     public enum programStates {
         moveToPosition,
@@ -84,12 +84,12 @@ public class NewMainAuto extends Auto {
             }
 
             // turn on intake and shoot
-            indexer.turnOn();
+            intakeTransfer.turnOn();
             shooter.turnOn();
 
             if(timeCheck(3000)) {
                 shooter.turnOff();
-                indexer.turnOff();
+                intakeTransfer.turnOff();
                 if(ringAmount == RingDetectorPipeline.RingAmount.NONE) {
                     setStage(programStates.placeMarker.ordinal());
                 } else {
@@ -130,7 +130,7 @@ public class NewMainAuto extends Auto {
 
             if(done) {
                 // start shooting
-                indexer.turnOn();
+                intakeTransfer.turnOn();
                 shooter.turnOn();
                 stopMovement();
             }
@@ -138,7 +138,7 @@ public class NewMainAuto extends Auto {
             if(timeCheck(3000)) {
                 nextStage();
                 shooter.turnOff();
-                indexer.turnOff();
+                intakeTransfer.turnOff();
             }
         }
 

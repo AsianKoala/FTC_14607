@@ -11,7 +11,7 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
-import org.firstinspires.ftc.teamcode.hardware.Indexer;
+import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.WobbleGoalGrabber;
@@ -28,7 +28,7 @@ public class Robot extends TunableOpMode {
     public DriveTrain driveTrain;
     public Intake intake;
     public Shooter shooter;
-    public Indexer indexer;
+    public IntakeTransfer intakeTransfer;
     public WobbleGoalGrabber grabber;
 
     // odom shit
@@ -58,7 +58,7 @@ public class Robot extends TunableOpMode {
         indexerMotor = hardwareMap.get(ExpansionHubMotor.class, "indexer");
         shooter = new Shooter(shooterLeft, shooterRight);
         intake = new Intake(intakeMotor);
-        indexer = new Indexer(indexerMotor);
+        intakeTransfer = new IntakeTransfer(indexerMotor);
 
         ExpansionHubServo grabberServo;
         grabberServo = hardwareMap.get(ExpansionHubServo.class, "grabber");

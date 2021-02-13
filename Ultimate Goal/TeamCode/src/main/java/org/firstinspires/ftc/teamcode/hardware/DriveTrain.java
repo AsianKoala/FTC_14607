@@ -11,16 +11,16 @@ public class DriveTrain extends Hardware {
 
     // hahaha this setup is so fucked i just realized now that the motor array and the motorpower array dont match up
     public static double movementX, movementY, movementTurn;
-    private final ExpansionHubMotor frontRight, frontLeft, backLeft, backRight;
+    private final ExpansionHubMotor frontLeft, frontRight, backLeft, backRight;
     private final ExpansionHubMotor[] motors;
 
     public DriveTrain(ExpansionHubMotor FL, ExpansionHubMotor FR, ExpansionHubMotor  BL, ExpansionHubMotor BR) {
         frontLeft = FL;
-        backLeft = BL;
         frontRight = FR;
+        backLeft = BL;
         backRight = BR;
 
-        motors = new ExpansionHubMotor[]{frontRight, backLeft, frontLeft, backRight};
+        motors = new ExpansionHubMotor[]{frontLeft, frontRight, backLeft, backRight};
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         for(ExpansionHubMotor motor : motors) {
@@ -36,7 +36,7 @@ public class DriveTrain extends Hardware {
         double rawBackLeft = movementY - movementX + movementTurn;
         double rawFrontRight =  -movementY - movementX + movementTurn;
         double rawBackRight =  -movementY - movementX - movementTurn;
-        double[] powers = {rawFrontLeft, rawBackLeft, rawFrontRight, rawBackRight};
+        double[] powers = {rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight};
 
         // if its over 1 then lower everything by a similar ratio to keep the same profile
         double biggestAbsPower = Math.abs(rawFrontLeft);

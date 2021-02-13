@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.openftc.revextensions2.ExpansionHubMotor;
 
-public class Indexer extends Hardware {
+public class IntakeTransfer extends Hardware {
     private final ExpansionHubMotor mover;
     private double moverPower;
-    public Indexer(ExpansionHubMotor mover) {
+    public IntakeTransfer(ExpansionHubMotor mover) {
         this.mover = mover;
         moverPower = 0;
     }
