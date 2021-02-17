@@ -1,35 +1,30 @@
 package org.firstinspires.ftc.teamcode.control;
 
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.hardware.Actuator;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
-import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
-import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Shooter;
-import org.firstinspires.ftc.teamcode.hardware.WobbleGoalGrabber;
+import org.firstinspires.ftc.teamcode.hardware.WobbleGoal;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 
-
 public class Robot extends TunableOpMode {
-
     public DriveTrain driveTrain;
-    public Intake intake;
     public Shooter shooter;
-    public IntakeTransfer intakeTransfer;
-    public WobbleGoalGrabber grabber;
+    public Actuator actuator;
+    public WobbleGoal wobbleGoal;
 
     // odom shit
     public Odometry odometry;
@@ -41,45 +36,45 @@ public class Robot extends TunableOpMode {
     public void init() {
         Hardware.loadParentOpMode(this);
 
-        ExpansionHubMotor frontLeft, frontRight, backLeft, backRight;
+        ExpansionHubMotor frontLeft, frontRight, backLeft, backRight, launcher1, launcher2;
+        ExpansionHubServo actuatorServo, leftPivot, rightPivot, leftGrabber, rightGrabber;
         frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
         backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
         backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
-        driveTrain = new DriveTrain(frontLeft, backLeft, frontRight, backRight);
+        launcher1 = hardwareMap.get(ExpansionHubMotor.class, "launcher1");
+        launcher2 = hardwareMap.get(ExpansionHubMotor.class, "launcher2");
+        actuatorServo = hardwareMap.get(ExpansionHubServo.class, "actuator");
+        leftPivot = hardwareMap.get(ExpansionHubServo.class, "leftPivot");
+        rightPivot = hardwareMap.get(ExpansionHubServo.class, "rightPivot");
+        leftGrabber = hardwareMap.get(ExpansionHubServo.class, "leftGrabber");
+        rightGrabber = hardwareMap.get(ExpansionHubServo.class, "rightGrabber");
 
+        driveTrain = new DriveTrain(frontLeft, frontRight, backLeft, backRight);
+        shooter = new Shooter(launcher1, launcher2);
+        actuator = new Actuator(actuatorServo);
+        wobbleGoal = new WobbleGoal(leftPivot, rightPivot, leftGrabber, rightGrabber);
         odometry = new Odometry(hardwareMap);
+        odometry.setStart(new Pose(0,0,0));
         initBNO055IMU(hardwareMap);
-
-        ExpansionHubMotor shooterLeft, shooterRight, intakeMotor, indexerMotor;
-        shooterLeft = hardwareMap.get(ExpansionHubMotor.class, "shooterLeft");
-        shooterRight = hardwareMap.get(ExpansionHubMotor.class, "shooterRight");
-        intakeMotor = hardwareMap.get(ExpansionHubMotor.class, "intake");
-        indexerMotor = hardwareMap.get(ExpansionHubMotor.class, "indexer");
-        shooter = new Shooter(shooterLeft, shooterRight);
-        intake = new Intake(intakeMotor);
-        intakeTransfer = new IntakeTransfer(indexerMotor);
-
-        ExpansionHubServo grabberServo;
-        grabberServo = hardwareMap.get(ExpansionHubServo.class, "grabber");
-        grabber = new WobbleGoalGrabber(grabberServo);
-
     }
 
     @Override
     public void init_loop() {
+        super.init_loop();
         telemetry.addLine(odometry.toString());
     }
 
     @Override
     public void start() {
-
+        super.start();
     }
 
     @Override
     public void loop() {
         telemetry.clear();
         driveTrain.update();
+        shooter.update();
         updateOdometryComponents();
     }
 
@@ -100,5 +95,4 @@ public class Robot extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
     }
-
 }

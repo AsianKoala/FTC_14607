@@ -4,33 +4,35 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.control.Auto;
+import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.CurvePoint;
-import static org.firstinspires.ftc.teamcode.movement.PPController.*;
-import org.firstinspires.ftc.teamcode.util.*;
-import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.*;
-import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
+import org.firstinspires.ftc.teamcode.movement.PPController;
+import org.firstinspires.ftc.teamcode.util.Pose;
 
 import java.util.ArrayList;
 
-@Autonomous(name="main auto")
+import static org.firstinspires.ftc.teamcode.movement.PPController.*;
+
+@Autonomous(name="auto")
 public class MainAuto extends Auto {
-    public enum programStates {
-        moveToPosition,
-        initialShots,
-        collectRings,
-        secondShots,
-        placeMarker,
-        goToSecondMarker,
-        dropOffSecondMarker,
+
+    private enum programStates {
+        goToShootingPosition,
+        shoot1, shoot2, shoot3,
+        goToWobbleDrop,
+        dropWobble,
+        goToSecondWobbleGoal,
+        grabWobbleGoal,
+        pullWobble,
+        goToSecondDrop,
+        dropSecondWobble,
         park
     }
-
 
     @Override
     public void init() {
         super.init();
-        odometry.setStart(new Pose(0,-63, Math.toRadians(180)));
-        setStage(programStates.moveToPosition.ordinal());
+        odometry.setStart(new Pose(0, -64, Math.toRadians(180)));
     }
 
     @Override
@@ -41,100 +43,64 @@ public class MainAuto extends Auto {
     @Override
     public void start() {
         super.start();
-        setStage(programStates.moveToPosition.ordinal());
+        setState(programStates.goToShootingPosition.ordinal());
     }
 
     @Override
     public void loop() {
         super.loop();
-        telemetry.addLine("Curr stage: " + programStates.values()[progState]);
+        telemetry.addLine("Curr state: " + programStates.values()[currState]);
     }
 
     @Override
     public void autoStateMachine() {
-        if(progState == programStates.moveToPosition.ordinal()) {
-            if(stageFinished) {
-                initProgVars();
+        if(currState == programStates.goToShootingPosition.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
             }
 
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(initialCurvePoint());
-
-            if (ringAmount != RingDetectorPipeline.RingAmount.NONE) {
-                allPoints.add(new CurvePoint(30, -30, 0.6, 0.6, 15, 20, Math.toRadians(60), 0.7));
-                allPoints.add(new CurvePoint(15, -10, 0.6, 0.6, 15, 20, Math.toRadians(60), 0.7));
-            }
-
-            allPoints.add(new CurvePoint(-3, -6, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.7));
-            boolean isDone = betterFollowCurve(allPoints, Math.toRadians(90), new Point(3.5, 48), false, 0);
-
-            if(isDone) {
-                stopMovement();
-                odometry.setGlobalPosition(new Point(0, 0));
-                nextStage();
+            PPController.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90),
+                    Math.toRadians(45), 0.6, 2.5, true);
+            if(result.withinBounds) {
+                DriveTrain.stopMovement();
+                nextState();
             }
         }
 
-
-        if(progState == programStates.initialShots.ordinal()) {
-            if(stageFinished) {
-                initProgVars();
+        if(currState == programStates.shoot1.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
+                initShooter();
             }
-
-            // turn on intake and shoot
-
-            if(timeCheck(3000)) {
-                if(ringAmount == RingDetectorPipeline.RingAmount.NONE) {
-                    setStage(programStates.placeMarker.ordinal());
-                } else {
-                    nextStage();
-                }
+            shoot();
+            if(timeCheck(2500)) {
+                nextState();
+            }
+        }
+        if(currState == programStates.shoot2.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
+                initShooter();
+            }
+            shoot();
+            if(timeCheck(2500)) {
+                nextState();
+            }
+        }
+        if(currState == programStates.shoot3.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
+                initShooter();
+            }
+            shoot();
+            if(timeCheck(2500)) {
+                nextState();
             }
         }
 
-
-        if(progState == programStates.collectRings.ordinal()) {
-            if (stageFinished) {
-                initProgVars();
-            }
-
-
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(initialCurvePoint());
-            allPoints.add(new CurvePoint(0, -24, 0.2, 0.3, 10, 15, Math.toRadians(60), 0.8));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), new Point(2, 48), false, 0);
-
-            if (done) {
-                stopMovement();
-                nextStage();
-            }
-        }
-
-
-        if(progState == programStates.secondShots.ordinal()) {
-            if(stageFinished) {
-                initProgVars();
-            }
-
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(initialCurvePoint());
-            allPoints.add(new CurvePoint(0, 0, 0.6, 0.6, 10, 15, Math.toRadians(60), 0.6));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), new Point(2, 48), false, 0);
-
-            if(done) {
-                // start shooting
-                stopMovement();
-            }
-
-            if(timeCheck(3000)) {
-                nextStage();
-            }
-        }
-
-
-        if(progState == programStates.placeMarker.ordinal()) {
-            if(stageFinished) {
-                initProgVars();
+        if(currState == programStates.goToWobbleDrop.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
             }
 
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
@@ -154,39 +120,65 @@ public class MainAuto extends Auto {
             boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
 
             if(done) {
-                stopMovement();
-                if(timeCheck(2000)) {
-                    nextStage();
-                }
+                DriveTrain.stopMovement();
+                nextState();
             }
         }
 
-
-        if(progState == programStates.goToSecondMarker.ordinal()) {
-            if(stageFinished) {
-                initProgVars();
+        if(currState == programStates.dropWobble.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
             }
+
+            wobbleGoal.out();
+            wobbleGoal.release();
+
+            if(timeCheck(2000)) {
+                nextState();
+                wobbleGoal.in();
+            }
+        }
+
+        if(currState == programStates.goToSecondWobbleGoal.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
+            }
+
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
-
-            double markerX = -36;
-            double scale = Range.clip((currentPosition.x - markerX)/24.0, 0.1, 1.0);
-            allPoints.add(new CurvePoint(-6, 2, 0.6 * scale, 0.6, 20, 25, Math.toRadians(60), 0.6));
-            allPoints.add(new CurvePoint(-6, -42, 0.6 * scale, 0.6, 20, 25, Math.toRadians(60), 0.6));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
-
+            allPoints.add(new CurvePoint(0, 2, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
+            allPoints.add(new CurvePoint(0, -42, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
+            boolean done = PPController.betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
             if(done) {
-                // pick up with servo or somethign idfk
-                if (timeCheck(4500)) {
-                    stopMovement();
-                    nextStage();
-                }
+                DriveTrain.stopMovement();
+                nextState();
             }
         }
 
-        if(progState == programStates.dropOffSecondMarker.ordinal()) {
-            if(stageFinished) {
-                initProgVars();
+        if(currState == programStates.grabWobbleGoal.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
+            }
+            wobbleGoal.out();
+            if(timeCheck(1000)) {
+                nextState();
+            }
+        }
+
+        if(currState == programStates.pullWobble.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
+            }
+            wobbleGoal.grab();
+            wobbleGoal.in();
+            if (timeCheck(1000)) {
+                nextState();
+            }
+        }
+
+        if(currState == programStates.goToSecondWobbleGoal.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
             }
 
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
@@ -204,35 +196,55 @@ public class MainAuto extends Auto {
                     break;
             }
             boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
-
             if(done) {
-                stopMovement();
-                if(timeCheck(2000)) {
-                    nextStage();
-                }
+                DriveTrain.stopMovement();
+                nextState();
             }
         }
 
-
-        if(progState == programStates.park.ordinal()) {
-            if(stageFinished) {
-                initProgVars();
-            }
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(initialCurvePoint());
-            allPoints.add(new CurvePoint(0, -3, 0.5, 0.5, 20, 25, Math.toRadians(30), 0.6));
-            boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
-
-            if(ringAmount == RingDetectorPipeline.RingAmount.NONE) {
-                done = true;
+        if(currState == programStates.dropSecondWobble.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
             }
 
-            if(done) {
-                stopMovement();
+            wobbleGoal.release();
+            wobbleGoal.out();
+            if(timeCheck(1000)) {
+                nextState();
+            }
+        }
+
+        if(currState == programStates.park.ordinal()) {
+            if(stateFinished) {
+                initStateVars();
+            }
+            PPController.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90), Math.toRadians(60),
+                    0.6, 3, true);
+            if(result.withinBounds) {
+                DriveTrain.stopMovement();
                 requestOpModeStop();
             }
         }
-
-
     }
+
+
+    private void shoot() {
+        if(System.currentTimeMillis() - shootingStateMachineStartTime > 1000) { // rev time
+            actuatorStartTime = System.currentTimeMillis();
+            actuator.push();
+        }
+
+        if(System.currentTimeMillis() - actuatorStartTime > 1500) { // push time
+            actuator.reset();
+            shooter.turnOff();
+        }
+    }
+
+    private void initShooter() {
+        shootingStateMachineStartTime = System.currentTimeMillis();
+        shooter.turnOn();
+    }
+
+    private double actuatorStartTime = 0;
+    private double shootingStateMachineStartTime = 0;
 }

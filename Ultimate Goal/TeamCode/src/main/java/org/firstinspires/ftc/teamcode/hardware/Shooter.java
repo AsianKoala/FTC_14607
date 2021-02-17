@@ -11,9 +11,8 @@ public class Shooter extends Hardware {
     public Shooter(ExpansionHubMotor leftShooterMotor, ExpansionHubMotor rightShooterMotor) {
         this.leftShooter = leftShooterMotor;
         this.rightShooter = rightShooterMotor;
-        rightShooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftShooterPower = 0;
         rightShooterPower = 0;
     }

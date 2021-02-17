@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.jetbrains.annotations.NotNull;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 
@@ -29,12 +28,13 @@ public class DriveTrain extends Hardware {
         }
     }
 
-    private void applyMovement() {
+
+    public void update() {
         // remember that motors on the right side are flipped (or maybe left i forgot)
         // https://www.vexforum.com/uploads/default/original/2X/c/c7963dec531b7e893ddcf91c4fc9159928c4b56c.jpeg
-        double rawFrontLeft = movementY - movementX - movementTurn;
-        double rawBackLeft = movementY - movementX + movementTurn;
-        double rawFrontRight =  -movementY - movementX + movementTurn;
+        double rawFrontLeft = -movementY + movementX + movementTurn;
+        double rawBackLeft = -movementY - movementX + movementTurn;
+        double rawFrontRight =  -movementY + movementX - movementTurn;
         double rawBackRight =  -movementY - movementX - movementTurn;
         double[] powers = {rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight};
 
@@ -62,7 +62,6 @@ public class DriveTrain extends Hardware {
         movementTurn = 0;
     }
 
-    @NotNull
     @Override
     public String toString() {
         return "movementX: " + movementX + " movementY: " + movementY + " movementTurn: " + movementTurn;
@@ -81,15 +80,6 @@ public class DriveTrain extends Hardware {
     @Override
     public void reverse() {
 
-    }
-
-    @Override
-    public void update() {
-        applyMovement();
-//        parentOpMode.telemetry.addData("frontLeft power", frontLeft.getPower());
-//        parentOpMode.telemetry.addData("frontRight power", frontRight.getPower());
-//        parentOpMode.telemetry.addData("backLeft power", backLeft.getPower());
-//        parentOpMode.telemetry.addData("backRight power", backRight.getPower());
     }
 
 }

@@ -17,97 +17,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
+import static org.firstinspires.ftc.teamcode.movement.Odometry.currentPosition;
 
 public abstract class Auto extends Robot {
-
-    public RingDetectorPipeline.RingAmount ringAmount;
-    public OpenCvCamera phoneCam;
-    public RingDetectorPipeline pipeline;
-
-    public int progState;
-    public boolean stageFinished;
-    public int completedStages;
-
-    public void setStage(int stage) {
-        progState = stage;
-        stageFinished = true;
-    }
-
-    public void nextStage() {
-        setStage(progState + 1);
-        completedStages++;
-    }
-
-
-    protected double startStageX;
-    protected double startStageY;
-    protected double startStageHeading;
-    protected Pose startStagePose;
-    protected double startStageTime;
-    protected void initProgVars() {
-        startStageX = currentPosition.x;
-        startStageY = currentPosition.y;
-        startStageHeading = currentPosition.heading;
-        startStagePose = new Pose(startStageX, startStageY, startStageHeading);
-        stageFinished = false;
-        startStageTime = System.currentTimeMillis();
-    }
-
-    public boolean timeCheck(double millis) {
-        return System.currentTimeMillis() - startStageTime > millis;
-    }
-
-    public CurvePoint initialCurvePoint() {
-        return new CurvePoint(startStageX, startStageY, startStageHeading, 0, 0, 0, 0, 0);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new RingDetectorPipeline(true, 18);
-        phoneCam.setPipeline(pipeline);
-
-        // fixes the problems we had last year with the camera preview on the phone not being in landscape or whatever
-        // also starts the camera
-        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT);
-            }
-        });
-    }
-
-    @Override
-    public void init_loop() {
-        super.init_loop();
-        ringAmount = pipeline.getRingAmount();
-        telemetry.addLine("Rings: " + ringAmount);
-        telemetry.addLine(pipeline.getTelemetry());
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        ringAmount = pipeline.getRingAmount();
-        progState = 0;
-        completedStages = 0;
-        stageFinished = true;
-    }
-
-    @Override
-    public void loop() {
-        super.loop();
-        autoStateMachine();
-        telemetry.addLine("Ring amount: " + ringAmount);
-    }
-
-    public abstract void autoStateMachine();
-
-
 
     public static class RingDetectorPipeline extends OpenCvPipeline {
         int colorComponentNum;
@@ -251,4 +163,91 @@ public abstract class Auto extends Robot {
             return "avg1: " + average1 + " avg2: " + average2  + newLine + " diff1: " + difference1 + " diff2: " + difference2;
         }
     }
+
+
+    public RingDetectorPipeline.RingAmount ringAmount;
+    public OpenCvCamera phoneCam;
+    public RingDetectorPipeline pipeline;
+
+    public int currState;
+    public boolean stateFinished;
+    public int completedStates;
+
+    public void setState(int state) {
+        currState = state;
+        stateFinished = true;
+    }
+
+    public void nextState() {
+        setState(currState + 1);
+        completedStates++;
+    }
+
+
+    protected double stateStartX;
+    protected double stateStartY;
+    protected double stateStartHeading;
+    protected Pose stateStartPose;
+    protected double stateStartTime;
+    protected void initStateVars() {
+        stateStartX = currentPosition.x;
+        stateStartY = currentPosition.y;
+        stateStartHeading = currentPosition.heading;
+        stateStartPose = new Pose(stateStartX, stateStartY, stateStartHeading);
+        stateFinished = false;
+        stateStartTime = System.currentTimeMillis();
+    }
+
+    public boolean timeCheck(double millis) {
+        return System.currentTimeMillis() - stateStartTime > millis;
+    }
+
+    public CurvePoint initialCurvePoint() {
+        return new CurvePoint(stateStartX, stateStartY, stateStartHeading, 0, 0, 0, 0, 0);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        pipeline = new RingDetectorPipeline(true, 18);
+        phoneCam.setPipeline(pipeline);
+
+        // fixes the problems we had last year with the camera preview on the phone not being in landscape or whatever
+        // also starts the camera
+        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            }
+        });
+    }
+
+    @Override
+    public void init_loop() {
+        super.init_loop();
+        ringAmount = pipeline.getRingAmount();
+        telemetry.addLine("Rings: " + ringAmount);
+        telemetry.addLine(pipeline.getTelemetry());
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        ringAmount = pipeline.getRingAmount();
+        currState = 0;
+        completedStates = 0;
+        stateFinished = true;
+    }
+
+    @Override
+    public void loop() {
+        super.loop();
+        autoStateMachine();
+        telemetry.addLine("Ring amount: " + ringAmount);
+    }
+
+    public abstract void autoStateMachine();
 }
