@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.movement;
 
-
 import org.firstinspires.ftc.teamcode.util.Point;
 
-/**
- * CurvePoint is a class used with the followCurve function in MovementEssentials.
- */
 public class CurvePoint {
     public double x;
     public double y;
