@@ -18,6 +18,10 @@ MathUtil {
         return angle;
     }
 
+    public static boolean subtractAngleBool(double a1, double a2, double thresh) {
+        return Math.abs(angleWrap(a1 - a2)) < thresh;
+    }
+
 
     public static Point clipToLine(double lineX1, double lineY1, double lineX2, double lineY2,
                                    double robotX, double robotY){

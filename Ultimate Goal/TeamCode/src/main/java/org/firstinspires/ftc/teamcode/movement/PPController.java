@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.*;
 import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
 
+import org.firstinspires.ftc.teamcode.control.Results;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 public class PPController {
 
 
-    public static movementResult goToPosition(double targetX, double targetY, double moveSpeed, double prefAngle, double turnSpeed, double slowDownTurnRadians, double slowDownMovementFromTurnError, double thresh, boolean stop) {
+    public static Results.movementResult goToPosition(double targetX, double targetY, double moveSpeed, double prefAngle, double turnSpeed, double slowDownTurnRadians, double slowDownMovementFromTurnError, double thresh, boolean stop) {
         double distance = Math.hypot(targetX - currentPosition.x, targetY - currentPosition.y);
 
         double absoluteAngleToTargetPoint = Math.atan2(targetY - currentPosition.y, targetX - currentPosition.x);
@@ -73,11 +74,11 @@ public class PPController {
         movementX *= errorTurnSoScaleDownMovement;
         movementY *= errorTurnSoScaleDownMovement;
 
-        return new movementResult(relativePointAngle,  targetX, targetY, thresh);
+        return new Results.movementResult(targetX, targetY, relativePointAngle, thresh, Math.toRadians(2));
     }
 
 
-    public static movementResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
+    public static Results.movementResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
         //now that we know what absolute angle to point to, we calculate how close we are to it
         double relativePointAngle = MathUtil.angleWrap(point_angle-currentPosition.heading);
 
@@ -92,11 +93,11 @@ public class PPController {
         //smooths down the last bit to finally settle on an angle
         movementTurn *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(3),0,1);
 
-        return new movementResult(relativePointAngle, currentPosition.x, currentPosition.y, 1000000);
+        return new Results.movementResult(currentPosition.x, currentPosition.y, relativePointAngle, 10000000, Math.toRadians(2));
     }
 
 
-    public static movementResult pointPointTurn(Point point, double point_speed, double decelerationRadians) {
+    public static Results.movementResult pointPointTurn(Point point, double point_speed, double decelerationRadians) {
         double absoluteAngleToTargetPoint = Math.atan2(point.y - currentPosition.y, point.x - currentPosition.x);
         return pointAngle(absoluteAngleToTargetPoint, point_speed, decelerationRadians);
     }
@@ -171,7 +172,7 @@ public class PPController {
         //if our follow angle is different, point differently
         currFollowAngle += angleWrap(followAngle - Math.toRadians(90));
 
-        movementResult result;
+        Results.movementResult result;
         if(anglePointControlled) {
             result = pointPointTurn(anglePoint, allPoints.get(currFollowIndex).turnSpeed, Math.toRadians(45));
         } else if(headingControlled){
@@ -286,18 +287,6 @@ public class PPController {
                 if(movementTurn < 0 && movementTurn > -MIN_MOVEMENT)
                     movementTurn = -MIN_MOVEMENT;
             }
-        }
-    }
-
-
-
-
-    public static class movementResult{
-        public double turnDelta_rad;
-        public boolean withinBounds;
-        public movementResult(double turnDelta_rad, double targetX, double targetY, double thresh){
-            this.turnDelta_rad = turnDelta_rad;
-            withinBounds = Math.hypot(targetX - currentPosition.x, targetY - currentPosition.y) < thresh;
         }
     }
 

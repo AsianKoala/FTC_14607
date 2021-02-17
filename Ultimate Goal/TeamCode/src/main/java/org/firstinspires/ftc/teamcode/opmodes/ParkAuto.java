@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.control.Auto;
+import org.firstinspires.ftc.teamcode.control.Results;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.PPController;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -46,10 +47,10 @@ public class ParkAuto extends Auto {
                 initStateVars();
             }
 
-            PPController.movementResult result = PPController.goToPosition(0, 12, 0.6, 0.6, Math.toRadians(90),
+            Results.movementResult result = PPController.goToPosition(0, 12, 0.6, 0.6, Math.toRadians(90),
                     Math.toRadians(45), 0.6, 2.5, true);
 
-            if (result.withinBounds) {
+            if (result.done) {
                 DriveTrain.stopMovement();
                 requestOpModeStop();
             }

@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.control.Auto;
+import org.firstinspires.ftc.teamcode.control.Results;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.CurvePoint;
 import org.firstinspires.ftc.teamcode.movement.PPController;
@@ -59,9 +59,9 @@ public class MainAuto extends Auto {
                 initStateVars();
             }
 
-            PPController.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90),
+            Results.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90),
                     Math.toRadians(45), 0.6, 2.5, true);
-            if(result.withinBounds) {
+            if(result.done) {
                 DriveTrain.stopMovement();
                 nextState();
             }
@@ -218,9 +218,9 @@ public class MainAuto extends Auto {
             if(stateFinished) {
                 initStateVars();
             }
-            PPController.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90), Math.toRadians(60),
+            Results.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90), Math.toRadians(60),
                     0.6, 3, true);
-            if(result.withinBounds) {
+            if(result.done) {
                 DriveTrain.stopMovement();
                 requestOpModeStop();
             }

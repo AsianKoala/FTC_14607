@@ -89,7 +89,7 @@ public class MainTeleOp extends Robot {
 
         if(goToShootingPoint) {
             if(!shootingZoneReached) {
-                boolean done = goToPosition(0, 0, 0.6, Math.toRadians(90), 0.6, Math.toRadians(45), 0.6, 2, true).withinBounds;
+                boolean done = goToPosition(0, 0, 0.6, Math.toRadians(90), 0.6, Math.toRadians(45), 0.6, 2, true).done;
                 if(done) {
                     DriveTrain.stopMovement();
                     shootingZoneReached = true;

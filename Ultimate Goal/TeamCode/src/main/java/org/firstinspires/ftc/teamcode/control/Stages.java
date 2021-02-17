@@ -7,7 +7,7 @@ public class Stages {
         void startFunction();
         void mainFunction();
         void endFunction();
-        AutoStartVars AUTO_START_VARS = new AutoStartVars();
+        StageStartVars AUTO_START_VARS = new StageStartVars();
     }
 
 }
