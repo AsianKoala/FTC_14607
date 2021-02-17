@@ -1,75 +1,62 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.control.Robot;
 import org.openftc.revextensions2.ExpansionHubServo;
 
-@TeleOp(name = "servo prgrm")
-public class ServoProgrammer extends Robot {
-    public double leftPivot = 0.5;
-    public double rightPivot = 0.5;
-    public ExpansionHubServo leftPivotServo, rightPivotServo;
-    // 0.6  left grabber closed
-    // 0.25 right grabber closed
-    // 0.25 left grabber open
-    // 0.6  right grabber open
-    // 0.7  left pivot out
-    // 0.1  right pivot out
-    // 0.0  left pivot in
-    // 0.8  right pivot in
+import java.util.ArrayList;
 
-    // 0.8 right in
-    // 0.15 right out
-    // 0.65 left out
-    // 0.0 left in
+@TeleOp(name = "Servo Programmer")
+public class ServoProgrammer extends Robot {
+    public ServoData ourServoData;
 
     @Override
     public void init() {
         super.init();
-        leftPivotServo = hardwareMap.get(ExpansionHubServo.class, "leftPivot");
-        rightPivotServo = hardwareMap.get(ExpansionHubServo.class, "rightPivot");
+        ExpansionHubServo servo = hardwareMap.get(ExpansionHubServo.class, "leftPivot"); // ex
+        ourServoData = new ServoData(servo, 0.05);
     }
 
     @Override
     public void loop() {
         super.loop();
         try {
-            controlServo();
+            sleep();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        telemetry.addLine("leftPivot: " + leftPivot);
-        telemetry.addLine("rightPivot: " + rightPivot);
+        telemetry.addLine(ourServoData.update(gamepad1.x, gamepad1.b, gamepad1.a));
     }
 
-    public void controlServo() throws InterruptedException {
-        if(gamepad1.left_bumper) {
-            leftPivot += 0.05;
-            sleep();
-        }
-        if(gamepad1.left_trigger > 0.7) {
-            leftPivot -= 0.05;
-            sleep();
-        }
-        if(gamepad1.right_bumper) {
-            rightPivot += 0.05;
-            sleep();
-        }
-        if(gamepad1.right_trigger > 0.7) {
-            rightPivot -= 0.05;
-            sleep();
-        }
-        if(gamepad1.x) {
-            leftPivotServo.setPosition(leftPivot);
-        }
-        if(gamepad1.b) {
-            rightPivotServo.setPosition(rightPivot);
-        }
+
+    private void sleep() throws InterruptedException {
+        Thread.sleep(300);
+    }
+}
+
+class ServoData {
+    private final ExpansionHubServo servo;
+    private double val;
+    private final double increment;
+    ServoData(ExpansionHubServo servo, double increment) {
+        this.servo = servo;
+        val = 0.5;
+        this.increment = increment;
     }
 
-    void sleep() throws InterruptedException {
-        Thread.sleep(500);
+    public String update(boolean isDecrease, boolean isIncrease, boolean set) {
+        if(isDecrease) {
+            val = Range.clip(val - increment, 0, 1);
+        } else if(isIncrease) {
+            val = Range.clip(val + increment, 0, 1);
+        }
+
+        if(set) {
+            servo.setPosition(val);
+        }
+
+        return servo.getDeviceName() + ": " + val;
     }
 }
