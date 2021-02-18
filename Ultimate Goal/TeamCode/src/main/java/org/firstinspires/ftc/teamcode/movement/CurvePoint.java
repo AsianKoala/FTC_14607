@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.movement;
 
+import org.firstinspires.ftc.teamcode.control.Functions;
 import org.firstinspires.ftc.teamcode.util.Point;
 
 public class CurvePoint {
@@ -11,9 +12,10 @@ public class CurvePoint {
     public double slowDownTurnRadians;
     public double slowDownTurnAmount;
     public double pointLength;
+    public Functions.function function;
 
     public CurvePoint(double x, double y, double moveSpeed, double turnSpeed,
-                      double followDistance,double pointLength, double slowDownTurnRadians, double slowDownTurnAmount){
+                      double followDistance,double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function){
         this.x = x;
         this.y = y;
         this.moveSpeed = moveSpeed;
@@ -22,6 +24,7 @@ public class CurvePoint {
         this.pointLength = pointLength;
         this.slowDownTurnRadians = slowDownTurnRadians;
         this.slowDownTurnAmount = slowDownTurnAmount;
+        this.function = function;
     }
 
     public CurvePoint(CurvePoint thisPoint) {
@@ -42,5 +45,31 @@ public class CurvePoint {
     public void setPoint(Point p){
         x = p.x;
         y = p.y;
+    }
+
+
+    public static class hardwareCurvePoint extends CurvePoint {
+        public hardwareCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.hardwareFunction function) {
+            super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
+        }
+    }
+
+    public static class headingControlledCurvePoint extends CurvePoint {
+        public headingControlledCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
+            super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
+        }
+    }
+
+    public static class pointToPointCurvePoint extends CurvePoint {
+        public pointToPointCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
+            super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
+        }
+    }
+
+    public static class basicCurvePoint extends CurvePoint {
+
+        public basicCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
+            super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
+        }
     }
 }

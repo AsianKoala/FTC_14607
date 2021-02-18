@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 import java.util.ArrayList;
 
 
-public class PPController {
+public class MovementController {
 
 
     public static Results.movementResult goToPosition(double targetX, double targetY, double moveSpeed, double prefAngle, double turnSpeed, double slowDownTurnRadians, double slowDownMovementFromTurnError, double thresh, boolean stop) {

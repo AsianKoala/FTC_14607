@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
-import static org.firstinspires.ftc.teamcode.movement.PPController.goToPosition;
-import static org.firstinspires.ftc.teamcode.movement.PPController.pointAngle;
+import static org.firstinspires.ftc.teamcode.movement.MovementController.goToPosition;
+import static org.firstinspires.ftc.teamcode.movement.MovementController.pointAngle;
 
 @TeleOp(name = "teleop")
 public class MainTeleOp extends Robot {

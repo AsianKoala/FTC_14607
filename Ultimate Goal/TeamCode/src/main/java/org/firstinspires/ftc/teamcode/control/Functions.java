@@ -13,6 +13,14 @@ public class Functions {
     public interface movementFunction extends function {
         Results.movementResult runMovement();
     }
+
+    public interface pointToPointFunction extends function {
+        Results.movementResult runTurn();
+    }
+
+    public interface headingControlledFunction extends function {
+        Results.movementResult runTurn();
+    }
 }
 
 

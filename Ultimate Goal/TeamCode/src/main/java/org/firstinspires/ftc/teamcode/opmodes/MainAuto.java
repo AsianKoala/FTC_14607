@@ -6,12 +6,12 @@ import org.firstinspires.ftc.teamcode.control.Auto;
 import org.firstinspires.ftc.teamcode.control.Results;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.CurvePoint;
-import org.firstinspires.ftc.teamcode.movement.PPController;
+import org.firstinspires.ftc.teamcode.movement.MovementController;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.movement.PPController.*;
+import static org.firstinspires.ftc.teamcode.movement.MovementController.*;
 
 @Autonomous(name="auto")
 public class MainAuto extends Auto {
@@ -59,7 +59,7 @@ public class MainAuto extends Auto {
                 initStateVars();
             }
 
-            Results.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90),
+            Results.movementResult result = MovementController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90),
                     Math.toRadians(45), 0.6, 2.5, true);
             if(result.done) {
                 DriveTrain.stopMovement();
@@ -148,7 +148,7 @@ public class MainAuto extends Auto {
             allPoints.add(initialCurvePoint());
             allPoints.add(new CurvePoint(0, 2, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
             allPoints.add(new CurvePoint(0, -42, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
-            boolean done = PPController.betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
+            boolean done = MovementController.betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
             if(done) {
                 DriveTrain.stopMovement();
                 nextState();
@@ -218,7 +218,7 @@ public class MainAuto extends Auto {
             if(stateFinished) {
                 initStateVars();
             }
-            Results.movementResult result = PPController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90), Math.toRadians(60),
+            Results.movementResult result = MovementController.goToPosition(0, 0, 0.6, 0.6, Math.toRadians(90), Math.toRadians(60),
                     0.6, 3, true);
             if(result.done) {
                 DriveTrain.stopMovement();
