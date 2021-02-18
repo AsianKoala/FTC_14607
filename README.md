@@ -83,10 +83,6 @@ Follow us @FTC14607
 &nbsp;
 
 
-
-
-
-
 if u get hella errors when u clone the repo, clone the repo with the latest commit that builds:  ```c5f11bd9729c570068ab61ee51760adc0505d5ba```  
 
 heres the git commands if u dont know how  
