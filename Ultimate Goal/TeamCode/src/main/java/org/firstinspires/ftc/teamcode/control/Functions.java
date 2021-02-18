@@ -46,28 +46,28 @@ public class Functions {
         }
     }
 
-    public abstract static class complexFunction extends function {
-        abstract ArrayList<function> functions();
-
-        Results.baseResult runComplexFunctions() {
-            boolean isDone = true;
-            int completedFunctions = 0;
-            for(function f : functions()) {
-                if(f.startCondition) {
-                    if(!f.result().done)
-                        isDone = false;
-                }
-            }
-            Results.baseResult returnResult = new Results.baseResult();
-            returnResult.done = isDone;
-            return returnResult;
-        }
-
-        @Override
-        Results.baseResult result() {
-            return runComplexFunctions();
-        }
-    }
+//    public abstract static class complexFunction extends function {
+//        abstract ArrayList<function> functions();
+//
+//        Results.baseResult runComplexFunctions() {
+//            boolean isDone = true;
+//            int completedFunctions = 0;
+//            for(function f : functions()) {
+//                if(f.startCondition) {
+//                    if(!f.result().done)
+//                        isDone = false;
+//                }
+//            }
+//            Results.baseResult returnResult = new Results.baseResult();
+//            returnResult.done = isDone;
+//            return returnResult;
+//        }
+//
+//        @Override
+//        Results.baseResult result() {
+//            return runComplexFunctions();
+//        }
+//    }
 }
 
 

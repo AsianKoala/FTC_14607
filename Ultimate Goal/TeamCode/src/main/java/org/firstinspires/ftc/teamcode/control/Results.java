@@ -26,48 +26,48 @@ public class Results {
         }
     }
 
-    public static class complexResult extends baseResult {
-        public complexResult(ArrayList<Functions.function> functions) {
-            boolean isDone = true;
-            for(Functions.function f : functions) {
-                if(!f.result().done)
-                    isDone = false;
-            }
-            done = isDone;
-        }
-    }
-
-    static class test {
-        public static void main(String[] args) {
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
-            allPoints.add(new CurvePoint.complexCurvePoint(0, 0, 0, 0, 0, 0, 0, 0, new Functions.complexFunction() {
-                @Override
-                ArrayList<Functions.function> functions() {
-//                    return new complexListBuilder()
-//                            .add(x)
-//                            .add(y)
-//                            .build()
-                    return null;
-                }
-
-                @Override
-                complexResult runComplexFunctions() {
-                    return null;
-                }
-            }));
-        }
-    }
-
-    public static class complexListBuilder {
-        private ArrayList<Functions.function> functions;
-
-        public complexListBuilder add(Functions.function function) {
-            functions.add(function);
-            return this;
-        }
-
-        public ArrayList<Functions.function> build() {
-            return functions;
-        }
-    }
+//    public static class complexResult extends baseResult {
+//        public complexResult(ArrayList<Functions.function> functions) {
+//            boolean isDone = true;
+//            for(Functions.function f : functions) {
+//                if(!f.result().done)
+//                    isDone = false;
+//            }
+//            done = isDone;
+//        }
+//    }
+//
+//    static class test {
+//        public static void main(String[] args) {
+//            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+//            allPoints.add(new CurvePoint.complexCurvePoint(0, 0, 0, 0, 0, 0, 0, 0, new Functions.complexFunction() {
+//                @Override
+//                ArrayList<Functions.function> functions() {
+////                    return new complexListBuilder()
+////                            .add(x)
+////                            .add(y)
+////                            .build()
+//                    return null;
+//                }
+//
+//                @Override
+//                complexResult runComplexFunctions() {
+//                    return null;
+//                }
+//            }));
+//        }
+//    }
+//
+//    public static class complexListBuilder {
+//        private ArrayList<Functions.function> functions;
+//
+//        public complexListBuilder add(Functions.function function) {
+//            functions.add(function);
+//            return this;
+//        }
+//
+//        public ArrayList<Functions.function> build() {
+//            return functions;
+//        }
+//    }
 }

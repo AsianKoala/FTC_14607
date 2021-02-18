@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.movement;
 import org.firstinspires.ftc.teamcode.control.Functions;
 import org.firstinspires.ftc.teamcode.util.Point;
 
-public class CurvePoint {
+public class CurvePoint implements Cloneable {
     public double x;
     public double y;
     public double moveSpeed;
@@ -47,6 +47,14 @@ public class CurvePoint {
         y = p.y;
     }
 
+    @Override
+    public CurvePoint clone() {
+        try {
+            return (CurvePoint) super.clone();
+        } catch (Exception ignored) {}
+        return null;
+    }
+
 
     public static class hardwareCurvePoint extends CurvePoint {
         public hardwareCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.hardwareFunction function) {
@@ -71,10 +79,10 @@ public class CurvePoint {
             super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
         }
     }
-
-    public static class complexCurvePoint extends CurvePoint {
-        public complexCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.complexFunction function) {
-            super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
-        }
-    }
+//
+//    public static class complexCurvePoint extends CurvePoint {
+//        public complexCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.complexFunction function) {
+//            super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
+//        }
+//    }
 }
