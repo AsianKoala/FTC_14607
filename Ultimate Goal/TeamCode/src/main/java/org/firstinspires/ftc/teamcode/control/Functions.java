@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode.control;
 
 
 public class Functions {
-    public interface function {
+    public abstract class function {
         Results.baseResult result();
+        abstract boolean startCondition();
     }
 
     public interface hardwareFunction extends function {

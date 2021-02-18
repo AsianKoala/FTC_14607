@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.control;
 
+import org.firstinspires.ftc.teamcode.movement.CurvePoint;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 import java.util.ArrayList;
@@ -35,6 +36,58 @@ public class Results {
                     isDone = false;
             }
             done = isDone;
+        }
+    }
+
+    static class test {
+        public static void main(String[] args) {
+            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+            allPoints.add(new CurvePoint.complexCurvePoint(0, 0, 0, 0, 0, 0, 0, 0, new Functions.complexFunction() {
+                @Override
+                public complexResult runComplexFunctions() {
+                    ArrayList<Functions.function> allRunnableFunctions = new complexListBuilder()
+                            .add(new Functions.hardwareFunction() {
+                                @Override
+                                public simpleResult runHardware() {
+                                    return null;
+                                }
+
+                                @Override
+                                public baseResult result() {
+                                    return null;
+                                }
+
+                                @Override
+                                public boolean startCondition() {
+                                    return false;
+                                }
+                            })
+                    return null;
+                }
+
+                @Override
+                public baseResult result() {
+                    return runComplexFunctions();
+                }
+
+                @Override
+                public boolean startCondition() {
+                    return Math.hypot(currentPosition.x, currentPosition.y) < 5;
+                }
+            }));
+        }
+    }
+
+    public static class complexListBuilder {
+        private ArrayList<Functions.function> functions;
+
+        public complexListBuilder add(Functions.function function) {
+            functions.add(function);
+            return this;
+        }
+
+        public ArrayList<Functions.function> build() {
+            return functions;
         }
     }
 }
