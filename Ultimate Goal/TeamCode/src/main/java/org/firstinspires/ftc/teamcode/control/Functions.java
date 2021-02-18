@@ -21,6 +21,10 @@ public class Functions {
     public interface headingControlledFunction extends function {
         Results.movementResult runTurn();
     }
+
+    public interface complexFunction extends function {
+        Results.complexResult runComplexFunctions();
+    }
 }
 
 

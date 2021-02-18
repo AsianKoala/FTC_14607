@@ -55,20 +55,25 @@ public class CurvePoint {
     }
 
     public static class headingControlledCurvePoint extends CurvePoint {
-        public headingControlledCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
+        public headingControlledCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.headingControlledFunction function) {
             super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
         }
     }
 
     public static class pointToPointCurvePoint extends CurvePoint {
-        public pointToPointCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
+        public pointToPointCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.pointToPointFunction function) {
             super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
         }
     }
 
     public static class basicCurvePoint extends CurvePoint {
-
         public basicCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
+            super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
+        }
+    }
+
+    public static class complexCurvePoint extends CurvePoint {
+        public complexCurvePoint(double x, double y, double moveSpeed, double turnSpeed, double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.complexFunction function) {
             super(x, y, moveSpeed, turnSpeed, followDistance, pointLength, slowDownTurnRadians, slowDownTurnAmount, function);
         }
     }

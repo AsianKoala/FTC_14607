@@ -103,7 +103,7 @@ public class MovementController {
     }
 
 
-    public static boolean betterFollowCurve(ArrayList<CurvePoint> allPoints, double followAngle, Point anglePoint, boolean headingControlled, double controlledHeading){
+    public static Results.movementResult betterFollowCurve(ArrayList<CurvePoint> allPoints){
         boolean anglePointControlled = !(anglePoint == null);
 
         //now we will extend the last line so that the pointing looks smooth at the end
