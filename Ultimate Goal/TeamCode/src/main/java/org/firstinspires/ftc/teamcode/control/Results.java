@@ -27,9 +27,7 @@ public class Results {
     }
 
     public static class complexResult extends baseResult {
-        public ArrayList<Functions.function> functions;
         public complexResult(ArrayList<Functions.function> functions) {
-            this.functions = functions;
             boolean isDone = true;
             for(Functions.function f : functions) {
                 if(!f.result().done)
@@ -44,35 +42,17 @@ public class Results {
             ArrayList<CurvePoint> allPoints = new ArrayList<>();
             allPoints.add(new CurvePoint.complexCurvePoint(0, 0, 0, 0, 0, 0, 0, 0, new Functions.complexFunction() {
                 @Override
-                public complexResult runComplexFunctions() {
-                    ArrayList<Functions.function> allRunnableFunctions = new complexListBuilder()
-                            .add(new Functions.hardwareFunction() {
-                                @Override
-                                public simpleResult runHardware() {
-                                    return null;
-                                }
-
-                                @Override
-                                public baseResult result() {
-                                    return null;
-                                }
-
-                                @Override
-                                public boolean startCondition() {
-                                    return false;
-                                }
-                            })
+                ArrayList<Functions.function> functions() {
+//                    return new complexListBuilder()
+//                            .add(x)
+//                            .add(y)
+//                            .build()
                     return null;
                 }
 
                 @Override
-                public baseResult result() {
-                    return runComplexFunctions();
-                }
-
-                @Override
-                public boolean startCondition() {
-                    return Math.hypot(currentPosition.x, currentPosition.y) < 5;
+                complexResult runComplexFunctions() {
+                    return null;
                 }
             }));
         }

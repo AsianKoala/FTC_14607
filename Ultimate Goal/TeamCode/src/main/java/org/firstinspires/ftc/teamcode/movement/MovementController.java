@@ -103,6 +103,7 @@ public class MovementController {
     }
 
 
+    // todo
     public static Results.movementResult betterFollowCurve(ArrayList<CurvePoint> allPoints){
         boolean anglePointControlled = !(anglePoint == null);
 
