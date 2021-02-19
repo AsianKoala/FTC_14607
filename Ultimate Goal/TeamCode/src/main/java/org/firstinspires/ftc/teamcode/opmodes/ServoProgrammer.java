@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.control.Robot;
+import org.firstinspires.ftc.teamcode.control.OurOpMode;
 import org.openftc.revextensions2.ExpansionHubServo;
 
 @TeleOp(name = "Servo Programmer")
-public class ServoProgrammer extends Robot {
+public class ServoProgrammer extends OurOpMode {
     public ServoData ourServoData;
 
     @Override

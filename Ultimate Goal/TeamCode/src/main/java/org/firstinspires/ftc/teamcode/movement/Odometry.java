@@ -131,7 +131,7 @@ public class Odometry extends TwoTrackingWheelLocalizer {
         setPoseEstimate(new Pose2d(currentPosition.x, currentPosition.y, currentPosition.heading));
     }
 
-    public void setGlobalPosition(Point newPos) {
+    public void setGlobalPosition(Point newPos) {//xsdgsf
         currentPosition.x = newPos.x;
         currentPosition.y = newPos.y;
         setPoseEstimate(new Pose2d(currentPosition.x, currentPosition.y, currentPosition.heading));

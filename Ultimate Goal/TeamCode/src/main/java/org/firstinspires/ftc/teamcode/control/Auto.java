@@ -17,7 +17,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import static org.firstinspires.ftc.teamcode.movement.Odometry.currentPosition;
 
-public abstract class Auto extends Robot {
+public abstract class Auto extends OurOpMode {
 
     public RingDetectorPipeline.RingAmount ringAmount;
     public OpenCvCamera phoneCam;

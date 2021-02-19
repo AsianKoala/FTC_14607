@@ -1,39 +1,36 @@
 package org.firstinspires.ftc.teamcode.control;
 
 
+import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
+
+import java.util.ArrayList;
+
 public class Functions {
     public static abstract class function {
-        public boolean startCondition() {
-            return true;
+        public static RobotHardware robot;
+        public static void loadRobotInstance(RobotHardware robot) {
+            function.robot = robot;
         }
-
-        public abstract void run();
     }
 
-    public abstract static class hardwareFunction extends function {
-        @Override
-        public abstract void run();
+    public static abstract class simpleFunction extends function {
+        public abstract void method();
     }
 
-    public abstract static class headingControlledFunction extends function {
-        public double heading;
-
-        @Override
-        public abstract void run();
+    public static abstract class loopFunction extends function {
+        public abstract Results.simpleResult method();
     }
 
-    public abstract static class conditionHardwareFunction extends hardwareFunction {
-        @Override
+    public static abstract class conditionalFunction extends function {
         public abstract boolean startCondition();
-
-        @Override
-        public abstract void run();
+        public abstract Results.simpleResult method();
     }
 
-    public abstract static class finalTurnFunction extends headingControlledFunction {
-        @Override
-        public abstract void run();
+    public static abstract class listFunction extends function {
+        public abstract ArrayList<conditionalFunction> allFunctions();
     }
+
+
 
 }
 
