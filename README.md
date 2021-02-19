@@ -11,6 +11,6 @@ Follow us @FTC14607
 &nbsp;
 
 
-if u get hella errors when u clone, clone the repo with the latest commit that builds: 
+if u get hella errors when u clone, clone the repo with the latest commit that builds  
 
-hash - ```c5f11bd9729c570068ab61ee51760adc0505d5ba```  
+hash: ```c5f11bd9729c570068ab61ee51760adc0505d5ba```  
