@@ -5,17 +5,17 @@ import static org.firstinspires.ftc.teamcode.control.Stages.*;
 
 
 public class StateMachine {
-    public LinkedList<basicStage> stages;
-    public basicStage currStage;
+    public LinkedList<Stages.basicStage> stages;
+    public Stages.basicStage currStage;
     public int completedStages;
 
     public StateMachine() {
         stages = new LinkedList<>();
+        completedStages = -1;
     }
 
-    public void addStage(basicStage newStage) {
+    public void addStage(Stages.basicStage newStage) {
         stages.add(newStage);
-        currStage = stages.getFirst();
     }
 
     public boolean running() {
@@ -30,6 +30,14 @@ public class StateMachine {
     }
 
     public void loop() {
+        if(completedStages == -1) {
+            currStage = stages.getFirst();
+            System.out.println(currStage.name());
+            currStage.AUTO_START_VARS.initialize();
+            currStage.startFunction();
+            completedStages++;
+        }
+
         if(currStage.finishState()) {
             currStage.endFunction();
             stages.removeFirst();
@@ -44,12 +52,6 @@ public class StateMachine {
         }
     }
 }
-
-
-
-
-
-
 
 
 

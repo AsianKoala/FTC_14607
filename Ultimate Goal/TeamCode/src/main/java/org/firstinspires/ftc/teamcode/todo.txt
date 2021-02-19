@@ -1,0 +1,24 @@
+
+1. move changes from ftcfuncflow to here including:
+curvepoint changes to include function in copy constructor
+changing functions from result return type to void
+new statemachine changes
+new stagestartvar changes
+new result changes
+new stages changes
+
+2. update followCurve and the rest of the pure pursuit methods to be more concise and include functions
+
+3. change the way the pure pursuit controller takes input (arraylist) to a class containing allpoints and several other path specific fields (PurePursuitPath.java)
+
+4. update auto to switch to being controlled by statemachine.java instead of some dumbass statemachine, also look into having statemachine be abstract in Auto.java and running
+a for loop for currStage and currStageName in Auto.java's loop()
+
+5. (future todos)
+have stages require a purepursuitpath instead of a mainFunction(), actually just change purepursuitpath.java to sequence.java or something like that,
+since its just gonna be something that can be used in teleop and auto not just auto soo (eg. adding hardwareCurvepoint or hardwareFunction to it? maybe idk) or maybe several constructors depending on input?>?
+could have like a field for functions that can be copied over through iterating through allPoints if given auto
+or something like that idek
+
+
+probably overcomplicating it but just basically change PurePursuitPath.java to Sequence.java and have Stages.basicStage.mainFunction() changed so it returns a sequence to follow in stateMachine
