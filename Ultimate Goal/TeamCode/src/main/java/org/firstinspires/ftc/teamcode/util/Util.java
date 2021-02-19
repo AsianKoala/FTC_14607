@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import org.firstinspires.ftc.teamcode.movement.CurvePoint;
+import org.firstinspires.ftc.teamcode.movement.BaseCurvePoint;
 
 import java.util.ArrayList;
 
@@ -148,7 +148,7 @@ public class Util {
 
 
     // finds currPoint (startPoint of curr segment) on the current path
-    public static indexPoint clipToFollowPointPath(ArrayList<CurvePoint> pathPoints, double xPos, double yPos) {
+    public static indexPoint clipToFollowPointPath(ArrayList<BaseCurvePoint> pathPoints, double xPos, double yPos) {
         double closestClip = 1000000000;
 
         // index of first point on line clipped
@@ -157,8 +157,8 @@ public class Util {
         Point clipPoint = new Point();
 
         for (int i = 0; i < pathPoints.size() - 1; i++) {
-            CurvePoint startPoint = pathPoints.get(i);
-            CurvePoint endPoint = pathPoints.get(i + 1);
+            BaseCurvePoint startPoint = pathPoints.get(i);
+            BaseCurvePoint endPoint = pathPoints.get(i + 1);
 
             Point tempClipPoint = clipToLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, xPos, yPos);
 

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.control.Auto;
 import org.firstinspires.ftc.teamcode.control.Results;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.movement.CurvePoint;
+import org.firstinspires.ftc.teamcode.movement.BaseCurvePoint;
 import org.firstinspires.ftc.teamcode.movement.MovementController;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
@@ -91,18 +91,18 @@ public class MainAuto extends Auto {
                 initStateVars();
             }
 
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+            ArrayList<BaseCurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
 
             switch (ringAmount) {
                 case NONE:
-                    allPoints.add(new CurvePoint(-12, 12, 0.5, 0.5, 10, 15, Math.toRadians(45), 0.8));
+                    allPoints.add(new BaseCurvePoint(-12, 12, 0.5, 0.5, 10, 15, Math.toRadians(45), 0.8));
                     break;
                 case ONE:
-                    allPoints.add(new CurvePoint(4, 20, 0.5, 0.5, 20, 25, Math.toRadians(60), 0.6));
+                    allPoints.add(new BaseCurvePoint(4, 20, 0.5, 0.5, 20, 25, Math.toRadians(60), 0.6));
                     break;
                 case FOUR:
-                    allPoints.add(new CurvePoint(-13, 36, 0.5, 0.5, 20, 25, Math.toRadians(60), 0.6));
+                    allPoints.add(new BaseCurvePoint(-13, 36, 0.5, 0.5, 20, 25, Math.toRadians(60), 0.6));
                     break;
             }
             boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
@@ -132,10 +132,10 @@ public class MainAuto extends Auto {
                 initStateVars();
             }
 
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+            ArrayList<BaseCurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
-            allPoints.add(new CurvePoint(0, 2, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
-            allPoints.add(new CurvePoint(0, -42, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
+            allPoints.add(new BaseCurvePoint(0, 2, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
+            allPoints.add(new BaseCurvePoint(0, -42, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
             boolean done = MovementController.betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);
             if (done) {
                 DriveTrain.stopMovement();
@@ -169,18 +169,18 @@ public class MainAuto extends Auto {
                 initStateVars();
             }
 
-            ArrayList<CurvePoint> allPoints = new ArrayList<>();
+            ArrayList<BaseCurvePoint> allPoints = new ArrayList<>();
             allPoints.add(initialCurvePoint());
 
             switch (ringAmount) {
                 case NONE:
-                    allPoints.add(new CurvePoint(-6, 12, 0.6, 0.6, 20, 25, Math.toRadians(45), 0.6));
+                    allPoints.add(new BaseCurvePoint(-6, 12, 0.6, 0.6, 20, 25, Math.toRadians(45), 0.6));
                     break;
                 case ONE:
-                    allPoints.add(new CurvePoint(4, 20, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
+                    allPoints.add(new BaseCurvePoint(4, 20, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
                     break;
                 case FOUR:
-                    allPoints.add(new CurvePoint(-10, 34, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
+                    allPoints.add(new BaseCurvePoint(-10, 34, 0.6, 0.6, 20, 25, Math.toRadians(60), 0.6));
                     break;
             }
             boolean done = betterFollowCurve(allPoints, Math.toRadians(90), null, false, 0);

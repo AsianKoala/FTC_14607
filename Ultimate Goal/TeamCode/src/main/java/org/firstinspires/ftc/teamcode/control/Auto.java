@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.control;
 
 
-import org.firstinspires.ftc.teamcode.movement.CurvePoint;
+import org.firstinspires.ftc.teamcode.movement.BaseCurvePoint;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -54,8 +54,8 @@ public abstract class Auto extends Robot {
         return System.currentTimeMillis() - stateStartTime > millis;
     }
 
-    public CurvePoint initialCurvePoint() {
-        return new CurvePoint(stateStartX, stateStartY, stateStartHeading, 0, 0, 0, 0, 0);
+    public BaseCurvePoint initialCurvePoint() {
+        return new BaseCurvePoint(stateStartX, stateStartY, stateStartHeading, 0, 0, 0, 0, 0);
     }
 
     @Override

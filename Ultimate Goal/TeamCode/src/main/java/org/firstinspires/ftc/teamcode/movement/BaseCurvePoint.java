@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.movement;
 import org.firstinspires.ftc.teamcode.control.Functions;
 import org.firstinspires.ftc.teamcode.util.Point;
 
-public class CurvePoint {
+public class BaseCurvePoint {
     public double x;
     public double y;
     public double moveSpeed;
@@ -14,8 +14,8 @@ public class CurvePoint {
     public double pointLength;
     public Functions.function function;
 
-    public CurvePoint(double x, double y, double moveSpeed, double turnSpeed,
-                      double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
+    public BaseCurvePoint(double x, double y, double moveSpeed, double turnSpeed,
+                          double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
         this.x = x;
         this.y = y;
         this.moveSpeed = moveSpeed;
@@ -27,7 +27,7 @@ public class CurvePoint {
         this.function = function;
     }
 
-    public CurvePoint(CurvePoint thisPoint) {
+    public BaseCurvePoint(BaseCurvePoint thisPoint) {
         x = thisPoint.x;
         y = thisPoint.y;
         moveSpeed = thisPoint.moveSpeed;

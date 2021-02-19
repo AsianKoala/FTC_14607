@@ -109,23 +109,23 @@ public class MovementController {
 
 
     public static Results.movementResult newFollowPath(PurePursuitPath path) {
-        ArrayList<CurvePoint> allPoints = (ArrayList<CurvePoint>) path.allPoints.clone();
+        ArrayList<BaseCurvePoint> allPoints = (ArrayList<BaseCurvePoint>) path.allPoints.clone();
         //now we will extend the last line so that the pointing looks smooth at the end
-        ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
+        ArrayList<BaseCurvePoint> pathExtended = (ArrayList<BaseCurvePoint>) allPoints.clone();
 
         //first get which segment we are on
         indexPoint clippedToPath = clipToFollowPointPath(allPoints, currentPosition.x, currentPosition.y);
         int currFollowIndex = clippedToPath.index + 1;
 
         //get the point to follow
-        CurvePoint followMe = getFollowPointPath(pathExtended, currentPosition.x, currentPosition.y,
+        BaseCurvePoint followMe = getFollowPointPath(pathExtended, currentPosition.x, currentPosition.y,
                 allPoints.get(currFollowIndex).followDistance);
 
 
         //this will change the last point to be extended
 
-        CurvePoint firstExtendedPoint = allPoints.get(allPoints.size() - 2);
-        CurvePoint secondExtendedPoint = allPoints.get(allPoints.size() - 1);
+        BaseCurvePoint firstExtendedPoint = allPoints.get(allPoints.size() - 2);
+        BaseCurvePoint secondExtendedPoint = allPoints.get(allPoints.size() - 1);
         double extendDistance = allPoints.get(allPoints.size() - 1).pointLength * 1.5;
 
         double lineAngle = Math.atan2(secondExtendedPoint.y - firstExtendedPoint.y, secondExtendedPoint.x - firstExtendedPoint.x);
@@ -135,7 +135,7 @@ public class MovementController {
         //are at the end
         double extendedLineLength = lineLength + extendDistance;
 
-        CurvePoint extended = new CurvePoint(secondExtendedPoint);
+        BaseCurvePoint extended = new BaseCurvePoint(secondExtendedPoint);
         extended.x = Math.cos(lineAngle) * extendedLineLength + firstExtendedPoint.x;
         extended.y = Math.sin(lineAngle) * extendedLineLength + firstExtendedPoint.y;
 
@@ -143,7 +143,7 @@ public class MovementController {
 
 
         //get the point to point to
-        CurvePoint pointToMe = getFollowPointPath(pathExtended, currentPosition.x, currentPosition.y,
+        BaseCurvePoint pointToMe = getFollowPointPath(pathExtended, currentPosition.x, currentPosition.y,
                 allPoints.get(currFollowIndex).pointLength);
 
 //        followAngle = Math.atan2(0 - worldYPosition, 0 - worldXPosition);
@@ -236,18 +236,18 @@ public class MovementController {
     }
 
 
-    public static CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, double xPos, double yPos, double followRadius) {
+    public static BaseCurvePoint getFollowPointPath(ArrayList<BaseCurvePoint> pathPoints, double xPos, double yPos, double followRadius) {
         indexPoint clipped = clipToFollowPointPath(pathPoints, xPos, yPos);
         int currIndex = clipped.index;
 
-        CurvePoint followMe = new CurvePoint(pathPoints.get(currIndex + 1));
+        BaseCurvePoint followMe = new BaseCurvePoint(pathPoints.get(currIndex + 1));
         //by default go to the follow point
         followMe.setPoint(new Point(clipped.point.x, clipped.point.y));
 
 
         for (int i = 0; i < pathPoints.size() - 1; i++) {
-            CurvePoint startPoint = pathPoints.get(i);
-            CurvePoint endPoint = pathPoints.get(i + 1);
+            BaseCurvePoint startPoint = pathPoints.get(i);
+            BaseCurvePoint endPoint = pathPoints.get(i + 1);
 
             ArrayList<Point> intersections = lineCircleIntersection(xPos, yPos, followRadius, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 
