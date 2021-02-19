@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import org.firstinspires.ftc.teamcode.movement.CurvePoint;
+import org.firstinspires.ftc.teamcode.movement.MovementController;
+
 import java.util.ArrayList;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.movementTurn;
+import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.movementX;
+import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.movementY;
 
-public class
-MathUtil {
+public class Util {
     public static final double EPSILON = 1e-6;
 
     public static double angleWrap(double angle){
@@ -113,4 +118,72 @@ MathUtil {
         }
         return allPoints;
     }
+
+    public static final double MIN_MOVEMENT = 0.1;
+
+    public static void minCheck() {
+        if(Math.abs(movementX) > Math.abs(movementY)) {
+            if(Math.abs(movementX) > Math.abs(movementTurn)) {
+                if(movementX >= 0 && movementX <= MIN_MOVEMENT)
+                    movementX = MIN_MOVEMENT;
+                if(movementX < 0 && movementX > -MIN_MOVEMENT)
+                    movementX = -MIN_MOVEMENT;
+            } else {
+                if(movementTurn >= 0 && movementTurn <= MIN_MOVEMENT)
+                    movementTurn = MIN_MOVEMENT;
+                if(movementTurn < 0 && movementTurn > -MIN_MOVEMENT)
+                    movementTurn = -MIN_MOVEMENT;
+            }
+        } else {
+            if(Math.abs(movementY) > Math.abs(movementTurn)) {
+                if(movementY >= 0 && movementY <= MIN_MOVEMENT)
+                    movementY = MIN_MOVEMENT;
+                if(movementY < 0 && movementY > -MIN_MOVEMENT)
+                    movementY = -MIN_MOVEMENT;
+            } else {
+                if(movementTurn >= 0 && movementTurn <= MIN_MOVEMENT)
+                    movementTurn = MIN_MOVEMENT;
+                if(movementTurn < 0 && movementTurn > -MIN_MOVEMENT)
+                    movementTurn = -MIN_MOVEMENT;
+            }
+        }
+    }
+
+
+    // finds currPoint (startPoint of curr segment) on the current path
+    public static indexPoint clipToFollowPointPath(ArrayList<CurvePoint> pathPoints, double xPos, double yPos) {
+        double closestClip = 1000000000;
+
+        // index of first point on line clipped
+        int closestClippedIndex = 0;
+
+        Point clipPoint = new Point();
+
+        for(int i=0; i<pathPoints.size()-1; i++) {
+            CurvePoint startPoint = pathPoints.get(i);
+            CurvePoint endPoint = pathPoints.get(i+1);
+
+            Point tempClipPoint = clipToLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, xPos, yPos);
+
+            double distance = Math.hypot(xPos - tempClipPoint.x, yPos - tempClipPoint.y);
+
+            if(distance < closestClip) {
+                closestClip = distance;
+                closestClippedIndex = i;
+                clipPoint = tempClipPoint;
+            }
+        }
+        return new indexPoint(closestClippedIndex, new Point(clipPoint.x, clipPoint.y));
+    }
+
+
+    public static class indexPoint {
+        public int index;
+        public Point point;
+        public indexPoint(int index, Point point) {
+            this.index = index;
+            this.point = point;
+        }
+    }
+
 }

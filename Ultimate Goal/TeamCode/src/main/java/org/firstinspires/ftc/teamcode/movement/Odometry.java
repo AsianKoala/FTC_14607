@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-import org.firstinspires.ftc.teamcode.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.Util;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.jetbrains.annotations.NotNull;
@@ -142,7 +142,7 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     public void update() {
         super.update();
         currentPosition = new Pose(getPoseEstimate());
-        currentPosition.heading = MathUtil.angleWrap(currentPosition.heading);
+        currentPosition.heading = Util.angleWrap(currentPosition.heading);
     }
 
 

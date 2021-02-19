@@ -4,11 +4,11 @@ import com.qualcomm.robotcore.util.Range;
 
 import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.*;
 import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
-import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
+import static org.firstinspires.ftc.teamcode.util.Util.*;
 
 import org.firstinspires.ftc.teamcode.control.Results;
 import org.firstinspires.ftc.teamcode.util.Point;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public class MovementController {
         double distance = Math.hypot(targetX - currentPosition.x, targetY - currentPosition.y);
 
         double absoluteAngleToTargetPoint = Math.atan2(targetY - currentPosition.y, targetX - currentPosition.x);
-        double relativeAngleToTargetPoint = MathUtil.angleWrap(absoluteAngleToTargetPoint - (currentPosition.heading - Math.toRadians(90)));
+        double relativeAngleToTargetPoint = Util.angleWrap(absoluteAngleToTargetPoint - (currentPosition.heading - Math.toRadians(90)));
 
         double relativeXToPoint = Math.cos(relativeAngleToTargetPoint) * distance;
         double relativeYToPoint = Math.sin(relativeAngleToTargetPoint) * distance;
@@ -44,7 +44,7 @@ public class MovementController {
         // turning and smoothing shit
         double relativeTurnAngle = prefAngle - Math.toRadians(90);
         double absolutePointAngle = absoluteAngleToTargetPoint + relativeTurnAngle;
-        double relativePointAngle = MathUtil.angleWrap(absolutePointAngle - currentPosition.heading);
+        double relativePointAngle = Util.angleWrap(absolutePointAngle - currentPosition.heading);
 
         double decelerateAngle = Math.toRadians(40);
 
@@ -67,7 +67,7 @@ public class MovementController {
 
         //slow down if our point angle is off
         double errorTurnSoScaleDownMovement = Range.clip(1.0-Math.abs(relativePointAngle/slowDownTurnRadians),1.0-slowDownMovementFromTurnError,1);
-        //don't slow down if we aren't trying to turn (distanceToPoint < 10)
+        //don't slow down if we aren't trying to turn (distanceToPoint < 3)
         if(Math.abs(movementTurn) < 0.00001){
             errorTurnSoScaleDownMovement = 1;
         }
@@ -80,7 +80,7 @@ public class MovementController {
 
     public static Results.movementResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
         //now that we know what absolute angle to point to, we calculate how close we are to it
-        double relativePointAngle = MathUtil.angleWrap(point_angle-currentPosition.heading);
+        double relativePointAngle = Util.angleWrap(point_angle-currentPosition.heading);
 
         //Scale down the relative angle by 40 and multiply by point speed
         double turnSpeed = (relativePointAngle/decelerationRadians)*point_speed;
@@ -103,10 +103,9 @@ public class MovementController {
     }
 
 
-    // todo
-    public static Results.movementResult betterFollowCurve(ArrayList<CurvePoint> allPoints){
-        boolean anglePointControlled = !(anglePoint == null);
 
+    public static Results.movementResult newFollowPath(PurePursuitPath path){
+        ArrayList<CurvePoint> allPoints = (ArrayList<CurvePoint>) path.allPoints.clone();
         //now we will extend the last line so that the pointing looks smooth at the end
         ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
 
@@ -152,169 +151,88 @@ public class MovementController {
                 clippedToPath.point.y-allPoints.get(allPoints.size()-1).y);
 
 
-        boolean pepega = false;
+        boolean superSmoother = false;
         if(clipedDistToFinalEnd <= followMe.followDistance + 6 ||
                 Math.hypot(currentPosition.x-allPoints.get(allPoints.size()-1).x,
                         currentPosition.y-allPoints.get(allPoints.size()-1).y) < followMe.followDistance + 6){
-            pepega = true;
+            superSmoother = true;
             followMe.setPoint(allPoints.get(allPoints.size()-1).toPoint());
         }
 
 
-        goToPosition(followMe.x, followMe.y, followAngle,
-                followMe.moveSpeed,followMe.turnSpeed,
-                followMe.slowDownTurnRadians,0.2,4, true); // 0.275
+        double distance = Math.hypot(followMe.x - currentPosition.x, followMe.y - currentPosition.y);
+
+        double absoluteAngleToTargetPoint = Math.atan2(followMe.y - currentPosition.y, followMe.x - currentPosition.x);
+        double relativeAngleToTargetPoint = Util.angleWrap(absoluteAngleToTargetPoint - (currentPosition.heading - Math.toRadians(90)));
+
+        double relativeXToPoint = Math.cos(relativeAngleToTargetPoint) * distance;
+        double relativeYToPoint = Math.sin(relativeAngleToTargetPoint) * distance;
+        double relativeAbsXToPoint = Math.abs(relativeXToPoint);
+        double relativeAbsYToPoint = Math.abs(relativeYToPoint);
+
+        double v = relativeAbsXToPoint + relativeAbsYToPoint;
+        double movementXPower = relativeXToPoint / v;
+        double movementYPower = relativeYToPoint / v;
+
+        movementXPower *= relativeAbsXToPoint / 12;
+        movementYPower *= relativeAbsYToPoint / 12;
 
 
+        movementX = Range.clip(movementXPower, -followMe.moveSpeed, followMe.moveSpeed);
+        movementY = Range.clip(movementYPower, -followMe.moveSpeed, followMe.moveSpeed);
+        movementTurn = 1; // literally useless since we gonna assign turn in the next section wtever fuck this
 
-        //find the angle to that point using atan2
+        minCheck();
+
+
+        // all turning shit here
+
+        double followAngle;
+        // get follow angle through getting curvepoints
+
+        double relativeTurnAngle = followAngle - Math.toRadians(90);
+        double absolutePointAngle = absoluteAngleToTargetPoint + relativeTurnAngle;
+        double relativePointAngle = Util.angleWrap(absolutePointAngle - currentPosition.heading);
+
         double currFollowAngle = Math.atan2(pointToMe.y-currentPosition.y,pointToMe.x-currentPosition.x);
-
-        //if our follow angle is different, point differently
         currFollowAngle += angleWrap(followAngle - Math.toRadians(90));
 
-        Results.movementResult result;
-        if(anglePointControlled) {
-            result = pointPointTurn(anglePoint, allPoints.get(currFollowIndex).turnSpeed, Math.toRadians(45));
-        } else if(headingControlled){
-            result = pointAngle(controlledHeading, 0.6, Math.toRadians(45));
-        } else {
-            result = pointAngle(currFollowAngle,allPoints.get(currFollowIndex).turnSpeed,Math.toRadians(45));
+
+
+
+        // smoothing
+        if(!superSmoother) {
+            movementX *= Range.clip((relativeAbsXToPoint / 3.0), 0, 1);
+            movementY *= Range.clip((relativeAbsYToPoint / 3.0), 0, 1);
+            movementTurn *= Range.clip(Math.abs(relativePointAngle) / Math.toRadians(2), 0, 1);
         }
 
 
-        movementX *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
-        movementY *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
-
-        if(pepega) {
-            movementX *= Range.clip(Math.abs(followMe.x-currentPosition.x)/0.8,0.5,1); // 0.787
-            movementY *= Range.clip(Math.abs(followMe.y-currentPosition.y)/0.8,0.5,1);
+        //slow down if our point angle is off
+        double errorTurnSoScaleDownMovement = Range.clip(1.0-Math.abs(relativePointAngle/followMe.slowDownTurnRadians),1.0-0.2,1);
+        //don't slow down if we aren't trying to turn (distanceToPoint < 10)
+        if(Math.abs(movementTurn) < 0.00001){
+            errorTurnSoScaleDownMovement = 1;
         }
 
-        return clipedDistToFinalEnd < 4; //3
+        // for slowing down robot to turn
+        double turnDeltaRad = 1000000;
+        movementX *= errorTurnSoScaleDownMovement;
+        movementY *= errorTurnSoScaleDownMovement;
+        movementX *= 1 - Range.clip(Math.abs(turnDeltaRad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
+        movementY *= 1 - Range.clip(Math.abs(turnDeltaRad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
+
+        if(superSmoother) {
+            movementX *= Range.clip(Math.abs(followMe.x-currentPosition.x),0.5,1); // 0.787
+            movementY *= Range.clip(Math.abs(followMe.y-currentPosition.y),0.5,1);
+            movementTurn *= 10000000; // idk fix this later or something fucker
+        }
+
+
+        return new Results.movementResult(allPoints.get(allPoints.size()-1).x, allPoints.get(allPoints.size()-1).y,
+                angleWrap(currentPosition.heading + turnDeltaRad), 4, Math.toRadians(3));
     }
 
-
-
-    public static Results.movementResult newFollowCurve(ArrayList<CurvePoint> allPoints){
-        boolean anglePointControlled = !(anglePoint == null);
-
-        //now we will extend the last line so that the pointing looks smooth at the end
-        ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
-
-        //first get which segment we are on
-        indexPoint clippedToPath = clipToFollowPointPath(allPoints,currentPosition.x,currentPosition.y);
-        int currFollowIndex = clippedToPath.index+1;
-
-        //get the point to follow
-        CurvePoint followMe = getFollowPointPath(pathExtended,currentPosition.x,currentPosition.y,
-                allPoints.get(currFollowIndex).followDistance);
-
-
-        //this will change the last point to be extended
-
-        CurvePoint firstExtendedPoint = allPoints.get(allPoints.size()-2);
-        CurvePoint secondExtendedPoint = allPoints.get(allPoints.size()-1);
-        double extendDistance = allPoints.get(allPoints.size()-1).pointLength * 1.5;
-
-        double lineAngle = Math.atan2(secondExtendedPoint.y - firstExtendedPoint.y,secondExtendedPoint.x - firstExtendedPoint.x);
-        //get this line's length
-        double lineLength = Math.hypot(secondExtendedPoint.x - firstExtendedPoint.x,secondExtendedPoint.y - firstExtendedPoint.y);
-        //extend the line by 1.5 pointLengths so that we can still point to it when we
-        //are at the end
-        double extendedLineLength = lineLength + extendDistance;
-
-        CurvePoint extended = new CurvePoint(secondExtendedPoint);
-        extended.x = Math.cos(lineAngle) * extendedLineLength + firstExtendedPoint.x;
-        extended.y = Math.sin(lineAngle) * extendedLineLength + firstExtendedPoint.y;
-
-        pathExtended.set(pathExtended.size()-1, extended);
-
-
-        //get the point to point to
-        CurvePoint pointToMe = getFollowPointPath(pathExtended,currentPosition.x,currentPosition.y,
-                allPoints.get(currFollowIndex).pointLength);
-
-//        followAngle = Math.atan2(0 - worldYPosition, 0 - worldXPosition);
-
-        //if we are nearing the end (less than the follow dist amount to go) just manualControl point to end
-        //but only if we have passed through the correct points beforehand
-        double clipedDistToFinalEnd = Math.hypot(
-                clippedToPath.point.x-allPoints.get(allPoints.size()-1).x,
-                clippedToPath.point.y-allPoints.get(allPoints.size()-1).y);
-
-
-        boolean pepega = false;
-        if(clipedDistToFinalEnd <= followMe.followDistance + 6 ||
-                Math.hypot(currentPosition.x-allPoints.get(allPoints.size()-1).x,
-                        currentPosition.y-allPoints.get(allPoints.size()-1).y) < followMe.followDistance + 6){
-            pepega = true;
-            followMe.setPoint(allPoints.get(allPoints.size()-1).toPoint());
-        }
-
-
-        goToPosition(followMe.x, followMe.y, followAngle,
-                followMe.moveSpeed,followMe.turnSpeed,
-                followMe.slowDownTurnRadians,0.2,4, true); // 0.275
-
-
-
-        //find the angle to that point using atan2
-        double currFollowAngle = Math.atan2(pointToMe.y-currentPosition.y,pointToMe.x-currentPosition.x);
-
-        //if our follow angle is different, point differently
-        currFollowAngle += angleWrap(followAngle - Math.toRadians(90));
-
-        Results.movementResult result;
-        if(anglePointControlled) {
-            result = pointPointTurn(anglePoint, allPoints.get(currFollowIndex).turnSpeed, Math.toRadians(45));
-        } else if(headingControlled){
-            result = pointAngle(controlledHeading, 0.6, Math.toRadians(45));
-        } else {
-            result = pointAngle(currFollowAngle,allPoints.get(currFollowIndex).turnSpeed,Math.toRadians(45));
-        }
-
-
-        movementX *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
-        movementY *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
-
-        if(pepega) {
-            movementX *= Range.clip(Math.abs(followMe.x-currentPosition.x)/0.8,0.5,1); // 0.787
-            movementY *= Range.clip(Math.abs(followMe.y-currentPosition.y)/0.8,0.5,1);
-        }
-
-        return clipedDistToFinalEnd < 4; //3
-    }
-
-
-
-
-
-    // finds currPoint (startPoint of curr segment) on the current path
-    public static indexPoint clipToFollowPointPath(ArrayList<CurvePoint> pathPoints, double xPos, double yPos) {
-        double closestClip = 1000000000;
-
-        // index of first point on line clipped
-        int closestClippedIndex = 0;
-
-        Point clipPoint = new Point();
-
-        for(int i=0; i<pathPoints.size()-1; i++) {
-            CurvePoint startPoint = pathPoints.get(i);
-            CurvePoint endPoint = pathPoints.get(i+1);
-
-            Point tempClipPoint = clipToLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, xPos, yPos);
-
-            double distance = Math.hypot(xPos - tempClipPoint.x, yPos - tempClipPoint.y);
-
-            if(distance < closestClip) {
-                closestClip = distance;
-                closestClippedIndex = i;
-                clipPoint = tempClipPoint;
-            }
-        }
-        return new indexPoint(closestClippedIndex, new Point(clipPoint.x, clipPoint.y));
-    }
 
     public static CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, double xPos, double yPos, double followRadius) {
         indexPoint clipped = clipToFollowPointPath(pathPoints, xPos, yPos);
@@ -331,7 +249,7 @@ public class MovementController {
 
             ArrayList<Point> intersections = lineCircleIntersection(xPos, yPos, followRadius, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 
-            double closestDistance = 10000000; // placeholder numb
+            double closestDistance = 10000000; // placeholder num
             for(Point thisIntersection : intersections) {
 
 
@@ -348,49 +266,5 @@ public class MovementController {
 
         return followMe;
     }
-
-
-
-
-    // util methods and classes
-    public static final double MIN_MOVEMENT = 0.1;
-
-    private static void minCheck() {
-        if(Math.abs(movementX) > Math.abs(movementY)) {
-            if(Math.abs(movementX) > Math.abs(movementTurn)) {
-                if(movementX >= 0 && movementX <= MIN_MOVEMENT)
-                    movementX = MIN_MOVEMENT;
-                if(movementX < 0 && movementX > -MIN_MOVEMENT)
-                    movementX = -MIN_MOVEMENT;
-            } else {
-                if(movementTurn >= 0 && movementTurn <= MIN_MOVEMENT)
-                    movementTurn = MIN_MOVEMENT;
-                if(movementTurn < 0 && movementTurn > -MIN_MOVEMENT)
-                    movementTurn = -MIN_MOVEMENT;
-            }
-        } else {
-            if(Math.abs(movementY) > Math.abs(movementTurn)) {
-                if(movementY >= 0 && movementY <= MIN_MOVEMENT)
-                    movementY = MIN_MOVEMENT;
-                if(movementY < 0 && movementY > -MIN_MOVEMENT)
-                    movementY = -MIN_MOVEMENT;
-            } else {
-                if(movementTurn >= 0 && movementTurn <= MIN_MOVEMENT)
-                    movementTurn = MIN_MOVEMENT;
-                if(movementTurn < 0 && movementTurn > -MIN_MOVEMENT)
-                    movementTurn = -MIN_MOVEMENT;
-            }
-        }
-    }
-
-    private static class indexPoint {
-        int index;
-        Point point;
-        indexPoint(int index, Point point) {
-            this.index = index;
-            this.point = point;
-        }
-    }
-
 
 }

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.hardware.WobbleGoal;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.Util;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
@@ -81,7 +81,7 @@ public class Robot extends TunableOpMode {
 
     private void updateOdometryComponents() {
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        odometry.updateAngle(MathUtil.angleWrap(lastHeading + Odometry.startPosition.heading));
+        odometry.updateAngle(Util.angleWrap(lastHeading + Odometry.startPosition.heading));
         odometry.update();
         telemetry.addLine(odometry.toString());
     }

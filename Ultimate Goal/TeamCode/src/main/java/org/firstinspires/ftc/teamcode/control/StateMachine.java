@@ -38,7 +38,7 @@ public class StateMachine {
             completedStages++;
         }
 
-        if(currStage.finishState()) {
+        if(currStage.mainFunction().done) {
             currStage.endFunction();
             stages.removeFirst();
             completedStages++;
@@ -47,16 +47,6 @@ public class StateMachine {
                 currStage.AUTO_START_VARS.initialize();
                 currStage.startFunction();
             }
-        } else {
-            currStage.mainFunction();
         }
     }
 }
-
-
-
-
-
-
-
-

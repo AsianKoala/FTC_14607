@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.control.Robot;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 import static org.firstinspires.ftc.teamcode.movement.MovementController.goToPosition;
 import static org.firstinspires.ftc.teamcode.movement.MovementController.pointAngle;
@@ -111,13 +111,13 @@ public class MainTeleOp extends Robot {
 
 
     private boolean isTurnedTowardsGoal() {
-        return Math.abs(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
+        return Math.abs(Util.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)) < Math.toRadians(2);
     }
 
 
     public void telemetryVars() {
         telemetry.addLine("goToShootingPoint: " + goToShootingPoint);
-        telemetry.addLine("90diff: " + Math.toDegrees(MathUtil.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)));
+        telemetry.addLine("90diff: " + Math.toDegrees(Util.angleWrap(Math.toRadians(90) - Odometry.currentPosition.heading)));
         telemetry.addLine("shootingZoneReached: " + shootingZoneReached);
         telemetry.addLine("turnReached: " + turnReached);
     }
