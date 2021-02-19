@@ -15,7 +15,7 @@ public class CurvePoint {
     public Functions.function function;
 
     public CurvePoint(double x, double y, double moveSpeed, double turnSpeed,
-                      double followDistance,double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function){
+                      double followDistance, double pointLength, double slowDownTurnRadians, double slowDownTurnAmount, Functions.function function) {
         this.x = x;
         this.y = y;
         this.moveSpeed = moveSpeed;
@@ -39,10 +39,11 @@ public class CurvePoint {
         function = thisPoint.function;
     }
 
-    public Point toPoint(){
-        return new Point(x,y);
+    public Point toPoint() {
+        return new Point(x, y);
     }
-    public void setPoint(Point p){
+
+    public void setPoint(Point p) {
         x = p.x;
         y = p.y;
     }

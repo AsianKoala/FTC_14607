@@ -10,7 +10,7 @@ public class Sequence {
         this.path = path;
 
         isMovementPath = false;
-        for(CurvePoint c : path.allPoints) {
+        for (CurvePoint c : path.allPoints) {
             if (!(c.function instanceof Functions.hardwareFunction)) {
                 isMovementPath = true;
                 break;

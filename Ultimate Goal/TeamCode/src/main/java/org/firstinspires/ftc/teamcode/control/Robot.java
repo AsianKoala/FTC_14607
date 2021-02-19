@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.hardware.WobbleGoal;
 import org.firstinspires.ftc.teamcode.movement.Odometry;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.util.Util;
 import org.firstinspires.ftc.teamcode.util.Pose;
+import org.firstinspires.ftc.teamcode.util.Util;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.ExpansionHubServo;
 
@@ -55,7 +55,7 @@ public class Robot extends TunableOpMode {
         actuator = new Actuator(actuatorServo);
         wobbleGoal = new WobbleGoal(leftPivot, rightPivot, leftGrabber, rightGrabber);
         odometry = new Odometry(hardwareMap);
-        odometry.setStart(new Pose(0,0,0));
+        odometry.setStart(new Pose(0, 0, 0));
         initBNO055IMU(hardwareMap);
     }
 
@@ -90,7 +90,7 @@ public class Robot extends TunableOpMode {
         imu = hardwareMap.get(BNO055IMUImpl.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.loggingEnabled  = false;
+        parameters.loggingEnabled = false;
         imu.initialize(parameters);
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;

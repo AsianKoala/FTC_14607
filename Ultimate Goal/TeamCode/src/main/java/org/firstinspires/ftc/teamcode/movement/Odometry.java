@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.movement;
 
 
-
 import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
@@ -11,10 +10,9 @@ import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-
-import org.firstinspires.ftc.teamcode.util.Util;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
+import org.firstinspires.ftc.teamcode.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -76,7 +74,8 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
     // Perpendicular is perpendicular to the forward axis
-    private Encoder parallelEncoder, perpendicularEncoder;
+    private final Encoder parallelEncoder;
+    private final Encoder perpendicularEncoder;
 
 
     public Odometry(HardwareMap hardwareMap) {

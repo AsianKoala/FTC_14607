@@ -17,11 +17,12 @@ public class MainTeleOp extends Robot {
     private boolean turnReached = false;
     private boolean shootingZoneReached = false;
 
-    private boolean intakeOn = false;
+    private final boolean intakeOn = false;
 
-    private double actuatorStartTime = 0;
-    private boolean shootingStateMachine = false;
-    private double shootingStateMachineStartTime = 0;
+    private final double actuatorStartTime = 0;
+    private final boolean shootingStateMachine = false;
+    private final double shootingStateMachineStartTime = 0;
+    private boolean shooterOn = false;
 
     @Override
     public void init() {
@@ -46,37 +47,35 @@ public class MainTeleOp extends Robot {
         DriveTrain.movementTurn = -gamepad1.right_stick_x * driveScale;
     }
 
-
-    private boolean shooterOn = false;
     public void controlShooter() {
-        if(gamepad1.left_trigger > 0.7) {
+        if (gamepad1.left_trigger > 0.7) {
             shooterOn = !shooterOn;
         }
-        if(shooterOn) {
+        if (shooterOn) {
             shooter.turnOn();
         }
     }
 
     public void controlActuator() {
-        if(gamepad1.a) {
+        if (gamepad1.a) {
             actuator.push();
         }
-        if(gamepad1.b) {
+        if (gamepad1.b) {
             actuator.reset();
         }
     }
 
     public void controlWobbleGoal() {
-        if(gamepad1.dpad_up) {
+        if (gamepad1.dpad_up) {
             wobbleGoal.in();
         }
-        if(gamepad1.dpad_down) {
+        if (gamepad1.dpad_down) {
             wobbleGoal.out();
         }
-        if(gamepad1.dpad_left) {
+        if (gamepad1.dpad_left) {
             wobbleGoal.grab();
         }
-        if(gamepad1.dpad_right) {
+        if (gamepad1.dpad_right) {
             wobbleGoal.release();
         }
     }
@@ -87,16 +86,16 @@ public class MainTeleOp extends Robot {
             goToShootingPoint = true;
         }
 
-        if(goToShootingPoint) {
-            if(!shootingZoneReached) {
+        if (goToShootingPoint) {
+            if (!shootingZoneReached) {
                 boolean done = goToPosition(0, 0, 0.6, Math.toRadians(90), 0.6, Math.toRadians(45), 0.6, 2, true).done;
-                if(done) {
+                if (done) {
                     DriveTrain.stopMovement();
                     shootingZoneReached = true;
                 }
-            } else if(!turnReached) {
+            } else if (!turnReached) {
                 pointAngle(Math.toRadians(90), 0.8, Math.toRadians(45));
-                if(isTurnedTowardsGoal()) {
+                if (isTurnedTowardsGoal()) {
                     DriveTrain.stopMovement();
                     turnReached = true;
                 }

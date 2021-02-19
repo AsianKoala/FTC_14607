@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.control;
 
 import java.util.LinkedList;
-import static org.firstinspires.ftc.teamcode.control.Stages.*;
 
 
 public class StateMachine {
@@ -24,13 +23,13 @@ public class StateMachine {
 
     public void skipStages(int newStageIndex) {
         // convert string to int
-        for(int i=0; i<newStageIndex-completedStages; i++)
+        for (int i = 0; i < newStageIndex - completedStages; i++)
             stages.removeFirst();
         currStage = stages.getFirst();
     }
 
     public void loop() {
-        if(completedStages == -1) {
+        if (completedStages == -1) {
             currStage = stages.getFirst();
             System.out.println(currStage.name());
             currStage.AUTO_START_VARS.initialize();
@@ -38,11 +37,11 @@ public class StateMachine {
             completedStages++;
         }
 
-        if(currStage.mainFunction().done) {
+        if (currStage.mainFunction().done) {
             currStage.endFunction();
             stages.removeFirst();
             completedStages++;
-            if(running()) {
+            if (running()) {
                 currStage = stages.getFirst();
                 currStage.AUTO_START_VARS.initialize();
                 currStage.startFunction();

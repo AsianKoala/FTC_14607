@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.control;
 
 
-
 public class Functions {
     public static abstract class function {
-        public boolean startCondition() { return true; }
+        public boolean startCondition() {
+            return true;
+        }
+
         public abstract void run();
     }
 
@@ -15,6 +17,7 @@ public class Functions {
 
     public abstract static class headingControlledFunction extends function {
         public double heading;
+
         @Override
         public abstract void run();
     }
