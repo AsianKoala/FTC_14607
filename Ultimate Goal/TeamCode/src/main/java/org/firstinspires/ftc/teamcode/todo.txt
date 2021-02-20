@@ -51,3 +51,7 @@ opmodes
 MainAuto
 MainTeleOp
 ParkAuto
+
+
+better point choosing for paths that wrap around in getfollowpointpath, specifically
+the dist < closetDistance should be changed t osomethign better
