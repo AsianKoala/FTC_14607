@@ -1,4 +1,13 @@
-# FTC_14607
+# socials :flushed:
 
-FTC Team 14607 Robot Uprising's code for the 2020-2021 Ultimate Goal season.
-Follow us @FTC14607
+discord: asiank0ala#8008
+
+mal: https://myanimelist.net/profile/asiank0ala
+
+twitter: https://twitter.com/asiank0ala
+
+osu: https://osu.ppy.sh/users/11534384
+
+twitch: https://twitch.tv/koawa
+
+feel free to add me on anything
