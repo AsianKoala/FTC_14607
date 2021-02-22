@@ -1,34 +1,39 @@
 package org.firstinspires.ftc.teamcode.control;
 
-
-import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
-
-import java.util.ArrayList;
+import org.firstinspires.ftc.teamcode.hardware.Hardware;
 
 public class Functions {
-    public static abstract class function {
-        public static RobotHardware robot;
-        public static void loadRobotInstance(RobotHardware robot) {
-            function.robot = robot;
+    public interface function {}
+
+    public interface simpleHardwareFunction extends function {
+        Result.simpleResult simpleHardwareResult(Hardware hardware);
+    }
+
+
+    public static simpleHardwareFunction TURN_ON = new simpleHardwareFunction() {
+        @Override
+        public Result.simpleResult simpleHardwareResult(Hardware hardware) {
+            hardware.turnOn();
+            return new Result.simpleResult();
         }
-    }
+    };
 
-    public static abstract class simpleFunction extends function {
-        public abstract void method();
-    }
+    public static simpleHardwareFunction TURN_OFF = new simpleHardwareFunction() {
+        @Override
+        public Result.simpleResult simpleHardwareResult(Hardware hardware) {
+            hardware.turnOff();
+            return new Result.simpleResult();
+        }
+    };
 
-    public static abstract class loopFunction extends function {
-        public abstract Results.simpleResult method();
-    }
+    public static simpleHardwareFunction REVERSE = new simpleHardwareFunction() {
+        @Override
+        public Result.simpleResult simpleHardwareResult(Hardware hardware) {
+            hardware.reverse();
+            return new Result.simpleResult();
+        }
+    };
 
-    public static abstract class conditionalFunction extends function {
-        public abstract boolean startCondition();
-        public abstract Results.simpleResult method();
-    }
-
-    public static abstract class listFunction extends function {
-        public abstract ArrayList<conditionalFunction> allFunctions();
-    }
 
 
 
