@@ -1,6 +1,5 @@
 # socials :flushed:
 
-
 discord: asiank0ala#8008
 
 mal: https://myanimelist.net/profile/asiank0ala
