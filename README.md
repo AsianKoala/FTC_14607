@@ -1,4 +1,4 @@
-# if ur gonna clone pls fetch from the mastercopy branch, master doesn't build    
+# if ur gonna clone pls fetch from the mastercopy branch, master is kinda screwed up rn 
 
 # FTC 14607
 
