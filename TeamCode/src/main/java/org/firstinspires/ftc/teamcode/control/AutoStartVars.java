@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.util.Pose;
 
 import static org.firstinspires.ftc.teamcode.movement.Odometry.currentPosition;
 
-class StageStartVars {
+class AutoStartVars {
     public double stageStartX;
     public double stageStartY;
     public double stageStartHeading;

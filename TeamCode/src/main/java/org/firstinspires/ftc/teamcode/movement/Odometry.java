@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.movement;
 
 
+
 import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
@@ -10,9 +11,10 @@ import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+
+import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
-import org.firstinspires.ftc.teamcode.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -74,8 +76,7 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
     // Perpendicular is perpendicular to the forward axis
-    private final Encoder parallelEncoder;
-    private final Encoder perpendicularEncoder;
+    private Encoder parallelEncoder, perpendicularEncoder;
 
 
     public Odometry(HardwareMap hardwareMap) {
@@ -131,7 +132,7 @@ public class Odometry extends TwoTrackingWheelLocalizer {
         setPoseEstimate(new Pose2d(currentPosition.x, currentPosition.y, currentPosition.heading));
     }
 
-    public void setGlobalPosition(Point newPos) {//xsdgsf
+    public void setGlobalPosition(Point newPos) {
         currentPosition.x = newPos.x;
         currentPosition.y = newPos.y;
         setPoseEstimate(new Pose2d(currentPosition.x, currentPosition.y, currentPosition.heading));
@@ -141,7 +142,7 @@ public class Odometry extends TwoTrackingWheelLocalizer {
     public void update() {
         super.update();
         currentPosition = new Pose(getPoseEstimate());
-        currentPosition.heading = Util.angleWrap(currentPosition.heading);
+        currentPosition.heading = MathUtil.angleWrap(currentPosition.heading);
     }
 
 

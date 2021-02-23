@@ -18,12 +18,12 @@ public class Pose extends Point {
         this(p.x, p.y, heading);
     }
 
-    public Pose(Pose2d pose2d) {
-        this(pose2d.getX(), pose2d.getY(), pose2d.getHeading());
+    public Pose add(Pose p2) {
+        return new Pose(x + p2.x, y + p2.y, MathUtil.angleWrap(heading + p2.heading));
     }
 
-    public Pose add(Pose p2) {
-        return new Pose(x + p2.x, y + p2.y, Util.angleWrap(heading + p2.heading));
+    public Pose(Pose2d pose2d) {
+        this(pose2d.getX(), pose2d.getY(), pose2d.getHeading());
     }
 
     @NotNull
