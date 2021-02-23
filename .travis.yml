@@ -8,9 +8,12 @@ jdk: oraclejdk8
 env:
   - CI=true
 
+before_install:
+  - chmod +x gradlew
+
 script:
-  - ./gradlew build -x signArchives -s
   - chmod +x ./gradlew
+  - ./gradlew build -x signArchives -s
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
