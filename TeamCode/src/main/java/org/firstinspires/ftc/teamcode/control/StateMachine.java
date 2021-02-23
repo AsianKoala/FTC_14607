@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.control;
 
 import java.util.LinkedList;
-import static org.firstinspires.ftc.teamcode.control.Stages.*;
+
+import static org.firstinspires.ftc.teamcode.control.Stages.BasicStage;
 
 
 public class StateMachine {
@@ -18,9 +19,9 @@ public class StateMachine {
     }
 
     public void loop() {
-        if(currStage.finishState()) {
+        if (currStage.finishState()) {
             stages.removeFirst();
-            if(!done()) {
+            if (!done()) {
                 currStage = stages.getFirst();
                 currStage.AUTO_START_VARS.initialize();
             }

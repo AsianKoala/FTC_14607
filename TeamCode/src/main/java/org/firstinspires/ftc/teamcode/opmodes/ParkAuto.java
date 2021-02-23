@@ -8,17 +8,12 @@ import org.firstinspires.ftc.teamcode.movement.PPController;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 
-@Autonomous(name="park auto")
+@Autonomous(name = "park auto")
 public class ParkAuto extends Auto {
-    public enum stateMachineStates {
-        park,
-        stopOpMode
-    }
-
     @Override
     public void init() {
         super.init();
-        odometry.setStart(new Pose(0,-64, Math.toRadians(90)));
+        odometry.setStart(new Pose(0, -64, Math.toRadians(90)));
         setState(stateMachineStates.park.ordinal());
     }
 
@@ -41,7 +36,7 @@ public class ParkAuto extends Auto {
 
     @Override
     public void autoStateMachine() {
-        if(currState == stateMachineStates.park.ordinal()) {
+        if (currState == stateMachineStates.park.ordinal()) {
             if (stateFinished) {
                 initStateVars();
             }
@@ -54,5 +49,10 @@ public class ParkAuto extends Auto {
                 requestOpModeStop();
             }
         }
+    }
+
+    public enum stateMachineStates {
+        park,
+        stopOpMode
     }
 }
