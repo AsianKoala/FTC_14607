@@ -8,13 +8,12 @@ import org.openftc.revextensions2.ExpansionHubServo;
 import java.util.ArrayList;
 
 public class RobotHardware {
+    public final boolean isDebugging = false;
     public DriveTrain driveTrain;
     public Actuator actuator;
     public Shooter shooter;
     public WobbleGoal wobbleGoal;
-
     public ArrayList<Hardware> allHardware;
-    public final boolean isDebugging = false;
 
     public RobotHardware(HardwareMap hardwareMap) {
         ExpansionHubMotor frontLeft, frontRight, backLeft, backRight, launcher1, launcher2;
@@ -44,10 +43,10 @@ public class RobotHardware {
     }
 
     public void update() {
-        for(Hardware h : allHardware) {
+        for (Hardware h : allHardware) {
             h.update();
 
-            if(isDebugging)
+            if (isDebugging)
                 Hardware.opmodeInstance.telemetry.addLine(h.toString());
         }
     }

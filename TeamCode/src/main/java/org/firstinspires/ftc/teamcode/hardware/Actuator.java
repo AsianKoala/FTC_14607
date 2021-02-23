@@ -29,7 +29,7 @@ public class Actuator extends Hardware {
 
     @Override
     public void update() {
-        if(!(actuator.getPosition() == currentVal)) { // for my mental health lmao
+        if (!(actuator.getPosition() == currentVal)) { // for my mental health lmao
             actuator.setPosition(currentVal);
         }
     }

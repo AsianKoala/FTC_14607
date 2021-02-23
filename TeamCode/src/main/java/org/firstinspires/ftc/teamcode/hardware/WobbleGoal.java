@@ -63,18 +63,18 @@ public class WobbleGoal extends Hardware {
 
     @Override
     public void update() {
-        if(isGrabbed && leftGrabber.getPosition() != leftGrabberClosed) {
+        if (isGrabbed && leftGrabber.getPosition() != leftGrabberClosed) {
             leftGrabber.setPosition(leftGrabberClosed);
             rightGrabber.setPosition(rightGrabberClosed);
-        } else if(!isGrabbed && leftGrabber.getPosition() != leftGrabberOpen) {
+        } else if (!isGrabbed && leftGrabber.getPosition() != leftGrabberOpen) {
             leftGrabber.setPosition(leftGrabberOpen);
             rightGrabber.setPosition(rightGrabberOpen);
         }
 
-        if(isIn && leftPivot.getPosition() != leftIn) {
+        if (isIn && leftPivot.getPosition() != leftIn) {
             leftPivot.setPosition(leftIn);
             rightPivot.setPosition(rightIn);
-        } else if(!isIn && leftPivot.getPosition() != leftOut) {
+        } else if (!isIn && leftPivot.getPosition() != leftOut) {
             leftPivot.setPosition(leftOut);
             rightPivot.setPosition(rightOut);
         }

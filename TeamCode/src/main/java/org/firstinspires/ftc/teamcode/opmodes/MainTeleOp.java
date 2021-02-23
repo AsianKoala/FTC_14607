@@ -13,15 +13,13 @@ import static org.firstinspires.ftc.teamcode.movement.MovementController.pointAn
 @TeleOp(name = "teleop")
 public class MainTeleOp extends OurOpMode {
 
-    private boolean goToShootingPoint = false;
-    private boolean turnReached = false;
-    private boolean shootingZoneReached = false;
-
     private final boolean intakeOn = false;
-
     private final double actuatorStartTime = 0;
     private final boolean shootingStateMachine = false;
     private final double shootingStateMachineStartTime = 0;
+    private boolean goToShootingPoint = false;
+    private boolean turnReached = false;
+    private boolean shootingZoneReached = false;
     private boolean shooterOn = false;
 
     @Override

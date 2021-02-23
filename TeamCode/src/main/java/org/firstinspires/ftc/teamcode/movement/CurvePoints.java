@@ -12,7 +12,7 @@ public class CurvePoints {
         public Functions.function function;
 
         public BaseCurvePoint(double x, double y,
-                              double followDistance, double pointLength,  Functions.function function) {
+                              double followDistance, double pointLength, Functions.function function) {
             this.x = x;
             this.y = y;
             this.followDistance = followDistance;

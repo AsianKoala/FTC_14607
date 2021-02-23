@@ -136,6 +136,7 @@ public abstract class Auto extends OurOpMode {
         Mat component = new Mat();
         int avg1, avg2;
         RingAmount ringAmt;
+
         public RingDetectorPipeline(boolean isCr, int threshold) {
             colorComponentNum = isCr ? 1 : 2;
             this.threshold = threshold;

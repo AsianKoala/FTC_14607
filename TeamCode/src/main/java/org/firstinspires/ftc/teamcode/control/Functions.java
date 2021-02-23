@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Functions {
     public static abstract class function {
         public static RobotHardware robot;
+
         public static void loadRobotInstance(RobotHardware robot) {
             function.robot = robot;
         }
@@ -23,13 +24,13 @@ public class Functions {
 
     public static abstract class conditionalFunction extends function {
         public abstract boolean startCondition();
+
         public abstract Results.simpleResult method();
     }
 
     public static abstract class listFunction extends function {
         public abstract ArrayList<conditionalFunction> allFunctions();
     }
-
 
 
 }

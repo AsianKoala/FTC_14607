@@ -231,6 +231,7 @@ public class MainAuto extends Auto {
         shootingStateMachineStartTime = System.currentTimeMillis();
         shooter.turnOn();
     }
+
     private enum programStates {
         goToShootingPosition,
         shoot1, shoot2, shoot3,
