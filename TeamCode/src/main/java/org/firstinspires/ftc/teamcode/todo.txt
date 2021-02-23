@@ -1,0 +1,57 @@
+
+1. move changes from ftcfuncflow to here including:
+curvepoint changes to include function in copy constructor done
+changing functions from result return type to void done
+new statemachine changes done
+new stagestartvar changes done
+new result changes done
+new stages changes done
+
+2. update followCurve and the rest of the pure pursuit methods to be more concise and include functions
+done besides turning shit with headingcurvepoints
+
+3. change the way the pure pursuit controller takes input (arraylist) to a class containing allpoints and several other path specific fields (PurePursuitPath.java)
+somewhat done? did it but could add more to ppp
+
+4. update auto to switch to being controlled by statemachine.java instead of some dumbass statemachine, also look into having statemachine be abstract in Auto.java and running
+a for loop for currStage and currStageName in Auto.java's loop()
+
+5. (future todos)
+have stages require a purepursuitpath instead of a mainFunction(), actually just change purepursuitpath.java to sequence.java or something like that,
+since its just gonna be something that can be used in teleop and auto not just auto soo (eg. adding hardwareCurvepoint or hardwareFunction to it? maybe idk) or maybe several constructors depending on input?>?
+could have like a field for functions that can be copied over through iterating through allPoints if given auto
+or something like that idek
+
+
+probably overcomplicating it but just basically change PurePursuitPath.java to Sequence.java and have Stages.basicStage.mainFunction() changed so it returns a sequence to follow in stateMachine
+
+
+
+FOLLWO CUREV AND GO TO POSITION SHOULD HAVE BETER ALGORITHMS U SHITHEAD
+ALSO AUTOMATE LIKE 90% OF ALL THE CURVEPOINT INPUT IN FOLLOW CURVE
+
+
+still need to work classes
+--------------------------
+
+control
+Auto
+Functions           (almost done)
+Results             (clean it up)
+Stages              (above)
+StateMachine        (above)
+
+movement
+CurvePoints         (above)
+MovementContoller   (above)
+PurePursuitPath     (retard)
+Sequence
+
+opmodes
+MainAuto
+MainTeleOp
+ParkAuto
+
+
+better point choosing for paths that wrap around in getfollowpointpath, specifically
+the dist < closetDistance should be changed t osomethign better

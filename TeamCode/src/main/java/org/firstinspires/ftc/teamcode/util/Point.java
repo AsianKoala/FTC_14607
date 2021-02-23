@@ -12,10 +12,12 @@ public class Point {
         x = 0;
         y = 0;
     }
+
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
+
     public Point rotated(double angle) {
         double newX = x * Math.cos(angle) - y * Math.sin(angle);
         double newY = x * Math.sin(angle) + y * Math.cos(angle);
