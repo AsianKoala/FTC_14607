@@ -29,7 +29,7 @@ public class OurOpMode extends TunableOpMode {
         Hardware.loadOpModeInstance(this);
 
         robot = new RobotHardware(hardwareMap);
-        Functions.function.loadRobotInstance(robot);
+        Modifier.function.loadRobotInstance(robot);
 
         odometry = new Odometry(hardwareMap);
         odometry.setStart(new Pose(0, 0, 0));

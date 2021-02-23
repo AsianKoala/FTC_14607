@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.movement;
 
-import org.firstinspires.ftc.teamcode.control.Functions;
+import org.firstinspires.ftc.teamcode.control.Modifier;
 
 public class Sequence {
     public PurePursuitPath path;
@@ -11,7 +11,7 @@ public class Sequence {
 
         isMovementPath = false;
         for (BaseCurvePoint c : path.allPoints) {
-            if (!(c.function instanceof Functions.hardwareFunction)) {
+            if (!(c.function instanceof Modifier.hardwareFunction)) {
                 isMovementPath = true;
                 break;
             }

@@ -22,7 +22,7 @@ import static org.firstinspires.ftc.teamcode.util.Util.minCheck;
 public class MovementController {
 
 
-    public static Results.movementResult goToPosition(double targetX, double targetY, double moveSpeed, double prefAngle, double turnSpeed, double slowDownTurnRadians, double slowDownMovementFromTurnError, double thresh, boolean stop) {
+    public static Results.goToPositionResult goToPosition(double targetX, double targetY, double moveSpeed, double prefAngle, double turnSpeed, double slowDownTurnRadians, double slowDownMovementFromTurnError, double thresh, boolean stop) {
         double distance = Math.hypot(targetX - currentPosition.x, targetY - currentPosition.y);
 
         double absoluteAngleToTargetPoint = Math.atan2(targetY - currentPosition.y, targetX - currentPosition.x);
@@ -79,11 +79,11 @@ public class MovementController {
         movementX *= errorTurnSoScaleDownMovement;
         movementY *= errorTurnSoScaleDownMovement;
 
-        return new Results.movementResult(targetX, targetY, relativePointAngle, thresh, Math.toRadians(2));
+        return new Results.goToPositionResult(new Results.translationResult(targetX, targetY, thresh), new Results.turnResult(absolutePointAngle, Math.toRadians(2)));
     }
 
 
-    public static Results.movementResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
+    public static Results.turnResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
         //now that we know what absolute angle to point to, we calculate how close we are to it
         double relativePointAngle = Util.angleWrap(point_angle - currentPosition.heading);
 
@@ -98,7 +98,7 @@ public class MovementController {
         //smooths down the last bit to finally settle on an angle
         movementTurn *= Range.clip(Math.abs(relativePointAngle) / Math.toRadians(3), 0, 1);
 
-        return new Results.movementResult(currentPosition.x, currentPosition.y, relativePointAngle, 10000000, Math.toRadians(2));
+        return new Results.turnResult(point_angle, Math.toRadians(2));
     }
 
 
