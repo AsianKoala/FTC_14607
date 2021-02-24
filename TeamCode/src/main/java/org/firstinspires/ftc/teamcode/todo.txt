@@ -61,3 +61,13 @@ the dist < closetDistance should be changed t osomethign better
         // USE ENUM MAP FOR CONDITION
         // actually maybe just use it for functions too?? or maybe even implemented into statemachine, stagestartvars, stages, purepursuitpath, etc;
         // https://www.geeksforgeeks.org/enummap-class-java-example/
+		
+		
+		
+
+########## CAN BE IMPLEMENTED IN MASTER ##########
+have gotoshootingposition go to a point on a line circle intersection 
+between robot point, shooting point, radius containing best possible shooting area, and point to point 
+
+also make goToPosition have better smoothing, esp oversmoothing and not being able to move
+could possibly do something like if movementX<0.2 && !distBool then lower smoothing multipliers? or undo smoothing and redo with lower multiplier as last part before returning goToPosition result
