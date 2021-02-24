@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.openftc.revextensions2.ExpansionHubMotor;
 
 public class Shooter extends Hardware {
     private final ExpansionHubMotor leftShooter, rightShooter;
     private double leftShooterPower, rightShooterPower;
-
     public Shooter(ExpansionHubMotor leftShooterMotor, ExpansionHubMotor rightShooterMotor) {
         this.leftShooter = leftShooterMotor;
         this.rightShooter = rightShooterMotor;

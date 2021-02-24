@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.control;
 
 
+
+
 import org.firstinspires.ftc.teamcode.movement.CurvePoint;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.opencv.core.Core;
@@ -19,115 +21,47 @@ import static org.firstinspires.ftc.teamcode.movement.Odometry.currentPosition;
 
 public abstract class Auto extends Robot {
 
-    public RingDetectorPipeline.RingAmount ringAmount;
-    public OpenCvCamera phoneCam;
-    public RingDetectorPipeline pipeline;
-    public int currState;
-    public boolean stateFinished;
-    public int completedStates;
-    protected double stateStartX;
-    protected double stateStartY;
-    protected double stateStartHeading;
-    protected Pose stateStartPose;
-    protected double stateStartTime;
-
-    public void setState(int state) {
-        currState = state;
-        stateFinished = true;
-    }
-
-    public void nextState() {
-        setState(currState + 1);
-        completedStates++;
-    }
-
-    protected void initStateVars() {
-        stateStartX = currentPosition.x;
-        stateStartY = currentPosition.y;
-        stateStartHeading = currentPosition.heading;
-        stateStartPose = new Pose(stateStartX, stateStartY, stateStartHeading);
-        stateFinished = false;
-        stateStartTime = System.currentTimeMillis();
-    }
-
-    public boolean timeCheck(double millis) {
-        return System.currentTimeMillis() - stateStartTime > millis;
-    }
-
-    public CurvePoint initialCurvePoint() {
-        return new CurvePoint(stateStartX, stateStartY, stateStartHeading, 0, 0, 0, 0, 0);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new RingDetectorPipeline(true, 18);
-        phoneCam.setPipeline(pipeline);
-
-        // fixes the problems we had last year with the camera preview on the phone not being in landscape or whatever
-        // also starts the camera
-        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-            }
-        });
-    }
-
-    @Override
-    public void init_loop() {
-        super.init_loop();
-        ringAmount = pipeline.getRingAmount();
-        telemetry.addLine("Rings: " + ringAmount);
-        telemetry.addLine(pipeline.getTelemetry());
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        ringAmount = pipeline.getRingAmount();
-        currState = 0;
-        completedStates = 0;
-        stateFinished = true;
-    }
-
-    @Override
-    public void loop() {
-        super.loop();
-        autoStateMachine();
-        telemetry.addLine("Ring amount: " + ringAmount);
-    }
-
-    public abstract void autoStateMachine();
-
     public static class RingDetectorPipeline extends OpenCvPipeline {
+        int colorComponentNum;
+        int threshold;
+        public RingDetectorPipeline(boolean isCr, int threshold) {
+            colorComponentNum = isCr ? 1 : 2;
+            this.threshold = threshold;
+        }
+
+        public enum RingAmount {
+            NONE,
+            ONE,
+            FOUR,
+        }
+
+        // telemetry
+        double average1;
+        double average2;
+        double difference1;
+        double difference2;
+
         // color constants used for rectangles drawn on the phone like last yr
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
+
         static final int baseAverage = 128;
+
         // constants for defining the area of rectangles
         static final Point FOUR_RING_TOP_LEFT_ANCHOR = new Point(130, 123);
         static final Point ONE_RING_TOP_LEFT_ANCHOR = new Point(130, 153);
         static final int REC_WIDTH = 45;
         static final int REC_HEIGHT = 30;
         static final int ONE_RING_HEIGHT = 17;
-        int colorComponentNum;
-        int threshold;
-        // telemetry
-        double average1;
-        double average2;
-        double difference1;
-        double difference2;
-        Point four_ring_pointA = FOUR_RING_TOP_LEFT_ANCHOR;
-        Point four_ring_pointB = new Point(FOUR_RING_TOP_LEFT_ANCHOR.x + REC_WIDTH, FOUR_RING_TOP_LEFT_ANCHOR.y + REC_HEIGHT);
 
         // using the constants we calculate the points actually used for the rectangles
         // point a would be the top left point, point b would be the bottom right (creating a diagonal)
+
+        Point four_ring_pointA = FOUR_RING_TOP_LEFT_ANCHOR;
+        Point four_ring_pointB = new Point(FOUR_RING_TOP_LEFT_ANCHOR.x + REC_WIDTH, FOUR_RING_TOP_LEFT_ANCHOR.y + REC_HEIGHT);
         Point one_ring_pointA = ONE_RING_TOP_LEFT_ANCHOR;
         Point one_ring_pointB = new Point(ONE_RING_TOP_LEFT_ANCHOR.x + REC_WIDTH, ONE_RING_TOP_LEFT_ANCHOR.y + ONE_RING_HEIGHT);
+
         // computation vars
         // region1 is bound by the first the points
         // region2 is bound by the second 2
@@ -135,11 +69,8 @@ public abstract class Auto extends Robot {
         Mat YCrCb = new Mat();
         Mat component = new Mat();
         int avg1, avg2;
+
         RingAmount ringAmt;
-        public RingDetectorPipeline(boolean isCr, int threshold) {
-            colorComponentNum = isCr ? 1 : 2;
-            this.threshold = threshold;
-        }
 
         // turns rgb input into YCrCb
         void rgbToComponent(Mat input) {
@@ -213,9 +144,9 @@ public abstract class Auto extends Robot {
             int diff2 = Math.abs(avg2 - baseAverage);
             difference1 = diff1;
             difference2 = diff2;
-            if (diff1 < threshold && diff2 < threshold) {
+            if(diff1 < threshold && diff2 < threshold) {
                 ringAmt = RingAmount.NONE;
-            } else if (diff1 > threshold) {
+            } else if(diff1 > threshold) {
                 ringAmt = RingAmount.FOUR;
             } else {
                 ringAmt = RingAmount.ONE;
@@ -229,13 +160,94 @@ public abstract class Auto extends Robot {
 
         public String getTelemetry() {
             String newLine = System.getProperty("line.separator");
-            return "avg1: " + average1 + " avg2: " + average2 + newLine + " diff1: " + difference1 + " diff2: " + difference2;
-        }
-
-        public enum RingAmount {
-            NONE,
-            ONE,
-            FOUR,
+            return "avg1: " + average1 + " avg2: " + average2  + newLine + " diff1: " + difference1 + " diff2: " + difference2;
         }
     }
+
+
+    public RingDetectorPipeline.RingAmount ringAmount;
+    public OpenCvCamera phoneCam;
+    public RingDetectorPipeline pipeline;
+
+    public int currState;
+    public boolean stateFinished;
+    public int completedStates;
+
+    public void setState(int state) {
+        currState = state;
+        stateFinished = true;
+    }
+
+    public void nextState() {
+        setState(currState + 1);
+        completedStates++;
+    }
+
+
+    protected double stateStartX;
+    protected double stateStartY;
+    protected double stateStartHeading;
+    protected Pose stateStartPose;
+    protected double stateStartTime;
+    protected void initStateVars() {
+        stateStartX = currentPosition.x;
+        stateStartY = currentPosition.y;
+        stateStartHeading = currentPosition.heading;
+        stateStartPose = new Pose(stateStartX, stateStartY, stateStartHeading);
+        stateFinished = false;
+        stateStartTime = System.currentTimeMillis();
+    }
+
+    public boolean timeCheck(double millis) {
+        return System.currentTimeMillis() - stateStartTime > millis;
+    }
+
+    public CurvePoint initialCurvePoint() {
+        return new CurvePoint(stateStartX, stateStartY, stateStartHeading, 0, 0, 0, 0, 0);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        pipeline = new RingDetectorPipeline(true, 18);
+        phoneCam.setPipeline(pipeline);
+
+        // fixes the problems we had last year with the camera preview on the phone not being in landscape or whatever
+        // also starts the camera
+        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            }
+        });
+    }
+
+    @Override
+    public void init_loop() {
+        super.init_loop();
+        ringAmount = pipeline.getRingAmount();
+        telemetry.addLine("Rings: " + ringAmount);
+        telemetry.addLine(pipeline.getTelemetry());
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        ringAmount = pipeline.getRingAmount();
+        currState = 0;
+        completedStates = 0;
+        stateFinished = true;
+    }
+
+    @Override
+    public void loop() {
+        super.loop();
+        autoStateMachine();
+        telemetry.addLine("Ring amount: " + ringAmount);
+    }
+
+    public abstract void autoStateMachine();
 }
