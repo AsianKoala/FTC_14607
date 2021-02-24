@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.control;
+package org.firstinspires.ftc.teamcode.main.control;
 
 public class Stages {
-    interface BasicStage {
-        boolean finishState();
-        Functions.function function();
-        AutoStartVars AUTO_START_VARS = new AutoStartVars();
+    public interface basicStage {
+        StageStartVars AUTO_START_VARS = new StageStartVars();
         String name();
+        void startFunction();
+        Results.baseResult mainFunction();
+        void endFunction();
     }
 }

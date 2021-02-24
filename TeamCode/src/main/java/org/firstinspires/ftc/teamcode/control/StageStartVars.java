@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.control;
+package org.firstinspires.ftc.teamcode.main.control;
 
-import org.firstinspires.ftc.teamcode.util.Pose;
+import org.firstinspires.ftc.teamcode.main.util.Pose;
 
-import static org.firstinspires.ftc.teamcode.movement.Odometry.currentPosition;
+import static org.firstinspires.ftc.teamcode.main.movement.Odometry.currentPosition;
 
-class AutoStartVars {
+class StageStartVars {
     public double stageStartX;
     public double stageStartY;
     public double stageStartHeading;
