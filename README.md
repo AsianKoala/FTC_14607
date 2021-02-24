@@ -3,4 +3,4 @@
 [![Build Status](https://travis-ci.com/AsianKoala/FTC_14607.svg?branch=master)](https://travis-ci.com/AsianKoala/FTC_14607)  
 
 
-FTC Team 14607 Robot Uprising's code for the 2020-2021 Ultimate Goal season.
+Honestly I only forked this so I could test out travis with our repo for when I get ownership of it (after this szn)
