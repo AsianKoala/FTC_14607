@@ -55,3 +55,9 @@ ParkAuto
 
 better point choosing for paths that wrap around in getfollowpointpath, specifically
 the dist < closetDistance should be changed t osomethign better
+
+
+
+        // USE ENUM MAP FOR CONDITION
+        // actually maybe just use it for functions too?? or maybe even implemented into statemachine, stagestartvars, stages, purepursuitpath, etc;
+        // https://www.geeksforgeeks.org/enummap-class-java-example/
