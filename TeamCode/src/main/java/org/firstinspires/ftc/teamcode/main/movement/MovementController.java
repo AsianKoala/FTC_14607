@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.main.movement;
 
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.main.control.Modifiers;
 import org.firstinspires.ftc.teamcode.main.control.Results;
 import org.firstinspires.ftc.teamcode.main.util.Point;
 import org.firstinspires.ftc.teamcode.main.util.Util;
@@ -203,7 +204,22 @@ public class MovementController {
 
         Results.baseResult r;
 
+        if(followMe.modifier.condition != Conditions.NONE) {
 
+        } else {
+            if(followMe.modifier instanceof Modifiers.turnModifier) {
+                Modifiers.turnModifier tMod = (Modifiers.turnModifier) followMe.modifier;
+                currFollowAngle = tMod.angle();
+                r = tMod.turnMethod();
+            } else if(followMe.modifier instanceof Modifiers.hardwareModifier) {
+                Modifiers.hardwareModifier hMod = (Modifiers.hardwareModifier) followMe.modifier;
+                r = hMod.hardwareMethod();
+            } else {
+                Results.baseResult trueResult = new Results.baseResult();
+                trueResult.done = true;
+                r = trueResult;
+            }
+        }
 
 
 
