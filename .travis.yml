@@ -23,5 +23,3 @@ script:
   - ./gradlew clean
   - ./gradlew assembleDebug
   - ./gradlew assembleDebugAndroidTest
-  # need to fix lint problems but lazy 
-  - ./gradlew build -x lint
