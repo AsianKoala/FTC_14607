@@ -1,15 +1,13 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.main.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.control.Robot;
+import org.firstinspires.ftc.teamcode.main.control.BaseOpMode;
 import org.openftc.revextensions2.ExpansionHubServo;
 
-import java.util.ArrayList;
-
 @TeleOp(name = "Servo Programmer")
-public class ServoProgrammer extends Robot {
+public class ServoProgrammer extends BaseOpMode {
     public ServoData ourServoData;
 
     @Override
@@ -38,8 +36,9 @@ public class ServoProgrammer extends Robot {
 
 class ServoData {
     private final ExpansionHubServo servo;
-    private double val;
     private final double increment;
+    private double val;
+
     ServoData(ExpansionHubServo servo, double increment) {
         this.servo = servo;
         val = 0.5;
@@ -47,13 +46,13 @@ class ServoData {
     }
 
     public String update(boolean isDecrease, boolean isIncrease, boolean set) {
-        if(isDecrease) {
+        if (isDecrease) {
             val = Range.clip(val - increment, 0, 1);
-        } else if(isIncrease) {
+        } else if (isIncrease) {
             val = Range.clip(val + increment, 0, 1);
         }
 
-        if(set) {
+        if (set) {
             servo.setPosition(val);
         }
 

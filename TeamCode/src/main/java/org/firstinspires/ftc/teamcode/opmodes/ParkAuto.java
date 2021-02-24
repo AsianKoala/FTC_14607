@@ -1,24 +1,20 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.main.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.control.Auto;
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.movement.PPController;
-import org.firstinspires.ftc.teamcode.util.Pose;
+import org.firstinspires.ftc.teamcode.main.control.BaseAuto;
+import org.firstinspires.ftc.teamcode.main.control.Results;
+import org.firstinspires.ftc.teamcode.main.hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.main.movement.MovementController;
+import org.firstinspires.ftc.teamcode.main.util.Pose;
 
 
-@Autonomous(name="park auto")
-public class ParkAuto extends Auto {
-    public enum stateMachineStates {
-        park,
-        stopOpMode
-    }
-
+@Autonomous(name = "park auto")
+public class ParkAuto extends BaseAuto {
     @Override
     public void init() {
         super.init();
-        odometry.setStart(new Pose(0,-64, Math.toRadians(90)));
+        odometry.setStart(new Pose(0, -64, Math.toRadians(90)));
         setState(stateMachineStates.park.ordinal());
     }
 
@@ -41,18 +37,23 @@ public class ParkAuto extends Auto {
 
     @Override
     public void autoStateMachine() {
-        if(currState == stateMachineStates.park.ordinal()) {
+        if (currState == stateMachineStates.park.ordinal()) {
             if (stateFinished) {
                 initStateVars();
             }
 
-            PPController.movementResult result = PPController.goToPosition(0, 12, 0.6, 0.6, Math.toRadians(90),
+            Results.movementResult result = MovementController.goToPosition(0, 12, 0.6, 0.6, Math.toRadians(90),
                     Math.toRadians(45), 0.6, 2.5, true);
 
-            if (result.withinBounds) {
+            if (result.done) {
                 DriveTrain.stopMovement();
                 requestOpModeStop();
             }
         }
+    }
+
+    public enum stateMachineStates {
+        park,
+        stopOpMode
     }
 }

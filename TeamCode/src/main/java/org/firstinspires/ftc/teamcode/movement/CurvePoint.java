@@ -1,49 +1,37 @@
-package org.firstinspires.ftc.teamcode.movement;
+package org.firstinspires.ftc.teamcode.main.movement;
 
+import org.firstinspires.ftc.teamcode.main.control.Modifiers;
+import org.firstinspires.ftc.teamcode.main.util.Point;
 
-import org.firstinspires.ftc.teamcode.util.Point;
-
-/**
- * CurvePoint is a class used with the followCurve function in MovementEssentials.
- */
 public class CurvePoint {
     public double x;
     public double y;
-    public double moveSpeed;
-    public double turnSpeed;
     public double followDistance;
-    public double slowDownTurnRadians;
-    public double slowDownTurnAmount;
     public double pointLength;
+    public Modifiers.modifier modifier;
 
-    public CurvePoint(double x, double y, double moveSpeed, double turnSpeed,
-                      double followDistance,double pointLength, double slowDownTurnRadians, double slowDownTurnAmount){
+    public CurvePoint(double x, double y,
+                          double followDistance, double pointLength, Modifiers.modifier modifier) {
         this.x = x;
         this.y = y;
-        this.moveSpeed = moveSpeed;
-        this.turnSpeed = turnSpeed;
         this.followDistance = followDistance;
         this.pointLength = pointLength;
-        this.slowDownTurnRadians = slowDownTurnRadians;
-        this.slowDownTurnAmount = slowDownTurnAmount;
+        this.modifier = modifier;
     }
 
     public CurvePoint(CurvePoint thisPoint) {
         x = thisPoint.x;
         y = thisPoint.y;
-        moveSpeed = thisPoint.moveSpeed;
-        turnSpeed = thisPoint.turnSpeed;
         followDistance = thisPoint.followDistance;
-        slowDownTurnRadians = thisPoint.slowDownTurnRadians;
-        slowDownTurnAmount = thisPoint.slowDownTurnAmount;
         pointLength = thisPoint.pointLength;
-
+        modifier = thisPoint.modifier;
     }
 
-    public Point toPoint(){
-        return new Point(x,y);
+    public Point toPoint() {
+        return new Point(x, y);
     }
-    public void setPoint(Point p){
+
+    public void setPoint(Point p) {
         x = p.x;
         y = p.y;
     }
