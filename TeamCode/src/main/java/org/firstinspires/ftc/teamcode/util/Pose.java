@@ -52,6 +52,13 @@ public class Pose extends Point {
         return new Pose(this);
     }
 
+    public Pose multiply(double a) {
+        x *= a;
+        y *= a;
+        heading *= a;
+        return new Pose(this);
+    }
+
     public void wrap() {
         heading = MathUtil.angleWrap(heading);
     }
