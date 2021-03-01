@@ -16,16 +16,13 @@ public abstract class BaseOdometry {
     public static final double TICKS_PER_INCH = 1103.8839;
     public static final double LATERAL_DISTANCE = 10;
     public static final double HORIZONTAL_WHEEL_OFFSET = 10;
-
+    private final DecompositionSolver forwardSolver;
     public ArrayList<SignaturePose> deltaPosesList;
-
     protected Pose deltaScaledWheelPositions;
     protected Pose currentRobotPoseDelta;
     protected Pose currentRobotPosition;
     protected Pose currentRobotVelocity;
-
     private Pose prevWheelPositions;
-    private final DecompositionSolver forwardSolver;
 
     public BaseOdometry(Pose startPose) {
         setStartingPose(startPose);

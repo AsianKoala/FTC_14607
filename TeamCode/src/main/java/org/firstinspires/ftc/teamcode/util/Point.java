@@ -37,6 +37,10 @@ public class Point {
         return new Point(this);
     }
 
+    public double distance(Point p) {
+        return Math.hypot(x - p.x, y - p.y);
+    }
+
     @Override
     @SuppressLint("DefaultLocale")
     public String toString() {
