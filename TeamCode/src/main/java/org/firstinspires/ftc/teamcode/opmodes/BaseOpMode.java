@@ -33,7 +33,6 @@ public abstract class BaseOpMode extends TunableOpMode {
 
     @Override
     public void start() {
-        super.start();
         OpModeClock.markStart();
     }
 
