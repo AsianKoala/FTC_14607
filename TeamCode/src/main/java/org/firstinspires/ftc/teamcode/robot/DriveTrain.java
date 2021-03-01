@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.hardware;
+package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -30,10 +30,10 @@ public class DriveTrain extends Hardware {
 
     @Override
     public void update(Robot robot) {
-        double rawFL = -robot.movementPowers.y + robot.movementPowers.x + robot.movementPowers.heading;
-        double rawFR = -robot.movementPowers.y + robot.movementPowers.x - robot.movementPowers.heading;
-        double rawBL = -robot.movementPowers.y - robot.movementPowers.x + robot.movementPowers.heading;
-        double rawBR = -robot.movementPowers.y - robot.movementPowers.x - robot.movementPowers.heading;
+        double rawFL = -robot.movementPower.y + robot.movementPower.x + robot.movementPower.heading;
+        double rawFR = -robot.movementPower.y + robot.movementPower.x - robot.movementPower.heading;
+        double rawBL = -robot.movementPower.y - robot.movementPower.x + robot.movementPower.heading;
+        double rawBR = -robot.movementPower.y - robot.movementPower.x - robot.movementPower.heading;
         List<Double> powers = Arrays.asList(rawFL, rawFR, rawBL, rawBR);
 
         double absMax = Math.max(Math.abs(Collections.max(powers)), Math.abs(Collections.min(powers)));

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.hardware;
+package org.firstinspires.ftc.teamcode.robot;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -20,12 +20,13 @@ public class Robot {
     public Pose currPosition;
     public Pose currVelocity;
     public Pose currPoseDelta;
-    public Pose movementPowers;
+    public Pose movementPower;
 
     private FtcDashboard dashboard;
     public TelemetryPacket packet;
+    public long updateMarker;
 
-    private BaseOdometry odometry;
+    private final BaseOdometry odometry;
     public RevBulkData driveBulkData;
     public RevBulkData otherBulkData;
 
@@ -54,7 +55,7 @@ public class Robot {
         odometry = new EulerIntegration(startPose);
         currPosition = startPose;
         currVelocity = new Pose();
-        movementPowers = new Pose();
+        movementPower = new Pose();
 
         driveHub = hardwareMap.get(ExpansionHubEx.class, "driveHub");
         otherHub = hardwareMap.get(ExpansionHubEx.class, "otherHub");
@@ -65,9 +66,10 @@ public class Robot {
 
         this.dashboard = dashboard;
         packet = null;
+        updateMarker = System.nanoTime();
     }
 
-    public void update() {
+    public void update(ArrayList<Point> points) {
         driveBulkData = driveHub.getBulkInputData();
         otherBulkData = otherHub.getBulkInputData();
 
@@ -91,10 +93,35 @@ public class Robot {
 
         // dashboard telemetry
         packet = new TelemetryPacket();
+        packet.put("x", currPosition.x);
+        packet.put("y", currPosition.y);
+        packet.put("θ", currPosition.heading);
+        packet.put("mX", movementPower.x);
+        packet.put("mY", movementPower.y);
+        packet.put("mθ", movementPower.heading);
+
+        double[] x = new double[points.size()];
+        double[] y = new double[points.size()];
+
+        for(int i=0; i<points.size(); i++) {
+            x[i] = points.get(i).x;
+            y[i] = points.get(i).y;
+        }
+
+        packet.fieldOverlay()
+                .setFill("blue")
+                .fillCircle(currPosition.x, currPosition.y, 3)
+                .setStroke("red")
+                .setStrokeWidth(1)
+                .strokePolygon(x, y);
     }
 
-    public void updateDashboard(ArrayList<Point> points) {
-
+    public void updateDashboard() {
+        if(dashboard != null) {
+            packet.put("update time", System.nanoTime() - updateMarker);
+            dashboard.sendTelemetryPacket(packet);
+            updateMarker = System.nanoTime();
+        }
     }
 
 }
