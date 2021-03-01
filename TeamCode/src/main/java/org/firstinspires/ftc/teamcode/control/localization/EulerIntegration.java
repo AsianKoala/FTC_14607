@@ -13,7 +13,7 @@ public class EulerIntegration extends BaseOdometry {
 
     @Override
     protected void robotPoseUpdate() {
-        double dtheta = currentRobotPoseDelta.heading;
+        double dtheta = currPoseDelta.heading;
         double sineTerm, cosTerm;
 
         if (epsilonEquals(dtheta, 0)) {
@@ -25,11 +25,11 @@ public class EulerIntegration extends BaseOdometry {
         }
 
         Point fieldTranslationDelta = new Point(
-                sineTerm * currentRobotPoseDelta.x - cosTerm * currentRobotPoseDelta.y,
-                cosTerm * currentRobotPoseDelta.x + sineTerm * currentRobotPoseDelta.y
+                sineTerm * currPoseDelta.x - cosTerm * currPoseDelta.y,
+                cosTerm * currPoseDelta.x + sineTerm * currPoseDelta.y
         );
 
-        Pose fieldPoseDelta = new Pose(fieldTranslationDelta.rotated(currentRobotPosition.heading), currentRobotPoseDelta.heading);
-        currentRobotPosition.add(fieldPoseDelta);
+        Pose fieldPoseDelta = new Pose(fieldTranslationDelta.rotated(currPose.heading), dtheta);
+        currPose.add(fieldPoseDelta);
     }
 }

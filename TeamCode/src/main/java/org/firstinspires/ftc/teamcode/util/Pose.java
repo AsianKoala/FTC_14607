@@ -59,8 +59,18 @@ public class Pose extends Point {
         return new Pose(this);
     }
 
-    public void wrap() {
+    public Pose wrap() {
         heading = MathUtil.angleWrap(heading);
+        return new Pose(this);
+    }
+
+    // make sure to wrap to prevent wraparound errors
+    public double cos() {
+        return Math.cos(wrap().heading);
+    }
+
+    public double sin() {
+        return Math.sin(wrap().heading);
     }
 
     @SuppressLint("DefaultLocale")

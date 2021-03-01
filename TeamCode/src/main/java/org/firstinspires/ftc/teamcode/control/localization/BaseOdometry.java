@@ -17,11 +17,12 @@ public abstract class BaseOdometry {
     public static final double LATERAL_DISTANCE = 10;
     public static final double HORIZONTAL_WHEEL_OFFSET = 10;
     private final DecompositionSolver forwardSolver;
-    public ArrayList<SignaturePose> deltaPosesList;
-    protected Pose deltaScaledWheelPositions;
-    protected Pose currentRobotPoseDelta;
-    protected Pose currentRobotPosition;
-    protected Pose currentRobotVelocity;
+    public ArrayList<SignaturePose> relativePoseDeltas;
+    protected Pose wheelDeltaScaled;
+    protected Pose currPoseDelta;
+    protected Pose currPose;
+    private Pose currVelocity;
+    private Pose relativePoseDelta;
     private Pose prevWheelPositions;
 
     public BaseOdometry(Pose startPose) {
@@ -64,25 +65,37 @@ public abstract class BaseOdometry {
         );
     }
 
+    private void calcRobotVel() {
+        if (relativePoseDeltas.size() > 1) {
+            SignaturePose oldPos = relativePoseDeltas.get(relativePoseDeltas.size() - 2);
+            SignaturePose newPos = relativePoseDeltas.get(relativePoseDeltas.size() - 1);
+            double timeDiff = (newPos.signature - oldPos.signature) / 1000.0;
+            currVelocity = newPos.subtract(oldPos).multiply(1 / timeDiff);
+        } else {
+            currVelocity = new Pose(0, 0, 0);
+        }
+    }
+
     // should only be used for start of auto
     public void setStartingPose(Pose startPose) {
-        currentRobotPosition = startPose;
+        currPose = startPose;
         prevWheelPositions = new Pose();
     }
 
     protected abstract void robotPoseUpdate();
 
     public Pose[] update(Pose wheelPositions, Pose wheelVel) {
-        deltaScaledWheelPositions = wheelPositions.subtract(prevWheelPositions).divide(TICKS_PER_INCH);
-        currentRobotPoseDelta = calcPoseDeltas(deltaScaledWheelPositions);
+        wheelDeltaScaled = wheelPositions.subtract(prevWheelPositions).divide(TICKS_PER_INCH);
+        currPoseDelta = calcPoseDeltas(wheelDeltaScaled);
 
-        deltaPosesList.add(new SignaturePose(currentRobotPoseDelta.x, currentRobotPoseDelta.y, currentRobotPoseDelta.heading, OpModeClock.getElapsedStartTime()));
+        relativePoseDelta = relativePoseDelta.add(currPoseDelta);
+        relativePoseDeltas.add(new SignaturePose(relativePoseDelta.x, relativePoseDelta.y, relativePoseDelta.heading, OpModeClock.getElapsedStartTime()));
 
         robotPoseUpdate();
-        currentRobotPosition.wrap();
-        currentRobotVelocity = calcPoseDeltas(wheelVel);
-        prevWheelPositions = new Pose(currentRobotPosition);
-        return new Pose[]{currentRobotPosition, currentRobotVelocity, currentRobotPoseDelta};
+        currPose.wrap();
+        calcRobotVel();
+        prevWheelPositions = new Pose(currPose);
+        return new Pose[]{currPose, currVelocity, currPoseDelta};
     }
 }
 
