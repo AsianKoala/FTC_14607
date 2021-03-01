@@ -13,11 +13,11 @@ import java.util.ArrayList;
 
 // used to get accurate wheel deltas for odom implementations
 public abstract class BaseOdometry {
-    public static final double TICKS_PER_INCH = 1103.8839;
-    public static final double LATERAL_DISTANCE = 10;
-    public static final double HORIZONTAL_WHEEL_OFFSET = 10;
+    private static final double TICKS_PER_INCH = 1103.8839;
+    private static final double LATERAL_DISTANCE = 10;
+    private static final double HORIZONTAL_WHEEL_OFFSET = 10;
     private final DecompositionSolver forwardSolver;
-    public ArrayList<SignaturePose> relativePoseDeltas;
+    private ArrayList<SignaturePose> relativePoseDeltas;
     protected Pose wheelDeltaScaled;
     protected Pose currPoseDelta;
     protected Pose currPose;
