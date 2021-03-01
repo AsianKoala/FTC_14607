@@ -69,7 +69,7 @@ public class Robot {
         updateMarker = System.nanoTime();
     }
 
-    public void update(ArrayList<Point> points) {
+    public void update() {
         driveBulkData = driveHub.getBulkInputData();
         otherBulkData = otherHub.getBulkInputData();
 
@@ -100,28 +100,32 @@ public class Robot {
         packet.put("mY", movementPower.y);
         packet.put("mθ", movementPower.heading);
 
-        double[] x = new double[points.size()];
-        double[] y = new double[points.size()];
-
-        for(int i=0; i<points.size(); i++) {
-            x[i] = points.get(i).x;
-            y[i] = points.get(i).y;
-        }
 
         packet.fieldOverlay()
                 .setFill("blue")
-                .fillCircle(currPosition.x, currPosition.y, 3)
-                .setStroke("red")
-                .setStrokeWidth(1)
-                .strokePolygon(x, y);
+                .fillCircle(currPosition.x, currPosition.y, 3);
     }
 
-    public void updateDashboard() {
+    public void updateDashboard(ArrayList<Point> points) {
         if(dashboard != null) {
+            if(points != null) {
+                double[] x = new double[points.size()];
+                double[] y = new double[points.size()];
+
+                for(int i=0; i<points.size(); i++) {
+                    x[i] = points.get(i).x;
+                    y[i] = points.get(i).y;
+                }
+
+                packet.fieldOverlay()
+                        .setStroke("red")
+                        .setStrokeWidth(1)
+                        .strokePolygon(x, y);
+            }
+
             packet.put("update time", System.nanoTime() - updateMarker);
             dashboard.sendTelemetryPacket(packet);
             updateMarker = System.nanoTime();
         }
     }
-
 }

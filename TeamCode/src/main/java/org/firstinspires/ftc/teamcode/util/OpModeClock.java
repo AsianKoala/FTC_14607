@@ -6,11 +6,11 @@ public class OpModeClock {
     private static long START_TIME;
 
     public static void markInit() {
-        INIT_TIME = System.currentTimeMillis();
+        INIT_TIME = System.nanoTime();
     }
 
     public static void markStart() {
-        START_TIME = System.currentTimeMillis();
+        START_TIME = System.nanoTime();
     }
 
     public static int getElapsedInitTime() {
