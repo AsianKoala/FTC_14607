@@ -30,7 +30,7 @@ public class MathUtil {
 
     /**
      * Returns the closest intersection point to the end of a line segment created through the intersection of a line and circle.
-     * The main purpose of this is for pure pursuit but I will most likely implement it into our goToPosition algorithm.
+     * The main purpose of this is for pure pursuit but I'll prob implement it into our goToPosition algorithm.
      * For pure pursuit use, c would be the clipped robot point, startPoint would be the current segment start point,
      * endPoint would be the current segment end point, and radius would be our follow distance
      *
