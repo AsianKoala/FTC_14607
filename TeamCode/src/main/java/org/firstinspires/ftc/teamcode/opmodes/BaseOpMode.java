@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.util.Pose;
 public abstract class BaseOpMode extends TunableOpMode {
 
     public abstract Pose startPose();
-
     public Robot robot;
 
     @Override

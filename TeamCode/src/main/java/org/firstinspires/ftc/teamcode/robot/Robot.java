@@ -10,24 +10,21 @@ import org.firstinspires.ftc.teamcode.control.controllers.PathPoint;
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
 import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry;
 import org.firstinspires.ftc.teamcode.control.localization.EulerIntegration;
-import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 // robot should contain all the data for hardware, including global localization data, bulk reads, debug telem, etc
 public class Robot {
     public Pose currPosition;
     public Pose currVelocity;
     public Pose currPoseDelta;
-    public Pose movementPower;
+    public Pose currMovementPower;
 
-    private FtcDashboard dashboard;
+    private final FtcDashboard dashboard;
     public TelemetryPacket packet;
     public long updateMarker;
 
@@ -62,7 +59,7 @@ public class Robot {
         odometry = new EulerIntegration(startPose);
         currPosition = startPose;
         currVelocity = new Pose();
-        movementPower = new Pose();
+        currMovementPower = new Pose();
 
         driveHub = hardwareMap.get(ExpansionHubEx.class, "driveHub");
         otherHub = hardwareMap.get(ExpansionHubEx.class, "otherHub");
@@ -99,16 +96,11 @@ public class Robot {
         for(Hardware h : allHardware)
             h.update(this);
 
-
         // dashboard telemetry
         packet = new TelemetryPacket();
-        packet.put("x", currPosition.x);
-        packet.put("y", currPosition.y);
-        packet.put("θ", currPosition.heading);
-        packet.put("mX", movementPower.x);
-        packet.put("mY", movementPower.y);
-        packet.put("mθ", movementPower.heading);
-
+        packet.put("pose", currPosition.toString());
+        packet.put("movement", currMovementPower.toString());
+        packet.put("velocity", currVelocity.toString());
 
         packet.fieldOverlay()
                 .setFill("blue")
@@ -144,11 +136,4 @@ public class Robot {
                 .strokePolygon(x, y);
     }
 
-    public void turnOnIntake() {
-
-    }
-
-    public boolean isPathHalfway() {
-        return true;
-    }
 }
