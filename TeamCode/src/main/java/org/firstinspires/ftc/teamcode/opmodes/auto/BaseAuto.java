@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import org.firstinspires.ftc.teamcode.control.controllers.Path;
+import org.firstinspires.ftc.teamcode.opmodes.BaseOpMode;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 public abstract class BaseAuto extends BaseOpMode {

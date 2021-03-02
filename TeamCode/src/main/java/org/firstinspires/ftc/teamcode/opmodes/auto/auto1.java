@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.control.controllers.Path;
 import org.firstinspires.ftc.teamcode.control.controllers.PathBuilder;
 import org.firstinspires.ftc.teamcode.control.controllers.PathPoint;
 import org.firstinspires.ftc.teamcode.control.controllers.PathPointBuilder;
-import org.firstinspires.ftc.teamcode.opmodes.BaseAuto;
 
 public class auto1 extends BaseAuto {
     @Override
