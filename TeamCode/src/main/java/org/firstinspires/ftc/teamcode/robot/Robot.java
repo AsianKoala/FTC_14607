@@ -22,7 +22,7 @@ public class Robot {
     public Pose currPosition;
     public Pose currVelocity;
     public Pose currPoseDelta;
-    public Pose currMovementPower;
+    public Pose currMovement;
 
     private final FtcDashboard dashboard;
     public TelemetryPacket packet;
@@ -59,7 +59,7 @@ public class Robot {
         odometry = new EulerIntegration(startPose);
         currPosition = startPose;
         currVelocity = new Pose();
-        currMovementPower = new Pose();
+        currMovement = new Pose();
 
         driveHub = hardwareMap.get(ExpansionHubEx.class, "driveHub");
         otherHub = hardwareMap.get(ExpansionHubEx.class, "otherHub");
@@ -99,7 +99,7 @@ public class Robot {
         // dashboard telemetry
         packet = new TelemetryPacket();
         packet.put("pose", currPosition.toString());
-        packet.put("movement", currMovementPower.toString());
+        packet.put("movement", currMovement.toString());
         packet.put("velocity", currVelocity.toString());
 
         packet.fieldOverlay()
