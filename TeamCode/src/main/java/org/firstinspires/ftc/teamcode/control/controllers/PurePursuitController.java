@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.controllers;
 
+import org.firstinspires.ftc.teamcode.control.path.PathPoint;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 public class PurePursuitController {

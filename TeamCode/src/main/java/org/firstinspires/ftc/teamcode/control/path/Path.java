@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.control.controllers;
+package org.firstinspires.ftc.teamcode.control.path;
 
 import java.util.LinkedList;
 

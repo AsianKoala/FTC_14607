@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.control.controllers;
+package org.firstinspires.ftc.teamcode.control.path;
 
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.jetbrains.annotations.NotNull;

@@ -5,8 +5,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.control.controllers.Path;
-import org.firstinspires.ftc.teamcode.control.controllers.PathPoint;
+import org.firstinspires.ftc.teamcode.control.path.Path;
+import org.firstinspires.ftc.teamcode.control.path.PathPoint;
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
 import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry;
 import org.firstinspires.ftc.teamcode.control.localization.EulerIntegration;
