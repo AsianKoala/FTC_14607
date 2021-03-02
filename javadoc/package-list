@@ -1,4 +1,6 @@
+org.firstinspires.ftc.teamcode.control.controllers
 org.firstinspires.ftc.teamcode.control.localization
 org.firstinspires.ftc.teamcode.opmodes
+org.firstinspires.ftc.teamcode.opmodes.auto
 org.firstinspires.ftc.teamcode.robot
 org.firstinspires.ftc.teamcode.util

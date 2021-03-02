@@ -24,7 +24,6 @@ public class Point {
         return new Point(newX, newY);
     }
 
-
     public Point add(Point p) {
         x += p.x;
         y += p.y;
@@ -35,6 +34,10 @@ public class Point {
         x += a;
         y += a;
         return new Point(this);
+    }
+
+    public double hypot() {
+        return Math.sqrt(x * x + y * y);
     }
 
     public double distance(Point p) {

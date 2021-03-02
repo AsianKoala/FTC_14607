@@ -5,6 +5,9 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.control.controllers.Path;
+import org.firstinspires.ftc.teamcode.control.controllers.PathPoint;
+import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
 import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry;
 import org.firstinspires.ftc.teamcode.control.localization.EulerIntegration;
 import org.firstinspires.ftc.teamcode.util.Point;
@@ -14,6 +17,8 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 // robot should contain all the data for hardware, including global localization data, bulk reads, debug telem, etc
 public class Robot {
@@ -25,6 +30,8 @@ public class Robot {
     private FtcDashboard dashboard;
     public TelemetryPacket packet;
     public long updateMarker;
+
+    public boolean isFollowing;
 
     private final BaseOdometry odometry;
     public RevBulkData driveBulkData;
@@ -67,6 +74,8 @@ public class Robot {
         this.dashboard = dashboard;
         packet = null;
         updateMarker = System.nanoTime();
+
+        isFollowing = false;
     }
 
     public void update() {
@@ -106,26 +115,40 @@ public class Robot {
                 .fillCircle(currPosition.x, currPosition.y, 3);
     }
 
-    public void updateDashboard(ArrayList<Point> points) {
+    public boolean followPath(Path path) {
+        return PurePursuitController.followPath(path);
+    }
+
+    public void updateDashboard() {
         if(dashboard != null) {
-            if(points != null) {
-                double[] x = new double[points.size()];
-                double[] y = new double[points.size()];
-
-                for(int i=0; i<points.size(); i++) {
-                    x[i] = points.get(i).x;
-                    y[i] = points.get(i).y;
-                }
-
-                packet.fieldOverlay()
-                        .setStroke("red")
-                        .setStrokeWidth(1)
-                        .strokePolygon(x, y);
-            }
-
             packet.put("update time", System.nanoTime() - updateMarker);
             dashboard.sendTelemetryPacket(packet);
             updateMarker = System.nanoTime();
         }
+    }
+
+    public void updateDashboardPath(Path path) {
+        double[] x = new double[path.pathPoints.size()];
+        double[] y = new double[path.pathPoints.size()];
+
+        int index = 0;
+        for(PathPoint p : path.pathPoints) {
+            x[index] = p.x;
+            y[index] = p.y;
+            index++;
+        }
+
+        packet.fieldOverlay()
+                .setStroke("red")
+                .setStrokeWidth(1)
+                .strokePolygon(x, y);
+    }
+
+    public void turnOnIntake() {
+
+    }
+
+    public boolean isPathHalfway() {
+        return true;
     }
 }
