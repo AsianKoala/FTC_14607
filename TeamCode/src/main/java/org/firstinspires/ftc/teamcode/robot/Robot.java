@@ -16,19 +16,21 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 // robot should contain all the data for hardware, including global localization data, bulk reads, debug telem, etc
 public class Robot {
-    public Pose currPosition;
-    public Pose currVelocity;
+    public Pose currPose;
+    public Pose currVel;
     public Pose currPoseDelta;
-    public Pose currMovement;
+    public Pose currPowers;
 
     private final FtcDashboard dashboard;
     public TelemetryPacket packet;
     public long updateMarker;
 
-    public boolean isFollowing;
+    public Path pathCache;
+    public LinkedList<PathPoint> fullPathCopy;
 
     private final BaseOdometry odometry;
     public RevBulkData driveBulkData;
@@ -57,9 +59,9 @@ public class Robot {
         driveTrain = new DriveTrain(frontLeft, frontRight, backLeft, backRight);
 
         odometry = new EulerIntegration(startPose);
-        currPosition = startPose;
-        currVelocity = new Pose();
-        currMovement = new Pose();
+        currPose = startPose;
+        currVel = new Pose();
+        currPowers = new Pose();
 
         driveHub = hardwareMap.get(ExpansionHubEx.class, "driveHub");
         otherHub = hardwareMap.get(ExpansionHubEx.class, "otherHub");
@@ -68,11 +70,11 @@ public class Robot {
         allHardware = new ArrayList<>();
         allHardware.add(driveTrain);
 
+        pathCache = new Path();
+
         this.dashboard = dashboard;
         packet = null;
         updateMarker = System.nanoTime();
-
-        isFollowing = false;
     }
 
     public void update() {
@@ -89,26 +91,33 @@ public class Robot {
                         driveBulkData.getMotorVelocity(PERP_ENCODER_PORT)
         ));
 
-        currPosition = odomPoses[0];
-        currVelocity = odomPoses[1];
+        currPose = odomPoses[0];
+        currVel = odomPoses[1];
         currPoseDelta = odomPoses[3];
 
         for(Hardware h : allHardware)
             h.update(this);
 
+        // path cache
+        if(pathCache.size() > 1)
+            PurePursuitController.followPath(this);
+
         // dashboard telemetry
         packet = new TelemetryPacket();
-        packet.put("pose", currPosition.toString());
-        packet.put("movement", currMovement.toString());
-        packet.put("velocity", currVelocity.toString());
+        packet.put("pose", currPose.toString());
+        packet.put("movement", currPowers.toString());
+        packet.put("velocity", currVel.toString());
 
         packet.fieldOverlay()
                 .setFill("blue")
-                .fillCircle(currPosition.x, currPosition.y, 3);
+                .fillCircle(currPose.x, currPose.y, 3);
     }
 
-    public boolean followPath(Path path) {
-        return PurePursuitController.followPath(path);
+    public void setPathCache(Path path) {
+        pathCache = path;
+        for (PathPoint pathPoint : pathCache) {
+            fullPathCopy.add(pathPoint.clone());
+        }
     }
 
     public void updateDashboard() {
@@ -119,12 +128,12 @@ public class Robot {
         }
     }
 
-    public void updateDashboardPath(Path path) {
-        double[] x = new double[path.pathPoints.size()];
-        double[] y = new double[path.pathPoints.size()];
+    public void updateDashboardPath() {
+        double[] x = new double[fullPathCopy.size()];
+        double[] y = new double[fullPathCopy.size()];
 
         int index = 0;
-        for(PathPoint p : path.pathPoints) {
+        for(PathPoint p : fullPathCopy) {
             x[index] = p.x;
             y[index] = p.y;
             index++;

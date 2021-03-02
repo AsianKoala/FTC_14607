@@ -1,20 +1,18 @@
 package org.firstinspires.ftc.teamcode.control.controllers;
 
-import java.util.LinkedList;
-
 public class PathBuilder {
-    public LinkedList<PathPoint> pathPoints;
+    public Path path;
 
     public PathBuilder() {
-        pathPoints = new LinkedList<>();
+        path = new Path();
     }
 
     public PathBuilder addPoint(PathPoint p) {
-        pathPoints.add(p);
+        path.add(p);
         return this;
     }
 
     public Path build() {
-        return new Path(this);
+        return new Path(path);
     }
 }

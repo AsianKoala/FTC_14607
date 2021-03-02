@@ -2,11 +2,17 @@ package org.firstinspires.ftc.teamcode.control.controllers;
 
 import java.util.LinkedList;
 
-public class Path {
-    public LinkedList<PathPoint> pathPoints;
+public class Path extends LinkedList<PathPoint> {
+    public boolean isPurePursuit;
 
-    public Path(PathBuilder builder) {
-        for (PathPoint pathPoint : builder.pathPoints) pathPoints.add(pathPoint.clone());
+    public Path(Path path) {
+        for (PathPoint pathPoint : path) add(pathPoint.clone());
+        isPurePursuit = true;
+    }
+
+    public Path() {
+        super();
+        isPurePursuit = true;
     }
 
 }

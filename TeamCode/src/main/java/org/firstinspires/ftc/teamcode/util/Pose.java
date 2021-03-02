@@ -64,13 +64,16 @@ public class Pose extends Point {
         return new Pose(this);
     }
 
-    // make sure to wrap to prevent wraparound errors
     public double cos() {
-        return Math.cos(wrap().heading);
+        return Math.cos(heading);
     }
 
     public double sin() {
-        return Math.sin(wrap().heading);
+        return Math.sin(heading);
+    }
+
+    public boolean poseClose(Pose p) {
+        return distance(p) < 2 && Math.abs(MathUtil.angleWrap(heading - p.heading)) < Math.toRadians(2);
     }
 
     @SuppressLint("DefaultLocale")

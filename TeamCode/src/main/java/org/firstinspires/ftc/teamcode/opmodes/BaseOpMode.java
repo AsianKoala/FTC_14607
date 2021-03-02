@@ -33,6 +33,7 @@ public abstract class BaseOpMode extends TunableOpMode {
     @Override
     public void loop() {
         robot.update();
+        robot.updateDashboardPath();
         robot.updateDashboard();
     }
 }

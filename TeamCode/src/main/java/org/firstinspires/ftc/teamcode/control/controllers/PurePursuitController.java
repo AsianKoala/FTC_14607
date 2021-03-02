@@ -1,9 +1,20 @@
 package org.firstinspires.ftc.teamcode.control.controllers;
 
+import org.firstinspires.ftc.teamcode.robot.Robot;
+
 public class PurePursuitController {
 
-    public static boolean followPath(Path path) {
+    public static void goToPosition(Robot robot, PathPoint target) {
 
-        return false;
+    }
+
+    public static void followPath(Robot robot) {
+        if(!robot.pathCache.isPurePursuit) {
+            boolean finished = robot.currPose.poseClose(robot.pathCache.getFirst());
+            if(finished)
+                robot.pathCache.removeFirst();
+            else
+                goToPosition(robot, robot.pathCache.getFirst());
+        }
     }
 }
