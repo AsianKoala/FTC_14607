@@ -10,11 +10,11 @@ public class auto1 extends BaseAuto {
     @Override
     public Path path() {
         Function turnOnIntake = (cond) -> {
-            robot.turnOnIntake();
+            robot.update(); // IDK BRUH THIS IS JUST AN EXAMPLE ANYWAY
             return true;
         };
 
-        Function isHalfwayDone = (cond) -> cond && robot.isPathHalfway();
+        Function isHalfwayDone = (cond) -> cond && robot.isFollowing;
 
         return new PathBuilder()
                 .addPoint(new PathPoint(startPose(), 0))
