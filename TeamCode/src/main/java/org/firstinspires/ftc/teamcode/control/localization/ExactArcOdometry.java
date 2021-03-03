@@ -15,7 +15,7 @@ public class ExactArcOdometry extends BaseOdometry {
     @Override
     protected void robotPoseUpdate() {
         double dtheta = currPoseDelta.heading;
-        double currHeading = new Pose(currPose).add(dtheta).wrap().heading; // lmao
+        double currHeading = MathUtil.angleWrap(dtheta + currPose.heading);
         double dx, dy;
 
         if (MathUtil.epsilonEquals(dtheta, 0)) {
