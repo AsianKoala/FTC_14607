@@ -1,3 +1,3 @@
-welcome to the amazing
-###teamcode directory
-maintained by yours truly, [neil mehra](https://github.com/AsianKoala)
+welcome to our amazing
+## teamcode folder  
+maintained by yours truly, [Neil Mehra](https://github.com/AsianKoala)
