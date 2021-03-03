@@ -24,9 +24,42 @@ public class MathUtil {
         }
     }
 
-    public static int sgn(double x) {
-        return x > 0 ? 1 : -1;
+    public static int sgn(double a) {
+        return a > 0 ? 1 : -1;
     }
+
+    public static double[] lineEquation(Point p1, double slope) {
+        double m;
+        double intercept;
+        if(Double.isInfinite(slope)) {
+            m = Double.NEGATIVE_INFINITY;  // vert line
+            intercept = p1.x;
+        } else {
+            m = slope;
+            intercept = p1.y = p1.x * m;
+        }
+
+        return new double[] {m, intercept};
+    }
+
+    public static Point perpPointIntersection(Point start, double slope, Point p) {
+        double[] equation = lineEquation(start, slope);
+        double[] newEquation = lineEquation(p, -1/slope);
+
+        Point intersect;
+        if(Double.isInfinite(equation[0]))
+            intersect = new Point(equation[1], equation[1] * newEquation[0] + newEquation[1]);
+        else if(Double.isInfinite(newEquation[0]))
+            intersect = new Point(newEquation[1], equation[1] * equation[0] + equation[1]);
+        else
+            intersect = new Point(
+                    (newEquation[1] - equation[1]) / (equation[0] - newEquation[0]),
+                    ((newEquation[1] - equation[1]) / (equation[0] - newEquation[0])) * equation[0] + equation[1]
+            );
+
+        return intersect;
+    }
+
 
     /**
      * Returns the closest intersection point to the end of a line segment created through the intersection of a line and circle.
