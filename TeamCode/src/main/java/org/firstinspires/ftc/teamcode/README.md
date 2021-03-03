@@ -5,7 +5,8 @@ maintained by yours truly, [Neil Mehra](https://github.com/AsianKoala)
 
 
 ### todo
-1. fix vel calc
-2. optimize point/pose calc method returns
-3. fix followcurve
-4. test using debugger
+1. fix ppcontroler stoppoints
+2. fix vel calc
+3. optimize point/pose calc method returns
+4. fix followcurve
+5. test using debugger

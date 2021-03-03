@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.controllers;
 
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.teamcode.control.path.PathPoint;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
@@ -17,13 +19,18 @@ public class PurePursuitController {
         powerPose.divide(new Pose(v));
         powerPose.multiply(relVals.abs().divide(new Pose(12)));
 
-        powerPose.heading = dH(robot, target) / Math.toRadians(45);
-        robot.currPowers.set(powerPose.clipMax(max_speed));
+        powerPose.heading = dH(robot, target) / Math.toRadians(40);
+        powerPose.clipMax(max_speed);
 
-        if(robot.currPose.distance(target) < 6 && target.stop) {
-            relVals = robot.currPose.distancePose(target);
-            robot.currPowers.set(relVals.multiply(stop_speed));
-        }
+        powerPose.multiply(new Pose(Range.clip(1.0-Math.abs(dH(robot,target) / Math.toRadians(40)), 0.6, 1)));
+
+        robot.currPowers.set(powerPose);
+
+//        if(robot.currPose.distance(target) < 6 && target.stop) {
+//            relVals = robot.currPose.distancePose(target);
+//            Pose absMult = relVals.abs().divide(new Pose(6));
+//            robot.currPowers.set(relVals.multiply(absMult));
+//        }wwwwwwwwwwww
 
     }
 
