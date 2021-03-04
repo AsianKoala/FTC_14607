@@ -5,8 +5,6 @@ maintained by yours truly, [Neil Mehra](https://github.com/AsianKoala)
 
 
 ### todo
-1. fix ppcontroler stoppoints
+1. fix ppcontroller smoothing
+2. fix angle problem thing fuck wtf
 2. fix vel calc
-3. optimize point/pose calc method returns
-4. fix followcurve
-5. test using debugger
