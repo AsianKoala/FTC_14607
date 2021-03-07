@@ -6,11 +6,20 @@ public class MathUtil {
     public static final double EPSILON = 1e-6;
 
     public static double angleWrap(double angle) {
-        while (angle < -Math.PI) {
-            angle += 2 * Math.PI;
+        while (angle<-Math.PI){
+            angle += 2*Math.PI;
         }
-        while (angle > Math.PI) {
-            angle -= 2 * Math.PI;
+        while (angle>Math.PI){
+            angle -= 2*Math.PI;
+        }
+        return angle;
+    }
+
+    public static double wrapFull(double angle) {
+        while(angle<0) {
+            angle+= 2*Math.PI;
+        } while(angle>2*Math.PI) {
+            angle -= 2*Math.PI;
         }
         return angle;
     }
@@ -24,8 +33,8 @@ public class MathUtil {
         }
     }
 
-    public static int sgn(double a) {
-        return a > 0 ? 1 : -1;
+    public static boolean angleThresh(double a, double b) {
+        return Math.abs(angleWrap(a - b)) < Math.toRadians(2);
     }
 
     public static double[] lineEquation(Point p1, double slope) {
@@ -60,6 +69,9 @@ public class MathUtil {
         return intersect;
     }
 
+    public static int sgn(double a) {
+        return a > 0 ? 1 : -1;
+    }
 
     /**
      * Returns the closest intersection point to the end of a line segment created through the intersection of a line and circle.

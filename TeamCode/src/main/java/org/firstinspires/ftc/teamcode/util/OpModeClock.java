@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.util;
 public class OpModeClock {
     private static long INIT_TIME;
     private static long START_TIME;
+    private static double lastMessage = System.currentTimeMillis();
 
     public static void markInit() {
         INIT_TIME = System.nanoTime();
@@ -19,5 +20,13 @@ public class OpModeClock {
 
     public static int getElapsedStartTime() {
         return (int) (System.currentTimeMillis() - START_TIME);
+    }
+
+    public static boolean isOk() {
+        if(System.currentTimeMillis() - lastMessage > 250) {
+            lastMessage = System.currentTimeMillis();
+            return true;
+        }
+        return false;
     }
 }

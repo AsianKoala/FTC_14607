@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.path.builders;
 
 import org.firstinspires.ftc.teamcode.control.path.Path;
-import org.firstinspires.ftc.teamcode.control.path.PathPoint;
+import org.firstinspires.ftc.teamcode.control.path.PathPoints;
 
 public class PathBuilder {
     public Path path;
@@ -10,7 +10,7 @@ public class PathBuilder {
         path = new Path();
     }
 
-    public PathBuilder addPoint(PathPoint p) {
+    public PathBuilder addPoint(PathPoints.BasePathPoint p) {
         path.add(p);
         return this;
     }
@@ -19,3 +19,4 @@ public class PathBuilder {
         return new Path(path);
     }
 }
+

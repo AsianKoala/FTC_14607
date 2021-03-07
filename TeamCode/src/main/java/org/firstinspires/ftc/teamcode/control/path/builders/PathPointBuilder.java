@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.control.path.builders;
 
 import org.firstinspires.ftc.teamcode.control.path.Function;
-import org.firstinspires.ftc.teamcode.control.path.PathPoint;
+
+import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 
 public class PathPointBuilder {
-    public PathPoint p;
+    public BasePathPoint p;
 
-    public PathPointBuilder(PathPoint point) {
-        p = point.clone();
+    public PathPointBuilder(BasePathPoint point) {
+        p = new BasePathPoint(point);
     }
 
     public PathPointBuilder addFunc(Function function) {
@@ -15,7 +16,7 @@ public class PathPointBuilder {
         return this;
     }
 
-    public PathPoint build() {
-        return p.clone();
+    public BasePathPoint build() {
+        return new BasePathPoint(p);
     }
 }

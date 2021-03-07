@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.control.path.Path;
-import org.firstinspires.ftc.teamcode.control.path.PathPoint;
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
 import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry;
 import org.firstinspires.ftc.teamcode.control.localization.EulerIntegration;
@@ -17,6 +16,8 @@ import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 
 // robot should contain all the data for hardware, including global localization data, bulk reads, debug telem, etc
 public class Robot {
@@ -30,7 +31,7 @@ public class Robot {
     public long updateMarker;
 
     public Path pathCache;
-    public LinkedList<PathPoint> fullPathCopy;
+    public LinkedList<BasePathPoint> fullPathCopy;
 
     private final BaseOdometry odometry;
     public RevBulkData driveBulkData;
@@ -115,8 +116,8 @@ public class Robot {
 
     public void setPathCache(Path path) {
         pathCache = path;
-        for (PathPoint pathPoint : pathCache) {
-            fullPathCopy.add(pathPoint.clone());
+        for (BasePathPoint pathPoint : pathCache) {
+            fullPathCopy.add(new BasePathPoint(pathPoint));
         }
     }
 
@@ -133,7 +134,7 @@ public class Robot {
         double[] y = new double[fullPathCopy.size()];
 
         int index = 0;
-        for(PathPoint p : fullPathCopy) {
+        for(BasePathPoint p : fullPathCopy) {
             x[index] = p.x;
             y[index] = p.y;
             index++;

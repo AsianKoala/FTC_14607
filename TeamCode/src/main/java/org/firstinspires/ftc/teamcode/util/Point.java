@@ -27,9 +27,7 @@ public class Point {
     }
 
     public Point add(Point p) {
-        x += p.x;
-        y += p.y;
-        return new Point(this);
+        return new Point(x+p.x, y+p.y);
     }
 
     public Point subtract(Point p) {
@@ -37,11 +35,7 @@ public class Point {
     }
 
     public Point divide(Point p) {
-        if(x == 0 || y == 0)
-            throw new IllegalArgumentException("zero division");
-        x /= p.x;
-        y /= p.y;
-        return new Point(this);
+        return new Point(new Point(x/p.x, y/p.y));
     }
 
     public Point multiply(Point p) {
@@ -49,9 +43,7 @@ public class Point {
     }
 
     public Point pow(Point p) {
-        x = Math.pow(x, p.x);
-        y = Math.pow(y, p.y);
-        return new Point(this);
+        return new Point(Math.pow(x,  p.x), Math.pow(y, p.y));
     }
 
     public Point abs() {
@@ -72,7 +64,6 @@ public class Point {
 
     public double atan() { return Math.atan2(y, x); }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
         return String.format("(%.1f, %.1f)", x, y);
