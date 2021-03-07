@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
-import org.firstinspires.ftc.teamcode.opmodes.BaseOpMode;
+import org.firstinspires.ftc.teamcode.opmodes.Robot;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
-public abstract class BaseAuto extends BaseOpMode {
+public abstract class BaseAuto extends Robot {
 
     @Override
     public Pose startPose() {

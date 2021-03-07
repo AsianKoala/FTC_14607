@@ -1,14 +1,19 @@
-package org.firstinspires.ftc.teamcode.robot;
-
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.control.path.Path;
+import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
+
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
 import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry;
 import org.firstinspires.ftc.teamcode.control.localization.EulerIntegration;
+import org.firstinspires.ftc.teamcode.control.path.Path;
+import org.firstinspires.ftc.teamcode.control.path.PathPoints;
+import org.firstinspires.ftc.teamcode.robot.DriveTrain;
+import org.firstinspires.ftc.teamcode.robot.Hardware;
+import org.firstinspires.ftc.teamcode.util.OpModeClock;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -17,23 +22,24 @@ import org.openftc.revextensions2.RevBulkData;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
+@Config
+public abstract class Robot extends TunableOpMode {
 
-// robot should contain all the data for hardware, including global localization data, bulk reads, debug telem, etc
-public class Robot {
+    public abstract Pose startPose();
+
     public Pose currPose;
     public Pose currVel;
     public Pose currPoseDelta;
     public Pose currDrivePowers;
 
-    private final FtcDashboard dashboard;
+    private FtcDashboard dashboard;
     public TelemetryPacket packet;
     public long updateMarker;
 
     public Path pathCache;
-    public LinkedList<BasePathPoint> fullPathCopy;
+    public LinkedList<PathPoints.BasePathPoint> fullPathCopy;
 
-    private final BaseOdometry odometry;
+    private BaseOdometry odometry;
     public RevBulkData driveBulkData;
     public RevBulkData otherBulkData;
 
@@ -52,15 +58,19 @@ public class Robot {
     public final static int RIGHT_ENCODER_PORT = 1;
     public final static int PERP_ENCODER_PORT = 2;
 
-    public Robot(Pose startPose, HardwareMap hardwareMap, FtcDashboard dashboard) {
+
+    @Override
+    public void init() {
+        OpModeClock.markInit();
+
         frontLeft = hardwareMap.get(ExpansionHubMotor.class, "frontLeft");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
         backLeft = hardwareMap.get(ExpansionHubMotor.class, "backLeft");
         backRight = hardwareMap.get(ExpansionHubMotor.class, "backRight");
         driveTrain = new DriveTrain(frontLeft, frontRight, backLeft, backRight);
 
-        odometry = new EulerIntegration(startPose);
-        currPose = startPose;
+        odometry = new EulerIntegration(startPose());
+        currPose = startPose();
         currVel = new Pose();
         currDrivePowers = new Pose();
 
@@ -73,12 +83,23 @@ public class Robot {
 
         pathCache = new Path();
 
-        this.dashboard = dashboard;
+        dashboard = FtcDashboard.getInstance();
         packet = null;
         updateMarker = System.nanoTime();
     }
 
-    public void update() {
+    @Override
+    public void init_loop() {
+
+    }
+
+    @Override
+    public void start() {
+        OpModeClock.markStart();
+    }
+
+    @Override
+    public void loop() {
         driveBulkData = driveHub.getBulkInputData();
         otherBulkData = otherHub.getBulkInputData();
 
@@ -103,10 +124,11 @@ public class Robot {
         updateTelemetry();
     }
 
+
     public void setPathCache(Path path) {
         pathCache = path;
-        for (BasePathPoint pathPoint : pathCache) {
-            fullPathCopy.add(new BasePathPoint(pathPoint));
+        for (PathPoints.BasePathPoint pathPoint : pathCache) {
+            fullPathCopy.add(new PathPoints.BasePathPoint(pathPoint));
         }
     }
 
@@ -120,7 +142,7 @@ public class Robot {
         double[] y = new double[fullPathCopy.size()];
 
         int index = 0;
-        for(BasePathPoint p : fullPathCopy) {
+        for(PathPoints.BasePathPoint p : fullPathCopy) {
             x[index] = p.x;
             y[index] = p.y;
             index++;
@@ -139,4 +161,5 @@ public class Robot {
             updateMarker = System.nanoTime();
         }
     }
+
 }
