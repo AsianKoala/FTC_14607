@@ -1,10 +1,10 @@
-welcome to our amazing
-## teamcode folder  
-maintained by yours truly, [Neil Mehra](https://github.com/AsianKoala)
+welcome to our amazing ### teamcode ### folder
+maintained by yours truly, [neil](https://github.com/AsianKoala)
 
 
+
+can i have ownership of the repo pls :flushed: :point_right: :point_left:  
 
 ### todo
-1. fix ppcontroller smoothing
-2. fix angle problem thing fuck wtf
-2. fix vel calc
+  - finish testing in sim
+  - fix vel calc alrdy retard
