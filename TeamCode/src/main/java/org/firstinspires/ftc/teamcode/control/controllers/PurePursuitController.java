@@ -61,7 +61,7 @@ public class PurePursuitController {
         done = done && target.functions.size() == 0;
 
 
-        robot.currPowers = powerPose;
+        robot.currDrivePowers = powerPose;
 
         System.out.println("relVel: " + robot.currVel.toString());
         System.out.println("VEL: " + robot.currVel.hypot());

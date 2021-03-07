@@ -30,10 +30,10 @@ public class DriveTrain extends Hardware {
 
     @Override
     public void update(Robot robot) {
-        double rawFL = -robot.currPowers.y + robot.currPowers.x + robot.currPowers.heading;
-        double rawFR = -robot.currPowers.y + robot.currPowers.x - robot.currPowers.heading;
-        double rawBL = -robot.currPowers.y - robot.currPowers.x + robot.currPowers.heading;
-        double rawBR = -robot.currPowers.y - robot.currPowers.x - robot.currPowers.heading;
+        double rawFL = -robot.currDrivePowers.y + robot.currDrivePowers.x + robot.currDrivePowers.heading;
+        double rawFR = -robot.currDrivePowers.y + robot.currDrivePowers.x - robot.currDrivePowers.heading;
+        double rawBL = -robot.currDrivePowers.y - robot.currDrivePowers.x + robot.currDrivePowers.heading;
+        double rawBR = -robot.currDrivePowers.y - robot.currDrivePowers.x - robot.currDrivePowers.heading;
         List<Double> powers = Arrays.asList(rawFL, rawFR, rawBL, rawBR);
 
         double absMax = Math.max(Math.abs(Collections.max(powers)), Math.abs(Collections.min(powers)));

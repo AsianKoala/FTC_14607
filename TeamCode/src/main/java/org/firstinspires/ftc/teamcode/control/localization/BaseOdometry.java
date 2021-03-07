@@ -16,14 +16,18 @@ public abstract class BaseOdometry {
     private static final double TICKS_PER_INCH = 1103.8839;
     private static final double LATERAL_DISTANCE = 10;
     private static final double HORIZONTAL_WHEEL_OFFSET = 10;
-    private final DecompositionSolver forwardSolver;
-    private ArrayList<SignaturePose> relativePoseDeltas;
+
+
     protected Pose wheelDeltaScaled;
     protected Pose currPoseDelta;
     protected Pose currPose;
+
     private Pose currVelocity;
-    private Pose relativePoseDelta;
     private Pose prevWheelPositions;
+    private final ArrayList<SignaturePose> prevPoses;
+    private Pose robotPoseDelta;
+
+    private final DecompositionSolver forwardSolver;
 
     public BaseOdometry(Pose startPose) {
         setStartingPose(startPose);
@@ -48,6 +52,9 @@ public abstract class BaseOdometry {
         }
 
         forwardSolver = new LUDecomposition(inverseMatrix).getSolver();
+        robotPoseDelta = new Pose(0,0,0);
+        prevPoses = new ArrayList<>();
+        prevPoses.add(new SignaturePose(robotPoseDelta, System.currentTimeMillis()));
     }
 
     protected Pose calcPoseDeltas(Pose deltas) {
@@ -66,11 +73,13 @@ public abstract class BaseOdometry {
     }
 
     private void calcRobotVel() {
-        if (relativePoseDeltas.size() > 1) {
-            SignaturePose oldPos = relativePoseDeltas.get(relativePoseDeltas.size() - 2);
-            SignaturePose newPos = relativePoseDeltas.get(relativePoseDeltas.size() - 1);
-            double timeDiff = (newPos.signature - oldPos.signature) / 1000.0;
-            currVelocity = newPos.subtract(oldPos).multiply(new Pose(1 / timeDiff));
+        if (prevPoses.size() > 1) {
+
+            int oldIndex = Math.max(0, prevPoses.size() - 2 - 1);
+            SignaturePose old = prevPoses.get(oldIndex);
+            SignaturePose cur = prevPoses.get(prevPoses.size() - 1);
+            double scale = (double) (cur.sign - old.sign) / (1000);
+            currVelocity = new Pose(cur.subtract(old).multiply(new Pose(1 / scale)));
         } else {
             currVelocity = new Pose(0, 0, 0);
         }
@@ -84,18 +93,22 @@ public abstract class BaseOdometry {
 
     protected abstract void robotPoseUpdate();
 
-    public Pose[] update(Pose wheelPositions, Pose wheelVel) { // todo fix vel
+    public Pose[] update(Pose wheelPositions) { // todo fix vel
         wheelPositions.subtract(prevWheelPositions);
         wheelDeltaScaled = wheelPositions.divide(new Pose(TICKS_PER_INCH));
 
         currPoseDelta = calcPoseDeltas(wheelDeltaScaled);
 
-        relativePoseDelta = relativePoseDelta.add(currPoseDelta);
-        relativePoseDeltas.add(new SignaturePose(relativePoseDelta.x, relativePoseDelta.y, relativePoseDelta.heading, OpModeClock.getElapsedStartTime()));
-
+        Pose oldPose = currPose;
         robotPoseUpdate();
         currPose.wrap();
+
+        Pose deltaVals = currPose.subtract(oldPose);
+        robotPoseDelta = new Pose(robotPoseDelta.add(deltaVals));
+
+        prevPoses.add(new SignaturePose(currPose, OpModeClock.getElapsedStartTime()));
         calcRobotVel();
+
         prevWheelPositions = new Pose(currPose);
         return new Pose[]{currPose, currVelocity, currPoseDelta};
     }

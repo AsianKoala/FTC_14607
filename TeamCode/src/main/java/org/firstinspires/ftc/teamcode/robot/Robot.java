@@ -24,7 +24,7 @@ public class Robot {
     public Pose currPose;
     public Pose currVel;
     public Pose currPoseDelta;
-    public Pose currPowers;
+    public Pose currDrivePowers;
 
     private final FtcDashboard dashboard;
     public TelemetryPacket packet;
@@ -62,7 +62,7 @@ public class Robot {
         odometry = new EulerIntegration(startPose);
         currPose = startPose;
         currVel = new Pose();
-        currPowers = new Pose();
+        currDrivePowers = new Pose();
 
         driveHub = hardwareMap.get(ExpansionHubEx.class, "driveHub");
         otherHub = hardwareMap.get(ExpansionHubEx.class, "otherHub");
@@ -85,12 +85,8 @@ public class Robot {
         Pose[] odomPoses = odometry.update(new Pose(
                 driveBulkData.getMotorCurrentPosition(LEFT_ENCODER_PORT),
                 driveBulkData.getMotorCurrentPosition(RIGHT_ENCODER_PORT),
-                driveBulkData.getMotorCurrentPosition(PERP_ENCODER_PORT)),
-                new Pose(
-                        driveBulkData.getMotorVelocity(LEFT_ENCODER_PORT),
-                        driveBulkData.getMotorVelocity(RIGHT_ENCODER_PORT),
-                        driveBulkData.getMotorVelocity(PERP_ENCODER_PORT)
-        ));
+                driveBulkData.getMotorCurrentPosition(PERP_ENCODER_PORT))
+        );
 
         currPose = odomPoses[0];
         currVel = odomPoses[1];
@@ -104,14 +100,7 @@ public class Robot {
             PurePursuitController.followPath(this);
 
         // dashboard telemetry
-        packet = new TelemetryPacket();
-        packet.put("pose", currPose.toString());
-        packet.put("movement", currPowers.toString());
-        packet.put("velocity", currVel.toString());
-
-        packet.fieldOverlay()
-                .setFill("blue")
-                .fillCircle(currPose.x, currPose.y, 3);
+        updateTelemetry();
     }
 
     public void setPathCache(Path path) {
@@ -121,15 +110,12 @@ public class Robot {
         }
     }
 
-    public void updateDashboard() {
-        if(dashboard != null) {
-            packet.put("update time", System.nanoTime() - updateMarker);
-            dashboard.sendTelemetryPacket(packet);
-            updateMarker = System.nanoTime();
-        }
-    }
+    public void updateTelemetry() {
+        packet = new TelemetryPacket();
+        packet.put("pose", currPose.toString());
+        packet.put("movement", currDrivePowers.toString());
+        packet.put("velocity", currVel.toString());
 
-    public void updateDashboardPath() {
         double[] x = new double[fullPathCopy.size()];
         double[] y = new double[fullPathCopy.size()];
 
@@ -141,9 +127,16 @@ public class Robot {
         }
 
         packet.fieldOverlay()
+                .setFill("blue")
+                .fillCircle(currPose.x, currPose.y, 3)
                 .setStroke("red")
                 .setStrokeWidth(1)
                 .strokePolygon(x, y);
-    }
 
+        if(dashboard != null) {
+            packet.put("update time", System.nanoTime() - updateMarker);
+            dashboard.sendTelemetryPacket(packet);
+            updateMarker = System.nanoTime();
+        }
+    }
 }
