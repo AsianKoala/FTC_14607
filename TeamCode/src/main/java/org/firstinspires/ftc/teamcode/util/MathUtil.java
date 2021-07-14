@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import java.util.ArrayList;
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
-public class
-MathUtil {
+public class MathUtil {
     public static final double EPSILON = 1e-6;
 
-    public static double angleWrap(double angle){
+    public static double angleWrap(double angle) {
         while (angle<-Math.PI){
             angle += 2*Math.PI;
         }
@@ -18,95 +15,117 @@ MathUtil {
         return angle;
     }
 
-
-    public static Point clipToLine(double lineX1, double lineY1, double lineX2, double lineY2,
-                                   double robotX, double robotY){
-        if(lineX1 == lineX2){
-            lineX1 = lineX2 + 0.01;//nah
+    public static double wrapFull(double angle) {
+        while(angle<0) {
+            angle+= 2*Math.PI;
+        } while(angle>2*Math.PI) {
+            angle -= 2*Math.PI;
         }
-        if(lineY1 == lineY2){
-            lineY1 = lineY2 + 0.01;//nah
-        }
-
-        //calculate the slope of the line
-        double m1 = (lineY2 - lineY1)/(lineX2 - lineX1);
-        //calculate the slope perpendicular to this line
-        double m2 = (lineX1 - lineX2)/(lineY2 - lineY1);
-
-        //clip the robot's position to be on the line
-        double xClipedToLine = ((-m2*robotX) + robotY + (m1 * lineX1) - lineY1)/(m1-m2);
-        double yClipedToLine = (m1 * (xClipedToLine - lineX1)) + lineY1;
-        return new Point(xClipedToLine,yClipedToLine);
+        return angle;
     }
 
-    public static ArrayList<Point> lineCircleIntersection(double circleX, double circleY, double r,
-                                                          double lineX1, double lineY1,
-                                                          double lineX2, double lineY2){
-        //make sure the points don't exactly line up so the slopes work
-        if(Math.abs(lineY1- lineY2) < 0.003){
-            lineY1 = lineY2 + 0.003;
+    public static boolean epsilonEquals(double d1, double d2) {
+        if (Double.isInfinite(d1)) {
+            // Infinity - infinity is NaN, so we need a special case
+            return d1 == d2;
+        } else {
+            return Math.abs(d1 - d2) < EPSILON;
         }
-        if(Math.abs(lineX1- lineX2) < 0.003){
-            lineX1 = lineX2 + 0.003;
+    }
+
+    public static boolean angleThresh(double a, double b) {
+        return Math.abs(angleWrap(a - b)) < Math.toRadians(2);
+    }
+
+    public static double[] lineEquation(Point p1, double slope) {
+        double m;
+        double intercept;
+        if(Double.isInfinite(slope)) {
+            m = Double.NEGATIVE_INFINITY;  // vert line
+            intercept = p1.x;
+        } else {
+            m = slope;
+            intercept = p1.y = p1.x * m;
         }
 
-        //calculate the slope of the line
-        double m1 = (lineY2 - lineY1)/(lineX2-lineX1);
+        return new double[] {m, intercept};
+    }
 
-        //the first coefficient in the quadratic
-        double quadraticA = 1.0 + pow(m1,2);
+    public static Point perpPointIntersection(Point start, double slope, Point p) {
+        double[] equation = lineEquation(start, slope);
+        double[] newEquation = lineEquation(p, -1/slope);
 
-        //shift one of the line's points so it is relative to the circle
-        double x1 = lineX1-circleX;
-        double y1 = lineY1-circleY;
+        Point intersect;
+        if(Double.isInfinite(equation[0]))
+            intersect = new Point(equation[1], equation[1] * newEquation[0] + newEquation[1]);
+        else if(Double.isInfinite(newEquation[0]))
+            intersect = new Point(newEquation[1], equation[1] * equation[0] + equation[1]);
+        else
+            intersect = new Point(
+                    (newEquation[1] - equation[1]) / (equation[0] - newEquation[0]),
+                    ((newEquation[1] - equation[1]) / (equation[0] - newEquation[0])) * equation[0] + equation[1]
+            );
 
+        return intersect;
+    }
 
-        //the second coefficient in the quadratic
-        double quadraticB = (2.0 * m1 * y1) - (2.0 * pow(m1,2) * x1);
+    public static int sgn(double a) {
+        return a > 0 ? 1 : -1;
+    }
 
-        //the third coefficient in the quadratic
-        double quadraticC = ((pow(m1,2)*pow(x1,2)) - (2.0*y1*m1*x1) + pow(y1,2)-pow(r,2));
+    /**
+     * Returns the closest intersection point to the end of a line segment created through the intersection of a line and circle.
+     * The main purpose of this is for pure pursuit but I'll prob implement it into our goToPosition algorithm.
+     * For pure pursuit use, c would be the clipped robot point, startPoint would be the current segment start point,
+     * endPoint would be the current segment end point, and radius would be our follow distance
+     *
+     * @param c          center point of circle
+     * @param startPoint start point of the line segment
+     * @param endPoint   end point of the line segment
+     * @param radius     radius of the circle
+     * @return intersection point closest to endPoint
+     * @see <a href="https://mathworld.wolfram.com/Circle-LineIntersection.html">https://mathworld.wolfram.com/Circle-LineIntersection.html</a>
+     */
+    public static Point circleLineIntersection(Point c, Point startPoint, Point endPoint, double radius) {
+        Point start = new Point(startPoint.x - c.x, startPoint.y - c.y);
+        Point end = new Point(endPoint.x - c.x, endPoint.y - c.y);
 
+        double dx = end.x - start.x;
+        double dy = end.y - start.y;
+        double dr = Math.hypot(dx, dy);
+        double D = start.x * end.y - end.x * start.y;
+        double discriminant = radius * radius * dr * dr - D * D;
 
-        ArrayList<Point> allPoints = new ArrayList<>();
+        // discriminant = 0 for 1 intersection, >0 for 2
+        ArrayList<Point> intersections = new ArrayList<>();
+        double xLeft = D * dy;
+        double yLeft = -D * dx;
+        double xRight = sgn(dy) * dx * Math.sqrt(discriminant);
+        double yRight = Math.abs(dy) * Math.sqrt(discriminant);
+        double div = dr * dr;
 
+        if (discriminant == 0) {
+            intersections.add(new Point(xLeft / div, yLeft / div));
+        } else {
+            // add 2 points, one with positive right side and one with negative right side
+            intersections.add(new Point(
+                    (xLeft + xRight) / div,
+                    (yLeft + yRight) / div
+            ));
 
-
-        //this may give an error so we use a try catch
-        try{
-            //now solve the quadratic equation given the coefficients
-            double xRoot1 = (-quadraticB + sqrt(pow(quadraticB,2) - (4.0 * quadraticA * quadraticC)))/(2.0*quadraticA);
-
-            //we know the line equation so plug into that to get root
-            double yRoot1 = m1 * (xRoot1 - x1) + y1;
-
-
-            //now we can add back in translations
-            xRoot1 += circleX;
-            yRoot1 += circleY;
-
-            //make sure it was within range of the segment
-            double minX = Math.min(lineX1, lineX2);
-            double maxX = Math.max(lineX1, lineX2);
-            if(xRoot1 > minX && xRoot1 < maxX){
-                allPoints.add(new Point(xRoot1,yRoot1));
-            }
-
-            //do the same for the other root
-            double xRoot2 = (-quadraticB - sqrt(pow(quadraticB,2) - (4.0 * quadraticA * quadraticC)))/(2.0*quadraticA);
-
-            double yRoot2 = m1 * (xRoot2 - x1) + y1;
-            //now we can add back in translations
-            xRoot2 += circleX;
-            yRoot2 += circleY;
-
-            //make sure it was within range of the segment
-            if(xRoot2 > minX && xRoot2 < maxX){
-                allPoints.add(new Point(xRoot2,yRoot2));
-            }
-        }catch(Exception e){
-            //if there are no roots
+            intersections.add(new Point(
+                    (xLeft - xRight) / div,
+                    (yLeft - yRight) / div
+            ));
         }
-        return allPoints;
+
+        Point closest = new Point(-10000, -10000);
+        for (Point p : intersections) { // add circle center offsets
+            p.x += c.x;
+            p.y += c.y;
+            if (p.distance(endPoint) < closest.distance(endPoint))
+                closest = p;
+        }
+        return closest;
     }
 }
