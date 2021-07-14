@@ -15,12 +15,12 @@ import org.firstinspires.ftc.teamcode.robot.DriveTrain;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.util.OpModeClock;
 import org.firstinspires.ftc.teamcode.util.Pose;
+import org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 @Config
 public abstract class Robot extends TunableOpMode {
@@ -37,7 +37,7 @@ public abstract class Robot extends TunableOpMode {
     public long updateMarker;
 
     public Path pathCache;
-    public LinkedList<PathPoints.BasePathPoint> fullPathCopy;
+    public LinkedList<BasePathPoint> fullPathCopy;
 
     private BaseOdometry odometry;
     public RevBulkData driveBulkData;
@@ -160,6 +160,19 @@ public abstract class Robot extends TunableOpMode {
             dashboard.sendTelemetryPacket(packet);
             updateMarker = System.nanoTime();
         }
+    }
+
+    public Pose relVel() {
+        if(prevPos.size() < 2) {
+            return new Pose(0, 0, 0);
+        }
+
+        int oldIndex = Math.max(0, prevPos.size() - 10 - 1);
+        SignaturePose old = prevPos.get(oldIndex);
+        SignaturePose cur = prevPos.get(prevPos.size() - 1);
+
+        double scale = (double) (cur.sign - old.sign) / (1000);
+        return new Pose(cur.subtract(old).multiply(new Pose(1 / scale)));
     }
 
 }

@@ -15,7 +15,7 @@ public class MathUtil {
         return angle;
     }
 
-    public static double wrapFull(double angle) {
+    public static double unwrap(double angle) {
         while(angle<0) {
             angle+= 2*Math.PI;
         } while(angle>2*Math.PI) {
@@ -34,9 +34,8 @@ public class MathUtil {
     }
 
     public static boolean angleThresh(double a, double b) {
-        return Math.abs(angleWrap(a - b)) < Math.toRadians(2);
+        return Math.abs(MathUtil.angleWrap(a-b)) < Math.toRadians(0.5);
     }
-
     public static double[] lineEquation(Point p1, double slope) {
         double m;
         double intercept;
@@ -51,7 +50,7 @@ public class MathUtil {
         return new double[] {m, intercept};
     }
 
-    public static Point perpPointIntersection(Point start, double slope, Point p) {
+    public static Point clipIntersection1(Point start, double slope, Point p) {
         double[] equation = lineEquation(start, slope);
         double[] newEquation = lineEquation(p, -1/slope);
 
@@ -69,8 +68,36 @@ public class MathUtil {
         return intersect;
     }
 
+    public static double slop(Point p1, Point p2) {
+        return (p2.y-p1.y)/(p2.x-p1.x);
+    }
+    public static Point clipIntersection2(Point start, Point end, Point robot) {
+        if(start.y == end.y)
+            start.y = end.y + 0.01;
+        if(start.x == end.x)
+            end.x = end.x + 0.01;
+
+        double m1 = slop(start,end);
+        double m2 = -1.0/m1;
+        double xClip = ((-m2*robot.x) + robot.y + (m1 * start.x) - start.y) / (m1 - m2);
+        double yClip = (m1 * (xClip - start.x)) + start.y;
+        return new Point(xClip, yClip);
+    }
+
     public static int sgn(double a) {
         return a > 0 ? 1 : -1;
+    }
+
+    public static Point extendLine(Point firstPoint, Point secondPoint, double distance) {
+        double lineAngle = Math.atan2(secondPoint.y - firstPoint.y, secondPoint.x - firstPoint.x);
+
+        double lineLength = Math.hypot(secondPoint.y - firstPoint.y, secondPoint.x - firstPoint.x);
+        double extendedLineLength = lineLength + distance;
+
+        Point extended = new Point(secondPoint);
+        extended.x = Math.cos(lineAngle) * extendedLineLength + firstPoint.x;
+        extended.y = Math.sin(lineAngle) * extendedLineLength + firstPoint.y;
+        return extended;
     }
 
     /**
@@ -79,16 +106,16 @@ public class MathUtil {
      * For pure pursuit use, c would be the clipped robot point, startPoint would be the current segment start point,
      * endPoint would be the current segment end point, and radius would be our follow distance
      *
-     * @param c          center point of circle
+     * @param center          center point of circle
      * @param startPoint start point of the line segment
      * @param endPoint   end point of the line segment
      * @param radius     radius of the circle
      * @return intersection point closest to endPoint
      * @see <a href="https://mathworld.wolfram.com/Circle-LineIntersection.html">https://mathworld.wolfram.com/Circle-LineIntersection.html</a>
      */
-    public static Point circleLineIntersection(Point c, Point startPoint, Point endPoint, double radius) {
-        Point start = new Point(startPoint.x - c.x, startPoint.y - c.y);
-        Point end = new Point(endPoint.x - c.x, endPoint.y - c.y);
+    public static Point circleLineIntersection(Point center, Point startPoint, Point endPoint, double radius) {
+        Point start = new Point(startPoint.x - center.x, startPoint.y - center.y);
+        Point end = new Point(endPoint.x - center.x, endPoint.y - center.y);
 
         double dx = end.x - start.x;
         double dy = end.y - start.y;
@@ -121,11 +148,10 @@ public class MathUtil {
 
         Point closest = new Point(-10000, -10000);
         for (Point p : intersections) { // add circle center offsets
-            p.x += c.x;
-            p.y += c.y;
+            p.x += center.x;
+            p.y += center.y;
             if (p.distance(endPoint) < closest.distance(endPoint))
                 closest = p;
         }
         return closest;
-    }
-}
+    }}

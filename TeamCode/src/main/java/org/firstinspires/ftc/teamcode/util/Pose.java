@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import android.annotation.SuppressLint;
-
 import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
 
 public class Pose extends Point {
@@ -62,9 +60,9 @@ public class Pose extends Point {
         return Math.sin(heading);
     }
 
-    public Pose relDistance(Point target) {
+    public Pose relVals(Point target) {
         double distance = target.subtract(this).hypot();
-        double rH = MathUtil.wrapFull(subtract(target).atan() - heading - Math.toRadians(90));
+        double rH = MathUtil.unwrap(subtract(target).atan() - heading - Math.toRadians(90));
         double rX = distance * Math.cos(rH);
         double rY = distance * Math.sin(rH);
         return new Pose(rX, rY, rH);
