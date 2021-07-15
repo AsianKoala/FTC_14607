@@ -18,3 +18,8 @@ shit to work on in order:------------------------------------------
     - odometry setup
     - opmodes from robot class
     - all of the path shit ready to go
+
+
+teleop init
+
+robotCache.addStopEvent()

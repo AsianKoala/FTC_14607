@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.controllers;
 
-import org.firstinspires.ftc.teamcode.opmodes.Robot;
+import org.firstinspires.ftc.teamcode.control.system.Robot;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;

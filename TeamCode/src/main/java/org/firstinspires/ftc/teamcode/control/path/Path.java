@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 import org.firstinspires.ftc.teamcode.control.path.builders.*;
-import org.firstinspires.ftc.teamcode.opmodes.Robot;
+import org.firstinspires.ftc.teamcode.control.system.Robot;
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
 
 public class Path extends LinkedList<BasePathPoint> {

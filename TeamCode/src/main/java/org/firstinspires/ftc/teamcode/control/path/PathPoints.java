@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.path;
 
+import android.annotation.SuppressLint;
+
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
@@ -59,6 +61,7 @@ public class PathPoints {
             return new Object[] {lateTurnPoint, isOnlyTurn, isStop,  lockedHeading, isOnlyFuncs};
         }
 
+        @SuppressLint("DefaultLocale")
         @Override
         public String toString() {
             return String.format("%s, %.1f, %.1f, %.1f", signature, x, y, followDistance);

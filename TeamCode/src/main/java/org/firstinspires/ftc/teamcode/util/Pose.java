@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import android.annotation.SuppressLint;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
 import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
 
 public class Pose extends Point {
@@ -12,6 +16,10 @@ public class Pose extends Point {
 
     public Pose(Pose p) {
         this(p.x, p.y, p.heading);
+    }
+
+    public Pose(Pose2d pose2d) {
+        this(pose2d.getX(), pose2d.getY(), pose2d.getHeading());
     }
 
     public Pose() {
@@ -51,7 +59,6 @@ public class Pose extends Point {
         return new Pose(super.pow(this), Math.pow(heading, p.heading));
     }
 
-
     public double cos() {
         return Math.cos(heading);
     }
@@ -61,27 +68,26 @@ public class Pose extends Point {
     }
 
     public Pose relVals(Point target) {
-        double distance = target.subtract(this).hypot();
-        double rH = MathUtil.unwrap(subtract(target).atan() - heading - Math.toRadians(90));
-        double rX = distance * Math.cos(rH);
-        double rY = distance * Math.sin(rH);
-        return new Pose(rX, rY, rH);
+        double dist = distance(target);
+        double abs_angle = target.subtract(this).atan();
+        double rel_angle = angleWrap(abs_angle - heading + Math.toRadians(90));
+        double r_x = Math.cos(rel_angle) * dist;
+        double r_y = Math.sin(rel_angle) * dist;
+        return new Pose(r_x, r_y, 0); // return 0 just to kmake sure neer to use it kek
     }
 
-    // only setters, return ref
     public Pose wrap() {
-        heading = MathUtil.angleWrap(heading);
-        return this;
+        return new Pose(x, y, MathUtil.angleWrap(heading));
     }
 
-    public Pose set(Pose p) {
+    public void set(Pose p) {
         x = p.x;
         y = p.y;
         heading = p.heading;
-        return this;
     }
 
 
+    @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
         return String.format("(%.1f, %.1f, %.1f)", x, y, heading);
