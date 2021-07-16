@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.control.localization.WorkingOdometry;
 import org.firstinspires.ftc.teamcode.control.path.Path;
 import org.firstinspires.ftc.teamcode.control.path.PathPoints;
 import org.firstinspires.ftc.teamcode.util.AllianceSide;
+import org.firstinspires.ftc.teamcode.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.OpModeClock;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -96,14 +98,13 @@ public abstract class Robot extends TunableOpMode {
 
     @Override
     public void loop() {
-        telemetry.clear();
-        masterBulkData = masterHub.getBulkInputData();
-        slaveBulkData = slaveHub.getBulkInputData();
-
-        odometry.realUpdate()
+        updateDataInputComponents();
+        updateTelemetry();
     }
 
-    public void updateOdometryComponents() {
+    public void updateDataInputComponents() {
+        masterBulkData = masterHub.getBulkInputData();
+        slaveBulkData = slaveHub.getBulkInputData();
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
         odometry.realUpdate(MathUtil.angleWrap(lastHeading + startPose().heading));
         telemetry.addLine("" + odometry);
@@ -111,6 +112,7 @@ public abstract class Robot extends TunableOpMode {
     }
 
     public void updateTelemetry() {
+        telemetry.clear();
         packet = new TelemetryPacket();
         packet.put("pose", currPose.toString());
         packet.put("movement", currDrivePowers.toString());
