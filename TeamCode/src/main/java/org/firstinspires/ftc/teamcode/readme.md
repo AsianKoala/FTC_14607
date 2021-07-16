@@ -1,14 +1,5 @@
 follow me on [MAL](https://myanimelist.net/profile/asiank0ala) :flushed:
 
-shit i deleted
-
-t265 camera wrapper  
-runge katta integration odometry  
-opmodeclock  
-hardware  
-drivetrain  
-basically all of the robot class  
-
 
 shit to work on in order:------------------------------------------
 1. basic caching flagging system

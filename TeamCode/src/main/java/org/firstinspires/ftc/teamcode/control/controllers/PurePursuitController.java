@@ -81,9 +81,9 @@ public class PurePursuitController {
         System.out.println("currpose: " + robot.currPose);
         System.out.println("target: " + target.toString());
         System.out.println("finalTarget: " + (finalTarget == null ? "" : finalTarget));
-        System.out.println("curr vel: " + robot.relVel());
-        System.out.println("vel hypot: " + robot.relVel().hypot());
-        robot.currDrivePowers.set(powerPose);
+        System.out.println("curr vel: " + robot.currVel);
+        System.out.println("vel hypot: " + robot.currVel.hypot());
+        robot.driveTrain.powers.set(powerPose);
 
     }
 

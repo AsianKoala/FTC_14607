@@ -11,9 +11,6 @@ import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-
-import org.firstinspires.ftc.teamcode.util.MathUtil;
-import org.firstinspires.ftc.teamcode.util.OpModeClock;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.SignaturePose;
 
@@ -96,7 +93,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
         setPoseEstimate(new Pose2d(startPose.x, startPose.y, startPose.heading));
         currVel = new Pose();
         prevPoses = new ArrayList<>();
-        prevPoses.add(new SignaturePose(startPose, OpModeClock.getElapsedInitTime()));
+        prevPoses.add(new SignaturePose(startPose, System.currentTimeMillis()));
     }
 
     public static double encoderTicksToInches(double ticks) {
@@ -135,7 +132,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
         super.update();
         currPose.heading = angle;
         currPose = new Pose(getPoseEstimate());
-        prevPoses.add(new SignaturePose(currPose, OpModeClock.getElapsedInitTime()));
+        prevPoses.add(new SignaturePose(currPose, System.currentTimeMillis()));
         if (prevPoses.size() > 1) {
             int oldIndex = Math.max(0, prevPoses.size() - 6);
             SignaturePose old = prevPoses.get(oldIndex);
@@ -145,6 +142,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
         }
         return new Pose[]{currPose, currVel};
     }
+
 
 
     @SuppressLint("DefaultLocale")
