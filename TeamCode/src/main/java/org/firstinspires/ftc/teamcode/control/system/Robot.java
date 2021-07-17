@@ -32,7 +32,7 @@ public abstract class Robot extends TunableOpMode {
     public abstract Pose startPose();
     public abstract AllianceSide allianceSide();
 
-    public Pose currPose;
+    public static Pose currPose;
     public Pose currVel;
 
     public Path pathCache;

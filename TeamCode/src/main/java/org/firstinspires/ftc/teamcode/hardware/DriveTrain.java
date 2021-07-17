@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 public class DriveTrain extends Hardware {
 
-    public Pose powers;
+    public static Pose powers;
     private final ExpansionHubMotor[] motors;
     public DriveTrain(ExpansionHubMotor frontLeft, ExpansionHubMotor frontRight, ExpansionHubMotor backLeft, ExpansionHubMotor backRight) {
         motors = new ExpansionHubMotor[]{frontLeft, frontRight, backLeft, backRight};

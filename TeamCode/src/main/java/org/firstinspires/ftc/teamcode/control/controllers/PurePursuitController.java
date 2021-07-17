@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.controllers;
 
 import org.firstinspires.ftc.teamcode.control.system.Robot;
+import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -23,7 +24,7 @@ public class PurePursuitController {
 
 
         if(finalTarget == null) {
-            Pose relVals = robot.currPose.relVals(target);
+            Pose relVals = Robot.currPose.relVals(target);
 
             double v = relVals.abs().x + relVals.abs().y;
             powerPose.x = relVals.abs().x / 30;
@@ -34,19 +35,19 @@ public class PurePursuitController {
             powerPose.set(powerPose);
 
             if(target.lateTurnPoint == null) {
-                powerPose.heading = getDesiredAngle(robot.currPose, target, pathPointType.isLocked());
+                powerPose.heading = getDesiredAngle(Robot.currPose, target, pathPointType.isLocked());
             } else {
-                if(start.distance(robot.currPose) > start.distance(target.lateTurnPoint)) {
-                    powerPose.heading = getDesiredAngle(robot.currPose, target, true);
+                if(start.distance(Robot.currPose) > start.distance(target.lateTurnPoint)) {
+                    powerPose.heading = getDesiredAngle(Robot.currPose, target, true);
                 } else {
-                    powerPose.heading = getDesiredAngle(robot.currPose, target, false);
+                    powerPose.heading = getDesiredAngle(Robot.currPose, target, false);
                 }
             }
 
             System.out.println("AS FAST AS POSSIBLE");
         } else {
 
-            Pose relVals = robot.currPose.relVals(finalTarget);
+            Pose relVals = Robot.currPose.relVals(finalTarget);
             Pose relLineVals = new Pose(start, start.subtract(finalTarget).atan()).relVals(new Pose(finalTarget, 0));
             relLineVals.set(relLineVals.abs());
 
@@ -61,15 +62,15 @@ public class PurePursuitController {
 
             powerPose.set(powerPose);
 
-            powerPose.heading = getDesiredAngle(robot.currPose, finalTarget, true);
+            powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, true);
 
             if(finalTarget.lateTurnPoint == null) {
-                powerPose.heading = getDesiredAngle(robot.currPose, finalTarget, pathPointType.isLocked());
+                powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, pathPointType.isLocked());
             } else {
-                if(start.distance(robot.currPose) > start.distance(finalTarget.lateTurnPoint)) {
-                    powerPose.heading = getDesiredAngle(robot.currPose, finalTarget, true);
+                if(start.distance(Robot.currPose) > start.distance(finalTarget.lateTurnPoint)) {
+                    powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, true);
                 } else {
-                    powerPose.heading = getDesiredAngle(robot.currPose, finalTarget, false);
+                    powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, false);
                 }
             }
 
@@ -78,12 +79,12 @@ public class PurePursuitController {
         }
 
 
-        System.out.println("currpose: " + robot.currPose);
+        System.out.println("currpose: " + Robot.currPose);
         System.out.println("target: " + target.toString());
         System.out.println("finalTarget: " + (finalTarget == null ? "" : finalTarget));
         System.out.println("curr vel: " + robot.currVel);
         System.out.println("vel hypot: " + robot.currVel.hypot());
-        robot.driveTrain.powers.set(powerPose);
+        DriveTrain.powers.set(powerPose);
 
     }
 
@@ -107,7 +108,7 @@ public class PurePursuitController {
     }
 
     public static void followPath(Robot robot, BasePathPoint start, BasePathPoint end, ArrayList<BasePathPoint> allPoints) {
-        Point clip = MathUtil.clipIntersection2(start, end, robot.currPose);
+        Point clip = MathUtil.clipIntersection2(start, end, Robot.currPose);
         Point intersectPoint = MathUtil.circleLineIntersection(clip, start, end, end.followDistance);
 
         BasePathPoint followPoint = new BasePathPoint(end);

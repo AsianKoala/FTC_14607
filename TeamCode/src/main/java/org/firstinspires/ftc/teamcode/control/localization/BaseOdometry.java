@@ -105,7 +105,7 @@ public abstract class BaseOdometry {
         Pose deltaVals = currPose.subtract(oldPose);
         robotPoseDelta = new Pose(robotPoseDelta.add(deltaVals));
 
-        prevPoses.add(new SignaturePose(currPose, OpModeClock.getElapsedStartTime()));
+        prevPoses.add(new SignaturePose(currPose, System.currentTimeMillis()));
         calcRobotVel();
 
         prevWheelPositions = new Pose(currPose);
