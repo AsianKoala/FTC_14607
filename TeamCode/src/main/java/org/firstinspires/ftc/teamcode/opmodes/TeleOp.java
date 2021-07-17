@@ -2,18 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import org.firstinspires.ftc.teamcode.control.system.Robot;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.util.AllianceSide;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 public class TeleOp extends Robot {
     @Override
     public Pose startPose() {
         return new Pose(0,0,0);
-    }
-
-    @Override
-    public AllianceSide allianceSide() {
-        return AllianceSide.BLUE;
     }
 
     @Override

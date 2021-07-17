@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.control.path.Path;
 import org.firstinspires.ftc.teamcode.control.path.PathPoints;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
-import org.firstinspires.ftc.teamcode.util.AllianceSide;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.Marker;
@@ -24,18 +23,20 @@ import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
+import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 @Config
 public abstract class Robot extends TunableOpMode {
 
     public abstract Pose startPose();
-    public abstract AllianceSide allianceSide();
 
     public static Pose currPose;
     public Pose currVel;
 
-    public Path pathCache;
+    public LinkedList<Path> pathCache;
     public ArrayList<PathPoints.BasePathPoint> fullPathCopy;
 
     public RevBulkData masterBulkData;
@@ -90,7 +91,7 @@ public abstract class Robot extends TunableOpMode {
         allHardware = new ArrayList<>();
         allHardware.add(driveTrain);
 
-        pathCache = new Path();
+        pathCache = new LinkedList<Path>();
 
         dashboard = FtcDashboard.getInstance();
         packet = null;
@@ -134,16 +135,21 @@ public abstract class Robot extends TunableOpMode {
         Marker.markEnd("dashboard");
     }
 
-    public void setPathCache(Path path) {
-        pathCache = path;
-        for (PathPoints.BasePathPoint pathPoint : pathCache) {
-            fullPathCopy.add(new PathPoints.BasePathPoint(pathPoint));
+    public void setPathCache(LinkedList<Path> pathList) {
+        pathCache.addAll(pathList);
+        for (Path p : pathCache) {
+            fullPathCopy.addAll(new Path(p));
         }
     }
 
     private void updatePath() {
-        if(pathCache.size() > 0)
-            pathCache.follow(this);
+        if(pathCache.size() != 0) {
+            pathCache.getFirst().follow(this);
+            if(pathCache.getFirst().finished()) {
+                pathCache.removeFirst();
+                DriveTrain.powers.set(new Pose());
+            }
+        }
     }
 
     private void updateHardware() {

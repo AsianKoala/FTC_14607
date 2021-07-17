@@ -61,14 +61,14 @@ public class Path extends LinkedList<BasePathPoint> {
 //            }
 
             if (target.isOnlyTurn != null) {
-                skip = MathUtil.angleThresh(robot.currPose.heading, target.lockedHeading);
+                skip = MathUtil.angleThresh(Robot.currPose.heading, target.lockedHeading);
             } else if(target.isStop != null){
-                skip = robot.currPose.distance(target) < 2; // test?
+                skip = Robot.currPose.distance(target) < 2; // test?
             } else {
-                skip = robot.currPose.distance(target) < target.followDistance;
+                skip = Robot.currPose.distance(target) < target.followDistance;
                 if(size()>1 && get(1).isStop != null) {
-                    skip = robot.currPose.distance(target) < 10;
-                    System.out.println("ffffffffffffffffff");
+                    skip = Robot.currPose.distance(target) < 10;
+                    //System.out.println("ffffffffffffffffff");
                 }
             }
 
@@ -83,13 +83,13 @@ public class Path extends LinkedList<BasePathPoint> {
             }
 
             if(finished()) return;
-            if (target.isStop != null && robot.currPose.distance(target) < target.followDistance) {
+            if (target.isStop != null && Robot.currPose.distance(target) < target.followDistance) {
                 PurePursuitController.goToPosition(robot, target, target, curr);
-                System.out.println("GOING TO FINAL STOP");
+               // System.out.println("GOING TO FINAL STOP");
             }
             else {
                 PurePursuitController.followPath(robot, curr, target, initialPoints);
-                System.out.println("following curve");
+                //System.out.println("following curve");
             }
         }
     }
