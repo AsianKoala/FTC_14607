@@ -37,9 +37,9 @@ public abstract class Robot extends TunableOpMode {
     public LinkedList<Path> pathCache;
     public ArrayList<PathPoints.BasePathPoint> fullPathCopy;
 
-//    public RevBulkData masterBulkData;
-//    public RevBulkData slaveBulkData;
-//    public WorkingOdometry odometry;
+    public RevBulkData masterBulkData;
+    public RevBulkData slaveBulkData;
+    public WorkingOdometry odometry;
 
     private FtcDashboard dashboard;
     public TelemetryPacket packet;
@@ -61,7 +61,7 @@ public abstract class Robot extends TunableOpMode {
     private double headingOffset;
 
     @Override
-    public void init() {
+    public void init () {
         Marker.markStart();
 
         imu = hardwareMap.get(BNO055IMUImpl.class, "imu");
@@ -72,10 +72,10 @@ public abstract class Robot extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
-//        odometry = new WorkingOdometry(hardwareMap, startPose());
-//
-//        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
-//        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
+        odometry = new WorkingOdometry(hardwareMap, startPose());
+
+        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
+        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
 
         frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
@@ -87,8 +87,8 @@ public abstract class Robot extends TunableOpMode {
         allHardware = new ArrayList<>();
         allHardware.add(driveTrain);
 
-        pathCache = new LinkedList<Path>();
-        fullPathCopy = new ArrayList<PathPoints.BasePathPoint>();
+        pathCache = new LinkedList<>();
+        fullPathCopy = new ArrayList<>();
 
         dashboard = FtcDashboard.getInstance();
         packet = null;
@@ -134,19 +134,23 @@ public abstract class Robot extends TunableOpMode {
 
     public void setPathCache(LinkedList<Path> pathList) {
         pathCache.addAll(pathList);
-        for (Path p : pathCache) {
-            fullPathCopy.addAll(new Path(p));
-        }
+        for(Path e : pathList)
+            fullPathCopy.addAll(e);
+    }
+
+    public void setDirectPath(Path e) {
+        pathCache.add(e);
+        fullPathCopy.addAll(e);
     }
 
     private void updatePath() {
-//        if(pathCache.size() != 0) {
-//            pathCache.getFirst().follow(this);
-//            if(pathCache.getFirst().finished()) {
-//                pathCache.removeFirst();
-//                DriveTrain.powers.set(new Pose());
-//            }
-//        }
+        if(pathCache.size() != 0) {
+            pathCache.getFirst().follow(this);
+            if(pathCache.getFirst().finished()) {
+                pathCache.removeFirst();
+                DriveTrain.powers.set(new Pose());
+            }
+        }
     }
 
     private void updateHardware() {
@@ -154,12 +158,12 @@ public abstract class Robot extends TunableOpMode {
     }
 
     private void updateDataInputComponents() {
-//        masterBulkData = masterHub.getBulkInputData();
-//        slaveBulkData = slaveHub.getBulkInputData();
+        masterBulkData = masterHub.getBulkInputData();
+        slaveBulkData = slaveHub.getBulkInputData();
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-//        Pose[] odomData = odometry.realUpdate(MathUtil.angleWrap(lastHeading + startPose().heading));
-//        currPose = odomData[0];
-//        currVel = odomData[1];
+        Pose[] odomData = odometry.realUpdate(MathUtil.angleWrap(lastHeading + startPose().heading));
+        currPose = odomData[0];
+        currVel = odomData[1];
         currPose = new Pose();
         currVel = new Pose();
     }
@@ -171,23 +175,24 @@ public abstract class Robot extends TunableOpMode {
         packet.put("pose", currPose.toString());
         packet.put("velocity vectors", currVel.toString());
 
-//        double[] x = new double[fullPathCopy.size()];
-//        double[] y = new double[fullPathCopy.size()];
-//
-//        int index = 0;
-//        for(PathPoints.BasePathPoint p : fullPathCopy) {
-//            x[index] = p.x;
-//            y[index] = p.y;
-//            index++;
-//        }
-//        allHardware.forEach(h -> packet.putAll(h.update()));
-//
-//        packet.fieldOverlay()
-//                .setFill("blue")
-//                .fillCircle(currPose.x, currPose.y, 3)
-//                .setStroke("red")
-//                .setStrokeWidth(1)
-//                .strokePolygon(x, y);
+        packet.fieldOverlay()
+                .setFill("blue")
+                .fillCircle(currPose.x, currPose.y, 3)
+                .setStroke("red")
+                .setStrokeWidth(1);
+
+        if(!pathCache.isEmpty()) {
+            double[] x = new double[fullPathCopy.size()];
+            double[] y = new double[fullPathCopy.size()];
+
+            int index = 0;
+            for(PathPoints.BasePathPoint p : fullPathCopy) {
+                x[index] = p.x;
+                y[index] = p.y;
+                index++;
+            }
+            packet.fieldOverlay().strokePolygon(x,y);
+        }
     }
 
     private void updateDashboard() {

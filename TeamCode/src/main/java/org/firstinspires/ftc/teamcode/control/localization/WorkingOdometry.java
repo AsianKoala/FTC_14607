@@ -89,7 +89,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
         parallelEncoder.setDirection(Encoder.Direction.REVERSE);
         perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
 
-        currPose.set(startPose);
+        currPose = new Pose(startPose);
         setPoseEstimate(new Pose2d(startPose.x, startPose.y, startPose.heading));
         currVel = new Pose();
         prevPoses = new ArrayList<>();

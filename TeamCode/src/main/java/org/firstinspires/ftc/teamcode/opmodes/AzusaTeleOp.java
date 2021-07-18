@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 @TeleOp
-public class MainTeleOp extends Robot {
+public class AzusaTeleOp extends Robot {
     @Override
     public Pose startPose() {
         return new Pose(0,0,0);
@@ -21,9 +21,9 @@ public class MainTeleOp extends Robot {
 
     private void controlGamepad() {
         if(pathCache.isEmpty()) {
-            double driveScale = 0.5 - (gamepad1.left_bumper ? 0.2 : 0);
+            double driveScale = 0.65 - (gamepad1.left_bumper ? 0.3 : 0);
             DriveTrain.powers.set(new Pose(
-                    -gamepad1.left_stick_y * driveScale * 0.75,
+                    -gamepad1.left_stick_y * driveScale,
                     gamepad1.left_stick_x * driveScale,
                     -gamepad1.right_stick_x * driveScale
             ));

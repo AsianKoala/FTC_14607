@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 
 @Autonomous
-public class Auto extends BaseAuto {
+public class AzusaAuto extends BaseAuto {
     @Override
     public LinkedList<Path> pathList() {
         LinkedList<Path> returnList = new LinkedList<>();
