@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.control.path.Path;
 import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder;
 import org.firstinspires.ftc.teamcode.control.system.BaseAuto;
@@ -8,6 +10,7 @@ import java.util.LinkedList;
 
 import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 
+@Autonomous
 public class Auto extends BaseAuto {
     @Override
     public LinkedList<Path> pathList() {

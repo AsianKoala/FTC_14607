@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.control.system.Robot;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
-public class TeleOp extends Robot {
+@TeleOp
+public class MainTeleOp extends Robot {
     @Override
     public Pose startPose() {
         return new Pose(0,0,0);

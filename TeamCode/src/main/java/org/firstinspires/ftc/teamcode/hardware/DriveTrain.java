@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 public class DriveTrain extends Hardware {
 
-    public static Pose powers;
+    public static Pose powers = new Pose();
     private final ExpansionHubMotor[] motors;
     public DriveTrain(ExpansionHubMotor frontLeft, ExpansionHubMotor frontRight, ExpansionHubMotor backLeft, ExpansionHubMotor backRight) {
         motors = new ExpansionHubMotor[]{frontLeft, frontRight, backLeft, backRight};
@@ -29,10 +29,10 @@ public class DriveTrain extends Hardware {
     @SuppressLint("DefaultLocale")
     @Override
     public SortedMap<String, Object> update() {
-        double rawFrontLeft = -powers.y + powers.x - powers.heading;
-        double rawFrontRight =  powers.y - powers.x + powers.heading;
-        double rawBackLeft = -powers.y - powers.x - powers.heading;
-        double rawBackRight =  powers.y + powers.x + powers.heading;
+        double rawFrontLeft = powers.y + powers.x + powers.heading;
+        double rawFrontRight =  powers.y - powers.x - powers.heading;
+        double rawBackLeft = powers.y - powers.x + powers.heading;
+        double rawBackRight =  powers.y + powers.x - powers.heading;
         double[] rawPowers = {rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight};
 
         double maxAbsPower = Math.abs(rawFrontLeft);

@@ -23,8 +23,6 @@ import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
-import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -33,15 +31,15 @@ public abstract class Robot extends TunableOpMode {
 
     public abstract Pose startPose();
 
-    public static Pose currPose;
-    public Pose currVel;
+    public static Pose currPose = new Pose();
+    public static Pose currVel = new Pose();
 
     public LinkedList<Path> pathCache;
     public ArrayList<PathPoints.BasePathPoint> fullPathCopy;
 
-    public RevBulkData masterBulkData;
-    public RevBulkData slaveBulkData;
-    public WorkingOdometry odometry;
+//    public RevBulkData masterBulkData;
+//    public RevBulkData slaveBulkData;
+//    public WorkingOdometry odometry;
 
     private FtcDashboard dashboard;
     public TelemetryPacket packet;
@@ -74,17 +72,15 @@ public abstract class Robot extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
-        odometry = new WorkingOdometry(hardwareMap, startPose());
-        currPose = new Pose(startPose());
-        currVel = new Pose();
+//        odometry = new WorkingOdometry(hardwareMap, startPose());
+//
+//        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
+//        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
 
-        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
-        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
-
-        frontLeft = hardwareMap.get(ExpansionHubMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
-        backLeft = hardwareMap.get(ExpansionHubMotor.class, "backLeft");
-        backRight = hardwareMap.get(ExpansionHubMotor.class, "backRight");
+        frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
+        frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
+        backLeft = hardwareMap.get(ExpansionHubMotor.class, "BL");
+        backRight = hardwareMap.get(ExpansionHubMotor.class, "BR");
 
         driveTrain = new DriveTrain(frontLeft, frontRight, backLeft, backRight);
 
@@ -92,6 +88,7 @@ public abstract class Robot extends TunableOpMode {
         allHardware.add(driveTrain);
 
         pathCache = new LinkedList<Path>();
+        fullPathCopy = new ArrayList<PathPoints.BasePathPoint>();
 
         dashboard = FtcDashboard.getInstance();
         packet = null;
@@ -143,13 +140,13 @@ public abstract class Robot extends TunableOpMode {
     }
 
     private void updatePath() {
-        if(pathCache.size() != 0) {
-            pathCache.getFirst().follow(this);
-            if(pathCache.getFirst().finished()) {
-                pathCache.removeFirst();
-                DriveTrain.powers.set(new Pose());
-            }
-        }
+//        if(pathCache.size() != 0) {
+//            pathCache.getFirst().follow(this);
+//            if(pathCache.getFirst().finished()) {
+//                pathCache.removeFirst();
+//                DriveTrain.powers.set(new Pose());
+//            }
+//        }
     }
 
     private void updateHardware() {
@@ -157,12 +154,14 @@ public abstract class Robot extends TunableOpMode {
     }
 
     private void updateDataInputComponents() {
-        masterBulkData = masterHub.getBulkInputData();
-        slaveBulkData = slaveHub.getBulkInputData();
+//        masterBulkData = masterHub.getBulkInputData();
+//        slaveBulkData = slaveHub.getBulkInputData();
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        Pose[] odomData = odometry.realUpdate(MathUtil.angleWrap(lastHeading + startPose().heading));
-        currPose = odomData[0];
-        currVel = odomData[1];
+//        Pose[] odomData = odometry.realUpdate(MathUtil.angleWrap(lastHeading + startPose().heading));
+//        currPose = odomData[0];
+//        currVel = odomData[1];
+        currPose = new Pose();
+        currVel = new Pose();
     }
 
     private void updateTelemetry() {
@@ -172,23 +171,23 @@ public abstract class Robot extends TunableOpMode {
         packet.put("pose", currPose.toString());
         packet.put("velocity vectors", currVel.toString());
 
-        double[] x = new double[fullPathCopy.size()];
-        double[] y = new double[fullPathCopy.size()];
-
-        int index = 0;
-        for(PathPoints.BasePathPoint p : fullPathCopy) {
-            x[index] = p.x;
-            y[index] = p.y;
-            index++;
-        }
-        allHardware.forEach(h -> packet.putAll(h.update()));
-
-        packet.fieldOverlay()
-                .setFill("blue")
-                .fillCircle(currPose.x, currPose.y, 3)
-                .setStroke("red")
-                .setStrokeWidth(1)
-                .strokePolygon(x, y);
+//        double[] x = new double[fullPathCopy.size()];
+//        double[] y = new double[fullPathCopy.size()];
+//
+//        int index = 0;
+//        for(PathPoints.BasePathPoint p : fullPathCopy) {
+//            x[index] = p.x;
+//            y[index] = p.y;
+//            index++;
+//        }
+//        allHardware.forEach(h -> packet.putAll(h.update()));
+//
+//        packet.fieldOverlay()
+//                .setFill("blue")
+//                .fillCircle(currPose.x, currPose.y, 3)
+//                .setStroke("red")
+//                .setStrokeWidth(1)
+//                .strokePolygon(x, y);
     }
 
     private void updateDashboard() {
