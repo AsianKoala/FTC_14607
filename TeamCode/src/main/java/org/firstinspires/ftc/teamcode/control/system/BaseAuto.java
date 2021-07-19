@@ -12,11 +12,6 @@ public abstract class BaseAuto extends Robot {
     public abstract LinkedList<Path> pathList();
 
     @Override
-    public Pose startPose() {
-        return new Pose(0,0,0);
-    }
-
-    @Override
     public void init() {
         super.init();
         setPathCache(pathList());

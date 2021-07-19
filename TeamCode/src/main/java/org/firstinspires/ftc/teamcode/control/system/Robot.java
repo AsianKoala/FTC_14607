@@ -9,14 +9,15 @@ import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.teamcode.control.localization.WorkingOdometry;
+import org.firstinspires.ftc.teamcode.control.localization.Odometry;
+import org.firstinspires.ftc.teamcode.control.localization.OdometrySet;
 import org.firstinspires.ftc.teamcode.control.path.Path;
 import org.firstinspires.ftc.teamcode.control.path.PathPoints;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.util.Marker;
+import org.firstinspires.ftc.teamcode.util.Mar;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -32,14 +33,16 @@ public abstract class Robot extends TunableOpMode {
     public abstract Pose startPose();
 
     public static Pose currPose = new Pose();
-    public static Pose currVel = new Pose();
+//    public static Pose currVel = new Pose();
 
     public LinkedList<Path> pathCache;
     public ArrayList<PathPoints.BasePathPoint> fullPathCopy;
 
     public RevBulkData masterBulkData;
     public RevBulkData slaveBulkData;
-    public WorkingOdometry odometry;
+    public Odometry odometry;
+    public OdometrySet odometrySet;
+
 
     private FtcDashboard dashboard;
     public TelemetryPacket packet;
@@ -60,9 +63,16 @@ public abstract class Robot extends TunableOpMode {
     private BNO055IMU imu;
     private double headingOffset;
 
+    private Mar initTime;
+    private Mar init_loopTime;
+    private Mar loopTime;
+
     @Override
     public void init () {
-        Marker.markStart();
+        initTime = new Mar();
+        initTime.start();
+        init_loopTime = new Mar();
+        loopTime = new Mar();
 
         imu = hardwareMap.get(BNO055IMUImpl.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -72,7 +82,10 @@ public abstract class Robot extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
-        odometry = new WorkingOdometry(hardwareMap, startPose());
+        ExpansionHubMotor verticalOdometer = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
+        ExpansionHubMotor horizontalOdometer = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        odometrySet = new OdometrySet(verticalOdometer, horizontalOdometer);
+        odometry = new Odometry(startPose(), odometrySet);
 
         masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
         slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
@@ -93,43 +106,29 @@ public abstract class Robot extends TunableOpMode {
         dashboard = FtcDashboard.getInstance();
         packet = null;
         updateMarker = System.currentTimeMillis();
-
-        Marker.markEnd("init");
+        initTime.end();
     }
 
     @Override
     public void init_loop() {
-        Marker.markStart();
+        init_loopTime.start();
         updateTelemetry();
-        Marker.markEnd("init loop");
+        init_loopTime.end();
     }
 
     @Override
     public void start() {
-
+        telemetry.clear();
     }
 
     @Override
     public void loop() {
-        Marker.markStart();
+        loopTime.start();
         updateDataInputComponents();
-        Marker.markEnd("data input");
-
-        Marker.markStart();
         updateTelemetry();
-        Marker.markEnd("telemetry");
-
-        Marker.markStart();
         updatePath();
-        Marker.markEnd("path");
-
-        Marker.markStart();
-        updateHardware();
-        Marker.markEnd("hardware");
-
-        Marker.markStart();
         updateDashboard();
-        Marker.markEnd("dashboard");
+        loopTime.end();
     }
 
     public void setPathCache(LinkedList<Path> pathList) {
@@ -153,33 +152,34 @@ public abstract class Robot extends TunableOpMode {
         }
     }
 
-    private void updateHardware() {
-        allHardware.forEach(h -> packet.putAll(h.update()));
-    }
-
     private void updateDataInputComponents() {
         masterBulkData = masterHub.getBulkInputData();
         slaveBulkData = slaveHub.getBulkInputData();
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        Pose[] odomData = odometry.realUpdate(MathUtil.angleWrap(lastHeading + startPose().heading));
-        currPose = odomData[0];
-        currVel = odomData[1];
-        currPose = new Pose();
-        currVel = new Pose();
+        odometry.update(MathUtil.angleWrap(lastHeading + startPose().heading));
+        currPose = Odometry.currentPosition;
+
     }
 
     private void updateTelemetry() {
-        telemetry.clear();
         packet = new TelemetryPacket();
 
-        packet.put("pose", currPose.toString());
-        packet.put("velocity vectors", currVel.toString());
-
+        packet.put("x", currPose.x);
+        packet.put("y", currPose.y);
+        packet.put("h", Math.toDegrees(currPose.heading));
+        packet.put("odometry", odometry.toString());
+        packet.put("vector powers", DriveTrain.powers.toString());
+        allHardware.forEach(h -> packet.putAll(h.update()));
+        packet.put("init time", initTime.getTime());
+        packet.put("init loop time", init_loopTime.getTime());
+        packet.put("loop time", loopTime.getTime());
+        packet.put("path amts", pathCache.size());
+        packet.put("point amts", pathCache.getFirst().size());
+        packet.put("current path name", pathCache.getFirst().name);
+        packet.put("current target name", pathCache.getFirst().getFirst().signature);
         packet.fieldOverlay()
                 .setFill("blue")
-                .fillCircle(currPose.x, currPose.y, 3)
-                .setStroke("red")
-                .setStrokeWidth(1);
+                .fillCircle(currPose.y-72, -(currPose.x-72), 3);
 
         if(!pathCache.isEmpty()) {
             double[] x = new double[fullPathCopy.size()];
@@ -191,13 +191,15 @@ public abstract class Robot extends TunableOpMode {
                 y[index] = p.y;
                 index++;
             }
-            packet.fieldOverlay().strokePolygon(x,y);
+            packet.fieldOverlay()
+                    .setStroke("red")
+                    .setStrokeWidth(1)
+                    .strokePolygon(x,y);
         }
     }
 
     private void updateDashboard() {
         if(dashboard != null) {
-            packet.putAll(Marker.telemetryMap);
             packet.put("update time", System.nanoTime() - updateMarker);
             dashboard.sendTelemetryPacket(packet);
             updateMarker = System.nanoTime();

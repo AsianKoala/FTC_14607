@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
+import java.util.Arrays;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -51,14 +52,7 @@ public class DriveTrain extends Hardware {
 
         SortedMap<String, Object> telemetryPacket = new TreeMap<>();
         telemetryPacket.put("power vectors", powers.toString());
-        telemetryPacket.put("DriveTrain diagram", String.format(
-                "\n" +
-                        "(%.1f)---(%.1f)\n" +
-                        "|   Front   |\n" +
-                        "|           |\n" +
-                        "|           |\n" +
-                        "(%.1f)---(%.1f)\n"
-                , rawPowers[0], rawPowers[1], rawPowers[2], rawPowers[3]));
+        telemetryPacket.put("powers", Arrays.toString(rawPowers));
         return telemetryPacket;
     }
 }

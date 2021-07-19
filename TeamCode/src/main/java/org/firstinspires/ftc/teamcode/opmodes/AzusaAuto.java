@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.control.path.Path;
 import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder;
 import org.firstinspires.ftc.teamcode.control.system.BaseAuto;
+import org.firstinspires.ftc.teamcode.util.Pose;
 
 import java.util.LinkedList;
 
@@ -13,19 +14,24 @@ import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 @Autonomous
 public class AzusaAuto extends BaseAuto {
     @Override
+    public Pose startPose() {
+        return new Pose(85, 9, Math.PI);
+    }
+
+    @Override
     public LinkedList<Path> pathList() {
         LinkedList<Path> returnList = new LinkedList<>();
-        PathBuilder leftBall = new PathBuilder("left ball")
-                .addPoint(new BasePathPoint("start", 88, 150, 0))
-                .addPoint(new BasePathPoint("intermed 1", 45, 135, 35))
-                .addPoint(new BasePathPoint("left-left", 30, 90, 35))
-                .addPoint(new BasePathPoint("intermed 2", 45, 45, 35))
-                .addPoint(new BasePathPoint("left-bottom", 88, 30, 35))
-                .addPoint(new BasePathPoint("intermed 3", 130, 43, 35))
-                .addPoint(new BasePathPoint("left-right", 150, 90, 35))
-                .addPoint(new BasePathPoint("intermed 4", 130, 135, 35))
-                .addPoint(new BasePathPoint("start2", 88, 150, 35));
-        returnList.add(leftBall.build());
+        PathBuilder lCurve = new PathBuilder("lCurve")
+                .addPoint(new BasePathPoint("start", 85,9,0))
+                .addPoint(new BasePathPoint("", 61,15,14))
+                .addPoint(new BasePathPoint("",37, 24,14))
+                .addPoint(new BasePathPoint("", 24, 36, 14))
+                .addPoint(new BasePathPoint("", 15, 50,14))
+                .addPoint(new BasePathPoint("", 12, 64, 14))
+                .addPoint(new BasePathPoint("", 10, 80, 14))
+                .addPoint(new BasePathPoint("", 10, 104, 14));
+
+        returnList.add(lCurve.build());
         return returnList;
     }
 }
