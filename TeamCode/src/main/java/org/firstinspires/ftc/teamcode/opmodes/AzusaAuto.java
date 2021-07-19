@@ -23,9 +23,9 @@ public class AzusaAuto extends BaseAuto {
         LinkedList<Path> returnList = new LinkedList<>();
         PathBuilder lCurve = new PathBuilder("lCurve")
                 .addPoint(new BasePathPoint("start", 85,9,0))
-                .addPoint(new BasePathPoint("", 61,15,14))
-                .addPoint(new BasePathPoint("",37, 24,14))
-                .addPoint(new BasePathPoint("", 24, 36, 14))
+                .addPoint(new BasePathPoint("61", 61,15,14))
+                .addPoint(new BasePathPoint("37",37, 24,14))
+                .addPoint(new BasePathPoint("24", 24, 36, 14))
                 .addPoint(new BasePathPoint("", 15, 50,14))
                 .addPoint(new BasePathPoint("", 12, 64, 14))
                 .addPoint(new BasePathPoint("", 10, 80, 14))
