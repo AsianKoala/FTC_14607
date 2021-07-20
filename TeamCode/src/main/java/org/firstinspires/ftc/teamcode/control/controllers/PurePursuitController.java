@@ -49,7 +49,7 @@ public class PurePursuitController {
 
 
     private static double getDesiredAngle(Pose curr, BasePathPoint target, boolean locked) {
-        double forward = target.subtract(curr).atan();
+        double forward = target.minus(curr).atan();
         double back = forward + Math.PI;
         double angleToForward = MathUtil.angleWrap(forward - curr.heading);
         double angleToBack = MathUtil.angleWrap(back - curr.heading);
@@ -100,7 +100,7 @@ public class PurePursuitController {
         } else {
 
             Pose relVals = Robot.currPose.relVals(finalTarget);
-            Pose relLineVals = new Pose(start, start.subtract(finalTarget).atan()).relVals(new Pose(finalTarget, 0));
+            Pose relLineVals = new Pose(start, start.minus(finalTarget).atan()).relVals(new Pose(finalTarget, 0));
             relLineVals.set(relLineVals.abs());
 
             double smoothinx = relLineVals.x * 0.8 > 30 ? relLineVals.x * 0.8 : 30;

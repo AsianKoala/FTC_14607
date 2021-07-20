@@ -78,7 +78,7 @@ public abstract class BaseOdometry {
             SignaturePose old = prevPoses.get(oldIndex);
             SignaturePose cur = prevPoses.get(prevPoses.size() - 1);
             double scale = (double) (cur.sign - old.sign) / (1000);
-            currVelocity = new Pose(cur.subtract(old).multiply(new Pose(1 / scale)));
+            currVelocity = new Pose(cur.minus(old).multiply(new Pose(1 / scale)));
         } else {
             currVelocity = new Pose(0, 0, 0);
         }
@@ -93,7 +93,7 @@ public abstract class BaseOdometry {
     protected abstract void robotPoseUpdate();
 
     public Pose[] update(Pose wheelPositions) { // todo fix vel
-        wheelPositions.subtract(prevWheelPositions);
+        wheelPositions.minus(prevWheelPositions);
         wheelDeltaScaled = wheelPositions.divide(new Pose(TICKS_PER_INCH));
 
         currPoseDelta = calcPoseDeltas(wheelDeltaScaled);
@@ -102,7 +102,7 @@ public abstract class BaseOdometry {
         robotPoseUpdate();
         currPose.set(currPose.wrap());
 
-        Pose deltaVals = currPose.subtract(oldPose);
+        Pose deltaVals = currPose.minus(oldPose);
         robotPoseDelta = new Pose(robotPoseDelta.add(deltaVals));
 
         prevPoses.add(new SignaturePose(currPose, System.currentTimeMillis()));

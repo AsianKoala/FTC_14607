@@ -30,7 +30,7 @@ public class Point {
         return new Point(x+p.x, y+p.y);
     }
 
-    public Point subtract(Point p) {
+    public Point minus(Point p) {
         return add(new Point(-p.x, -p.y));
     }
 

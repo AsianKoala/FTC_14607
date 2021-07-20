@@ -35,7 +35,7 @@ public class Pose extends Point {
         return new Pose(super.add(p), heading+p.heading);
     }
 
-    public Pose subtract(Pose p) {
+    public Pose minus(Pose p) {
         return this.add(new Pose(-p.x, -p.y, -p.heading));
     }
 
@@ -68,12 +68,11 @@ public class Pose extends Point {
     }
 
     public Pose relVals(Point target) {
-        double dist = distance(target);
-        double abs_angle = target.subtract(this).atan();
-        double rel_angle = angleWrap(abs_angle - heading + Math.toRadians(90));
-        double r_x = Math.cos(rel_angle) * dist;
-        double r_y = Math.sin(rel_angle) * dist;
-        return new Pose(r_x, r_y, 0); // return 0 just to kmake sure neer to use it kek
+        double d = minus(target).hypot();
+        double r_h = target.minus(this).atan() - heading;
+        double r_x = -d * Math.sin(r_h);
+        double r_y = d * Math.cos(r_h);
+        return new Pose(r_x, r_y, r_h); // return 0 just to kmake sure neer to use it kek
     }
 
     public Pose wrap() {
