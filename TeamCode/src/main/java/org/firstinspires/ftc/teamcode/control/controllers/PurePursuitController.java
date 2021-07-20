@@ -144,8 +144,8 @@ public class PurePursuitController {
         followPoint.x = intersectPoint.x;
         followPoint.y = intersectPoint.y;
 
-//        goToPosition(robot, followPoint, end.isStop != null ? end : null, start);
-        oldGoToPosition(followPoint.x, followPoint.y, 0.7, Math.toRadians(90), 0.7, Math.toRadians(30), 0.6, true);
+        goToPosition(robot, followPoint, end.isStop != null ? end : null, start);
+//        oldGoToPosition(followPoint.x, followPoint.y, 0.7, Math.toRadians(90), 0.7, Math.toRadians(30), 0.6, true);
     }
 
 
