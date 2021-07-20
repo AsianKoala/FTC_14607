@@ -23,16 +23,16 @@ public class OldPPController {
 
     private static void allComponentsMinPower() {
         if(Math.abs(powers.x) > Math.abs(powers.y)){
-            if(Math.abs(powers.x) > Math.abs(powers.heading)){
+            if(Math.abs(powers.x) > Math.abs(powers.h)){
                 powers.x = minPower(powers.x,movement_x_min);
             }else{
-                powers.heading = minPower(powers.heading,movement_turn_min);
+                powers.h = minPower(powers.h,movement_turn_min);
             }
         }else{
-            if(Math.abs(powers.y) > Math.abs(powers.heading)){
+            if(Math.abs(powers.y) > Math.abs(powers.h)){
                 powers.y = minPower(powers.y, movement_y_min);
             }else{
-                powers.heading = minPower(powers.heading,movement_turn_min);
+                powers.h = minPower(powers.h,movement_turn_min);
             }
         }
     }
@@ -72,7 +72,7 @@ public class OldPPController {
         double distance = Math.hypot(targetX - currPose.x, targetY - currPose.y);
 
         double absoluteAngleToTargetPoint = Math.atan2(targetY - currPose.y, targetX - currPose.x);
-        double relativeAngleToTargetPoint = MathUtil.angleWrap(absoluteAngleToTargetPoint - (currPose.heading - Math.toRadians(90)));
+        double relativeAngleToTargetPoint = MathUtil.angleWrap(absoluteAngleToTargetPoint - (currPose.h - Math.toRadians(90)));
 
         double relativeXToPoint = Math.cos(relativeAngleToTargetPoint) * distance;
         double relativeYToPoint = Math.sin(relativeAngleToTargetPoint) * distance;
@@ -96,16 +96,16 @@ public class OldPPController {
         // turning and smoothing shit
         double relativeTurnAngle = prefAngle - Math.toRadians(90);
         double absolutePointAngle = absoluteAngleToTargetPoint + relativeTurnAngle;
-        double relativePointAngle = MathUtil.angleWrap(absolutePointAngle - currPose.heading);
+        double relativePointAngle = MathUtil.angleWrap(absolutePointAngle - currPose.h);
 
         double decelerateAngle = Math.toRadians(40);
 
         double movementTurnSpeed = (relativePointAngle/decelerateAngle) * turnSpeed;
 
-        powers.heading = Range.clip(movementTurnSpeed, -turnSpeed, turnSpeed);
+        powers.h = Range.clip(movementTurnSpeed, -turnSpeed, turnSpeed);
 
         if(distance < 3) {
-            powers.heading = 0;
+            powers.h = 0;
         }
 
         allComponentsMinPower();
@@ -114,13 +114,13 @@ public class OldPPController {
         // smoothing
         powers.x *= Range.clip((relativeAbsXToPoint/3.0),0,1);
         powers.y *= Range.clip((relativeAbsYToPoint/3.0),0,1);
-        powers.heading *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(2),0,1);
+        powers.h *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(2),0,1);
 
 
         //slow down if our point angle is off
         double errorTurnSoScaleDownMovement = Range.clip(1.0-Math.abs(relativePointAngle/slowDownTurnRadians),1.0-slowDownMovementFromTurnError,1);
         //don't slow down if we aren't trying to turn (distanceToPoint < 10)
-        if(Math.abs(powers.heading) < 0.00001){
+        if(Math.abs(powers.h) < 0.00001){
             errorTurnSoScaleDownMovement = 1;
         }
         powers.x *= errorTurnSoScaleDownMovement;
@@ -130,18 +130,18 @@ public class OldPPController {
 
     public static movementResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
         //now that we know what absolute angle to point to, we calculate how close we are to it
-        double relativePointAngle = MathUtil.angleWrap(point_angle-currPose.heading);
+        double relativePointAngle = MathUtil.angleWrap(point_angle-currPose.h);
 
         //Scale down the relative angle by 40 and multiply by point speed
         double turnSpeed = (relativePointAngle/decelerationRadians)*point_speed;
         //now just clip the result to be in range
-        powers.heading = Range.clip(turnSpeed,-point_speed,point_speed);
+        powers.h = Range.clip(turnSpeed,-point_speed,point_speed);
 
         //make sure the largest component doesn't fall below it's minimum power
         allComponentsMinPower();
 
         //smooths down the last bit to finally settle on an angle
-        powers.heading *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(3),0,1);
+        powers.h *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(3),0,1);
 
         return new movementResult(relativePointAngle);
     }

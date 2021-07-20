@@ -4,24 +4,13 @@ import java.util.ArrayList;
 
 public class MathUtil {
     public static final double EPSILON = 1e-6;
-
+    public static final double tpi = 2 * Math.PI; //imlazi
     public static double angleWrap(double angle) {
-        while (angle<-Math.PI){
-            angle += 2*Math.PI;
-        }
-        while (angle>Math.PI){
-            angle -= 2*Math.PI;
-        }
-        return angle;
+        return angle - Math.ceil(angle / tpi - 0.5) * tpi;
     }
 
     public static double unwrap(double angle) {
-        while(angle<0) {
-            angle+= 2*Math.PI;
-        } while(angle>2*Math.PI) {
-            angle -= 2*Math.PI;
-        }
-        return angle;
+        return angle - Math.floor(angle / tpi - 1) * tpi;
     }
 
     public static boolean epsilonEquals(double d1, double d2) {
@@ -36,6 +25,66 @@ public class MathUtil {
     public static boolean angleThresh(double a, double b) {
         return Math.abs(MathUtil.angleWrap(a-b)) < Math.toRadians(0.5);
     }
+
+    /**
+     * Scale a number in the range of x1 to x2, to the range of y1 to y2
+     * @param n number to scale
+     * @param x1 lower bound range of n
+     * @param x2 upper bound range of n
+     * @param y1 lower bound of scale
+     * @param y2 upper bound of scale
+     * @return a double scaled to a value between y1 and y2, inclusive
+     */
+    public static double scale(double n, double x1, double x2, double y1, double y2) {
+        double a = (y1-y2)/(x1-x2);
+        double b = y1 - x1*(y1-y2)/(x1-x2);
+        return a*n+b;
+    }
+
+    public static double clip(double number, double min, double max) {
+        if (number < min) return min;
+        if (number > max) return max;
+        return number;
+    }
+
+    public static float clip(float number, float min, float max) {
+        if (number < min) return min;
+        if (number > max) return max;
+        return number;
+    }
+
+    public static int clip(int number, int min, int max) {
+        if (number < min) return min;
+        if (number > max) return max;
+        return number;
+    }
+
+    public static short clip(short number, short min, short max) {
+        if (number < min) return min;
+        if (number > max) return max;
+        return number;
+    }
+
+    public static byte clip(byte number, byte min, byte max) {
+        if (number < min) return min;
+        if (number > max) return max;
+        return number;
+    }
+
+    public static void throwIfRangeIsInvalid(double number, double min, double max) throws IllegalArgumentException {
+        if (number < min || number > max) {
+            throw new IllegalArgumentException(
+                    String.format("number %f is invalid; valid ranges are %f..%f", number, min, max));
+        }
+    }
+
+    public static void throwIfRangeIsInvalid(int number, int min, int max) throws IllegalArgumentException {
+        if (number < min || number > max) {
+            throw new IllegalArgumentException(
+                    String.format("number %d is invalid; valid ranges are %d..%d", number, min, max));
+        }
+    }
+
     public static double[] lineEquation(Point p1, double slope) {
         double m;
         double intercept;
@@ -84,8 +133,17 @@ public class MathUtil {
         return new Point(xClip, yClip);
     }
 
+    /**
+     * Made this because java's math lib returns 1 for a=0
+     * @param a input
+     * @return sign of input if a != 0, 0 if a==0
+     */
     public static int sgn(double a) {
-        return a > 0 ? 1 : -1;
+        if(a>0)
+            return 1;
+        else if(a<0)
+            return -1;
+        return 0;
     }
 
     public static Point extendLine(Point firstPoint, Point secondPoint, double distance) {
@@ -154,4 +212,5 @@ public class MathUtil {
                 closest = p;
         }
         return closest;
-    }}
+    }
+}

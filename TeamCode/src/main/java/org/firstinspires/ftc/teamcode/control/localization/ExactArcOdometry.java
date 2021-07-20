@@ -14,16 +14,16 @@ public class ExactArcOdometry extends BaseOdometry {
 
     @Override
     protected void robotPoseUpdate() {
-        double dtheta = currPoseDelta.heading;
-        double currHeading = MathUtil.angleWrap(dtheta + currPose.heading);
+        double dtheta = currPoseDelta.h;
+        double currHeading = MathUtil.angleWrap(dtheta + currPose.h);
         double dx, dy;
 
         if (MathUtil.epsilonEquals(dtheta, 0)) {
-            dx = wheelDeltaScaled.heading;
+            dx = wheelDeltaScaled.h;
             dy = (wheelDeltaScaled.x + wheelDeltaScaled.y) / 2;
         } else {
             double turnRadius = (TRACK_WIDTH / 2) * (wheelDeltaScaled.x + wheelDeltaScaled.y) / (wheelDeltaScaled.x - wheelDeltaScaled.y);
-            double strafeRadius = wheelDeltaScaled.heading / dtheta - PARALLEL_WIDTH;
+            double strafeRadius = wheelDeltaScaled.h / dtheta - PARALLEL_WIDTH;
 
             dx = turnRadius * (currPoseDelta.cos() - 1) + strafeRadius * currPoseDelta.sin();
             dy = turnRadius * currPoseDelta.sin() + strafeRadius * (1 - currPoseDelta.cos());

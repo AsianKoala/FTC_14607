@@ -22,16 +22,16 @@ public class PurePursuitController {
 
     private static void allComponentsMinPower() {
         if(Math.abs(powers.x) > Math.abs(powers.y)){
-            if(Math.abs(powers.x) > Math.abs(powers.heading)){
+            if(Math.abs(powers.x) > Math.abs(powers.h)){
                 powers.x = minPower(powers.x,movement_x_min);
             }else{
-                powers.heading = minPower(powers.heading,movement_turn_min);
+                powers.h = minPower(powers.h,movement_turn_min);
             }
         }else{
-            if(Math.abs(powers.y) > Math.abs(powers.heading)){
+            if(Math.abs(powers.y) > Math.abs(powers.h)){
                 powers.y = minPower(powers.y, movement_y_min);
             }else{
-                powers.heading = minPower(powers.heading,movement_turn_min);
+                powers.h = minPower(powers.h,movement_turn_min);
             }
         }
     }
@@ -51,11 +51,11 @@ public class PurePursuitController {
     private static double getDesiredAngle(Pose curr, BasePathPoint target, boolean locked) {
         double forward = target.minus(curr).atan();
         double back = forward + Math.PI;
-        double angleToForward = MathUtil.angleWrap(forward - curr.heading);
-        double angleToBack = MathUtil.angleWrap(back - curr.heading);
+        double angleToForward = MathUtil.angleWrap(forward - curr.h);
+        double angleToBack = MathUtil.angleWrap(back - curr.h);
         double autoAngle = Math.abs(angleToForward) < Math.abs(angleToBack) ? forward : back;
         double desired =  locked ? target.lockedHeading : autoAngle;
-        return angleWrap(desired - curr.heading) / Math.toRadians(40);
+        return angleWrap(desired - curr.h) / Math.toRadians(40);
     }
 
     public static boolean runFuncList(BasePathPoint target) {
@@ -88,13 +88,13 @@ public class PurePursuitController {
 
             if(target.lateTurnPoint == null) {
                 double a = getDesiredAngle(Robot.currPose, target, pathPointType.isLocked());
-                powerPose.heading = a;
+                powerPose.h = a;
                 robot.packet.put("desired angle", a);
             } else {
                 if(start.distance(Robot.currPose) > start.distance(target.lateTurnPoint)) {
-                    powerPose.heading = getDesiredAngle(Robot.currPose, target, true);
+                    powerPose.h = getDesiredAngle(Robot.currPose, target, true);
                 } else {
-                    powerPose.heading = getDesiredAngle(Robot.currPose, target, false);
+                    powerPose.h = getDesiredAngle(Robot.currPose, target, false);
                 }
             }
         } else {
@@ -114,15 +114,15 @@ public class PurePursuitController {
 
             powerPose.set(powerPose);
 
-            powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, true);
+            powerPose.h = getDesiredAngle(Robot.currPose, finalTarget, true);
 
             if(finalTarget.lateTurnPoint == null) {
-                powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, pathPointType.isLocked());
+                powerPose.h = getDesiredAngle(Robot.currPose, finalTarget, pathPointType.isLocked());
             } else {
                 if(start.distance(Robot.currPose) > start.distance(finalTarget.lateTurnPoint)) {
-                    powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, true);
+                    powerPose.h = getDesiredAngle(Robot.currPose, finalTarget, true);
                 } else {
-                    powerPose.heading = getDesiredAngle(Robot.currPose, finalTarget, false);
+                    powerPose.h = getDesiredAngle(Robot.currPose, finalTarget, false);
                 }
             }
         }
@@ -154,7 +154,7 @@ public class PurePursuitController {
         double distance = Math.hypot(targetX - currPose.x, targetY - currPose.y);
 
         double absoluteAngleToTargetPoint = Math.atan2(targetY - currPose.y, targetX - currPose.x);
-        double relativeAngleToTargetPoint = MathUtil.angleWrap(absoluteAngleToTargetPoint - (currPose.heading - Math.toRadians(90)));
+        double relativeAngleToTargetPoint = MathUtil.angleWrap(absoluteAngleToTargetPoint - (currPose.h - Math.toRadians(90)));
 
         double relativeXToPoint = Math.cos(relativeAngleToTargetPoint) * distance;
         double relativeYToPoint = Math.sin(relativeAngleToTargetPoint) * distance;
@@ -178,16 +178,16 @@ public class PurePursuitController {
         // turning and smoothing shit
         double relativeTurnAngle = prefAngle - Math.toRadians(90);
         double absolutePointAngle = absoluteAngleToTargetPoint + relativeTurnAngle;
-        double relativePointAngle = MathUtil.angleWrap(absolutePointAngle - currPose.heading);
+        double relativePointAngle = MathUtil.angleWrap(absolutePointAngle - currPose.h);
 
         double decelerateAngle = Math.toRadians(40);
 
         double movementTurnSpeed = (relativePointAngle/decelerateAngle) * turnSpeed;
 
-        powers.heading = Range.clip(movementTurnSpeed, -turnSpeed, turnSpeed);
+        powers.h = Range.clip(movementTurnSpeed, -turnSpeed, turnSpeed);
 
         if(distance < 3) {
-            powers.heading = 0;
+            powers.h = 0;
         }
 
         allComponentsMinPower();
@@ -196,13 +196,13 @@ public class PurePursuitController {
         // smoothing
         powers.x *= Range.clip((relativeAbsXToPoint/3.0),0,1);
         powers.y *= Range.clip((relativeAbsYToPoint/3.0),0,1);
-        powers.heading *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(2),0,1);
+        powers.h *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(2),0,1);
 
 
         //slow down if our point angle is off
         double errorTurnSoScaleDownMovement = Range.clip(1.0-Math.abs(relativePointAngle/slowDownTurnRadians),1.0-slowDownMovementFromTurnError,1);
         //don't slow down if we aren't trying to turn (distanceToPoint < 10)
-        if(Math.abs(powers.heading) < 0.00001){
+        if(Math.abs(powers.h) < 0.00001){
             errorTurnSoScaleDownMovement = 1;
         }
         powers.x *= errorTurnSoScaleDownMovement;

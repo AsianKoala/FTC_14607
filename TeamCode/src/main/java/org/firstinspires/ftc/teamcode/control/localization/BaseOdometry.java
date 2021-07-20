@@ -41,8 +41,8 @@ public abstract class BaseOdometry {
 
         for (int i = 0; i < 3; i++) {
             Pose currentWheelPose = wheelPoses[i];
-            double x = Math.cos(currentWheelPose.heading);
-            double y = Math.sin(currentWheelPose.heading);
+            double x = Math.cos(currentWheelPose.h);
+            double y = Math.sin(currentWheelPose.h);
 
             inverseMatrix.setEntry(i, 0, x);
             inverseMatrix.setEntry(i, 1, y);
@@ -61,7 +61,7 @@ public abstract class BaseOdometry {
                 new double[]{
                         deltas.x,
                         deltas.y,
-                        deltas.heading}});
+                        deltas.h}});
         RealMatrix rawPoseDelta = forwardSolver.solve(m.transpose());
 
         return new Pose(

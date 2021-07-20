@@ -44,7 +44,8 @@ captures/
 .idea/tasks.xml
 .idea/gradle.xml
 .idea/assetWizardSettings.xml
-.idea/dictionaries
+# the amount of times i had to add the word "odometry" to local dict(s) on different computers forced me to change this
+# .idea/dictionaries
 .idea/libraries
 # Android Studio 3 in .gitignore file.
 .idea/caches
@@ -86,5 +87,5 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
-# memory leak files
+# tfw memory leak kek
 *.hprof

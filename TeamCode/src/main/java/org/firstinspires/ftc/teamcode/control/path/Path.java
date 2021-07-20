@@ -61,7 +61,7 @@ public class Path extends LinkedList<BasePathPoint> {
 //            }
 
             if (target.isOnlyTurn != null) {
-                skip = MathUtil.angleThresh(Robot.currPose.heading, target.lockedHeading);
+                skip = MathUtil.angleThresh(Robot.currPose.h, target.lockedHeading);
             } else if(target.isStop != null){
                 skip = Robot.currPose.distance(target) < 2; // test?
             } else {

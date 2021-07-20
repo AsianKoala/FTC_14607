@@ -90,7 +90,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
         perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
 
         currPose = new Pose(startPose);
-        setPoseEstimate(new Pose2d(startPose.x, startPose.y, startPose.heading));
+        setPoseEstimate(new Pose2d(startPose.x, startPose.y, startPose.h));
         currVel = new Pose();
         prevPoses = new ArrayList<>();
         prevPoses.add(new SignaturePose(startPose, System.currentTimeMillis()));
@@ -102,7 +102,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
 
     @Override
     public double getHeading() {
-        return currPose.heading;
+        return currPose.h;
     }
 
     @NonNull
@@ -130,7 +130,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
 
     public Pose[] realUpdate(double angle) {
         super.update();
-        currPose.heading = angle;
+        currPose.h = angle;
         currPose = new Pose(getPoseEstimate());
         prevPoses.add(new SignaturePose(currPose, System.currentTimeMillis()));
         if (prevPoses.size() > 1) {
@@ -148,6 +148,6 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
-        return String.format("(%.1f, %.1f, %.1f)", currPose.x, currPose.y, Math.toDegrees(currPose.heading));
+        return String.format("(%.1f, %.1f, %.1f)", currPose.x, currPose.y, Math.toDegrees(currPose.h));
     }
 }
