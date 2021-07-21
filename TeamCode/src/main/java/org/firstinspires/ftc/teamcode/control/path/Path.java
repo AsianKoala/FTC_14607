@@ -12,7 +12,7 @@ public class Path extends LinkedList<BasePathPoint> {
     // target is always getFirst(), curr is copied
     public BasePathPoint curr;
     public boolean isPurePursuit;
-    public boolean copi = true;
+    public boolean copi = true; //@TODO i forgot what this does go to sim and check it out
     public ArrayList<BasePathPoint> initialPoints;
 
     public String name;

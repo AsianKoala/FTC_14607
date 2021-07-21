@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 
 /**
- * CurvePoint is a class used with the followCurve function in MovementEssentials.
+ * Point with fields for pp.
  */
 public class CurvePoint extends Point{
     public double moveSpeed;

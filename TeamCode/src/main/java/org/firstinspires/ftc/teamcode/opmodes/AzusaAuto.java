@@ -19,8 +19,7 @@ public class AzusaAuto extends BaseAuto {
     }
 
     @Override
-    public LinkedList<Path> pathList() {
-        LinkedList<Path> returnList = new LinkedList<>();
+    public Path path() {
         PathBuilder lCurve = new PathBuilder("lCurve")
                 .addPoint(new BasePathPoint("start", 85,9,0))
                 .addPoint(new BasePathPoint("61", 61,15,14))
@@ -31,7 +30,6 @@ public class AzusaAuto extends BaseAuto {
                 .addPoint(new BasePathPoint("", 10, 80, 14))
                 .addPoint(new BasePathPoint("", 10, 104, 14));
 
-        returnList.add(lCurve.build());
-        return returnList;
+        return lCurve.build();
     }
 }

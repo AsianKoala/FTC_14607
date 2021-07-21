@@ -9,6 +9,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -29,6 +30,7 @@ import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.Debuggable;
 import org.firstinspires.ftc.teamcode.util.Mar;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.OpModeType;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -37,7 +39,6 @@ import org.openftc.revextensions2.RevBulkData;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.util.MathUtil.sgn;
@@ -47,11 +48,10 @@ public abstract class Robot extends TunableOpMode {
 
     public abstract Pose startPose();
 
-    public static Pose currPose = new Pose(); // @TODO stop making stuff static baka
+    public static Pose currPose = new Pose();
 //    public static Pose currVel = new Pose();
 
-    public LinkedList<Path> pathCache;
-    public ArrayList<PathPoints.BasePathPoint> fullPathCopy;
+    public Path pathCache;
 
     public RevBulkData masterBulkData;
     public RevBulkData slaveBulkData;
@@ -80,12 +80,17 @@ public abstract class Robot extends TunableOpMode {
     private Mar telemTime;
     private Mar pathTime;
     private Mar dashTime;
+    private double maxLT;
 
     private double lastManualUpdate;
     private double lastAutoUpdate;
     private boolean isDebugging;
     private boolean isPathStopped;
+    private OpModeType type;
     private Pose debugSpeeds;
+
+    // optimization shit goes here @TODO
+    // (not supposed to be a joke)
 
     @Override
     public void init () {
@@ -97,6 +102,7 @@ public abstract class Robot extends TunableOpMode {
         telemTime = new Mar();
         pathTime = new Mar();
         dashTime = new Mar();
+        maxLT = 0;
 
         imu = hardwareMap.get(BNO055IMUImpl.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -121,8 +127,7 @@ public abstract class Robot extends TunableOpMode {
         allHardware = new ArrayList<>();
         allHardware.add(driveTrain);
 
-        pathCache = new LinkedList<>();
-        fullPathCopy = new ArrayList<>();
+        pathCache = new Path();
 
         dashboard = FtcDashboard.getInstance();
         packet = null;
@@ -132,6 +137,7 @@ public abstract class Robot extends TunableOpMode {
         lastAutoUpdate = System.currentTimeMillis();
         isDebugging = getClass().isAnnotationPresent(Debuggable.class);
         isPathStopped = true;
+        type = getClass().isAnnotationPresent(Autonomous.class) ? OpModeType.AUTO : OpModeType.TELEOP;
         debugSpeeds = new Pose();
     }
 
@@ -166,26 +172,17 @@ public abstract class Robot extends TunableOpMode {
         loopTime.stop();
     }
 
-    protected void setPathCache(LinkedList<Path> pathList) {
-        // @TODO literally cut ur cycle times in half if you fix this you shithead
-        pathCache.addAll(pathList);
-        for(Path e : pathList)
-            fullPathCopy.addAll(e);
-    }
-
-    protected void setDirectPath(Path e) {
-        pathCache.add(e);
-        fullPathCopy.addAll(e);
+    protected void setPathCache(Path path) {
+        pathCache = path;
     }
 
     private void updatePath() {
-        // @TODO literally cut ur cycle times in half if you fix this you shithead
-        if(!pathCache.isEmpty()) {
-            pathCache.getFirst().follow(this);
-            if(pathCache.getFirst().finished()) {
-                pathCache.removeFirst();
+        if(!pathCache.finished()) {
+            pathCache.follow(this);
+        } else {
+            pathCache.remove(0);
+            if(type == OpModeType.AUTO && !isDebugging)
                 DriveTrain.powers.set(new Pose());
-            }
         }
     }
 
@@ -208,6 +205,10 @@ public abstract class Robot extends TunableOpMode {
         packet.put("init time", initTime.getTime());
         packet.put("init loop time", init_loopTime.getTime());
         packet.put("loop time", loopTime.getTime());
+        if(loopTime.getTime() > maxLT) {
+            maxLT = loopTime.getTime();
+        }
+        packet.put("max loop time", maxLT);
         packet.put("hw time", hwTime.getTime());
         packet.put("telem time", telemTime.getTime());
         packet.put("path time", pathTime.getTime());
@@ -233,27 +234,13 @@ public abstract class Robot extends TunableOpMode {
         packet.put("odometry", odometry.toString());
         packet.put("vector powers", DriveTrain.powers.toString());
         allHardware.forEach(h -> packet.putAll(h.update()));
+
         if(pathCache.isEmpty()) {
             packet.addLine("path empty");
         } else {
-            // @TODO literally cut ur cycle times in half if you fix this you shithead
-            packet.put("path amts", pathCache.size());
-            packet.put("point amts", pathCache.getFirst().size());
-            packet.put("current path name", pathCache.getFirst().name);
-            packet.put("current target name", pathCache.getFirst().getFirst().signature);
-            double[] x = new double[fullPathCopy.size()];
-            double[] y = new double[fullPathCopy.size()];
-
-            int index = 0;
-            for(PathPoints.BasePathPoint p : fullPathCopy) {
-                x[index] = p.x;
-                y[index] = p.y;
-                index++;
-            }
-            packet.fieldOverlay()
-                    .setStroke("red")
-                    .setStrokeWidth(1)
-                    .strokePolygon(x,y);
+            packet.put("point amts", pathCache.size());
+            packet.put("current path name", pathCache.name);
+            packet.put("current target name", pathCache.get(0).signature);
         }
         packet.fieldOverlay()
                 .setFill("blue")
