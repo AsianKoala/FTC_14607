@@ -68,7 +68,7 @@ public class PathPoints {
         }
 
         public boolean equals(BasePathPoint b) {
-            return signature.equals(b.signature);
+            return x==b.x && y==b.y;
         }
     }
 

@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
@@ -51,8 +52,9 @@ public abstract class Robot extends TunableOpMode {
     public abstract Pose startPose();
     public abstract Path path();
 
+    // literally only made this static bcz of importing old ppcontroller methods lol
     public static Pose currPose = new Pose();
-//    public static Pose currVel = new Pose();
+    public static Pose currVel = new Pose();
 
     public Path pathCache;
 
@@ -92,7 +94,7 @@ public abstract class Robot extends TunableOpMode {
     private OpModeType type;
     private Pose debugSpeeds;
 
-    // optimization shit goes here @TODO
+    // optimization shit goes here TODO
     // (not supposed to be a joke)
 
     @Override
@@ -198,9 +200,11 @@ public abstract class Robot extends TunableOpMode {
         masterBulkData = masterHub.getBulkInputData();
         slaveBulkData = slaveHub.getBulkInputData();
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        currPose.set(odometry.update(slaveBulkData.getMotorCurrentPosition(2),
+        Pose[] odomVals = odometry.update(slaveBulkData.getMotorCurrentPosition(2),
                 slaveBulkData.getMotorCurrentPosition(0),
-                MathUtil.angleWrap(lastHeading + startPose().h)));
+                MathUtil.angleWrap(lastHeading + startPose().h));
+        currPose.set(odomVals[0]);
+        currVel.set(odomVals[1]);
     }
 
 //    private void initTelemetry() {
@@ -328,9 +332,9 @@ public abstract class Robot extends TunableOpMode {
                     DriveTrain.powers.h * elapsed * 10  / (2 * Math.PI))));
 
             debugSpeeds.set((debugSpeeds.add(new Pose(
-                    MathUtil.clip((DriveTrain.powers.x - debugSpeeds.x)/0.2,-1,1) * elapsed,
-                    MathUtil.clip((DriveTrain.powers.y - debugSpeeds.y)/0.2,-1,1) * elapsed,
-                    MathUtil.clip((DriveTrain.powers.h - debugSpeeds.h)/0.2,-1,1) * elapsed
+                    Range.clip((DriveTrain.powers.x - debugSpeeds.x)/0.2,-1,1) * elapsed,
+                    Range.clip((DriveTrain.powers.y - debugSpeeds.y)/0.2,-1,1) * elapsed,
+                    Range.clip((DriveTrain.powers.h - debugSpeeds.h)/0.2,-1,1) * elapsed
             ))).multiply(new Pose(1.0 - elapsed)));
         }
     }

@@ -12,7 +12,7 @@ public class Path extends LinkedList<BasePathPoint> {
     // target is always getFirst(), curr is copied
     public BasePathPoint curr;
     public boolean isPurePursuit;
-    public boolean copi = true; //@TODO i forgot what this does go to sim and check it out
+//    public boolean copi = true; //TODO i forgot what this does go to sim and check it out
     public ArrayList<BasePathPoint> initialPoints;
     public String name;
     private boolean firstFinish;
@@ -47,24 +47,15 @@ public class Path extends LinkedList<BasePathPoint> {
     public void follow(Robot robot) {
         BasePathPoint target = getFirst();
         if(!isPurePursuit) {
-//            PurePursuitController.goToPosition(robot, getFirst());
+            // TODO fix start in case of lateTurnPoint in goToPosition
+            PurePursuitController.goToPosition(robot, target, target.isStop!=null?target:null, null);
         } else {
             boolean skip;
-//
-//            if(size() > 1 && get(1).isStop != null && copi) {
-//                Point cop = new Point(target);
-//
-//                getFirst().x = MathUtil.extendLine(curr, cop, getFirst().followDistance).x;
-//                getFirst().y = MathUtil.extendLine(curr, cop, getFirst().followDistance).y;
-//                System.out.println("EXTENDED: " +  getFirst());
-//                System.out.println("copi: " + copi);
-//                copi = false;
-//            }
 
             if (target.isOnlyTurn != null) {
                 skip = MathUtil.angleThresh(Robot.currPose.h, target.lockedHeading);
             } else if(target.isStop != null){
-                skip = Robot.currPose.distance(target) < 2; // test?
+                skip = Robot.currPose.distance(target) < 2;
             } else {
                 skip = Robot.currPose.distance(target) < target.followDistance;
                 if(size()>1 && get(1).isStop != null) {
@@ -88,14 +79,16 @@ public class Path extends LinkedList<BasePathPoint> {
                 return;
             }
 
-            if (target.isStop != null && Robot.currPose.distance(target) < target.followDistance) {
-                PurePursuitController.goToPosition(robot, target, target, curr);
-               // System.out.println("GOING TO FINAL STOP");
-            }
-            else {
-                PurePursuitController.followPath(robot, curr, target, initialPoints);
-                //System.out.println("following curve");
-            }
+            PurePursuitController.followPath(robot, curr, target);
+//
+//            if (target.isStop != null && Robot.currPose.distance(target) < target.followDistance) {
+//                PurePursuitController.goToPosition(robot, target, target, curr);
+//               robot.packet.put("going to final", "");
+//            }
+//            else {
+//                PurePursuitController.followPath(robot, curr, target, initialPoints);
+//                robot.packet.put("following curve", "");
+//            }
         }
     }
 

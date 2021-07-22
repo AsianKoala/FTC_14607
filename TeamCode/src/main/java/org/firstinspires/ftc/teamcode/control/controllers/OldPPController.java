@@ -2,15 +2,14 @@ package org.firstinspires.ftc.teamcode.control.controllers;
 
 import com.qualcomm.robotcore.util.Range;
 
-import static java.lang.Math.*;
-import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
-
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.*;
 import static org.firstinspires.ftc.teamcode.control.system.Robot.*;
 
 import org.firstinspires.ftc.teamcode.util.CurvePoint;
 import org.firstinspires.ftc.teamcode.util.Point;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
+import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
 
 import java.util.ArrayList;
 
@@ -72,7 +71,7 @@ public class OldPPController {
         double distance = Math.hypot(targetX - currPose.x, targetY - currPose.y);
 
         double absoluteAngleToTargetPoint = Math.atan2(targetY - currPose.y, targetX - currPose.x);
-        double relativeAngleToTargetPoint = MathUtil.angleWrap(absoluteAngleToTargetPoint - (currPose.h - Math.toRadians(90)));
+        double relativeAngleToTargetPoint = angleWrap(absoluteAngleToTargetPoint - (currPose.h - Math.toRadians(90)));
 
         double relativeXToPoint = Math.cos(relativeAngleToTargetPoint) * distance;
         double relativeYToPoint = Math.sin(relativeAngleToTargetPoint) * distance;
@@ -96,7 +95,7 @@ public class OldPPController {
         // turning and smoothing shit
         double relativeTurnAngle = prefAngle - Math.toRadians(90);
         double absolutePointAngle = absoluteAngleToTargetPoint + relativeTurnAngle;
-        double relativePointAngle = MathUtil.angleWrap(absolutePointAngle - currPose.h);
+        double relativePointAngle = angleWrap(absolutePointAngle - currPose.h);
 
         double decelerateAngle = Math.toRadians(40);
 
@@ -119,115 +118,12 @@ public class OldPPController {
 
         //slow down if our point angle is off
         double errorTurnSoScaleDownMovement = Range.clip(1.0-Math.abs(relativePointAngle/slowDownTurnRadians),1.0-slowDownMovementFromTurnError,1);
-        //don't slow down if we aren't trying to turn (distanceToPoint < 10)
+        //don't slow down if we aren't trying to turn (distanceToPoint < 3)
         if(Math.abs(powers.h) < 0.00001){
             errorTurnSoScaleDownMovement = 1;
         }
         powers.x *= errorTurnSoScaleDownMovement;
         powers.y *= errorTurnSoScaleDownMovement;
-    }
-
-
-    public static movementResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
-        //now that we know what absolute angle to point to, we calculate how close we are to it
-        double relativePointAngle = MathUtil.angleWrap(point_angle-currPose.h);
-
-        //Scale down the relative angle by 40 and multiply by point speed
-        double turnSpeed = (relativePointAngle/decelerationRadians)*point_speed;
-        //now just clip the result to be in range
-        powers.h = Range.clip(turnSpeed,-point_speed,point_speed);
-
-        //make sure the largest component doesn't fall below it's minimum power
-        allComponentsMinPower();
-
-        //smooths down the last bit to finally settle on an angle
-        powers.h *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(3),0,1);
-
-        return new movementResult(relativePointAngle);
-    }
-
-
-    public static movementResult pointPointTurn(Point point, double point_speed, double decelerationRadians) {
-        double absoluteAngleToTargetPoint = Math.atan2(point.y - currPose.y, point.x - currPose.x);
-        return pointAngle(absoluteAngleToTargetPoint, point_speed, decelerationRadians);
-    }
-
-
-    public static boolean betterFollowCurve(ArrayList<CurvePoint> allPoints, double followAngle, Point anglePoint, boolean headingControlled){
-
-
-        //now we will extend the last line so that the pointing looks smooth at the end
-        ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
-
-        //first get which segment we are on
-        indexPoint clippedToPath = clipToFollowPointPath(allPoints,currPose.x,currPose.y);
-        int currFollowIndex = clippedToPath.index+1;
-
-        //get the point to follow
-        CurvePoint followMe = getFollowPointPath(pathExtended,currPose.x,currPose.y,
-                allPoints.get(currFollowIndex).followDistance);
-
-
-
-        //this will change the last point to be extended
-        pathExtended.set(pathExtended.size()-1,
-                extendLine(allPoints.get(allPoints.size()-2),allPoints.get(allPoints.size()-1),
-                        allPoints.get(allPoints.size()-1).pointLength * 1.5));
-
-
-
-        //get the point to point to
-        CurvePoint pointToMe = getFollowPointPath(pathExtended,currPose.x,currPose.y,
-                allPoints.get(currFollowIndex).pointLength);
-
-//        followAngle = Math.atan2(0 - worldYPosition, 0 - worldXPosition);
-
-        //if we are nearing the end (less than the follow dist amount to go) just manualControl point to end
-        //but only if we have passed through the correct points beforehand
-        double clipedDistToFinalEnd = Math.hypot(
-                clippedToPath.point.x-allPoints.get(allPoints.size()-1).x,
-                clippedToPath.point.y-allPoints.get(allPoints.size()-1).y);
-
-
-        boolean pepega = false;
-        if(clipedDistToFinalEnd <= followMe.followDistance + 6 ||
-                Math.hypot(currPose.x-allPoints.get(allPoints.size()-1).x,
-                        currPose.y-allPoints.get(allPoints.size()-1).y) < followMe.followDistance + 6){
-            pepega = true;
-            followMe.setPoint(allPoints.get(allPoints.size()-1).toPoint());
-
-        }
-
-
-
-
-        goToPosition(followMe.x, followMe.y, followAngle,
-                followMe.moveSpeed,followMe.turnSpeed,
-                followMe.slowDownTurnRadians,0.2,true); // 0.275
-
-        //find the angle to that point using atan2
-        double currFollowAngle = Math.atan2(pointToMe.y-currPose.y,pointToMe.x-currPose.x);
-
-        //if our follow angle is different, point differently
-        currFollowAngle += angleWrap(followAngle - Math.toRadians(90));
-
-        movementResult result;
-        if(headingControlled) {
-            result = pointPointTurn(anglePoint, allPoints.get(currFollowIndex).turnSpeed, Math.toRadians(45));
-        } else {
-            result = pointAngle(currFollowAngle,allPoints.get(currFollowIndex).turnSpeed,Math.toRadians(45));
-        }
-
-        powers.x *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
-        powers.y *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
-
-        if(pepega) {
-            powers.x *= Range.clip(Math.abs(followMe.x-currPose.x)/0.8,0.5,1); // 0.787
-            powers.y *= Range.clip(Math.abs(followMe.y-currPose.y)/0.8,0.5,1);
-
-        }
-
-        return clipedDistToFinalEnd < 4; //3
     }
 
 
@@ -246,6 +142,8 @@ public class OldPPController {
                 allPoints.get(currFollowIndex).followDistance);
 
 
+        // test from ehre
+        CurvePoint realLastPoint = allPoints.get(allPoints.size()-1);
         //this will change the last point to be extended
         pathExtended.set(pathExtended.size()-1,
                 extendLine(allPoints.get(allPoints.size()-2),allPoints.get(allPoints.size()-1),
@@ -283,10 +181,10 @@ public class OldPPController {
                 followMe.slowDownTurnRadians,0,true);
 
         //find the angle to that point using atan2
-        double currFollowAngle = Math.atan2(pointToMe.y-currPose.x,pointToMe.x-currPose.y);
+        double currFollowAngle = Math.atan2(pointToMe.y-currPose.y,pointToMe.x-currPose.x);
 
         //if our follow angle is different, point differently
-        currFollowAngle += MathUtil.angleWrap(followAngle - Math.toRadians(90));
+        currFollowAngle += angleWrap(followAngle - Math.toRadians(90));
 
         movementResult result = pointAngle(currFollowAngle,allPoints.get(currFollowIndex).turnSpeed,Math.toRadians(45));
         powers.x *= 1 - Range.clip(Math.abs(result.turnDelta_rad) / followMe.slowDownTurnRadians,0,followMe.slowDownTurnAmount);
@@ -294,36 +192,33 @@ public class OldPPController {
 
 
 
-        return clipedDistToFinalEnd < 4;// 4
+        return clipedDistToFinalEnd < 2;// 4
     }
 
 
+    public static movementResult pointAngle(double point_angle, double point_speed, double decelerationRadians) {
+        //now that we know what absolute angle to point to, we calculate how close we are to it
+        double relativePointAngle = angleWrap(point_angle-currPose.h);
+
+        //Scale down the relative angle by 40 and multiply by point speed
+        double turnSpeed = (relativePointAngle/decelerationRadians)*point_speed;
+        //now just clip the result to be in range
+        powers.h = Range.clip(turnSpeed,-point_speed,point_speed);
+
+        //make sure the largest component doesn't fall below it's minimum power
+        allComponentsMinPower();
+
+        //smooths down the last bit to finally settle on an angle
+        powers.h *= Range.clip(Math.abs(relativePointAngle)/Math.toRadians(3),0,1);
+
+        return new movementResult(relativePointAngle);
+    }
 
 
-
-    /**
-     * This will extend a line by a distance. It will modify only the second point
-     */
     private static CurvePoint extendLine(CurvePoint firstPoint, CurvePoint secondPoint, double distance) {
 
-        /*
-         * Since we are pointing to this point, extend the line if it is the last line
-         * but do nothing if it isn't the last line
-         *
-         * So if you imagine the robot is almost done its path, without this algorithm
-         * it will just point to the last point on its path creating craziness around
-         * the end (although this is covered by some sanity checks later).
-         * With this, it will imagine the line extends further and point to a location
-         * outside the endpoint of the line only if it's the last point. This makes the
-         * last part a lot smoother, almost looking like a curve but not.
-         */
-
-        //get the angle of this line
         double lineAngle = Math.atan2(secondPoint.y - firstPoint.y,secondPoint.x - firstPoint.x);
-        //get this line's length
         double lineLength = Math.hypot(secondPoint.x - firstPoint.x,secondPoint.y - firstPoint.y);
-        //extend the line by 1.5 pointLengths so that we can still point to it when we
-        //are at the end
         double extendedLineLength = lineLength + distance;
 
         CurvePoint extended = new CurvePoint(secondPoint);
@@ -374,7 +269,7 @@ public class OldPPController {
             CurvePoint endPoint = pathPoints.get(i+1);
 
             ArrayList<Point> intersections = lineCircleIntersection(xPos, yPos, followRadius, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-//    public static Point circleLineIntersection(Point center, Point startPoint, Point endPoint, double radius) {
+
             double closestDistance = 10000000; // placeholder numb
             for(Point thisIntersection : intersections) {
 
@@ -398,10 +293,10 @@ public class OldPPController {
     public static Point clipToLine(double lineX1, double lineY1, double lineX2, double lineY2,
                                    double robotX, double robotY){
         if(lineX1 == lineX2){
-            lineX1 = lineX2 + 0.01;//nah
+            lineX1 = lineX2 + 0.01;
         }
         if(lineY1 == lineY2){
-            lineY1 = lineY2 + 0.01;//nah
+            lineY1 = lineY2 + 0.01;
         }
 
         //calculate the slope of the line
@@ -415,6 +310,21 @@ public class OldPPController {
         return new Point(xClipedToLine,yClipedToLine);
     }
 
+
+
+    public static ArrayList<CurvePoint> reversePath(ArrayList<CurvePoint> pathPoints, double xComp, double yComp) {
+        ArrayList<CurvePoint> allPoints = new ArrayList<>();
+        allPoints.add(new CurvePoint(currPose.x, currPose.y, 0, 0, 0, 0, 0, 0));
+
+        for(int i=pathPoints.size()-2; i>0; i--) {
+            allPoints.add(pathPoints.get(i));
+        }
+        CurvePoint lastPoint = new CurvePoint(pathPoints.get(0).x + xComp, pathPoints.get(0).y + yComp,
+                0.4, 0.6, 20, 15, Math.toRadians(30), 0.6);
+        allPoints.add(lastPoint);
+
+        return allPoints;
+    }
 
     public static ArrayList<Point> lineCircleIntersection(double circleX, double circleY, double r,
                                                           double lineX1, double lineY1,
@@ -486,6 +396,5 @@ public class OldPPController {
         }
         return allPoints;
     }
-
 
 }

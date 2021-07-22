@@ -85,7 +85,6 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
         parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftIntake"));
         perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightIntake"));
 
-        // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
         parallelEncoder.setDirection(Encoder.Direction.REVERSE);
         perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
 

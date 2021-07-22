@@ -11,4 +11,9 @@ public class SignaturePose extends Pose {
         super(p);
         this.sign = sign;
     }
+
+    public SignaturePose(Pose p) {
+        super(p);
+        this.sign = System.currentTimeMillis();
+    }
 }

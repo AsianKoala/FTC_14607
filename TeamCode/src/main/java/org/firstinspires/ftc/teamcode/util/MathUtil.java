@@ -26,64 +26,20 @@ public class MathUtil {
         return Math.abs(MathUtil.angleWrap(a-b)) < Math.toRadians(0.5);
     }
 
-    /**
-     * Scale a number in the range of x1 to x2, to the range of y1 to y2
-     * @param n number to scale
-     * @param x1 lower bound range of n
-     * @param x2 upper bound range of n
-     * @param y1 lower bound of scale
-     * @param y2 upper bound of scale
-     * @return a double scaled to a value between y1 and y2, inclusive
-     */
-    public static double scale(double n, double x1, double x2, double y1, double y2) {
-        double a = (y1-y2)/(x1-x2);
-        double b = y1 - x1*(y1-y2)/(x1-x2);
-        return a*n+b;
-    }
-
-    public static double clip(double number, double min, double max) {
-        if (number < min) return min;
-        if (number > max) return max;
-        return number;
-    }
-
-    public static float clip(float number, float min, float max) {
-        if (number < min) return min;
-        if (number > max) return max;
-        return number;
-    }
-
-    public static int clip(int number, int min, int max) {
-        if (number < min) return min;
-        if (number > max) return max;
-        return number;
-    }
-
-    public static short clip(short number, short min, short max) {
-        if (number < min) return min;
-        if (number > max) return max;
-        return number;
-    }
-
-    public static byte clip(byte number, byte min, byte max) {
-        if (number < min) return min;
-        if (number > max) return max;
-        return number;
-    }
-
-    public static void throwIfRangeIsInvalid(double number, double min, double max) throws IllegalArgumentException {
-        if (number < min || number > max) {
-            throw new IllegalArgumentException(
-                    String.format("number %f is invalid; valid ranges are %f..%f", number, min, max));
+    public static double minVal(double val, double min){
+        if(val >= 0 && val <= min){
+            return min;
         }
+        if(val < 0 && val > -min){
+            return -min;
+        }
+        return val;
     }
 
-    public static void throwIfRangeIsInvalid(int number, int min, int max) throws IllegalArgumentException {
-        if (number < min || number > max) {
-            throw new IllegalArgumentException(
-                    String.format("number %d is invalid; valid ranges are %d..%d", number, min, max));
-        }
+    public static boolean absGreater(double a, double b) {
+        return Math.abs(a) > Math.abs(b);
     }
+
 
     public static double[] lineEquation(Point p1, double slope) {
         double m;

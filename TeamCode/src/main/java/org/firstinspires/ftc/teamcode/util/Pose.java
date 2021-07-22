@@ -75,6 +75,24 @@ public class Pose extends Point {
         return new Pose(r_x, r_y, r_h); // return 0 just to kmake sure neer to use it kek
     }
 
+    public Pose minify(Pose mins) {
+        Pose n = new Pose(this);
+        if(MathUtil.absGreater(x,y)) {
+            if(MathUtil.absGreater(x,h)) {
+                n.x = MathUtil.minVal(x, mins.x);
+            } else {
+                n.h = MathUtil.minVal(h, mins.h);
+            }
+        } else {
+            if(MathUtil.absGreater(y,h)) {
+                n.y = MathUtil.minVal(y, mins.y);
+            } else {
+                n.h = MathUtil.minVal(h, mins.h);
+            }
+        }
+        return n;
+    }
+
     public Pose wrap() {
         return new Pose(x, y, MathUtil.angleWrap(h));
     }
