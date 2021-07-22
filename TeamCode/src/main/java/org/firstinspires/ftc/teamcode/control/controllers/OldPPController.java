@@ -131,7 +131,7 @@ public class OldPPController {
     public static boolean followCurve(ArrayList<CurvePoint> allPoints, double followAngle){
 
         //now we will extend the last line so that the pointing looks smooth at the end
-        ArrayList<CurvePoint> pathExtended = (ArrayList<CurvePoint>) allPoints.clone();
+        ArrayList<CurvePoint> pathExtended = new ArrayList<>(allPoints);
 
         //first get which segment we are on
         indexPoint clippedToPath = clipToFollowPointPath(allPoints,currPose.x,currPose.y);

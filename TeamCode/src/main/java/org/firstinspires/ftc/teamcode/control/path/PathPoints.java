@@ -9,13 +9,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class PathPoints {
-    public enum types {
-        lateTurn, onlyTurn, stop, locked, onlyFunctions;
-
-        public boolean isLocked() {
-            return ordinal() < 4;
-        }
-    }
 
     public static class BasePathPoint extends Point {
         public double followDistance;
@@ -23,10 +16,10 @@ public class PathPoints {
         public String signature;
 
         public Point lateTurnPoint;
-        public Boolean isOnlyTurn;
-        public Boolean isStop;
-        public Double lockedHeading;
-        public Boolean isOnlyFuncs;
+        public boolean isOnlyTurn;
+        public boolean isStop;
+        public double lockedHeading;
+        public boolean isOnlyFuncs;
 
 
         public BasePathPoint(String signature, double x, double y, double followDistance, Function... functions) {
@@ -46,19 +39,6 @@ public class PathPoints {
             isStop = b.isStop;
             lockedHeading = b.lockedHeading;
             isOnlyFuncs = b.isOnlyFuncs;
-        }
-
-        private static Function[] linkedToPrim(LinkedList<Function> funcs) {
-            Object[] oArr = funcs.toArray();
-            Function[] fArr = new Function[oArr.length];
-            for(int i=0; i<oArr.length; i++) {
-                fArr[i] = (Function) oArr[i];
-            }
-            return fArr;
-        }
-
-        public Object[] getTypeList() {
-            return new Object[] {lateTurnPoint, isOnlyTurn, isStop,  lockedHeading, isOnlyFuncs};
         }
 
         @SuppressLint("DefaultLocale")

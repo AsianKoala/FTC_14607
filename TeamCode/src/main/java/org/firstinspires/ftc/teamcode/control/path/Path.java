@@ -48,19 +48,18 @@ public class Path extends LinkedList<BasePathPoint> {
         BasePathPoint target = getFirst();
         if(!isPurePursuit) {
             // TODO fix start in case of lateTurnPoint in goToPosition
-            PurePursuitController.goToPosition(robot, target, target.isStop!=null?target:null, null);
+            PurePursuitController.goToPosition(robot, target, null);
         } else {
             boolean skip;
 
-            if (target.isOnlyTurn != null) {
+            if (target.isOnlyTurn) {
                 skip = MathUtil.angleThresh(Robot.currPose.h, target.lockedHeading);
-            } else if(target.isStop != null){
+            } else if(target.isStop){
                 skip = Robot.currPose.distance(target) < 2;
             } else {
                 skip = Robot.currPose.distance(target) < target.followDistance;
-                if(size()>1 && get(1).isStop != null) {
+                if(size()>1 && get(1).isStop) {
                     skip = Robot.currPose.distance(target) < 10;
-                    //System.out.println("ffffffffffffffffff");
                 }
             }
 
@@ -79,19 +78,13 @@ public class Path extends LinkedList<BasePathPoint> {
                 return;
             }
 
-            PurePursuitController.followPath(robot, curr, target);
-//
-//            if (target.isStop != null && Robot.currPose.distance(target) < target.followDistance) {
-//                PurePursuitController.goToPosition(robot, target, target, curr);
-//               robot.packet.put("going to final", "");
-//            }
-//            else {
-//                PurePursuitController.followPath(robot, curr, target, initialPoints);
-//                robot.packet.put("following curve", "");
-//            }
+            if(target.isStop && Robot.currPose.distance(target) < target.followDistance) {
+                PurePursuitController.goToPosition(robot, target, curr);
+            } else {
+                PurePursuitController.followPath(robot, curr, target);
+            }
         }
     }
-
 
     @Override
     public String toString() {
