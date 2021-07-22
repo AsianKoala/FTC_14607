@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.util.Debuggable;
 import org.firstinspires.ftc.teamcode.util.Mar;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.OpModeType;
+import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -41,12 +42,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.util.MathUtil.angleWrap;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.sgn;
 
 @Config
 public abstract class Robot extends TunableOpMode {
 
     public abstract Pose startPose();
+    public abstract Path path();
 
     public static Pose currPose = new Pose();
 //    public static Pose currVel = new Pose();
@@ -84,8 +87,8 @@ public abstract class Robot extends TunableOpMode {
 
     private double lastManualUpdate;
     private double lastAutoUpdate;
-    private boolean isDebugging;
-    private boolean isPathStopped;
+    private boolean debugging;
+    private boolean pathStopped;
     private OpModeType type;
     private Pose debugSpeeds;
 
@@ -113,6 +116,7 @@ public abstract class Robot extends TunableOpMode {
         headingOffset = imu.getAngularOrientation().firstAngle;
 
         odometry = new Odometry(startPose());
+        currPose = startPose();
 
         masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
         slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
@@ -127,18 +131,19 @@ public abstract class Robot extends TunableOpMode {
         allHardware = new ArrayList<>();
         allHardware.add(driveTrain);
 
-        pathCache = new Path();
-
-        dashboard = FtcDashboard.getInstance();
-        packet = null;
-        initTime.stop();
+        setPathCache(path());
 
         lastManualUpdate = System.currentTimeMillis();
         lastAutoUpdate = System.currentTimeMillis();
-        isDebugging = getClass().isAnnotationPresent(Debuggable.class);
-        isPathStopped = true;
+        debugging = getClass().isAnnotationPresent(Debuggable.class);
+        pathStopped = true;
         type = getClass().isAnnotationPresent(Autonomous.class) ? OpModeType.AUTO : OpModeType.TELEOP;
         debugSpeeds = new Pose();
+
+        dashboard = FtcDashboard.getInstance();
+        initTime.stop();
+        updateTelemetry();
+        updateDashboard();
     }
 
     @Override
@@ -157,7 +162,7 @@ public abstract class Robot extends TunableOpMode {
     public void loop() {
         loopTime.start();
         hwTime.start();
-        if(isDebugging) debugControl();
+        if(debugging) debugControl();
         else updateHardware();
         hwTime.stop();
         telemTime.start();
@@ -173,20 +178,23 @@ public abstract class Robot extends TunableOpMode {
     }
 
     protected void setPathCache(Path path) {
-        pathCache = path;
-    }
-
-    private void updatePath() {
-        if(!pathCache.finished()) {
-            pathCache.follow(this);
+        if(path == null) {
+            pathCache = new Path();
         } else {
-            pathCache.remove(0);
-            if(type == OpModeType.AUTO && !isDebugging)
-                DriveTrain.powers.set(new Pose());
+            pathCache = path;
         }
     }
 
-    protected void updateHardware() {
+    private void updatePath() {
+        if(!pathCache.isEmpty()) {
+            pathCache.follow(this);
+        }
+        if(pathCache.finished() && type==OpModeType.AUTO) {
+            DriveTrain.powers = new Pose(); // change this ??
+        }
+    }
+
+    private void updateHardware() {
         masterBulkData = masterHub.getBulkInputData();
         slaveBulkData = slaveHub.getBulkInputData();
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
@@ -195,12 +203,48 @@ public abstract class Robot extends TunableOpMode {
                 MathUtil.angleWrap(lastHeading + startPose().h)));
     }
 
+//    private void initTelemetry() {
+//        packet = new TelemetryPacket();
+//        packet.put("FTC 14607 by Neil Mehra","");
+//        Date buildDate = new Date(BuildConfig.TIMESTAMP);
+//        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm:ss");
+//        packet.put("built at", dateFormat.format(buildDate));
+//
+//        packet.put("ftc sdk ver", BuildConfig.VERSION_NAME);
+//        packet.put("java ver", System.getProperty("java.runtime.version"));
+//        packet.addLine(Build.MANUFACTURER + " " + Build.MODEL + " running android sdk " + Build.VERSION.SDK_INT);
+//
+//        packet.put("hub ver", masterHub.getFirmwareVersion());
+//        List<LynxModule> revHubs = hardwareMap.getAll(LynxModule.class);
+//        List<DcMotor> motors = hardwareMap.getAll(DcMotor.class);
+//        List<Servo> servos = hardwareMap.getAll(Servo.class);
+//        List<DigitalChannel> digital = hardwareMap.getAll(DigitalChannel.class);
+//        List<AnalogInput> analog = hardwareMap.getAll(AnalogInput.class);
+//        List<I2cDevice> i2c = hardwareMap.getAll(I2cDevice.class);
+//        packet.addLine(revHubs.size() + " Hubs; " + motors.size() + " Motors; " + servos.size() +
+//                " Servos; " + (digital.size() + analog.size() + i2c.size()) + " Sensors");
+//    }
+
     private void updateTelemetry() {
         packet = new TelemetryPacket();
-        packet.addLine("FTC 14607 by Neil Mehra");
+        packet.put("FTC 14607 by Neil Mehra","");
         Date buildDate = new Date(BuildConfig.TIMESTAMP);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm:ss");
         packet.put("built at", dateFormat.format(buildDate));
+
+        packet.put("ftc sdk ver", BuildConfig.VERSION_NAME);
+        packet.put("java ver", System.getProperty("java.runtime.version"));
+        packet.put(Build.MANUFACTURER + " " + Build.MODEL + " running android sdk " + Build.VERSION.SDK_INT,"");
+
+        packet.put("hub ver", masterHub.getFirmwareVersion());
+        List<LynxModule> revHubs = hardwareMap.getAll(LynxModule.class);
+        List<DcMotor> motors = hardwareMap.getAll(DcMotor.class);
+        List<Servo> servos = hardwareMap.getAll(Servo.class);
+        List<DigitalChannel> digital = hardwareMap.getAll(DigitalChannel.class);
+        List<AnalogInput> analog = hardwareMap.getAll(AnalogInput.class);
+        List<I2cDevice> i2c = hardwareMap.getAll(I2cDevice.class);
+        packet.put(revHubs.size() + " Hubs; " + motors.size() + " Motors; " + servos.size() +
+                " Servos; " + (digital.size() + analog.size() + i2c.size()) + " Sensors","");
 
         packet.put("init time", initTime.getTime());
         packet.put("init loop time", init_loopTime.getTime());
@@ -214,19 +258,8 @@ public abstract class Robot extends TunableOpMode {
         packet.put("path time", pathTime.getTime());
         packet.put("dash time", dashTime.getTime());
 
-        packet.put("ftc sdk ver", BuildConfig.VERSION_NAME);
-        packet.put("java ver", System.getProperty("java.runtime.version"));
-        packet.addLine(Build.MANUFACTURER + " " + Build.MODEL + " running android sdk " + Build.VERSION.SDK_INT);
-
-        packet.put("hub ver", masterHub.getFirmwareVersion());
-        List<LynxModule> revHubs = hardwareMap.getAll(LynxModule.class);
-        List<DcMotor> motors = hardwareMap.getAll(DcMotor.class);
-        List<Servo> servos = hardwareMap.getAll(Servo.class);
-        List<DigitalChannel> digital = hardwareMap.getAll(DigitalChannel.class);
-        List<AnalogInput> analog = hardwareMap.getAll(AnalogInput.class);
-        List<I2cDevice> i2c = hardwareMap.getAll(I2cDevice.class);
-        packet.addLine(revHubs.size() + " Hubs; " + motors.size() + " Motors; " + servos.size() +
-                " Servos; " + (digital.size() + analog.size() + i2c.size()) + " Sensors");
+        packet.put("debugging", debugging);
+        packet.put("debug path stopped", pathStopped);
 
         packet.put("x", currPose.x);
         packet.put("y", currPose.y);
@@ -236,15 +269,31 @@ public abstract class Robot extends TunableOpMode {
         allHardware.forEach(h -> packet.putAll(h.update()));
 
         if(pathCache.isEmpty()) {
-            packet.addLine("path empty");
+            packet.put("path empty","");
         } else {
             packet.put("point amts", pathCache.size());
             packet.put("current path name", pathCache.name);
-            packet.put("current target name", pathCache.get(0).signature);
+            packet.put("current target", pathCache.get(0).toString());
+            double[] x = new double[pathCache.initialPoints.size()];
+            double[] y = new double[pathCache.initialPoints.size()];
+            int index = 0;
+            for(PathPoints.BasePathPoint e : pathCache.initialPoints) {
+                x[index] = e.y;
+                y[index] = -e.x;
+                packet.fieldOverlay().setFill("green").fillCircle(x[index],y[index],2);
+                index++;
+            }
+            packet.fieldOverlay()
+                    .setStroke("red")
+                    .setStrokeWidth(1)
+                    .strokePolyline(x,y);
         }
+        Point dashPoint = new Point(-(-currPose.y),-currPose.x); // ok -(-y) looks stupid but i do it to get rid of the warning istg im not that stupid
         packet.fieldOverlay()
                 .setFill("blue")
-                .fillCircle(currPose.y-72, -(currPose.x-72), 3);
+                .fillCircle(dashPoint.x, dashPoint.y, 3)
+                .setFill("red")
+                .fillCircle(dashPoint.x + 10*Math.sin(currPose.h), dashPoint.y - 10*Math.cos(currPose.h), 1.5);
     }
 
     private void updateDashboard() {
@@ -253,16 +302,20 @@ public abstract class Robot extends TunableOpMode {
     }
 
     private void debugControl() {
-        if(gamepad1.a) isPathStopped = !isPathStopped;
-        if (System.currentTimeMillis() - lastManualUpdate > 500) {
+        if(gamepad1.left_trigger > 0.5) {
+            pathStopped = true;
+        } else if(gamepad1.right_trigger > 0.5) {
+            pathStopped = false;
+        }
+        if (System.currentTimeMillis() - lastManualUpdate > 50) {
             currPose.set(new Pose(
                     currPose.x + sgn(gamepad1.left_stick_x),
                     currPose.y - sgn(gamepad1.left_stick_y),
-                    currPose.h + (sgn(gamepad1.right_stick_x) * (Math.PI / 10))
+                    angleWrap(currPose.h + (sgn(-gamepad1.right_stick_x) * (Math.PI / 10)))
             ));
             lastManualUpdate = System.currentTimeMillis();
         }
-        if(isDebugging) {
+        if(debugging && !pathStopped && !pathCache.isEmpty()) {
             double elapsed = (System.currentTimeMillis() - lastAutoUpdate)/1000.0;
             lastAutoUpdate = System.currentTimeMillis();
             if(elapsed > 1) return;
@@ -270,15 +323,15 @@ public abstract class Robot extends TunableOpMode {
             double radius = debugSpeeds.hypot();
             double theta = currPose.h + debugSpeeds.atan() - Math.PI / 2;
             currPose.set(currPose.add(new Pose(
-                    radius * Math.cos(theta) * elapsed * 1000 * 0.2,
-                    radius * Math.sin(theta) * elapsed * 1000 * 0.2,
-                    DriveTrain.powers.h * elapsed * 20 / (2 * Math.PI))));
+                    radius * Math.cos(theta) * elapsed * 500 * 0.2,
+                    radius * Math.sin(theta) * elapsed * 500 * 0.2,
+                    DriveTrain.powers.h * elapsed * 10  / (2 * Math.PI))));
 
-            debugSpeeds.set(debugSpeeds.add(new Pose(
+            debugSpeeds.set((debugSpeeds.add(new Pose(
                     MathUtil.clip((DriveTrain.powers.x - debugSpeeds.x)/0.2,-1,1) * elapsed,
                     MathUtil.clip((DriveTrain.powers.y - debugSpeeds.y)/0.2,-1,1) * elapsed,
                     MathUtil.clip((DriveTrain.powers.h - debugSpeeds.h)/0.2,-1,1) * elapsed
-            )).multiply(new Pose(1.0 - elapsed)));
+            ))).multiply(new Pose(1.0 - elapsed)));
         }
     }
 }

@@ -14,8 +14,8 @@ public class Path extends LinkedList<BasePathPoint> {
     public boolean isPurePursuit;
     public boolean copi = true; //@TODO i forgot what this does go to sim and check it out
     public ArrayList<BasePathPoint> initialPoints;
-
     public String name;
+    private boolean firstFinish;
 
     public Path(Path path) {
         for (BasePathPoint pathPoint : path) add(new BasePathPoint(pathPoint));
@@ -28,6 +28,7 @@ public class Path extends LinkedList<BasePathPoint> {
         removeFirst();
 
         name = path.name;
+        firstFinish = false;
     }
 
     public Path(String name) {
@@ -72,7 +73,7 @@ public class Path extends LinkedList<BasePathPoint> {
                 }
             }
 
-            if(target.functions.size() != 0) {
+            if(!target.functions.isEmpty()) {
                 target.functions.removeIf(f -> f.cond() && f.func());
                 skip = skip && target.functions.size() == 0;
             }
@@ -82,7 +83,11 @@ public class Path extends LinkedList<BasePathPoint> {
                 removeFirst();
             }
 
-            if(finished()) return;
+            if(isEmpty()) {
+                firstFinish = true;
+                return;
+            }
+
             if (target.isStop != null && Robot.currPose.distance(target) < target.followDistance) {
                 PurePursuitController.goToPosition(robot, target, target, curr);
                // System.out.println("GOING TO FINAL STOP");
@@ -114,7 +119,11 @@ public class Path extends LinkedList<BasePathPoint> {
     }
 
     public boolean finished() {
-        return size()==0;
+        if(firstFinish) {
+            firstFinish = false;
+            return true;
+        }
+        return false;
     }
 
 }
