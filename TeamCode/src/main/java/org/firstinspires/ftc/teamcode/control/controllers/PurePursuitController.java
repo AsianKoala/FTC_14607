@@ -33,8 +33,8 @@ public class PurePursuitController {
         robot.packet.put("relX", relVals.x);
         robot.packet.put("relY", relVals.y);
 
-        double smoothinx = relLineVals.x * 0.8 > 30 && isStop ? relLineVals.x * 0.8 : 30;
-        double smoothiny = relLineVals.y * 0.8 > 30 && isStop ? relLineVals.y * 0.8 : 30;
+        double smoothinx = relLineVals.x * 0.8 > 12 && isStop ? relLineVals.x * 0.8 : 12;
+        double smoothiny = relLineVals.y * 0.8 > 12 && isStop ? relLineVals.y * 0.8 : 12;
 
         double v = relVals.abs().x + relVals.abs().y;
         powerPose.x = relVals.abs().x / smoothinx;
@@ -73,7 +73,7 @@ public class PurePursuitController {
         powerPose.y *= turnErrorScaler;
 
         if(target.isStop) {
-            Point extend = MathUtil.extendLine(start, target, 37.5);
+            Point extend = MathUtil.extendLine(start, target, 30); //todo experiment with extend line lookahead point
             double newTargetAngle = extend.minus(Robot.currPose).atan();
 
             double dH = MathUtil.angleWrap(newTargetAngle-Robot.currPose.h);
