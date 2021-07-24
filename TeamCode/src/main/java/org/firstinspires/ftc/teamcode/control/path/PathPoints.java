@@ -20,7 +20,7 @@ public class PathPoints {
         public boolean isStop;
         public double lockedHeading;
         public boolean isOnlyFuncs;
-
+        public boolean isLocked;
 
         public BasePathPoint(String signature, double x, double y, double followDistance, Function... functions) {
             super(x, y);
@@ -30,7 +30,7 @@ public class PathPoints {
             this.signature = signature;
         }
 
-        public BasePathPoint(BasePathPoint b) { // copys metadata with list
+        public BasePathPoint(BasePathPoint b) {
             this(b.signature, b.x, b.y, b.followDistance);
             functions = b.functions;
 
@@ -39,6 +39,7 @@ public class PathPoints {
             isStop = b.isStop;
             lockedHeading = b.lockedHeading;
             isOnlyFuncs = b.isOnlyFuncs;
+            isLocked = b.isLocked;
         }
 
         @SuppressLint("DefaultLocale")
@@ -49,6 +50,14 @@ public class PathPoints {
 
         public boolean equals(BasePathPoint b) {
             return x==b.x && y==b.y;
+        }
+    }
+
+    public static class ControlledPathPoint extends SimplePathPoint {
+        public ControlledPathPoint(String signature, double x, double y, double heading, double followDistance, Function... functions) {
+            super(signature, x, y, followDistance, functions);
+            isLocked = true;
+            lockedHeading = heading;
         }
     }
 
@@ -70,13 +79,6 @@ public class PathPoints {
         public StopPathPoint(String signature, double x, double y, double heading, double followDistance, Function... functions) {
             super(signature, x, y, heading, followDistance, functions);
             isStop = true;
-        }
-    }
-
-    public static class ControlledPathPoint extends SimplePathPoint {
-        public ControlledPathPoint(String signature, double x, double y, double heading, double followDistance, Function... functions) {
-            super(signature, x, y, followDistance, functions);
-            lockedHeading = MathUtil.unwrap(heading);
         }
     }
 

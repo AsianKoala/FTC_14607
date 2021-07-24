@@ -47,7 +47,7 @@ public class Path extends LinkedList<BasePathPoint> {
     public void follow(Robot robot) {
         BasePathPoint target = getFirst();
         if(!isPurePursuit) {
-            PurePursuitController.goToPosition(robot, target);
+            PurePursuitController.goToPosition(robot, target, curr);
         } else {
             boolean skip;
 
@@ -78,7 +78,7 @@ public class Path extends LinkedList<BasePathPoint> {
             }
 
             if(target.isStop && robot.currPose.distance(target) < target.followDistance) {
-                PurePursuitController.goToPosition(robot, target);
+                PurePursuitController.goToPosition(robot, target, curr);
             } else {
                 PurePursuitController.followPath(robot, curr, target);
             }

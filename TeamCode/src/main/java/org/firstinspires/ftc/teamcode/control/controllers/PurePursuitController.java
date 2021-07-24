@@ -12,7 +12,7 @@ import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 public class PurePursuitController {
     private static final Pose mins = new Pose(0.11, 0.09, 0.11);
 
-    public static void goToPosition(Robot robot, BasePathPoint target) {
+    public static void goToPosition(Robot robot, BasePathPoint target, BasePathPoint start) {
         Pose relVals = robot.currPose.relVals(target);
         robot.packet.addData("relX", relVals.x);
         robot.packet.addData("relY", relVals.y);
@@ -22,8 +22,12 @@ public class PurePursuitController {
         Pose powerPose = relVals.multiply(relVals).scale(1/(v * smoothing));
 
         double relAngle = getDesiredAngle(robot.currPose, target);
-        powerPose.h = relAngle / Math.toRadians(35);
         robot.packet.addData("relH", Math.toDegrees(relAngle));
+
+        powerPose.h = relAngle / Math.toRadians(40);
+        if(target.isLocked) {
+            powerPose.h = target.lockedHeading;
+        }
 
         // checks and further smoothings
         boolean turning = true;
@@ -32,19 +36,19 @@ public class PurePursuitController {
             turning = false;
         }
 
-//        powerPose = powerPose.minify(mins);
+        powerPose = powerPose.minify(mins);
         powerPose = powerPose.multiply(new Pose(
                 Range.clip(relVals.x/3.0,0,1),
                 Range.clip(relVals.y/3.0,0,1),
                 Range.clip(Math.abs(powerPose.h)/Math.toRadians(5),0,1)));
 
-        double turnErrorScaler = turning?Range.clip(1.0-Math.abs(relAngle/Math.toRadians(40)),0.4,0.7):1;
+        double turnErrorScaler = turning?Range.clip(1.0-Math.abs(relAngle/Math.toRadians(40)),0.4,1):1;
         robot.packet.addData("turnErrorScalar", turnErrorScaler);
         powerPose.x *= turnErrorScaler;
         powerPose.y *= turnErrorScaler;
 
-        powerPose.x *= 1 - Range.clip(Math.abs(powerPose.h),0,0.8);
-        powerPose.y *= 1 - Range.clip(Math.abs(powerPose.h),0,0.8);
+//        powerPose.x *= 1 - Range.clip(Math.abs(powerPose.h),0,0.8);
+//        powerPose.y *= 1 - Range.clip(Math.abs(powerPose.h),0,0.8);
 
         robot.driveTrain.powers = powerPose.clipAbs(1.0);
     }
@@ -73,6 +77,6 @@ public class PurePursuitController {
         robot.packet.fieldOverlay()
                 .setFill("white")
                 .fillCircle(followPoint.dbNormalize().x, followPoint.dbNormalize().y,2);
-        goToPosition(robot, followPoint);
+        goToPosition(robot, followPoint, start);
     }
 }
