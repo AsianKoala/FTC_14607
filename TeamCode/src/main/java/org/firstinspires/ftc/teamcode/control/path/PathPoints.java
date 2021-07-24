@@ -18,9 +18,9 @@ public class PathPoints {
         public Point lateTurnPoint;
         public boolean isOnlyTurn;
         public boolean isStop;
-        public double lockedHeading;
         public boolean isOnlyFuncs;
         public boolean isLocked;
+        public double lockedHeading;
 
         public BasePathPoint(String signature, double x, double y, double followDistance, Function... functions) {
             super(x, y);
@@ -28,6 +28,11 @@ public class PathPoints {
             this.functions = new LinkedList<>();
             this.functions.addAll(Arrays.asList(functions));
             this.signature = signature;
+
+            isOnlyTurn = false;
+            isStop = false;
+            isOnlyFuncs = false;
+            isLocked = false;
         }
 
         public BasePathPoint(BasePathPoint b) {
@@ -37,9 +42,9 @@ public class PathPoints {
             lateTurnPoint = b.lateTurnPoint;
             isOnlyTurn = b.isOnlyTurn;
             isStop = b.isStop;
-            lockedHeading = b.lockedHeading;
             isOnlyFuncs = b.isOnlyFuncs;
             isLocked = b.isLocked;
+            lockedHeading = b.lockedHeading;
         }
 
         @SuppressLint("DefaultLocale")
@@ -53,25 +58,11 @@ public class PathPoints {
         }
     }
 
-    public static class ControlledPathPoint extends SimplePathPoint {
+    public static class ControlledPathPoint extends BasePathPoint {
         public ControlledPathPoint(String signature, double x, double y, double heading, double followDistance, Function... functions) {
             super(signature, x, y, followDistance, functions);
             isLocked = true;
             lockedHeading = heading;
-        }
-    }
-
-    public static class LateTurnPathPoint extends ControlledPathPoint {
-        public LateTurnPathPoint(String signature, double x, double y, double heading, double followDistance, Point turnPoint, Function... functions) {
-            super(signature, x, y, heading, followDistance, functions);
-            lateTurnPoint = turnPoint;
-        }
-    }
-
-    public static class OnlyTurnPathPoint extends ControlledPathPoint {
-        public OnlyTurnPathPoint(String signature, double heading, Function... functions) {
-            super(signature,0,0,heading,0,functions);
-            isOnlyTurn = true;
         }
     }
 
@@ -82,16 +73,26 @@ public class PathPoints {
         }
     }
 
-    public static class OnlyFunctionsPathPoint extends SimplePathPoint {
-        public OnlyFunctionsPathPoint(String signature, Function... functions) {
-            super(signature,0,0,0,functions);
-            isOnlyFuncs = true;
-        }
-    }
+//    public static class LateTurnPathPoint extends ControlledPathPoint {
+//        public LateTurnPathPoint(String signature, double x, double y, double heading, double followDistance, Point turnPoint, Function... functions) {
+//            super(signature, x, y, heading, followDistance, functions);
+//            lateTurnPoint = turnPoint;
+//        }
+//    }
+//
+//    public static class OnlyTurnPathPoint extends ControlledPathPoint {
+//        public OnlyTurnPathPoint(String signature, double heading, Function... functions) {
+//            super(signature,0,0,heading,0,functions);
+//            isOnlyTurn = true;
+//        }
+//    }
 
-    public static class SimplePathPoint extends BasePathPoint {
-        public SimplePathPoint(String signature, double x, double y, double followDistance, Function... functions) {
-            super(signature, x, y, followDistance, functions);
-        }
-    }
+
+
+//    public static class OnlyFunctionsPathPoint extends SimplePathPoint {
+//        public OnlyFunctionsPathPoint(String signature, Function... functions) {
+//            super(signature,0,0,0,functions);
+//            isOnlyFuncs = true;
+//        }
+//    }
 }

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.util.Pose;
 public class AzusaTeleOp extends Robot {
     @Override
     public Pose startPose() {
-        return new Pose(0,0,0);
+        return new Pose(-64,-64,Math.PI / 2 );
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.control.path.Path;
+import org.firstinspires.ftc.teamcode.control.path.PathPoints;
 import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder;
 import org.firstinspires.ftc.teamcode.control.system.BaseAuto;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -15,21 +16,18 @@ import static org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
 public class AzusaAuto extends BaseAuto {
     @Override
     public Pose startPose() {
-        return new Pose(85, 9, Math.PI);
+        return new Pose(-64, -64, Math.PI / 2);
     }
 
     @Override
     public Path path() {
-        PathBuilder lCurve = new PathBuilder("lCurve")
-                .addPoint(new BasePathPoint("start", 85,9,0))
-                .addPoint(new BasePathPoint("61", 61,15,14))
-                .addPoint(new BasePathPoint("37",37, 24,14))
-                .addPoint(new BasePathPoint("24", 24, 36, 14))
-                .addPoint(new BasePathPoint("", 15, 50,14))
-                .addPoint(new BasePathPoint("", 12, 64, 14))
-                .addPoint(new BasePathPoint("", 10, 80, 14))
-                .addPoint(new BasePathPoint("", 10, 104, 14));
-
-        return lCurve.build();
+        PathBuilder exp = new PathBuilder("lCurve exp")
+                .addPoint(new PathPoints.BasePathPoint("start", -64,-64,0))
+                .addPoint(new PathPoints.BasePathPoint("fw", -64, -34, 14))
+                .addPoint(new PathPoints.BasePathPoint("joint 1", -46, -10, 14))
+                .addPoint(new PathPoints.BasePathPoint("joint 2", -16, 8, 14))
+                .addPoint(new PathPoints.BasePathPoint("track 1", 16, 12, 14))
+                .addPoint(new PathPoints.StopPathPoint("track 2", 56, 12, 0, 14));
+        return exp.build();
     }
 }

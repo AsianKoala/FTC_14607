@@ -24,10 +24,10 @@ public class PurePursuitController {
         double relAngle = getDesiredAngle(robot.currPose, target);
         robot.packet.addData("relH", Math.toDegrees(relAngle));
 
-        powerPose.h = relAngle / Math.toRadians(40);
-        if(target.isLocked) {
-            powerPose.h = target.lockedHeading;
-        }
+        powerPose.h = MathUtil.angleWrap(target.minus(start).atan() - robot.currPose.h) / Math.toRadians(35);
+//        if(target.isLocked) {
+//            powerPose.h = MathUtil.angleWrap(target.lockedHeading - robot.currPose.h) / Math.toRadians(30);
+//        }
 
         // checks and further smoothings
         boolean turning = true;
@@ -42,7 +42,7 @@ public class PurePursuitController {
                 Range.clip(relVals.y/3.0,0,1),
                 Range.clip(Math.abs(powerPose.h)/Math.toRadians(5),0,1)));
 
-        double turnErrorScaler = turning?Range.clip(1.0-Math.abs(relAngle/Math.toRadians(40)),0.4,1):1;
+        double turnErrorScaler = turning?Range.clip(1.0-Math.abs(relAngle/Math.toRadians(40)),0.4,0.8):1;
         robot.packet.addData("turnErrorScalar", turnErrorScaler);
         powerPose.x *= turnErrorScaler;
         powerPose.y *= turnErrorScaler;

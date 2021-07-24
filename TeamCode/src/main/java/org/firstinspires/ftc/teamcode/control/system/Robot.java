@@ -21,6 +21,7 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.control.localization.Odometry;
 import org.firstinspires.ftc.teamcode.BuildConfig;
+import org.firstinspires.ftc.teamcode.control.localization.OdometrySet;
 import org.firstinspires.ftc.teamcode.control.path.Path;
 import org.firstinspires.ftc.teamcode.control.path.PathPoints;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
@@ -30,7 +31,6 @@ import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.DataPacket;
 import org.firstinspires.ftc.teamcode.util.Debuggable;
 import org.firstinspires.ftc.teamcode.util.Mar;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.OpModeType;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -62,6 +62,7 @@ public abstract class Robot extends TunableOpMode {
     public Odometry odometry;
     private BNO055IMU imu;
     private double headingOffset;
+    public OdometrySet odometrySet;
 
     private FtcDashboard dashboard;
     public DataPacket packet;
@@ -116,12 +117,19 @@ public abstract class Robot extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
-        odometry = new Odometry(startPose());
+        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
+        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
+        masterBulkData = null;
+        slaveBulkData = null;
+
+        ExpansionHubMotor verticalOdometer = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
+        ExpansionHubMotor horizontalOdometer = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        odometrySet = new OdometrySet(verticalOdometer, horizontalOdometer);
+        odometry = new Odometry(startPose(), odometrySet);
         currPose = startPose();
         currVel = new Pose();
 
-        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
-        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
+        odometry.setStart(startPose());
 
         frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
@@ -163,8 +171,9 @@ public abstract class Robot extends TunableOpMode {
     public void loop() {
         loopTime.start();
         hwTime.start();
-        if(debugging) debugControl();
-        else updateHardware();
+//        if(debugging) debugControl();
+//        else updateHardware();
+        updateOdo();
         hwTime.stop();
         telemTime.start();
         updateTelemetry(false);
@@ -195,15 +204,15 @@ public abstract class Robot extends TunableOpMode {
         }
     }
 
-    private void updateHardware() {
-        masterBulkData = masterHub.getBulkInputData();
-        slaveBulkData = slaveHub.getBulkInputData();
+    private void updateOdo() {
+//        slaveBulkData = slaveHub.getBulkInputData();
+//        packet.addLine("SLAVEBULKDATA INPUTS");
+//        packet.addData("MOTOR POSITION 0", slaveBulkData.getMotorCurrentPosition(0));
+//        packet.addData("MOTOR POSITION 2", slaveBulkData.getMotorCurrentPosition(2));
+
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        Pose[] odomVals = odometry.update(slaveBulkData.getMotorCurrentPosition(2),
-                slaveBulkData.getMotorCurrentPosition(0),
-                MathUtil.angleWrap(lastHeading + startPose().h));
-        currPose = odomVals[0];
-        currVel = odomVals[1];
+        odometry.update(lastHeading);
+        currPose = Odometry.currentPosition;
     }
 
     private void updateTelemetry(boolean isInit) {
