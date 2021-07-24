@@ -68,7 +68,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
     private final static double PERPENDICULAR_Y = -4.25;
 
     private Pose currPose;
-    private final Pose currVel;
+    private Pose currVel;
     private final ArrayList<SignaturePose> prevPoses;
 
     // Parallel wheel is parallel to the forward axis
@@ -137,7 +137,7 @@ public class WorkingOdometry extends TwoTrackingWheelLocalizer {
             SignaturePose old = prevPoses.get(oldIndex);
             SignaturePose cur = prevPoses.get(prevPoses.size() - 1);
             double scale = (double) (cur.sign - old.sign) / (1000);
-            currVel.set(cur.minus(old).multiply(new Pose(1 / scale)));
+            currVel = cur.minus(old).multiply(new Pose(1 / scale));
         }
         return new Pose[]{currPose, currVel};
     }

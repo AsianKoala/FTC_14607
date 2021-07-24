@@ -43,6 +43,10 @@ public class Pose extends Point {
         return divide(new Pose(1/p.x, 1/p.y, 1/p.h));
     }
 
+    public Pose scale(double a) {
+        return multiply(new Pose(a,a,a));
+    }
+
     public Pose divide(Pose p) {
         return new Pose(super.divide(p), h /p.h);
     }
@@ -93,14 +97,22 @@ public class Pose extends Point {
         return n;
     }
 
-    public Pose wrap() {
-        return new Pose(x, y, MathUtil.angleWrap(h));
+    public Pose clipAbs(double max) {
+        Pose ret = new Pose(this);
+        if(absGreater(x,max)) {
+            ret.x = sgns().x * max;
+        }
+        if(absGreater(y,max)) {
+            ret.y = sgns().y * max;
+        }
+        if(absGreater(h,max)) {
+            ret.h = sgns().h * max;
+        }
+        return ret;
     }
 
-    public void set(Pose p) {
-        x = p.x;
-        y = p.y;
-        h = p.h;
+    public Pose wrap() {
+        return new Pose(x, y, MathUtil.angleWrap(h));
     }
 
 

@@ -100,7 +100,7 @@ public abstract class BaseOdometry {
 
         Pose oldPose = currPose;
         robotPoseUpdate();
-        currPose.set(currPose.wrap());
+        currPose = currPose.wrap();
 
         Pose deltaVals = currPose.minus(oldPose);
         robotPoseDelta = new Pose(robotPoseDelta.add(deltaVals));

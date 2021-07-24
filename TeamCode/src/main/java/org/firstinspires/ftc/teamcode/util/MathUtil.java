@@ -40,6 +40,10 @@ public class MathUtil {
         return Math.abs(a) > Math.abs(b);
     }
 
+    public static double powSign(double a, double x) {
+        return sgn(a) * Math.pow(Math.abs(a), x);
+    }
+
 
     public static double[] lineEquation(Point p1, double slope) {
         double m;

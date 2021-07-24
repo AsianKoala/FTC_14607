@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Marker {
     // [freq,sum]
+    // todo fix
     public static LinkedHashMap<String, Object> telemetryMap = new LinkedHashMap<>();
     public static LinkedHashMap<String, long[]> freqMap = new LinkedHashMap<>();
     private static long startTime;

@@ -20,7 +20,8 @@ public class Odometry {
     private double prevHeading;
 
     public double startHeading;
-    private final Pose currentPosition, currentVel;
+    private final Pose currentPosition;
+    private Pose currentVel;
     private final LinkedList<SignaturePose> prevPoses;
 
     public Odometry(Pose start) {
@@ -50,7 +51,7 @@ public class Odometry {
             SignaturePose old = prevPoses.get(oldIndex);
             SignaturePose cur = prevPoses.get(prevPoses.size() - 1);
             double scale = (double) (cur.sign - old.sign) / (1000);
-            currentVel.set(cur.minus(old).multiply(new Pose(1 / scale)));
+            currentVel = cur.minus(old).multiply(new Pose(1 / scale));
         }
 
         prevPerp = parallel;

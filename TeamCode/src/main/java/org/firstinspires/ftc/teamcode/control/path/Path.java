@@ -47,19 +47,18 @@ public class Path extends LinkedList<BasePathPoint> {
     public void follow(Robot robot) {
         BasePathPoint target = getFirst();
         if(!isPurePursuit) {
-            // TODO fix start in case of lateTurnPoint in goToPosition
-            PurePursuitController.goToPosition(robot, target, null);
+            PurePursuitController.goToPosition(robot, target);
         } else {
             boolean skip;
 
             if (target.isOnlyTurn) {
-                skip = MathUtil.angleThresh(Robot.currPose.h, target.lockedHeading);
+                skip = MathUtil.angleThresh(robot.currPose.h, target.lockedHeading);
             } else if(target.isStop){
-                skip = Robot.currPose.distance(target) < 2;
+                skip = robot.currPose.distance(target) < 2;
             } else {
-                skip = Robot.currPose.distance(target) < target.followDistance;
+                skip = robot.currPose.distance(target) < target.followDistance;
                 if(size()>1 && get(1).isStop) {
-                    skip = Robot.currPose.distance(target) < 10;
+                    skip = robot.currPose.distance(target) < 10;
                 }
             }
 
@@ -78,8 +77,8 @@ public class Path extends LinkedList<BasePathPoint> {
                 return;
             }
 
-            if(target.isStop && Robot.currPose.distance(target) < target.followDistance) {
-                PurePursuitController.goToPosition(robot, target, curr);
+            if(target.isStop && robot.currPose.distance(target) < target.followDistance) {
+                PurePursuitController.goToPosition(robot, target);
             } else {
                 PurePursuitController.followPath(robot, curr, target);
             }

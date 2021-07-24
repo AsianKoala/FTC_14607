@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import java.util.SortedMap;
+import org.firstinspires.ftc.teamcode.util.DataPacket;
 
 public abstract class Hardware {
-    public abstract SortedMap<String, Object> update();
+    public abstract void update(DataPacket dp);
 }

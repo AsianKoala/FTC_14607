@@ -42,6 +42,10 @@ public class Point {
         return divide(new Point(1/p.x, 1/p.y));
     }
 
+    public Point scale(double a) {
+        return multiply(new Point(a,a));
+    }
+
     public Point pow(Point p) {
         return new Point(Math.pow(x,  p.x), Math.pow(y, p.y));
     }
@@ -63,6 +67,22 @@ public class Point {
     }
 
     public double atan() { return Math.atan2(y, x); }
+
+    public Point dbNormalize() {
+        return new Point(-(-y),-x);
+    }
+
+    public Point clipAbs(double max) {
+        Point ret = new Point(this);
+        if(MathUtil.absGreater(x, max)) {
+            ret.x = sgns().x * max;
+        }
+        if(MathUtil.absGreater(y, max)) {
+            ret.y = sgns().y * max;
+        }
+        return ret;
+    }
+
 
     @SuppressLint("DefaultLocale")
     @Override

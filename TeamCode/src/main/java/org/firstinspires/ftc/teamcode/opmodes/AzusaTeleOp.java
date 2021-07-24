@@ -28,11 +28,11 @@ public class AzusaTeleOp extends Robot {
     private void controlGamepad() {
         if(pathCache.isEmpty()) {
             double driveScale = 0.65 - (gamepad1.left_bumper ? 0.3 : 0);
-            DriveTrain.powers.set(new Pose(
+            driveTrain.powers = new Pose(
                     -gamepad1.left_stick_y * driveScale,
                     gamepad1.left_stick_x * driveScale,
                     -gamepad1.right_stick_x * driveScale
-            ));
+            );
         }
     }
 }

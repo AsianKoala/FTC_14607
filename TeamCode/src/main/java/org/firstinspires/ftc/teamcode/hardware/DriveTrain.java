@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.util.DataPacket;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.ExpansionHubMotor;
 
@@ -14,7 +15,7 @@ import java.util.TreeMap;
 
 public class DriveTrain extends Hardware {
 
-    public static Pose powers = new Pose();
+    public Pose powers;
     private final ExpansionHubMotor[] motors;
     public DriveTrain(ExpansionHubMotor frontLeft, ExpansionHubMotor frontRight, ExpansionHubMotor backLeft, ExpansionHubMotor backRight) {
         motors = new ExpansionHubMotor[]{frontLeft, frontRight, backLeft, backRight};
@@ -29,7 +30,7 @@ public class DriveTrain extends Hardware {
 
     @SuppressLint("DefaultLocale")
     @Override
-    public SortedMap<String, Object> update() {
+    public void update(DataPacket dp) {
         double rawFrontLeft = powers.y + powers.x + powers.h;
         double rawFrontRight =  powers.y - powers.x - powers.h;
         double rawBackLeft = powers.y - powers.x + powers.h;
@@ -50,9 +51,7 @@ public class DriveTrain extends Hardware {
             motors[i].setPower(rawPowers[i]);
         }
 
-        SortedMap<String, Object> telemetryPacket = new TreeMap<>();
-        telemetryPacket.put("power vectors", powers.toString());
-        telemetryPacket.put("powers", Arrays.toString(rawPowers));
-        return telemetryPacket;
+        dp.addData("power vectors", powers);
+        dp.addData("powers", Arrays.toString(rawPowers));
     }
 }
