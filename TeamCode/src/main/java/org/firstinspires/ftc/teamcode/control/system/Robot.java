@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.control.system;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.view.textclassifier.TextClassifierEvent;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -178,11 +179,18 @@ public abstract class Robot extends TunableOpMode {
         updatePath();
         pathTime.stop();
         dashTime.start();
-        updateDashboard();
+//        updateDashboard();
+        stupidTelemetry();
         dashTime.stop();
         loopTime.stop();
     }
 
+    private void stupidTelemetry() {
+        telemetry.clear();
+        telemetry.addData("x", currPose.x);
+        telemetry.addData("y", currPose.y);
+        telemetry.addData("h", currPose.h);
+    }
     protected void setPathCache(Path path) {
         if(path == null) {
             pathCache = new Path();
@@ -205,13 +213,13 @@ public abstract class Robot extends TunableOpMode {
         slaveBulkData = slaveHub.getBulkInputData();
         for(int i=0; i<3; i++) {
             try {
-                packet.addData(i + " current position", slaveBulkData.getMotorCurrentPosition(i));
+                packet.addData(i + "current position", slaveBulkData.getMotorCurrentPosition(i));
             } catch (Exception ignored) {
 
             }
         }
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        odometry.update(this, slaveBulkData, lastHeading);
+        odometry.update(masterBulkData, lastHeading);
         currPose = odometry.getPoseUpdate();
     }
 

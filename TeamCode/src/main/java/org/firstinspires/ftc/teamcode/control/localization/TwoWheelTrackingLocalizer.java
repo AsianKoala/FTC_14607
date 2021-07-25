@@ -74,7 +74,7 @@ public class TwoWheelTrackingLocalizer {
         return (int) (inches * PARALLEL_TICKS_PER_INCH);
     }
 
-    public void update(Robot robot, RevBulkData data, double heading) {
+    public void update(RevBulkData data, double heading) {
         double[] deltas = new double[] {
                 encoderTicksToInches(data.getMotorCurrentPosition(PARALLEL_ENCODER_PORT) - prevWheelPositions[0],
                         PARALLEL_TICKS_PER_INCH),
@@ -82,8 +82,6 @@ public class TwoWheelTrackingLocalizer {
                         PERP_TICKS_PER_INCH),
                 MathUtil.angleWrap(heading - prevHeading)
         };
-        robot.packet.addData("delta parallel", deltas[0]);
-        robot.packet.addData("delta perp", deltas[1]);
         prevWheelPositions[0] = data.getMotorCurrentPosition(PARALLEL_ENCODER_PORT);
         prevHeading = heading;
         prevWheelPositions[1] = data.getMotorCurrentPosition(PERP_ENCODER_PORT);
@@ -117,7 +115,7 @@ public class TwoWheelTrackingLocalizer {
         }
 
         Point fieldPositionDelta = new Point(
-                sineTerm * robotPoseDelta.x - cosTerm * robotPoseDelta.y,
+                sineTerm * robotPoseDelta.x + cosTerm * robotPoseDelta.y,
                 cosTerm * robotPoseDelta.x + sineTerm * robotPoseDelta.y
         );
 
