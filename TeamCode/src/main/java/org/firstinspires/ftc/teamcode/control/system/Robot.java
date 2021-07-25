@@ -19,9 +19,8 @@ import com.qualcomm.robotcore.util.Range;
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.teamcode.control.localization.Odometry;
 import org.firstinspires.ftc.teamcode.BuildConfig;
-import org.firstinspires.ftc.teamcode.control.localization.OdometrySet;
+import org.firstinspires.ftc.teamcode.control.localization.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.control.path.Path;
 import org.firstinspires.ftc.teamcode.control.path.PathPoints;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
@@ -57,18 +56,18 @@ public abstract class Robot extends TunableOpMode {
 
     public Path pathCache;
 
-    public RevBulkData masterBulkData;
-    public RevBulkData slaveBulkData;
-    public Odometry odometry;
-    private BNO055IMU imu;
-    private double headingOffset;
-    public OdometrySet odometrySet;
-
-    private FtcDashboard dashboard;
-    public DataPacket packet;
-
     public ExpansionHubEx masterHub;
     public ExpansionHubEx slaveHub;
+
+    public RevBulkData masterBulkData;
+    public RevBulkData slaveBulkData;
+
+    private BNO055IMU imu;
+    private double headingOffset;
+    public TwoWheelTrackingLocalizer odometry;
+
+    public static int PARALLEL_ENCODER_PORT = 2;
+    public static int PERP_ENCODER_PORT = 0;
 
     public ExpansionHubMotor frontLeft;
     public ExpansionHubMotor frontRight;
@@ -78,10 +77,13 @@ public abstract class Robot extends TunableOpMode {
     public DriveTrain driveTrain;
     public ArrayList<Hardware> allHardware;
 
+    private FtcDashboard dashboard;
+    public DataPacket packet;
+
     private Mar initTime;
     private Mar init_loopTime;
     private Mar loopTime;
-    private Mar hwTime;
+    private Mar odoTime;
     private Mar telemTime;
     private Mar pathTime;
     private Mar dashTime;
@@ -103,11 +105,16 @@ public abstract class Robot extends TunableOpMode {
         initTime.start();
         init_loopTime = new Mar();
         loopTime = new Mar();
-        hwTime = new Mar();
+        odoTime = new Mar();
         telemTime = new Mar();
         pathTime = new Mar();
         dashTime = new Mar();
         maxLT = -1;
+
+        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
+        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
+        masterBulkData = masterHub.getBulkInputData();
+        slaveBulkData = slaveHub.getBulkInputData();
 
         imu = hardwareMap.get(BNO055IMUImpl.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -117,19 +124,9 @@ public abstract class Robot extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
-        masterHub = hardwareMap.get(ExpansionHubEx.class, "masterHub");
-        slaveHub = hardwareMap.get(ExpansionHubEx.class, "slaveHub");
-        masterBulkData = null;
-        slaveBulkData = null;
-
-        ExpansionHubMotor verticalOdometer = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
-        ExpansionHubMotor horizontalOdometer = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
-        odometrySet = new OdometrySet(verticalOdometer, horizontalOdometer);
-        odometry = new Odometry(startPose(), odometrySet);
+        odometry = new TwoWheelTrackingLocalizer(startPose());
         currPose = startPose();
         currVel = new Pose();
-
-        odometry.setStart(startPose());
 
         frontLeft = hardwareMap.get(ExpansionHubMotor.class, "FL");
         frontRight = hardwareMap.get(ExpansionHubMotor.class, "FR");
@@ -170,11 +167,10 @@ public abstract class Robot extends TunableOpMode {
     @Override
     public void loop() {
         loopTime.start();
-        hwTime.start();
-//        if(debugging) debugControl();
-//        else updateHardware();
-        updateOdo();
-        hwTime.stop();
+        odoTime.start();
+        if(debugging) debugControl();
+        else updateOdo();
+        odoTime.stop();
         telemTime.start();
         updateTelemetry(false);
         telemTime.stop();
@@ -205,14 +201,18 @@ public abstract class Robot extends TunableOpMode {
     }
 
     private void updateOdo() {
-//        slaveBulkData = slaveHub.getBulkInputData();
-//        packet.addLine("SLAVEBULKDATA INPUTS");
-//        packet.addData("MOTOR POSITION 0", slaveBulkData.getMotorCurrentPosition(0));
-//        packet.addData("MOTOR POSITION 2", slaveBulkData.getMotorCurrentPosition(2));
+        masterBulkData = masterHub.getBulkInputData();
+        slaveBulkData = slaveHub.getBulkInputData();
+        for(int i=0; i<3; i++) {
+            try {
+                packet.addData(i + " current position", slaveBulkData.getMotorCurrentPosition(i));
+            } catch (Exception ignored) {
 
+            }
+        }
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        odometry.update(lastHeading);
-        currPose = Odometry.currentPosition;
+        odometry.update(this, slaveBulkData, lastHeading);
+        currPose = odometry.getPoseUpdate();
     }
 
     private void updateTelemetry(boolean isInit) {
@@ -244,7 +244,7 @@ public abstract class Robot extends TunableOpMode {
             maxLT = loopTime.getTime();
         }
         packet.addData("max loop time", maxLT);
-        packet.addData("hw time", hwTime.getTime());
+        packet.addData("hw time", odoTime.getTime());
         packet.addData("telem time", telemTime.getTime());
         packet.addData("path time", pathTime.getTime());
         packet.addData("dash time", dashTime.getTime());
@@ -326,7 +326,7 @@ public abstract class Robot extends TunableOpMode {
                     Range.clip((driveTrain.powers.x - debugSpeeds.x)/0.2,-1,1) * elapsed,
                     Range.clip((driveTrain.powers.y - debugSpeeds.y)/0.2,-1,1) * elapsed,
                     Range.clip((driveTrain.powers.h - debugSpeeds.h)/0.2,-1,1) * elapsed
-            ))).multiply(new Pose(1.0 - elapsed)));
+            ))).scale(1.0 - elapsed));
         }
     }
 }

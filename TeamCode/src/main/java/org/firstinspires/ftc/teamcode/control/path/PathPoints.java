@@ -86,9 +86,7 @@ public class PathPoints {
 //            isOnlyTurn = true;
 //        }
 //    }
-
-
-
+//
 //    public static class OnlyFunctionsPathPoint extends SimplePathPoint {
 //        public OnlyFunctionsPathPoint(String signature, Function... functions) {
 //            super(signature,0,0,0,functions);

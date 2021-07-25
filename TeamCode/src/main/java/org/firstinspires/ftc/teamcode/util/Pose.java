@@ -26,8 +26,6 @@ public class Pose extends Point {
         this(0, 0, 0);
     }
 
-    public Pose(double a) { this(a,a,a); }
-
     public Pose(Point p, double h) { this(p.x, p.y, h); }
 
     // im going to trust myself to angle wrap if it comes to it

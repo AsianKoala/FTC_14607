@@ -25,9 +25,9 @@ public class PurePursuitController {
         robot.packet.addData("relH", Math.toDegrees(relAngle));
 
         powerPose.h = MathUtil.angleWrap(target.minus(start).atan() - robot.currPose.h) / Math.toRadians(35);
-//        if(target.isLocked) {
-//            powerPose.h = MathUtil.angleWrap(target.lockedHeading - robot.currPose.h) / Math.toRadians(30);
-//        }
+        if(target.isLocked) {
+            powerPose.h = MathUtil.angleWrap(target.lockedHeading - robot.currPose.h) / Math.toRadians(35);
+        }
 
         // checks and further smoothings
         boolean turning = true;
