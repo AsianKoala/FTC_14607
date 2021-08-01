@@ -13,7 +13,7 @@ env:
 before_install:
   - pwd
   - ls -la
-  - sudo chmod +x /.gradlew
+  - sudo chmod +x gradlew
   - sudo touch ~/.android/repositories.cfg
   - mkdir "$ANDROID_HOME/licenses" || true
   - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
@@ -21,6 +21,6 @@ before_install:
   - yes | sdkmanager --update
 
 script:
-  - ./gradlew clean
-  - ./gradlew assembleDebug
-  - ./gradlew assembleDebugAndroidTest
+  - gradlew clean
+  - gradlew assembleDebug
+  - gradlew assembleDebugAndroidTest
