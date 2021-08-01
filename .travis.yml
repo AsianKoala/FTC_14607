@@ -1,13 +1,14 @@
 sudo: required
 language: android
+
 android:
   components:
     - build-tools-28.0.3
-
     - android-28
 
 before_install:
- - sudo chmod +x gradlew
+ - chmod +x /home/travis/build/14607/FTC_14607/gradlew
+
  script:
     - echo "Travis commit is $TRAVIS_COMMIT"
     - ./gradlew clean
