@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.util.Pose;
 public class AzusaTeleOp extends Azusa {
     @Override
     public Pose startPose() {
-        return new Pose(0, 0,Math.PI / 2 );
+        return new Pose(0, 0,0);
     }
 
     @Override
@@ -28,8 +28,8 @@ public class AzusaTeleOp extends Azusa {
         if(pathCache.isEmpty()) {
             double driveScale = 0.65 - (gamepad1.left_bumper ? 0.3 : 0);
             driveTrain.powers = new Pose(
-                    -gamepad1.left_stick_y * driveScale,
-                    gamepad1.left_stick_x * driveScale,
+                    -gamepad1.left_stick_x * driveScale,
+                    gamepad1.left_stick_y * driveScale,
                     -gamepad1.right_stick_x * driveScale
             );
         }

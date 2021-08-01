@@ -30,6 +30,7 @@ import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.DataPacket;
 import org.firstinspires.ftc.teamcode.util.Debuggable;
 import org.firstinspires.ftc.teamcode.util.Mar;
+import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.OpModeType;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -124,7 +125,7 @@ public abstract class Azusa extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
-        odometry = new DriftOdo(startPose(), masterBulkData);
+        odometry = new DriftOdo(startPose());
         currPose = startPose();
         currVel = new Pose();
 
@@ -166,6 +167,7 @@ public abstract class Azusa extends TunableOpMode {
 
     @Override
     public void loop() {
+        telemetry.clear();
         loopTime.start();
         odoTime.start();
         if(debugging) debugControl();
@@ -185,10 +187,9 @@ public abstract class Azusa extends TunableOpMode {
     }
 
     private void stupidTelemetry() {
-        telemetry.clear();
         telemetry.addData("x", currPose.x);
         telemetry.addData("y", currPose.y);
-        telemetry.addData("h", currPose.h);
+        telemetry.addData("h", Math.toDegrees(currPose.h));
     }
     protected void setPathCache(Path path) {
         if(path == null) {
@@ -210,15 +211,8 @@ public abstract class Azusa extends TunableOpMode {
     private void updateOdo() {
         masterBulkData = masterHub.getBulkInputData();
         slaveBulkData = slaveHub.getBulkInputData();
-        for(int i=0; i<3; i++) {
-            try {
-                packet.addData(i + "current position", slaveBulkData.getMotorCurrentPosition(i));
-            } catch (Exception ignored) {
-
-            }
-        }
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        currPose = odometry.update(this, lastHeading, masterBulkData);
+        currPose = odometry.update(this, MathUtil.angleWrap(lastHeading + startPose().h), masterBulkData);
     }
 
     private void updateTelemetry(boolean isInit) {
