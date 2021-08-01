@@ -20,7 +20,7 @@
             android:name="org.firstinspires.latestSupportedControlHubVersion"
             android:value="1" />
 
-        <!-- The main robot controller activity -->
+        <!-- The main azusa controller activity -->
         <activity
             android:name="org.firstinspires.ftc.robotcontroller.internal.PermissionValidatorWrapper"
             android:configChanges="orientation|screenSize"
@@ -56,7 +56,7 @@
                 android:value="true" />
         </activity>
 
-        <!-- The robot controller service in which most of the robot functionality is managed -->
+        <!-- The azusa controller service in which most of the azusa functionality is managed -->
         <service
             android:name="com.qualcomm.ftccommon.FtcRobotControllerService"
             android:enabled="true" />

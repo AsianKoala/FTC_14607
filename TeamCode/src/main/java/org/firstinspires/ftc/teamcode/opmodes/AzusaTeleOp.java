@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.control.path.Path;
-import org.firstinspires.ftc.teamcode.control.system.Robot;
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.control.system.Azusa;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 @TeleOp
-public class AzusaTeleOp extends Robot {
+public class AzusaTeleOp extends Azusa {
     @Override
     public Pose startPose() {
         return new Pose(0, 0,Math.PI / 2 );

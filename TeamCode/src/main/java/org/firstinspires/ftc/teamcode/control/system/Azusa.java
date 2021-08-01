@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.control.system;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.view.textclassifier.TextClassifierEvent;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -21,9 +20,9 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.BuildConfig;
-import org.firstinspires.ftc.teamcode.control.localization.TwoWheelTrackingLocalizer;
+import org.firstinspires.ftc.teamcode.control.localization.DriftOdo;
 import org.firstinspires.ftc.teamcode.control.path.Path;
-import org.firstinspires.ftc.teamcode.control.path.PathPoints;
+import org.firstinspires.ftc.teamcode.control.path.PathPoint;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
@@ -47,7 +46,7 @@ import static org.firstinspires.ftc.teamcode.util.MathUtil.angleWrap;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.sgn;
 
 @Config
-public abstract class Robot extends TunableOpMode {
+public abstract class Azusa extends TunableOpMode {
 
     public abstract Pose startPose();
     public abstract Path path();
@@ -65,7 +64,7 @@ public abstract class Robot extends TunableOpMode {
 
     private BNO055IMU imu;
     private double headingOffset;
-    public TwoWheelTrackingLocalizer odometry;
+    public DriftOdo odometry;
 
     public static int PARALLEL_ENCODER_PORT = 2;
     public static int PERP_ENCODER_PORT = 0;
@@ -125,7 +124,7 @@ public abstract class Robot extends TunableOpMode {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
         headingOffset = imu.getAngularOrientation().firstAngle;
 
-        odometry = new TwoWheelTrackingLocalizer(startPose());
+        odometry = new DriftOdo(startPose(), masterBulkData);
         currPose = startPose();
         currVel = new Pose();
 
@@ -219,8 +218,7 @@ public abstract class Robot extends TunableOpMode {
             }
         }
         double lastHeading = imu.getAngularOrientation().firstAngle - headingOffset;
-        odometry.update(masterBulkData, lastHeading);
-        currPose = odometry.getPoseUpdate();
+        currPose = odometry.update(this, lastHeading, masterBulkData);
     }
 
     private void updateTelemetry(boolean isInit) {
@@ -278,7 +276,7 @@ public abstract class Robot extends TunableOpMode {
             double[] x = new double[pathCache.initialPoints.size()];
             double[] y = new double[pathCache.initialPoints.size()];
             int index = 0;
-            for(PathPoints.BasePathPoint e : pathCache.initialPoints) {
+            for(PathPoint e : pathCache.initialPoints) {
                 x[index] = e.y;
                 y[index] = -e.x;
                 packet.fieldOverlay().setFill("green").fillCircle(x[index],y[index],2);

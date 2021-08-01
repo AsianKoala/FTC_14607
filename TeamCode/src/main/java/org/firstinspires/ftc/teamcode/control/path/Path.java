@@ -2,29 +2,29 @@ package org.firstinspires.ftc.teamcode.control.path;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
-import org.firstinspires.ftc.teamcode.control.path.PathPoints.*;
-import org.firstinspires.ftc.teamcode.control.path.builders.*;
-import org.firstinspires.ftc.teamcode.control.system.Robot;
-import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
 
-public class Path extends LinkedList<BasePathPoint> {
+import org.firstinspires.ftc.teamcode.control.system.Azusa;
+import org.firstinspires.ftc.teamcode.control.path.builders.*;
+import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController;
+import org.firstinspires.ftc.teamcode.util.MathUtil;
+
+public class Path extends LinkedList<PathPoint> {
     // target is always getFirst(), curr is copied
-    public BasePathPoint curr;
+    public PathPoint curr;
     public boolean isPurePursuit;
 //    public boolean copi = true; //TODO i forgot what this does go to sim and check it out
-    public ArrayList<BasePathPoint> initialPoints;
+    public ArrayList<PathPoint> initialPoints;
     public String name;
     private boolean firstFinish;
 
     public Path(Path path) {
-        for (BasePathPoint pathPoint : path) add(new BasePathPoint(pathPoint));
+        for (PathPoint pathPoint : path) add(new PathPoint(pathPoint));
 
         initialPoints = new ArrayList<>();
-        for(BasePathPoint pathPoint : this) initialPoints.add(new BasePathPoint(pathPoint));
+        for(PathPoint pathPoint : this) initialPoints.add(new PathPoint(pathPoint));
 
         isPurePursuit = true;
-        curr = new BasePathPoint(getFirst());
+        curr = new PathPoint(getFirst());
         removeFirst();
 
         name = path.name;
@@ -35,7 +35,7 @@ public class Path extends LinkedList<BasePathPoint> {
         this.name = name;
     }
 
-    public Path(BasePathPoint target, String name) {
+    public Path(PathPoint target, String name) {
         this(new PathBuilder(name).addPoint(target).build());
         isPurePursuit = false;
     }
@@ -44,31 +44,31 @@ public class Path extends LinkedList<BasePathPoint> {
         isPurePursuit = true;
     }
 
-    public void follow(Robot robot) {
-        BasePathPoint target = getFirst();
+    public void follow(Azusa azusa) {
+        PathPoint target = getFirst();
         if(!isPurePursuit) {
-            PurePursuitController.goToPosition(robot, target, curr);
+            PurePursuitController.goToPosition(azusa, target, curr);
         } else {
             boolean skip;
 
-            if (target.isOnlyTurn) {
-                skip = MathUtil.angleThresh(robot.currPose.h, target.lockedHeading);
-            } else if(target.isStop){
-                skip = robot.currPose.distance(target) < 2;
+            if (target instanceof OnlyTurnPoint) {
+                skip = MathUtil.angleThresh(azusa.currPose.h, ((OnlyTurnPoint) target).h);
+            } else if(target instanceof StopPathPoint){
+                skip = azusa.currPose.distance(target) < 2;
             } else {
-                skip = robot.currPose.distance(target) < target.followDistance;
-                if(size()>1 && get(1).isStop) {
-                    skip = robot.currPose.distance(target) < 10;
+                skip = azusa.currPose.distance(target) < target.followDistance;
+                if(size()>1 && get(1) instanceof StopPathPoint) {
+                    skip = azusa.currPose.distance(target) < 10;
                 }
             }
 
-            if(!target.functions.isEmpty()) {
-                target.functions.removeIf(f -> f.cond() && f.func());
-                skip = skip && target.functions.size() == 0;
-            }
+//            if(!target.functions.isEmpty()) {
+//                target.functions.removeIf(f -> f.cond() && f.func());
+//                skip = skip && target.functions.size() == 0;
+//            } // TODO
 
             if (skip) {
-                curr = new BasePathPoint(target); // swap old target to curr start
+                curr = new PathPoint(target); // swap old target to curr start
                 removeFirst();
             }
 
@@ -77,10 +77,10 @@ public class Path extends LinkedList<BasePathPoint> {
                 return;
             }
 
-            if(target.isStop && robot.currPose.distance(target) < target.followDistance) {
-                PurePursuitController.goToPosition(robot, target, curr);
+            if(target instanceof StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
+                PurePursuitController.goToPosition(azusa, target, curr);
             } else {
-                PurePursuitController.followPath(robot, curr, target);
+                PurePursuitController.followPath(azusa, curr, target);
             }
         }
     }
@@ -89,7 +89,7 @@ public class Path extends LinkedList<BasePathPoint> {
     public String toString() {
         StringBuilder s = new StringBuilder("Path Name: " + name);
         String newLine = System.getProperty("line.separator");
-        for(BasePathPoint p : initialPoints) {
+        for(PathPoint p : initialPoints) {
             s.append(newLine).append("\t");
 
             if(curr.equals(p))

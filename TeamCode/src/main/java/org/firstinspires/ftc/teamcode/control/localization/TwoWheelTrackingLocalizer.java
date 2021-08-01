@@ -5,12 +5,11 @@ import org.apache.commons.math3.linear.DecompositionSolver;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.firstinspires.ftc.teamcode.control.system.Robot;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.openftc.revextensions2.RevBulkData;
-import static org.firstinspires.ftc.teamcode.control.system.Robot.*;
+import static org.firstinspires.ftc.teamcode.control.system.Azusa.*;
 
 public class TwoWheelTrackingLocalizer {
     public static double PARALLEL_TICKS_PER_INCH = 1103.8839;
