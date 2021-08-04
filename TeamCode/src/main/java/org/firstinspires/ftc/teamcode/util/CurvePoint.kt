@@ -9,8 +9,8 @@ data class CurvePoint(
     @JvmField var slowDownTurnAmount: Double,
     @JvmField var pointLength: Double
 ) {
-    val toPoint = Point(x,y)
-    fun setPoint(p : Point) {
+    val toPoint = Point(x, y)
+    fun setPoint(p: Point) {
         x = p.x
         y = p.y
     }

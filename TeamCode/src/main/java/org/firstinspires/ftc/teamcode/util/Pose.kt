@@ -9,9 +9,9 @@ data class Pose(
     var p: Point = Point(),
     var h: Angle = Angle()
 ) {
-    constructor(x: Double, y: Double, h: Double): this(Point(x,y), Angle(h))
-    constructor(p: Point, h: Double=0.0): this(p.x, p.y, h)
-    constructor(p: Pose2d): this(p.x, p.y, p.heading)
+    constructor(x: Double, y: Double, h: Double) : this(Point(x, y), Angle(h))
+    constructor(p: Point, h: Double = 0.0) : this(p.x, p.y, h)
+    constructor(p: Pose2d) : this(p.x, p.y, p.heading)
 
     val x = p.x
     val y = p.y
@@ -33,6 +33,7 @@ data class Pose(
         }
         return ret
     }
+
     fun distance(p2: Pose) = p.distance(p2.p)
     fun distance(p2: PathPoint) = p.distance(p2.p)
 

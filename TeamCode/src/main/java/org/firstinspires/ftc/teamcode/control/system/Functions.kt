@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.system
 
-import org.firstinspires.ftc.teamcode.control.system.Azusa
-import org.firstinspires.ftc.teamcode.control.system.Functions.SimpleFunction
 import org.firstinspires.ftc.teamcode.util.Pose
 
 // typically we want everything to be a function so its easier for interrupts/listeners

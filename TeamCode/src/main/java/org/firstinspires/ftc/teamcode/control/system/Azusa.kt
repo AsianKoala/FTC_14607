@@ -1,31 +1,27 @@
 package org.firstinspires.ftc.teamcode.control.system
 
-import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
-import org.openftc.revextensions2.ExpansionHubEx
-import org.openftc.revextensions2.RevBulkData
-import com.qualcomm.hardware.bosch.BNO055IMU
-import org.firstinspires.ftc.teamcode.control.localization.DriftOdo
-import org.openftc.revextensions2.ExpansionHubMotor
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain
-import com.acmerobotics.dashboard.FtcDashboard
-import com.qualcomm.hardware.bosch.BNO055IMUImpl
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import android.annotation.SuppressLint
 import android.os.Build
+import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
+import com.qualcomm.hardware.bosch.BNO055IMU
+import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import com.qualcomm.hardware.lynx.LynxModule
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.Servo
-import com.qualcomm.robotcore.hardware.DigitalChannel
-import com.qualcomm.robotcore.hardware.AnalogInput
-import com.qualcomm.robotcore.hardware.I2cDevice
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.util.Range
+import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 import org.firstinspires.ftc.teamcode.BuildConfig
+import org.firstinspires.ftc.teamcode.control.localization.DriftOdo
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
+import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.hardware.Hardware
 import org.firstinspires.ftc.teamcode.util.*
+import org.openftc.revextensions2.ExpansionHubEx
+import org.openftc.revextensions2.ExpansionHubMotor
+import org.openftc.revextensions2.RevBulkData
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.function.Consumer
@@ -49,7 +45,7 @@ abstract class Azusa : TunableOpMode() {
 
     private lateinit var imu: BNO055IMU
     private lateinit var headingOffset: Angle
-    private lateinit  var odometry: DriftOdo
+    private lateinit var odometry: DriftOdo
 
     private lateinit var frontLeft: ExpansionHubMotor
     private lateinit var frontRight: ExpansionHubMotor
@@ -122,7 +118,8 @@ abstract class Azusa : TunableOpMode() {
         lastAutoUpdate = System.currentTimeMillis()
         debugging = javaClass.isAnnotationPresent(Debuggable::class.java)
         pathStopped = true
-        type = if (javaClass.isAnnotationPresent(Autonomous::class.java)) OpModeType.AUTO else OpModeType.TELEOP
+        type =
+            if (javaClass.isAnnotationPresent(Autonomous::class.java)) OpModeType.AUTO else OpModeType.TELEOP
         debugSpeeds = Pose(Point(), Angle(Angle.Unit.RAW))
 
         dashboard = FtcDashboard.getInstance()
@@ -281,10 +278,13 @@ abstract class Azusa : TunableOpMode() {
             pathStopped = false
         }
         if (System.currentTimeMillis() - lastManualUpdate > 50) {
-            currPose = Pose(Point(
-                currPose.x + gamepad1.left_stick_x.sign,
-                currPose.y - gamepad1.left_stick_y.sign),
-                (currPose.h + Angle((-gamepad1.right_stick_x).sign.toDouble()).times(Math.PI / 10)))
+            currPose = Pose(
+                Point(
+                    currPose.x + gamepad1.left_stick_x.sign,
+                    currPose.y - gamepad1.left_stick_y.sign
+                ),
+                (currPose.h + Angle((-gamepad1.right_stick_x).sign.toDouble()).times(Math.PI / 10))
+            )
             lastManualUpdate = System.currentTimeMillis()
         }
 
@@ -295,13 +295,26 @@ abstract class Azusa : TunableOpMode() {
             val radius: Double = debugSpeeds.hypot
             val theta: Angle = currPose.h + debugSpeeds.p.atan2 - Angle(PI / 2)
             currPose.p += Point(
-                    radius * theta.cos * elapsed * 500 * 0.2,
-                    radius * theta.sin * elapsed * 500 * 0.2)
+                radius * theta.cos * elapsed * 500 * 0.2,
+                radius * theta.sin * elapsed * 500 * 0.2
+            )
             currPose.h.angle += driveTrain.powers.h.angle * elapsed * 10 / (2 * Math.PI)
 
-            debugSpeeds.p.x += Range.clip((driveTrain.powers.x - debugSpeeds.x) / 0.2,-1.0,1.0) * elapsed
-            debugSpeeds.p.y += Range.clip((driveTrain.powers.y - debugSpeeds.y) / 0.2, -1.0, 1.0) * elapsed
-            debugSpeeds.h.angle += Range.clip(((driveTrain.powers.h - debugSpeeds.h) / 0.2).raw, -1.0, 1.0) * elapsed
+            debugSpeeds.p.x += Range.clip(
+                (driveTrain.powers.x - debugSpeeds.x) / 0.2,
+                -1.0,
+                1.0
+            ) * elapsed
+            debugSpeeds.p.y += Range.clip(
+                (driveTrain.powers.y - debugSpeeds.y) / 0.2,
+                -1.0,
+                1.0
+            ) * elapsed
+            debugSpeeds.h.angle += Range.clip(
+                ((driveTrain.powers.h - debugSpeeds.h) / 0.2).raw,
+                -1.0,
+                1.0
+            ) * elapsed
             debugSpeeds.p *= (1.0 - elapsed)
             debugSpeeds.h.angle *= (1.0 - elapsed)
 

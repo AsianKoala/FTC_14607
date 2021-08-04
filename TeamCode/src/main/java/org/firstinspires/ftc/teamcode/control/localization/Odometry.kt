@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
 import org.firstinspires.ftc.teamcode.util.Pose
-import org.firstinspires.ftc.teamcode.control.localization.OdometrySet
-import org.firstinspires.ftc.teamcode.control.localization.Odometry
-import org.firstinspires.ftc.teamcode.util.Point
 
 @Deprecated("fuck you")
 class Odometry(start: Pose, odometrySet: OdometrySet) {

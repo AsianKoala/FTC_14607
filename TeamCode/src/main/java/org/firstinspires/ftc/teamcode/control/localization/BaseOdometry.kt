@@ -1,14 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-import org.firstinspires.ftc.teamcode.util.Pose
-import org.firstinspires.ftc.teamcode.util.TimePose
-import org.apache.commons.math3.linear.DecompositionSolver
-import org.apache.commons.math3.linear.RealMatrix
-import org.apache.commons.math3.linear.MatrixUtils
-import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry
-import org.apache.commons.math3.linear.Array2DRowRealMatrix
-import org.apache.commons.math3.linear.LUDecomposition
-
 // used to get accurate wheel deltas for odom implementations
 @Deprecated("never planning to go back to this piece of shit")
 abstract class BaseOdometry() {

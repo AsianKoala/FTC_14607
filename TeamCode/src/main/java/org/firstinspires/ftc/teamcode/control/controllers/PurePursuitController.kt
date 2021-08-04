@@ -28,10 +28,13 @@ object PurePursuitController {
 
         val v = relVals.x.absoluteValue + relVals.y.absoluteValue
         val smoothing = 12.0 * v
-        val powerPose = Pose(Point(
-            relVals.x * relVals.x.absoluteValue,
-            relVals.y * relVals.y.absoluteValue),
-            Angle(0.0, Angle.Unit.RAW))
+        val powerPose = Pose(
+            Point(
+                relVals.x * relVals.x.absoluteValue,
+                relVals.y * relVals.y.absoluteValue
+            ),
+            Angle(0.0, Angle.Unit.RAW)
+        )
 
         powerPose.p /= smoothing
 

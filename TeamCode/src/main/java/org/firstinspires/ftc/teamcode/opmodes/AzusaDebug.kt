@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
-import org.firstinspires.ftc.teamcode.util.Debuggable
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.control.path.Path
-import org.firstinspires.ftc.teamcode.control.system.Azusa
-import org.firstinspires.ftc.teamcode.util.Pose
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 import org.firstinspires.ftc.teamcode.control.path.StopPathPoint
 import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
+import org.firstinspires.ftc.teamcode.control.system.Azusa
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.Debuggable
+import org.firstinspires.ftc.teamcode.util.Pose
 
 @Debuggable
 @TeleOp

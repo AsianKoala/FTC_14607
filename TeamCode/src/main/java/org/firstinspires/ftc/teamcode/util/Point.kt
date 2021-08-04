@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.util
 
-import kotlin.math.*
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.hypot
+import kotlin.math.sin
 
 data class Point(
     var x: Double = 0.0,
@@ -20,7 +23,8 @@ data class Point(
     fun distance(p: Point) = minus(p).hypot
     fun rotate(angle: Double) = Point(
         x * cos(angle) - y * sin(angle),
-        x * sin(angle) + y * cos(angle))
+        x * sin(angle) + y * cos(angle)
+    )
 
     override fun toString() = String.format("(%.2f, %.2f", x, y)
 }

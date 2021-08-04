@@ -18,9 +18,17 @@ class StopPathPoint(
         followDistance: Double,
         h: Angle,
         func: Functions.Function? = null
-    ): this(signature, Point(x,y), followDistance, h, func)
+    ) : this(signature, Point(x, y), followDistance, h, func)
+
     override val copy: PathPoint = StopPathPoint(signature, p, followDistance, h, func)
     override fun toString(): String {
-        return String.format("%s, %.1f, %.1f, %.1f, %.1f, %s", signature, p, followDistance, h, func.toString())
+        return String.format(
+            "%s, %.1f, %.1f, %.1f, %.1f, %s",
+            signature,
+            p,
+            followDistance,
+            h,
+            func.toString()
+        )
     }
 }

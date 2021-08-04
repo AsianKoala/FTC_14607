@@ -4,10 +4,12 @@ import org.firstinspires.ftc.teamcode.util.MathUtil.toDegrees
 import org.firstinspires.ftc.teamcode.util.MathUtil.toRadians
 import kotlin.math.*
 
-data class Angle(@JvmField var angle: Double = 0.0,
-                 @JvmField var unit: Unit = Unit.RAD
+data class Angle(
+    @JvmField var angle: Double = 0.0,
+    @JvmField var unit: Unit = Unit.RAD
 ) {
-    constructor(unit: Unit): this(0.0, unit)
+    constructor(unit: Unit) : this(0.0, unit)
+
     enum class Unit {
         RAD,
         DEG,
@@ -41,7 +43,7 @@ data class Angle(@JvmField var angle: Double = 0.0,
         }
 
     val raw: Double
-        get() = when(unit) {
+        get() = when (unit) {
             Unit.DEG -> angle
             Unit.RAD -> angle
             Unit.RAW -> angle

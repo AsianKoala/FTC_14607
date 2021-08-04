@@ -1,18 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-import kotlin.jvm.JvmOverloads
-import org.firstinspires.ftc.teamcode.util.Pose
-import org.apache.commons.math3.linear.DecompositionSolver
-import org.openftc.revextensions2.RevBulkData
-import org.firstinspires.ftc.teamcode.control.localization.TwoWheelTrackingLocalizer
-import org.firstinspires.ftc.teamcode.control.system.Azusa
-import org.apache.commons.math3.linear.RealMatrix
-import org.apache.commons.math3.linear.MatrixUtils
-import org.apache.commons.math3.linear.Array2DRowRealMatrix
-import org.firstinspires.ftc.teamcode.control.localization.EncoderWheel
-import org.apache.commons.math3.linear.LUDecomposition
-import org.firstinspires.ftc.teamcode.util.Point
-
 @Deprecated("never coming back to this piece of shit")
 class TwoWheelTrackingLocalizer {
 //    var forwardSolver: DecompositionSolver

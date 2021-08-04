@@ -2,13 +2,6 @@ package org.firstinspires.ftc.teamcode.control.localization
 
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.util.Pose
-import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer
-import com.acmerobotics.roadrunner.geometry.Pose2d
-import org.firstinspires.ftc.teamcode.control.localization.WorkingOdometry
-import org.firstinspires.ftc.teamcode.util.TimePose
-import android.annotation.SuppressLint
-import com.qualcomm.robotcore.hardware.DcMotorEx
-import java.util.*
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:

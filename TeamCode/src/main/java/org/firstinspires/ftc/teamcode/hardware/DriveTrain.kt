@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.hardware
 
-import org.openftc.revextensions2.ExpansionHubMotor
-import org.firstinspires.ftc.teamcode.util.Pose
-import org.firstinspires.ftc.teamcode.util.DataPacket
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.DataPacket
 import org.firstinspires.ftc.teamcode.util.Point
+import org.firstinspires.ftc.teamcode.util.Pose
+import org.openftc.revextensions2.ExpansionHubMotor
 import kotlin.math.absoluteValue
 
 class DriveTrain(
@@ -17,7 +17,9 @@ class DriveTrain(
 ) : Hardware() {
 
     var powers: Pose
-    private val motors: Array<ExpansionHubMotor> = arrayOf(frontLeft, frontRight, backLeft, backRight)
+    private val motors: Array<ExpansionHubMotor> =
+        arrayOf(frontLeft, frontRight, backLeft, backRight)
+
     override fun update(dp: DataPacket) {
         val rawFrontLeft: Double = powers.y + powers.x + powers.h.angle
         val rawFrontRight: Double = powers.y - powers.x - powers.h.angle

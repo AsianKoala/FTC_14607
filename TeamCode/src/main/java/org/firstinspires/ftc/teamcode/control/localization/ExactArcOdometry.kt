@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry
-
 @Deprecated("never coming back to this piece of shit")
 class ExactArcOdometry : BaseOdometry() {
 //    private static final double TRACK_WIDTH = 12.0;

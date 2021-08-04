@@ -5,6 +5,11 @@ class Mar {
     var time = System.currentTimeMillis() - start
         private set
 
-    fun start() { start = System.currentTimeMillis().toDouble() }
-    fun stop() { time = System.currentTimeMillis() - start }
+    fun start() {
+        start = System.currentTimeMillis().toDouble()
+    }
+
+    fun stop() {
+        time = System.currentTimeMillis() - start
+    }
 }

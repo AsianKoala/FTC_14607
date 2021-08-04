@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-import kotlin.jvm.JvmOverloads
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.acmerobotics.roadrunner.util.NanoClock
+import com.qualcomm.robotcore.hardware.DcMotorEx
 
 /**
  * Wraps a motor instance to provide corrected velocity counts and allow reversing without changing the corresponding

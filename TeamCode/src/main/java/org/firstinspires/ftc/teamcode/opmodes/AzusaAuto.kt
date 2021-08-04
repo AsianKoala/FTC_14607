@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.control.path.Path
-import org.firstinspires.ftc.teamcode.control.system.BaseAuto
-import org.firstinspires.ftc.teamcode.util.Pose
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 import org.firstinspires.ftc.teamcode.control.path.StopPathPoint
 import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
+import org.firstinspires.ftc.teamcode.control.system.BaseAuto
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.Pose
 
 @Autonomous
 class AzusaAuto : BaseAuto() {

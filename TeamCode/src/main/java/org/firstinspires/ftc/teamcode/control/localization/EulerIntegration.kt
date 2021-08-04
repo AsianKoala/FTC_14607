@@ -1,11 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-import org.firstinspires.ftc.teamcode.util.Pose
-import org.firstinspires.ftc.teamcode.control.localization.BaseOdometry
-import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.MathUtil.epsilonEquals
-import org.firstinspires.ftc.teamcode.util.Point
-
 @Deprecated("never coming back to this piece of shit")
 class EulerIntegration() : BaseOdometry() {
 //    override fun robotPoseUpdate() {

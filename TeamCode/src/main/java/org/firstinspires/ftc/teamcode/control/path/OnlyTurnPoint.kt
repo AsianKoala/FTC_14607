@@ -20,10 +20,19 @@ class OnlyTurnPoint(
         h: Angle,
         dh: Angle,
         func: Functions.Function? = null
-    ): this(signature, Point(x,y), followDistance, h, dh, func)
+    ) : this(signature, Point(x, y), followDistance, h, dh, func)
 
     override val copy: PathPoint = OnlyTurnPoint(signature, p, followDistance, h, dh, func)
     override fun toString(): String {
-        return String.format("%s, %.1f, %.1f, %.1f, %.1f, %.1f, %s", signature, p.x, p.y, followDistance, h, dh, func.toString())
+        return String.format(
+            "%s, %.1f, %.1f, %.1f, %.1f, %.1f, %s",
+            signature,
+            p.x,
+            p.y,
+            followDistance,
+            h,
+            dh,
+            func.toString()
+        )
     }
 }

@@ -17,11 +17,19 @@ open class PathPoint constructor(
         y: Double,
         followDistance: Double,
         func: Functions.Function? = null
-    ): this(signature, Point(x,y), followDistance, func)
+    ) : this(signature, Point(x, y), followDistance, func)
+
     open val copy = PathPoint(signature, p, followDistance, func)
     fun distance(p2: PathPoint) = p.distance(p2.p)
     fun distance(p2: Pose) = p.distance(p2.p)
     override fun toString(): String {
-        return String.format("%s, %.1f, %.1f, %.1f, %s", signature, p.x, p.y, followDistance, func.toString())
+        return String.format(
+            "%s, %.1f, %.1f, %.1f, %s",
+            signature,
+            p.x,
+            p.y,
+            followDistance,
+            func.toString()
+        )
     }
 }

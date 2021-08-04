@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-import org.firstinspires.ftc.teamcode.util.Pose
 import org.firstinspires.ftc.teamcode.control.system.Azusa
-import org.openftc.revextensions2.RevBulkData
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.Point
+import org.firstinspires.ftc.teamcode.util.Pose
+import org.openftc.revextensions2.RevBulkData
 
 class DriftOdo(start: Pose) {
     companion object {
@@ -38,7 +38,8 @@ class DriftOdo(start: Pose) {
 
         currentPosition.p += Point(
             -(heading.cos * correctedDeltas.y) + heading.sin * correctedDeltas.x,
-            -(heading.sin * correctedDeltas.y) - heading.cos * correctedDeltas.x)
+            -(heading.sin * correctedDeltas.y) - heading.cos * correctedDeltas.x
+        )
         currentPosition.h = (heading + startHeading).wrap()
 
         azusa.telemetry.addData("curr", currWheels)

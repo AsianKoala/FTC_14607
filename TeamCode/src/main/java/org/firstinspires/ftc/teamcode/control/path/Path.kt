@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController
 import org.firstinspires.ftc.teamcode.control.system.Azusa
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.MathUtil.angleThresh
-import java.util.LinkedList
+import java.util.*
 import kotlin.collections.ArrayList
 
 class Path(
@@ -17,7 +17,7 @@ class Path(
     private var firstFinish: Boolean
 
     init {
-        for(pathPoint in path) {
+        for (pathPoint in path) {
             val copy = pathPoint.copy
             add(copy)
             initialPoints.add(copy)

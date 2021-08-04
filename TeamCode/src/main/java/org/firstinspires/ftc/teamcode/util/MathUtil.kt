@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.util
 
-import java.util.ArrayList
+import java.util.*
 import kotlin.math.*
 
 object MathUtil {
@@ -11,18 +11,18 @@ object MathUtil {
     val Double.toDegrees get() = Math.toDegrees(this)
 
     fun epsilonEquals(a: Double, b: Double): Boolean {
-        return when(a.isInfinite()) {
-            true -> a==b
-            false -> (a-b).absoluteValue < EPSILON
+        return when (a.isInfinite()) {
+            true -> a == b
+            false -> (a - b).absoluteValue < EPSILON
         }
     }
 
     fun angleThresh(a: Angle, b: Angle, c: Angle): Boolean {
-        return (a-b).wrap().rad.absoluteValue < c.rad
+        return (a - b).wrap().rad.absoluteValue < c.rad
     }
 
     fun maxify(input: Double, min: Double): Double {
-        return when(input) {
+        return when (input) {
             in 0.0..min -> min
             in -min..0.0 -> -min
             else -> input
@@ -30,13 +30,13 @@ object MathUtil {
     }
 
     fun clipIntersection(start: Point, end: Point, robot: Point): Point {
-        if(start.y == end.y)
+        if (start.y == end.y)
             start.y += 0.01
-        if(start.x == end.x)
+        if (start.x == end.x)
             start.x += 0.01
 
-        val m1 = (end.y-start.y)/(end.x-start.x)
-        val m2 = -1.0/m1
+        val m1 = (end.y - start.y) / (end.x - start.x)
+        val m2 = -1.0 / m1
         val xClip = (-m2 * robot.x + robot.y + m1 * start.x - start.y) / (m1 - m2)
         val yClip = m1 * (xClip - start.x) + start.y
         return Point(xClip, yClip)
@@ -69,7 +69,12 @@ object MathUtil {
      * @return intersection point closest to endPoint
      * @see [https://mathworld.wolfram.com/Circle-LineIntersection.html](https://mathworld.wolfram.com/Circle-LineIntersection.html)
      */
-    fun circleLineIntersection(center: Point, startPoint: Point, endPoint: Point, radius: Double): Point {
+    fun circleLineIntersection(
+        center: Point,
+        startPoint: Point,
+        endPoint: Point,
+        radius: Double
+    ): Point {
         val start = startPoint - center
         val end = endPoint - center
         val deltas = end - start
