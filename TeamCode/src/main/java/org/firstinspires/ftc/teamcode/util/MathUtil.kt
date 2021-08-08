@@ -52,7 +52,6 @@ object MathUtil {
         return extended
     }
 
-
     // change s_tart to a_start
     // change e_nd to a_end
     // change r_obot to c_x and c_y

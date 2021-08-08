@@ -34,8 +34,7 @@ class DriveTrain(
         if (maxAbsPower > 1)
             for (i in rawPowers.indices) rawPowers[i] /= maxAbsPower
 
-        for (i in rawPowers.indices)
-            motors[i].power = rawPowers[i]
+        for (i in rawPowers.indices) motors[i].power = rawPowers[i]
 
         dp.addData("power vectors", powers)
         dp.addData("powers", rawPowers.contentToString())
