@@ -51,9 +51,6 @@ object MathUtil {
         return extended
     }
 
-    // change s_tart to a_start
-    // change e_nd to a_end
-    // change r_obot to c_x and c_y
     /**
      * Returns the closest intersection point to the end of a line segment created through the intersection of a line and circle.
      * The main purpose of this is for pure pursuit but I'll prob implement it into our goToPosition algorithm.
