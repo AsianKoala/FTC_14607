@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.util.DataPacket
 import org.firstinspires.ftc.teamcode.util.Pose

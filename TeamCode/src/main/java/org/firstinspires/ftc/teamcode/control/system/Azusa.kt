@@ -262,7 +262,7 @@ abstract class Azusa : TunableOpMode() {
                 .strokePolyline(x, y)
         }
 //        val (x, y) = currPose.p.dbNormalize
-        val (x,y) = Point()
+        val (x, y) = Point()
         packet.fieldOverlay()
             .setFill("blue")
             .fillCircle(x, y, 3.0)
