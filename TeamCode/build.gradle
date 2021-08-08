@@ -16,6 +16,10 @@ apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 apply plugin: 'kotlin-android'
 
+configurations {
+    ktlint
+}
+
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
@@ -28,4 +32,30 @@ dependencies {
     implementation 'com.acmerobotics.roadrunner:core:0.5.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21"
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+    ktlint("com.pinterest:ktlint:0.42.1") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
+        }
+    }
+
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+    // to generate report in checkstyle format prepend following args:
+    // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
+    // to add a baseline to check against prepend following args:
+    // "--baseline=ktlint-baseline.xml"
+    // see https://github.com/pinterest/ktlint#usage for more
+}
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "**/*.kt"
 }

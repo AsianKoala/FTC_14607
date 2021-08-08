@@ -24,7 +24,7 @@ class Odometry(start: Pose, odometrySet: OdometrySet) {
 //        val deltaX = (odometrySet.horizontalTicks - prevHorizontal) / TICKS_PER_INCH
 //        val deltaAngle: Double = MathUtil.angleWrap(heading - prevHeading)
 //
-////        double newHeading = MathUtil.angleWrap(currentPosition.h + deltaAngle);
+// //        double newHeading = MathUtil.angleWrap(currentPosition.h + deltaAngle);
 //        currentPosition.x += -(Math.cos(heading) * deltaY) + Math.sin(heading) * deltaX
 //        currentPosition.y += -(Math.sin(heading) * deltaY) - Math.cos(heading) * deltaX
 //        currentPosition.h = heading + startHeading

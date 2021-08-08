@@ -1,5 +1,5 @@
-import kotlin.jvm.JvmStatic
 import org.firstinspires.ftc.teamcode.util.Point
+import kotlin.jvm.JvmStatic
 
 object KotlinTest {
     @JvmStatic

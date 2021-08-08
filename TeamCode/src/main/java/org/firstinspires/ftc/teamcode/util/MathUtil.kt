@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.util
 
-import java.util.*
-import kotlin.math.*
+import kotlin.math.* // ktlint-disable no-wildcard-imports
 
 object MathUtil {
     const val EPSILON = 1e-6
@@ -51,7 +50,6 @@ object MathUtil {
         extended.y = sin(lineAngle) * extendedLineLength + firstPoint.y
         return extended
     }
-
 
     // change s_tart to a_start
     // change e_nd to a_end

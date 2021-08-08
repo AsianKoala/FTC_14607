@@ -42,7 +42,7 @@ class WorkingOdometry(hardwareMap: HardwareMap, startPose: Pose) {
 //        Pose2d(PARALLEL_X, PARALLEL_Y, 0),
 //        Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90.0))
 //    )
-//) {
+// ) {
 //    private var currPose: Pose
 //    private var currVel: Pose
 //    private val prevPoses: ArrayList<TimePose>

@@ -9,7 +9,7 @@ import org.openftc.revextensions2.RevBulkData
 class DriftOdo(start: Pose) {
     companion object {
         const val TICKS_PER_INCH = 1103.8839
-        val tracker_coeffs = Point(8272.5 / TICKS_PER_INCH, -8651 / TICKS_PER_INCH) //8672 -7158
+        val tracker_coeffs = Point(8272.5 / TICKS_PER_INCH, -8651 / TICKS_PER_INCH) // 8672 -7158
         const val HORIZ_PORT = 0
         const val VERT_PORT = 2
     }
@@ -51,7 +51,6 @@ class DriftOdo(start: Pose) {
         prevHeading = currentPosition.h
         return currentPosition
     }
-
 
     init {
         prevWheels = Point()
