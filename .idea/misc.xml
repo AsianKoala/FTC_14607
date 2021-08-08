@@ -6,10 +6,11 @@
       <item index="1" class="java.lang.String" itemvalue="com.qualcomm.robotcore.eventloop.opmode.TeleOp" />
     </list>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/javadoc" />
     <option name="OPTION_SCOPE" value="private" />
     <option name="OPEN_IN_BROWSER" value="false" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>
