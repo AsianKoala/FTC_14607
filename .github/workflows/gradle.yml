@@ -33,3 +33,4 @@ jobs:
         ./gradlew clean
         ./gradlew assembleDebug
         ./gradlew assembleDebugAndroidTest
+        ./gradlew TeamCode:ktlint
