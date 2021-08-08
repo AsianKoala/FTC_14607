@@ -15,7 +15,6 @@ class BasicTeleOp : OpMode() {
     private lateinit var driveTrain: DriveTrain
 
     override fun loop() {
-        //super.loop()
         controlGamePad()
     }
 
@@ -25,6 +24,5 @@ class BasicTeleOp : OpMode() {
         val h = -gamepad1.right_stick_x * 1.0
 
         driveTrain.powers = Pose(x, y, h)
-
     }
 }
