@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.util.Pose
 
 @Debuggable
 @TeleOp
+@Disabled
 class AzusaDebug : Azusa() {
     override fun startPose() = Pose(-64.0, -64.0, Math.PI / 2)
 

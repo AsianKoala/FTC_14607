@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 import org.firstinspires.ftc.teamcode.control.path.StopPathPoint
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.Pose
 
 @Autonomous
+@Disabled
 class AzusaAuto : BaseAuto() {
     override fun startPose(): Pose = Pose(-64.0, -64.0, Math.PI / 2)
 

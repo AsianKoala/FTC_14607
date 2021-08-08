@@ -87,7 +87,7 @@ object PurePursuitController {
         followPoint.p.y = y
         azusa.packet.fieldOverlay()
             .setFill("white")
-            .fillCircle(followPoint.p.dbNormalize.x, followPoint.p.dbNormalize.y, 2.0)
+//            .fillCircle(followPoint.p.dbNormalize.x, followPoint.p.dbNormalize.y, 2.0)
         goToPosition(azusa, followPoint, start)
     }
 }

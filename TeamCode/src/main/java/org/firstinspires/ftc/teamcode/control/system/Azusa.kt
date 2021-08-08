@@ -8,6 +8,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.hardware.* // ktlint-disable no-wildcard-imports
 import com.qualcomm.robotcore.util.Range
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
@@ -31,6 +32,7 @@ import kotlin.math.PI
 import kotlin.math.sign
 
 @Config
+@Disabled
 abstract class Azusa : TunableOpMode() {
     abstract fun startPose(): Pose
     abstract fun path(): Path?
@@ -259,7 +261,8 @@ abstract class Azusa : TunableOpMode() {
                 .setStrokeWidth(1)
                 .strokePolyline(x, y)
         }
-        val (x, y) = currPose.p.dbNormalize
+//        val (x, y) = currPose.p.dbNormalize
+        val (x,y) = Point()
         packet.fieldOverlay()
             .setFill("blue")
             .fillCircle(x, y, 3.0)

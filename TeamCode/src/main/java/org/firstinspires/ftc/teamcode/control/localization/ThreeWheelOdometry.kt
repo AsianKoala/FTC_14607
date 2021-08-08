@@ -23,10 +23,12 @@ class ThreeWheelOdometry(start: Pose) {
     private var prevHeading: Angle = startHeading
 
     fun update(azusa: Azusa, data: RevBulkData): Pose {
-        currWheels = Pose(Point(
+        currWheels = Pose(
+            Point(
                 data.getMotorCurrentPosition(LEFT).toDouble(),
-                data.getMotorCurrentPosition(RIGHT).toDouble()),
-                Angle(data.getMotorCurrentPosition(HORIZ_PORT).toDouble(), Angle.Unit.RAW)
+                data.getMotorCurrentPosition(RIGHT).toDouble()
+            ),
+            Angle(data.getMotorCurrentPosition(HORIZ_PORT).toDouble(), Angle.Unit.RAW)
         )
         val deltaLeftScaled = (currWheels.x - prevWheels.x) / TICKS_PER_INCH
         val deltaRightScaled = (currWheels.y - prevWheels.y) / TICKS_PER_INCH
@@ -43,7 +45,6 @@ class ThreeWheelOdometry(start: Pose) {
 
         val trackerXScaled = trackerCoeffs.x / (Math.PI / 2)
         val trackerX = deltaHorizScaled - (trackerXScaled * dTheta.angle)
-
 
         return currentPosition
     }

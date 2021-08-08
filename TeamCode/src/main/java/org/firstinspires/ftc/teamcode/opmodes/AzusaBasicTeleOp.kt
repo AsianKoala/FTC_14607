@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
@@ -8,7 +10,8 @@ import org.firstinspires.ftc.teamcode.util.Pose
 import org.openftc.revextensions2.ExpansionHubMotor
 
 @TeleOp
-class AzusaBasicTeleOp : TunableOpMode() {
+@Disabled
+class AzusaBasicTeleOp : OpMode() {
 
     lateinit var frontLeft: ExpansionHubMotor
     lateinit var frontRight: ExpansionHubMotor
