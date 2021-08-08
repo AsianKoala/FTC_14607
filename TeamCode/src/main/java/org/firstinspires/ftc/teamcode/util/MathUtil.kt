@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.util
 
-import java.util.*
-import kotlin.math.*
+import kotlin.math.* // ktlint-disable no-wildcard-imports
 
 object MathUtil {
     const val EPSILON = 1e-6
@@ -52,9 +51,12 @@ object MathUtil {
         return extended
     }
 
+<<<<<<< HEAD
     // change s_tart to a_start
     // change e_nd to a_end
     // change r_obot to c_x and c_y
+=======
+>>>>>>> master
     /**
      * Returns the closest intersection point to the end of a line segment created through the intersection of a line and circle.
      * The main purpose of this is for pure pursuit but I'll prob implement it into our goToPosition algorithm.

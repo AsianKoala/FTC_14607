@@ -8,7 +8,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.hardware.*
+import com.qualcomm.robotcore.hardware.* // ktlint-disable no-wildcard-imports
 import com.qualcomm.robotcore.util.Range
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
@@ -18,13 +18,15 @@ import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.hardware.Hardware
-import org.firstinspires.ftc.teamcode.util.*
+import org.firstinspires.ftc.teamcode.util.* // ktlint-disable no-wildcard-imports
 import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.LinkedList
 import java.util.function.Consumer
+import kotlin.collections.ArrayList
 import kotlin.math.PI
 import kotlin.math.sign
 
@@ -207,7 +209,7 @@ abstract class Azusa : TunableOpMode() {
             val i2c = hardwareMap.getAll(I2cDevice::class.java)
             packet.addLine(
                 revHubs.size.toString() + " Hubs; " + motors.size + " Motors; " + servos.size +
-                        " Servos; " + (digital.size + analog.size + i2c.size) + " Sensors"
+                    " Servos; " + (digital.size + analog.size + i2c.size) + " Sensors"
             )
             packet.addSpace()
         }
@@ -230,11 +232,13 @@ abstract class Azusa : TunableOpMode() {
         packet.addData("y", currPose.y)
         packet.addData("h", currPose.h.deg)
         packet.addData("odometry", odometry)
-        allHardware.forEach(Consumer { h: Hardware ->
-            h.update(
-                packet
-            )
-        })
+        allHardware.forEach(
+            Consumer { h: Hardware ->
+                h.update(
+                    packet
+                )
+            }
+        )
         packet.addSpace()
         if (pathCache.isEmpty()) {
             packet.addData("path empty", "")
@@ -317,7 +321,6 @@ abstract class Azusa : TunableOpMode() {
             ) * elapsed
             debugSpeeds.p *= (1.0 - elapsed)
             debugSpeeds.h.angle *= (1.0 - elapsed)
-
         }
     }
 }

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.control.path.builders
 
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
-import java.util.*
+import java.util.LinkedList
 
 class PathBuilder(var name: String) {
     var path: LinkedList<PathPoint> = LinkedList<PathPoint>()

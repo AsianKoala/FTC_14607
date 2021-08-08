@@ -1,20 +1,20 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.util.DataPacket
 import org.firstinspires.ftc.teamcode.util.Pose
 import org.openftc.revextensions2.ExpansionHubMotor
 
 @TeleOp
+class AzusaBasicTeleOp : TunableOpMode() {
 
-class BasicTeleOp : OpMode() {
-    private lateinit var driveTrain: DriveTrain
-    private lateinit var frontLeft: ExpansionHubMotor
-    private lateinit var frontRight: ExpansionHubMotor
-    private lateinit var backLeft: ExpansionHubMotor
-    private lateinit var backRight: ExpansionHubMotor
+    lateinit var frontLeft: ExpansionHubMotor
+    lateinit var frontRight: ExpansionHubMotor
+    lateinit var backLeft: ExpansionHubMotor
+    lateinit var backRight: ExpansionHubMotor
+    lateinit var driveTrain: DriveTrain
 
     override fun init() {
         frontLeft = hardwareMap.get(ExpansionHubMotor::class.java, "FL")
@@ -25,15 +25,12 @@ class BasicTeleOp : OpMode() {
     }
 
     override fun loop() {
-        controlGamePad()
-    }
-
-    private fun controlGamePad() {
-        val x = -gamepad1.left_stick_x * 1.0
-        val y = gamepad1.left_stick_y * 1.0
-        val h = -gamepad1.right_stick_x * 1.0
-
-        driveTrain.powers = Pose(x, y, h)
+        val driveScale = 0.65 - if (gamepad1.left_bumper) 0.3 else 0.0
+        driveTrain.powers = Pose(
+            -gamepad1.left_stick_x * driveScale,
+            gamepad1.left_stick_y * driveScale,
+            -gamepad1.right_stick_x * driveScale
+        )
         driveTrain.update(DataPacket())
     }
 }

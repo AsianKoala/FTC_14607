@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-
 data class EncoderWheel(
     var x: Double,
     var y: Double,

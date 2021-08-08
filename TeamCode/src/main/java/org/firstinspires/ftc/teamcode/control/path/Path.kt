@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController
 import org.firstinspires.ftc.teamcode.control.system.Azusa
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.MathUtil.angleThresh
-import java.util.*
+import java.util.LinkedList
 import kotlin.collections.ArrayList
 
 class Path(

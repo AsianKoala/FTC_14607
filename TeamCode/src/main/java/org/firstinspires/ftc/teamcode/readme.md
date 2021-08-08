@@ -1,1 +1,1 @@
-follow me on [MAL](https://myanimelist.net/profile/asiank0ala) :flushed:
+music https://www.youtube.com/playlist?list=PLIDJ5RHUdb1FqhWZim6Lwak5g7QJOYIEu
