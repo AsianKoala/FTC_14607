@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.BuildConfig
 import org.firstinspires.ftc.teamcode.control.localization.DriftOdo
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
+import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.hardware.Hardware
 import org.firstinspires.ftc.teamcode.util.* // ktlint-disable no-wildcard-imports
@@ -40,12 +41,12 @@ abstract class Azusa : TunableOpMode() {
     lateinit var currPose: Pose
     private lateinit var currVel: Pose
 
-    lateinit var pathCache: Path
+    var pathCache: Path? = null
 
     private lateinit var masterHub: ExpansionHubEx
-    private lateinit var slaveHub: ExpansionHubEx
+//    private lateinit var slaveHub: ExpansionHubEx
     private lateinit var masterBulkData: RevBulkData
-    private lateinit var slaveBulkData: RevBulkData
+//    private lateinit var slaveBulkData: RevBulkData
 
     private lateinit var imu: BNO055IMU
     private lateinit var headingOffset: Angle
@@ -90,9 +91,9 @@ abstract class Azusa : TunableOpMode() {
         maxLT = -1.0
 
         masterHub = hardwareMap.get(ExpansionHubEx::class.java, "masterHub")
-        slaveHub = hardwareMap.get(ExpansionHubEx::class.java, "slaveHub")
+//        slaveHub = hardwareMap.get(ExpansionHubEx::class.java, "slaveHub")
         masterBulkData = masterHub.bulkInputData
-        slaveBulkData = slaveHub.bulkInputData
+//        slaveBulkData = slaveHub.bulkInputData
 
         imu = hardwareMap.get(BNO055IMUImpl::class.java, "imu")
         val parameters = BNO055IMU.Parameters()
@@ -167,21 +168,20 @@ abstract class Azusa : TunableOpMode() {
     }
 
     private fun setInternalPath(path: Path?) {
-        pathCache = path ?: LinkedList<PathPoint>() as Path
+        pathCache = path
     }
 
     private fun updatePath() {
-        if (!pathCache.isEmpty()) {
-            pathCache.follow(this)
-        }
-        if (pathCache.finished() && type === OpModeType.AUTO) {
-            driveTrain.powers = Pose(Point(), Angle(Angle.Unit.RAW))
+        pathCache?.follow(this)
+
+        if(pathCache?.finished() == true) {
+            pathCache = null
         }
     }
 
     private fun updateOdo() {
         masterBulkData = masterHub.bulkInputData
-        slaveBulkData = slaveHub.bulkInputData
+//        slaveBulkData = slaveHub.bulkInputData
         val lastHeading = Angle(imu.angularOrientation.firstAngle.toDouble()) - headingOffset
         currPose =
             odometry.update(this, lastHeading + startPose().h, masterBulkData)
@@ -242,16 +242,15 @@ abstract class Azusa : TunableOpMode() {
             }
         )
         packet.addSpace()
-        if (pathCache.isEmpty()) {
-            packet.addData("path empty", "")
-        } else {
-            packet.addData("path size", pathCache.size)
-            packet.addData("current path name", pathCache.name)
-            packet.addData("current target", pathCache[0].toString())
-            val x = DoubleArray(pathCache.initialPoints.size)
-            val y = DoubleArray(pathCache.initialPoints.size)
+        val pathCacheCopy = pathCache
+        if (pathCacheCopy != null) {
+            packet.addData("path size", pathCacheCopy.size)
+            packet.addData("current path name", pathCacheCopy.name)
+            packet.addData("current target", pathCacheCopy[0].toString())
+            val x = DoubleArray(pathCacheCopy.initialPoints.size)
+            val y = DoubleArray(pathCacheCopy.initialPoints.size)
 
-            for ((index, e) in pathCache.initialPoints.withIndex()) {
+            for ((index, e) in pathCacheCopy.initialPoints.withIndex()) {
                 x[index] = e.p.y
                 y[index] = -e.p.x
                 packet.fieldOverlay().setFill("green").fillCircle(x[index], y[index], 2.0)
@@ -260,6 +259,8 @@ abstract class Azusa : TunableOpMode() {
                 .setStroke("red")
                 .setStrokeWidth(1)
                 .strokePolyline(x, y)
+        } else {
+            packet.addData("path empty", "")
         }
 //        val (x, y) = currPose.p.dbNormalize
         val (x, y) = Point()
@@ -295,7 +296,7 @@ abstract class Azusa : TunableOpMode() {
             lastManualUpdate = System.currentTimeMillis()
         }
 
-        if (debugging && !pathStopped && !pathCache.isEmpty()) {
+        if (debugging && !pathStopped && pathCache != null) {
             val elapsed = (System.currentTimeMillis() - lastAutoUpdate) / 1000.0
             lastAutoUpdate = System.currentTimeMillis()
             if (elapsed > 1) return

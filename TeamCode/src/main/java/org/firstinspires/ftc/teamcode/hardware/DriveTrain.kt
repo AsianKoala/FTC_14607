@@ -21,10 +21,10 @@ class DriveTrain(
         arrayOf(frontLeft, frontRight, backLeft, backRight)
 
     override fun update(dp: DataPacket) {
-        val rawFrontLeft: Double = powers.y + powers.x + powers.h.angle
-        val rawFrontRight: Double = powers.y - powers.x - powers.h.angle
-        val rawBackLeft: Double = powers.y - powers.x + powers.h.angle
-        val rawBackRight: Double = powers.y + powers.x - powers.h.angle
+        val rawFrontLeft: Double = powers.y + powers.x + powers.h.raw
+        val rawFrontRight: Double = powers.y - powers.x - powers.h.raw
+        val rawBackLeft: Double = powers.y - powers.x + powers.h.raw
+        val rawBackRight: Double = powers.y + powers.x - powers.h.raw
         val rawPowers = doubleArrayOf(rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight)
 
         var maxAbsPower = rawFrontLeft.absoluteValue
@@ -37,7 +37,7 @@ class DriveTrain(
         for (i in rawPowers.indices)
             motors[i].power = rawPowers[i]
 
-        dp.addData("power vectors", powers)
+        dp.addData("power vectors", powers.toRawString)
         dp.addData("powers", rawPowers.contentToString())
     }
 
