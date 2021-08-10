@@ -1,5 +1,5 @@
 
-name: Java CI with Gradle
+name: CI
 
 on:
   push:
