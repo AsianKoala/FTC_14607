@@ -16,7 +16,7 @@ data class Angle(
         RAW
     }
 
-    private val FULL_CIRCLE = when (unit) {
+    private val fullCircle = when (unit) {
         Unit.RAD -> PI * 2
         Unit.DEG -> 360.0
         Unit.RAW -> 0.0
@@ -51,38 +51,30 @@ data class Angle(
 
     val cos = cos(angle)
     val sin = sin(angle)
-    val tan = tan(angle)
     val sign = angle.sign
     val abs = angle.absoluteValue
-
-    companion object {
-        fun createUnwrappedDeg(deg: Double) = Angle(deg, Unit.DEG)
-        fun createUnwrappedRad(rad: Double) = Angle(rad, Unit.RAD)
-        fun createWrappedDeg(deg: Double) = createUnwrappedDeg(deg).wrap()
-        fun createWrappedRad(rad: Double) = createUnwrappedRad(rad).wrap()
-    }
 
     fun wrap(): Angle {
         var heading = angle
         while (heading < -HALF_CIRCLE)
-            heading += FULL_CIRCLE
+            heading += fullCircle
         while (heading > HALF_CIRCLE)
-            heading -= FULL_CIRCLE
+            heading -= fullCircle
         return Angle(heading, unit)
     }
 
     operator fun plus(other: Angle) = when (unit) {
-        Unit.RAD -> createUnwrappedRad(rad + other.rad)
-        Unit.DEG -> createUnwrappedDeg(deg + other.deg)
-        Unit.RAW -> Angle(angle + other.angle, unit)
+        Unit.RAD -> Angle(rad + other.rad, unit).wrap()
+        Unit.DEG -> Angle(deg + other.deg, unit).wrap()
+        Unit.RAW -> Angle(raw + other.raw, unit)
     }
 
     operator fun minus(other: Angle) = plus(other.unaryMinus())
 
     operator fun unaryMinus() = when (unit) {
-        Unit.RAD -> createUnwrappedRad(-rad)
-        Unit.DEG -> createUnwrappedDeg(-deg)
-        else -> Angle(-angle, unit)
+        Unit.RAD -> Angle(-rad, unit).wrap()
+        Unit.DEG -> Angle(-deg, unit).wrap()
+        Unit.RAW -> Angle(-raw, unit)
     }
 
     operator fun times(scalar: Double) = Angle(angle * scalar, unit)

@@ -4,20 +4,16 @@ import android.annotation.SuppressLint
 import android.os.Build
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
-import com.qualcomm.hardware.bosch.BNO055IMU
-import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.hardware.* // ktlint-disable no-wildcard-imports
 import com.qualcomm.robotcore.util.Range
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 import org.firstinspires.ftc.teamcode.BuildConfig
-import org.firstinspires.ftc.teamcode.control.localization.DriftOdo
+import org.firstinspires.ftc.teamcode.control.localization.Speedometer
+import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
 import org.firstinspires.ftc.teamcode.control.path.Path
-import org.firstinspires.ftc.teamcode.control.path.PathPoint
-import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.hardware.Hardware
 import org.firstinspires.ftc.teamcode.util.* // ktlint-disable no-wildcard-imports
@@ -26,10 +22,8 @@ import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.LinkedList
 import java.util.function.Consumer
 import kotlin.collections.ArrayList
-import kotlin.math.PI
 import kotlin.math.sign
 
 @Config
@@ -39,18 +33,18 @@ abstract class Azusa : TunableOpMode() {
     abstract fun path(): Path?
 
     lateinit var currPose: Pose
-    private lateinit var currVel: Pose
+    lateinit var currVel: Pose
 
-    var pathCache: Path? = null
+    protected var pathCache: Path? = null
 
     private lateinit var masterHub: ExpansionHubEx
-//    private lateinit var slaveHub: ExpansionHubEx
+    //    private lateinit var slaveHub: ExpansionHubEx
     private lateinit var masterBulkData: RevBulkData
 //    private lateinit var slaveBulkData: RevBulkData
 
-    private lateinit var imu: BNO055IMU
     private lateinit var headingOffset: Angle
-    private lateinit var odometry: DriftOdo
+    private lateinit var odometry: ThreeWheelOdometry
+    private lateinit var speedometer: Speedometer
 
     private lateinit var frontLeft: ExpansionHubMotor
     private lateinit var frontRight: ExpansionHubMotor
@@ -95,15 +89,7 @@ abstract class Azusa : TunableOpMode() {
         masterBulkData = masterHub.bulkInputData
 //        slaveBulkData = slaveHub.bulkInputData
 
-        imu = hardwareMap.get(BNO055IMUImpl::class.java, "imu")
-        val parameters = BNO055IMU.Parameters()
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
-        parameters.loggingEnabled = false
-        imu.initialize(parameters)
-        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN)
-        headingOffset = Angle(imu.angularOrientation.firstAngle.toDouble())
-
-        odometry = DriftOdo(startPose())
+        odometry = ThreeWheelOdometry(startPose())
         currPose = startPose()
         currVel = Pose(Point(), Angle(Angle.Unit.RAW))
 
@@ -130,6 +116,7 @@ abstract class Azusa : TunableOpMode() {
         dashboard = FtcDashboard.getInstance()
         initTime.stop()
         updateTelemetry(true)
+        updateDashboard()
     }
 
     override fun init_loop() {
@@ -145,49 +132,50 @@ abstract class Azusa : TunableOpMode() {
     override fun loop() {
         telemetry.clear()
         loopTime.start()
-        odoTime.start()
         if (debugging) debugControl() else updateOdo()
-        odoTime.stop()
-        telemTime.start()
         updateTelemetry(false)
-        telemTime.stop()
-        pathTime.start()
         updatePath()
-        pathTime.stop()
-        dashTime.start()
-        //        updateDashboard();
-        stupidTelemetry()
-        dashTime.stop()
+        updateDashboard()
         loopTime.stop()
     }
 
-    private fun stupidTelemetry() {
-        telemetry.addData("x", currPose.x)
-        telemetry.addData("y", currPose.y)
-        telemetry.addData("h", currPose.h.deg)
-    }
+//    private fun stupidTelemetry() {
+//        telemetry.addData("x", currPose.x)
+//        telemetry.addData("y", currPose.y)
+//        telemetry.addData("h", currPose.h.deg)
+//    }
 
     private fun setInternalPath(path: Path?) {
         pathCache = path
     }
 
     private fun updatePath() {
+        pathTime.start()
         pathCache?.follow(this)
 
-        if(pathCache?.finished() == true) {
+        if (pathCache?.finished() == true) {
             pathCache = null
         }
+        pathTime.stop()
     }
 
     private fun updateOdo() {
+        odoTime.start()
         masterBulkData = masterHub.bulkInputData
 //        slaveBulkData = slaveHub.bulkInputData
-        val lastHeading = Angle(imu.angularOrientation.firstAngle.toDouble()) - headingOffset
         currPose =
-            odometry.update(this, lastHeading + startPose().h, masterBulkData)
+            odometry.update(
+                this,
+                masterBulkData.getMotorCurrentPosition(ThreeWheelOdometry.LEFT_PORT) / ThreeWheelOdometry.TICKS_PER_INCH,
+                masterBulkData.getMotorCurrentPosition(ThreeWheelOdometry.RIGHT_PORT) / ThreeWheelOdometry.TICKS_PER_INCH,
+                masterBulkData.getMotorCurrentPosition(ThreeWheelOdometry.PERP_PORT) / ThreeWheelOdometry.TICKS_PER_INCH
+            )
+        currVel = speedometer.update(currPose.h)
+        odoTime.stop()
     }
 
     private fun updateTelemetry(isInit: Boolean) {
+        telemTime.start()
         packet = DataPacket()
         packet.addLine(" FTC 14607 by Neil Mehra")
         if (isInit) {
@@ -262,8 +250,7 @@ abstract class Azusa : TunableOpMode() {
         } else {
             packet.addData("path empty", "")
         }
-//        val (x, y) = currPose.p.dbNormalize
-        val (x, y) = Point()
+        val (x, y) = currPose.p.dbNormalize
         packet.fieldOverlay()
             .setFill("blue")
             .fillCircle(x, y, 3.0)
@@ -272,14 +259,17 @@ abstract class Azusa : TunableOpMode() {
             .strokeLine(
                 x, y, x + 10 * currPose.h.sin, y - 10 * currPose.h.cos
             )
-        if (isInit) updateDashboard()
+        telemTime.stop()
     }
 
     private fun updateDashboard() {
+        dashTime.start()
         dashboard.sendTelemetryPacket(packet)
+        dashTime.stop()
     }
 
     private fun debugControl() {
+        odoTime.start()
         if (gamepad1.left_trigger > 0.5) {
             pathStopped = true
         } else if (gamepad1.right_trigger > 0.5) {
@@ -300,31 +290,20 @@ abstract class Azusa : TunableOpMode() {
             val elapsed = (System.currentTimeMillis() - lastAutoUpdate) / 1000.0
             lastAutoUpdate = System.currentTimeMillis()
             if (elapsed > 1) return
-            val radius: Double = debugSpeeds.hypot
-            val theta: Angle = currPose.h + debugSpeeds.p.atan2 - Angle(PI / 2)
-            currPose.p += Point(
-                radius * theta.cos * elapsed * 500 * 0.2,
-                radius * theta.sin * elapsed * 500 * 0.2
-            )
-            currPose.h.angle += driveTrain.powers.h.angle * elapsed * 10 / (2 * Math.PI)
 
-            debugSpeeds.p.x += Range.clip(
-                (driveTrain.powers.x - debugSpeeds.x) / 0.2,
-                -1.0,
-                1.0
-            ) * elapsed
-            debugSpeeds.p.y += Range.clip(
-                (driveTrain.powers.y - debugSpeeds.y) / 0.2,
-                -1.0,
-                1.0
-            ) * elapsed
-            debugSpeeds.h.angle += Range.clip(
-                ((driveTrain.powers.h - debugSpeeds.h) / 0.2).raw,
-                -1.0,
-                1.0
-            ) * elapsed
-            debugSpeeds.p *= (1.0 - elapsed)
-            debugSpeeds.h.angle *= (1.0 - elapsed)
+            val radius: Double = debugSpeeds.hypot
+            val theta = currPose.h + debugSpeeds.p.atan2 - Angle(Math.PI / 2)
+
+            currPose.p.x += radius * theta.cos * elapsed * 100
+            currPose.p.y += radius * theta.sin * elapsed * 100
+            currPose.h += Angle(driveTrain.powers.h.raw * elapsed * 10.0 / (2 * Math.PI), Angle.Unit.RAD)
+
+            debugSpeeds.p.x += (Range.clip((driveTrain.powers.x - debugSpeeds.x) / 0.2, -1.0, 1.0)) * elapsed * (1.0 - elapsed)
+            debugSpeeds.p.y += (Range.clip((driveTrain.powers.y - debugSpeeds.y) / 0.2, -1.0, 1.0)) * elapsed * (1.0 - elapsed)
+            debugSpeeds.h += Angle(Range.clip((driveTrain.powers.h.raw - debugSpeeds.h.raw) / 0.2, -1.0, 1.0), Angle.Unit.RAW) * elapsed * (1.0 - elapsed)
+
+            packet.addLine(debugSpeeds.toRawString)
         }
+        odoTime.stop()
     }
 }

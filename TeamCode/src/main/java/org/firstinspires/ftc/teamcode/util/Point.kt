@@ -11,11 +11,11 @@ data class Point(
 ) {
     val hypot = hypot(x, y)
     val atan2 = Angle(atan2(y, x))
-    val dbNormalize get() = Point(y, x)
+    val dbNormalize get() = Point(y, -x)
     val copy get() = Point(x, y)
 
     operator fun plus(p: Point) = Point(x + p.x, y + p.y)
-    operator fun minus(p: Point) = Point(x - p.x, y + p.y)
+    operator fun minus(p: Point) = Point(x - p.x, y - p.y)
     operator fun times(n: Double) = Point(x * n, y * n)
     operator fun div(n: Double) = Point(x / n, y / n)
     operator fun unaryMinus() = this.times(-1.0)
@@ -26,5 +26,5 @@ data class Point(
         x * sin(angle) + y * cos(angle)
     )
 
-    override fun toString() = String.format("(%.2f, %.2f", x, y)
+    override fun toString() = String.format("%.2f, %.2f", x, y)
 }

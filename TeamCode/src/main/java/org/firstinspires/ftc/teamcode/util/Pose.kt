@@ -37,6 +37,6 @@ data class Pose(
     fun distance(p2: Pose) = p.distance(p2.p)
     fun distance(p2: PathPoint) = p.distance(p2.p)
 
-    val toRawString = String.format("(%.2f, %.2f, %.2f", x, y, h.raw)
-    override fun toString() = String.format("(%.2f, %.2f, %.2f", x, y, h.wrap().deg)
+    val toRawString = String.format("%.2f, %.2f, %.2f", x, y, h.raw)
+    override fun toString() = String.format("%.2f, %.2f, %.2f", x, y, h.wrap().deg)
 }

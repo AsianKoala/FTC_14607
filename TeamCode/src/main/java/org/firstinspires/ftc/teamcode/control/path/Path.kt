@@ -31,7 +31,7 @@ class Path(
     fun follow(azusa: Azusa) {
         val target = first
         if (!isPurePursuit) {
-            PurePursuitController.goToPosition(azusa, target, curr)
+            PurePursuitController.goToPosition(azusa, target) // TODO: FIX THIS SHIT
         } else {
             var skip: Boolean
             if (target is OnlyTurnPoint) {
@@ -58,7 +58,7 @@ class Path(
                 return
             }
             if (target is StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
-                PurePursuitController.goToPosition(azusa, target, curr)
+                PurePursuitController.goToPosition(azusa, target)
             } else {
                 PurePursuitController.followPath(azusa, curr, target)
             }
