@@ -25,20 +25,14 @@ class DriveTrain(
         val rawFrontRight: Double = powers.y - powers.x - powers.h.raw
         val rawBackLeft: Double = powers.y - powers.x + powers.h.raw
         val rawBackRight: Double = powers.y + powers.x - powers.h.raw
-        val rawPowers = doubleArrayOf(rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight)
 
-        var maxAbsPower = rawFrontLeft.absoluteValue
-        for (power in rawPowers)
-            if (power.absoluteValue > maxAbsPower) maxAbsPower = power.absoluteValue
+        var rawPowers = listOf(rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight)
+        val max: Double = rawPowers.map { it.absoluteValue }.maxOrNull()!!
+        if (max > 1.0) rawPowers = rawPowers.map { it / max }
 
-        if (maxAbsPower > 1)
-            for (i in rawPowers.indices) rawPowers[i] /= maxAbsPower
-
-        for (i in rawPowers.indices)
-            motors[i].power = rawPowers[i]
-
+        motors.forEachIndexed { i, it -> it.power = rawPowers.get(i) }
         dp.addData("power vectors", powers.toRawString)
-        dp.addData("powers", rawPowers.contentToString())
+        dp.addData("powers", rawPowers.toString())
     }
 
     init {

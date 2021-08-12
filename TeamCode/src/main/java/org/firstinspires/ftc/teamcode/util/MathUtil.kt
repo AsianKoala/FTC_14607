@@ -9,12 +9,17 @@ object MathUtil {
     val Double.toRadians get() = Math.toRadians(this)
     val Double.toDegrees get() = Math.toDegrees(this)
 
-    fun epsilonEquals(a: Double, b: Double): Boolean {
-        return when (a.isInfinite()) {
-            true -> a == b
-            false -> (a - b).absoluteValue < EPSILON
+    infix fun Double.epsilonEquals(a: Double): Boolean {
+        return when (this.isInfinite()) {
+            true -> this == a
+            false -> (this - a).absoluteValue < EPSILON
         }
     }
+
+    fun rotatePoint(p: Point, h: Angle) = Point(
+        h.cos * p.y + h.sin * p.x,
+        h.sin * p.y - h.cos * p.x
+    )
 
     fun angleThresh(a: Angle, b: Angle, c: Angle): Boolean {
         return (a - b).wrap().rad.absoluteValue < c.rad

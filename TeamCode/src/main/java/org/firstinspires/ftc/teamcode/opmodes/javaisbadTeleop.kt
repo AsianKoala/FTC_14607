@@ -37,7 +37,7 @@ internal class DriveTrain(
     var frontLeft: ExpansionHubMotor,
     var frontRight: ExpansionHubMotor,
     var backLeft: ExpansionHubMotor,
-    var backRight: ExpansionHubMotor
+    backRight: ExpansionHubMotor
 ) {
     var powers: Pose
     private val motors = ArrayList<ExpansionHubMotor>()

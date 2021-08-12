@@ -22,7 +22,6 @@ import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.function.Consumer
 import kotlin.collections.ArrayList
 import kotlin.math.sign
 
@@ -139,14 +138,9 @@ abstract class Azusa : TunableOpMode() {
         loopTime.stop()
     }
 
-//    private fun stupidTelemetry() {
-//        telemetry.addData("x", currPose.x)
-//        telemetry.addData("y", currPose.y)
-//        telemetry.addData("h", currPose.h.deg)
-//    }
-
     private fun setInternalPath(path: Path?) {
         pathCache = path
+        telemetry
     }
 
     private fun updatePath() {
@@ -166,9 +160,9 @@ abstract class Azusa : TunableOpMode() {
         currPose =
             odometry.update(
                 this,
-                masterBulkData.getMotorCurrentPosition(ThreeWheelOdometry.LEFT_PORT) / ThreeWheelOdometry.TICKS_PER_INCH,
-                masterBulkData.getMotorCurrentPosition(ThreeWheelOdometry.RIGHT_PORT) / ThreeWheelOdometry.TICKS_PER_INCH,
-                masterBulkData.getMotorCurrentPosition(ThreeWheelOdometry.PERP_PORT) / ThreeWheelOdometry.TICKS_PER_INCH
+                masterBulkData.getMotorCurrentPosition(LEFT_PORT),
+                masterBulkData.getMotorCurrentPosition(RIGHT_PORT),
+                masterBulkData.getMotorCurrentPosition(AUX_PORT)
             )
         currVel = speedometer.update(currPose.h)
         odoTime.stop()
@@ -222,13 +216,9 @@ abstract class Azusa : TunableOpMode() {
         packet.addData("y", currPose.y)
         packet.addData("h", currPose.h.deg)
         packet.addData("odometry", odometry)
-        allHardware.forEach(
-            Consumer { h: Hardware ->
-                h.update(
-                    packet
-                )
-            }
-        )
+
+        allHardware.forEach { it.update(packet) }
+
         packet.addSpace()
         val pathCacheCopy = pathCache
         if (pathCacheCopy != null) {
@@ -305,5 +295,11 @@ abstract class Azusa : TunableOpMode() {
             packet.addLine(debugSpeeds.toRawString)
         }
         odoTime.stop()
+    }
+
+    companion object {
+        private const val AUX_PORT = 0
+        private const val LEFT_PORT = 1
+        private const val RIGHT_PORT = 2
     }
 }
