@@ -8,7 +8,7 @@ import org.openftc.revextensions2.ExpansionHubMotor
 import java.util.ArrayList
 
 @TeleOp
-class javaisbadTeleop : OpMode() {
+private class javaisbadTeleop : OpMode() {
     private lateinit var driveTrain: DriveTrain
     override fun init() {
         val frontLeft = hardwareMap.get(ExpansionHubMotor::class.java, "FL")
@@ -32,8 +32,8 @@ class javaisbadTeleop : OpMode() {
     }
 }
 
-internal class Pose(var x: Double, var y: Double, var h: Double)
-internal class DriveTrain(
+private class Pose(var x: Double, var y: Double, var h: Double)
+private class DriveTrain(
     var frontLeft: ExpansionHubMotor,
     var frontRight: ExpansionHubMotor,
     var backLeft: ExpansionHubMotor,

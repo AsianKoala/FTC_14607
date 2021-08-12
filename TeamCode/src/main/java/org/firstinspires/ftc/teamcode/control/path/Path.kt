@@ -8,21 +8,24 @@ import java.util.LinkedList
 import kotlin.collections.ArrayList
 
 class Path(
-    path: LinkedList<PathPoint>,
-    var name: String = "default"
+    val path: LinkedList<PathPoint>,
+    val name: String = "default"
 ) : LinkedList<PathPoint>() {
-    var curr: PathPoint
-    var isPurePursuit: Boolean
+    lateinit var curr: PathPoint
     var initialPoints: ArrayList<PathPoint> = ArrayList()
     private var firstFinish: Boolean
 
     init {
+        firstFinish = false
+        is
+    }
+
+    fun init() {
         for (pathPoint in path) {
             val copy = pathPoint.copy
             add(copy)
             initialPoints.add(copy)
         }
-        isPurePursuit = path.size > 1
         curr = first.copy
         removeFirst()
         firstFinish = false
