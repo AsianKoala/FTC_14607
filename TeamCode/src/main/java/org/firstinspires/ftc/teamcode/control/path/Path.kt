@@ -17,7 +17,6 @@ class Path(
 
     init {
         firstFinish = false
-        is
     }
 
     fun init() {
@@ -33,7 +32,7 @@ class Path(
 
     fun follow(azusa: Azusa) {
         val target = first
-        if (!isPurePursuit) {
+        if (true/*!isPurePursuit*/) {
             PurePursuitController.goToPosition(azusa, target) // TODO: FIX THIS SHIT
         } else {
             var skip: Boolean

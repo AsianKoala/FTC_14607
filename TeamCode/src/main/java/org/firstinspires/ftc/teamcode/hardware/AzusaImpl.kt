@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardware
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
-import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.system.BaseOpMode
 import org.firstinspires.ftc.teamcode.util.AllianceSide
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
@@ -23,7 +22,6 @@ class AzusaImpl(val startPose: Pose, val hwMap: HardwareMap, val telemetry: Azus
     override fun update() {
         TODO("Not yet implemented")
     }
-
 }
 
 class testAuto() : BaseOpMode() {
@@ -33,6 +31,5 @@ class testAuto() : BaseOpMode() {
     override val getAllianceImpl: AllianceSide get() = AllianceSide.BLUE
 
     override fun onLoop() {
-
     }
 }

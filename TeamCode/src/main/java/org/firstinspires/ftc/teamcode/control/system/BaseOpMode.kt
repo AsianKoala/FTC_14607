@@ -29,8 +29,8 @@ abstract class BaseOpMode() : LinearOpMode() {
         getAzusaImpl.init()
         onInit()
 
-        mainLoop@ while(true) {
-            when(status) {
+        mainLoop@ while (true) {
+            when (status) {
                 Status.INIT_LOOP -> {
                     onInitLoop()
                     if (isStarted)
