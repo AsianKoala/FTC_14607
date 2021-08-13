@@ -20,7 +20,7 @@ class DriveTrain(
     private val motors: Array<ExpansionHubMotor> =
         arrayOf(frontLeft, frontRight, backLeft, backRight)
 
-    override fun update(dp: DataPacket) {
+    override fun update(): DataPacket {
         val rawFrontLeft: Double = powers.y + powers.x + powers.h.raw
         val rawFrontRight: Double = powers.y - powers.x - powers.h.raw
         val rawBackLeft: Double = powers.y - powers.x + powers.h.raw
@@ -31,8 +31,10 @@ class DriveTrain(
         if (max > 1.0) rawPowers = rawPowers.map { it / max }
 
         motors.forEachIndexed { i, it -> it.power = rawPowers.get(i) }
+        val dp = DataPacket()
         dp.addData("power vectors", powers.toRawString)
         dp.addData("powers", rawPowers.toString())
+        return dp
     }
 
     init {

@@ -88,7 +88,7 @@ abstract class Azusa : TunableOpMode() {
         masterBulkData = masterHub.bulkInputData
 //        slaveBulkData = slaveHub.bulkInputData
 
-        odometry = ThreeWheelOdometry(startPose())
+//        odometry = ThreeWheelOdometry(startPose())
         currPose = startPose()
         currVel = Pose(Point(), Angle(Angle.Unit.RAW))
 
@@ -157,13 +157,13 @@ abstract class Azusa : TunableOpMode() {
         odoTime.start()
         masterBulkData = masterHub.bulkInputData
 //        slaveBulkData = slaveHub.bulkInputData
-        currPose =
-            odometry.update(
-                this,
-                masterBulkData.getMotorCurrentPosition(LEFT_PORT),
-                masterBulkData.getMotorCurrentPosition(RIGHT_PORT),
-                masterBulkData.getMotorCurrentPosition(AUX_PORT)
-            )
+//        currPose =
+//            odometry.update(
+//                this,
+//                masterBulkData.getMotorCurrentPosition(LEFT_PORT),
+//                masterBulkData.getMotorCurrentPosition(RIGHT_PORT),
+//                masterBulkData.getMotorCurrentPosition(AUX_PORT)
+//            )
         currVel = speedometer.update(currPose.h)
         odoTime.stop()
     }
@@ -217,7 +217,7 @@ abstract class Azusa : TunableOpMode() {
         packet.addData("h", currPose.h.deg)
         packet.addData("odometry", odometry)
 
-        allHardware.forEach { it.update(packet) }
+//        allHardware.forEach { it.update(packet) }
 
         packet.addSpace()
         val pathCacheCopy = pathCache

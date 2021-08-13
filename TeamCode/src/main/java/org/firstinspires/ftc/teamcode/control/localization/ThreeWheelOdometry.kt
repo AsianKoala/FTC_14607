@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.control.localization
 
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.teamcode.control.system.Azusa
+import org.firstinspires.ftc.teamcode.hardware.Hardware
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.DataPacket
 import org.firstinspires.ftc.teamcode.util.Pose
 
 @Config
-class ThreeWheelOdometry(val start: Pose) {
+class ThreeWheelOdometry(val startPose: Pose) {
     companion object {
         const val TICKS_PER_INCH = 1103.8839
     }
@@ -23,9 +25,10 @@ class ThreeWheelOdometry(val start: Pose) {
     var lastAuxEncoder = 0
 
     private var lastRawAngle = 0.0
-    private var currentPosition: Pose = start
 
-    fun update(azusa: Azusa, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
+    private var currentPosition: Pose = startPose
+
+    fun update(currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
         val leftDelta = (currLeftEncoder - lastLeftEncoder) / TICKS_PER_INCH
         val rightDelta = (currRightEncoder - lastRightEncoder) / TICKS_PER_INCH
         val auxDelta = (currAuxEncoder - lastAuxEncoder) / TICKS_PER_INCH
@@ -35,7 +38,7 @@ class ThreeWheelOdometry(val start: Pose) {
         val leftTotal = currLeftEncoder / TICKS_PER_INCH
         val rightTotal = currRightEncoder / TICKS_PER_INCH
         lastRawAngle = ((leftTotal - rightTotal) / turnScalar)
-        val finalAngle = lastRawAngle + start.h.rad
+        val finalAngle = lastRawAngle + startPose.h.rad
 
         val auxPrediction = angleIncrement * xTracker
 
