@@ -16,6 +16,10 @@ object MathUtil {
         }
     }
 
+    // always remember the phrase "degrees is for brainlets!"
+    // (i made that phrase up)
+    val Double.wrap get() = Angle(this).wrap().rad
+
     fun rotatePoint(p: Point, h: Angle) = Point(
         h.cos * p.y + h.sin * p.x,
         h.sin * p.y - h.cos * p.x

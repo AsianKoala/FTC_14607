@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
-import org.firstinspires.ftc.teamcode.util.DataPacket
 import org.firstinspires.ftc.teamcode.util.Pose
 import org.openftc.revextensions2.ExpansionHubMotor
 
@@ -33,6 +32,6 @@ class AzusaBasicTeleOp : OpMode() {
             gamepad1.left_stick_y * driveScale,
             -gamepad1.right_stick_x * driveScale
         )
-        driveTrain.update(DataPacket())
+        driveTrain.update()
     }
 }

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardware
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.DataPacket
 import org.firstinspires.ftc.teamcode.util.Point
 import org.firstinspires.ftc.teamcode.util.Pose
 import org.openftc.revextensions2.ExpansionHubMotor
@@ -17,10 +16,9 @@ class DriveTrain(
 ) : Hardware() {
 
     var powers: Pose
-    private val motors: Array<ExpansionHubMotor> =
-        arrayOf(frontLeft, frontRight, backLeft, backRight)
+    private val motors = arrayOf(frontLeft, frontRight, backLeft, backRight)
 
-    override fun update(): DataPacket {
+    override fun update(): LinkedHashMap<String, String> {
         val rawFrontLeft: Double = powers.y + powers.x + powers.h.raw
         val rawFrontRight: Double = powers.y - powers.x - powers.h.raw
         val rawBackLeft: Double = powers.y - powers.x + powers.h.raw
@@ -30,10 +28,11 @@ class DriveTrain(
         val max: Double = rawPowers.map { it.absoluteValue }.maxOrNull()!!
         if (max > 1.0) rawPowers = rawPowers.map { it / max }
 
-        motors.forEachIndexed { i, it -> it.power = rawPowers.get(i) }
-        val dp = DataPacket()
-        dp.addData("power vectors", powers.toRawString)
-        dp.addData("powers", rawPowers.toString())
+        motors.forEachIndexed { i, it -> it.power = rawPowers[i] }
+
+        val dp = LinkedHashMap<String, String>()
+        dp["power vectors"] = powers.toRawString
+        dp["powers"] = rawPowers.toString()
         return dp
     }
 

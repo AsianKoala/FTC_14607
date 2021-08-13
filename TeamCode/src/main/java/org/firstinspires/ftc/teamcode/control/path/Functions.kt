@@ -23,9 +23,9 @@ class Functions {
         fun run(azusa: Azusa, path: Path): Boolean
     }
 
-    class TimeFunction(dt: Long, var func: Function) {
+    class SysTimeFunc(dt: Long, var func: Function) {
         var targetTime: Long = dt + System.currentTimeMillis()
     }
 
-    class PoseFunction(var targetPose: Pose, var func: Function)
+    class SysPoseFunc(var targetPose: Pose, var func: Function)
 }
