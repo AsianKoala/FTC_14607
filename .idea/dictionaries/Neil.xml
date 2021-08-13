@@ -14,10 +14,12 @@
       <w>mehra</w>
       <w>mins</w>
       <w>odometry</w>
+      <w>opmode</w>
       <w>perp</w>
       <w>prio</w>
       <w>telem</w>
       <w>teleop</w>
+      <w>transitioner</w>
       <w>vals</w>
     </words>
   </dictionary>

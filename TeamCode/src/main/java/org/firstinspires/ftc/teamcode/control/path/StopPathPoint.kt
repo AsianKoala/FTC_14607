@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.path
 
-import org.firstinspires.ftc.teamcode.control.system.Functions
 import org.firstinspires.ftc.teamcode.util.Angle
 
 class StopPathPoint(
