@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.OpModeType
 
 abstract class BaseOpMode : LinearOpMode() {
-    abstract fun getRobot(): BaseAzusa
+    abstract val getRobot: BaseAzusa
 
     open fun onInit() {}
     open fun onInitLoop() {}
@@ -24,7 +24,7 @@ abstract class BaseOpMode : LinearOpMode() {
         else OpModeType.TELEOP
 
         telemetry = AzusaTelemetry(this)
-        getRobot().init()
+        getRobot.init()
         onInit()
 
         mainLoop@ while (true) {
@@ -51,7 +51,7 @@ abstract class BaseOpMode : LinearOpMode() {
                     break@mainLoop
                 }
             }
-            getRobot().update()
+            getRobot.update()
         }
     }
 }
