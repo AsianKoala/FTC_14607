@@ -13,7 +13,7 @@ abstract class BaseAuto : BaseOpMode() {
     override fun onInit() {
         pathCache = initialPath()
     }
-    
+
     override fun onLoop() {
         if (!pathCache.isEmpty()) {
             pathCache.follow(robot)
