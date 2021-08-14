@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.Gamepad
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.Point
 import org.firstinspires.ftc.teamcode.util.Pose
@@ -19,7 +19,7 @@ class DriveTrain(
     var powers: Pose
     private val motors = arrayOf(frontLeft, frontRight, backLeft, backRight)
 
-    override fun update(): LinkedHashMap<String, String> {
+    override fun update(telemetry: Telemetry) {
         val rawFrontLeft: Double = powers.y + powers.x + powers.h.raw
         val rawFrontRight: Double = powers.y - powers.x - powers.h.raw
         val rawBackLeft: Double = powers.y - powers.x + powers.h.raw
@@ -31,27 +31,14 @@ class DriveTrain(
 
         motors.forEachIndexed { i, it -> it.power = rawPowers[i] }
 
-        val dp = LinkedHashMap<String, String>()
-        dp["power vectors"] = powers.toRawString
-        dp["powers"] = rawPowers.toString()
-        return dp
+//        val dp = LinkedHashMap<String, String>()
+//        dp["power vectors"] = powers.toRawString
+//        dp["powers"] = rawPowers.toString()
+//        return dp
     }
 
-    fun teleopControl(gamepad: Gamepad, fieldCentric: Boolean, h: Angle) {
-        val scale: Double = if (gamepad.left_bumper) 1.0 else 0.5
-        val move = Point(-gamepad.left_stick_x.toDouble(), gamepad.left_stick_y.toDouble())
-        val turn = -gamepad.right_stick_x.toDouble()
-
-        if(fieldCentric) {
-            val vel = move.hypot
-            val angle = move.atan2 - h
-
-            powers.p.x = angle.sin * vel
-            powers.p.y = angle.cos * vel
-            powers.h = Angle(turn, Angle.Unit.RAW)
-        } else {
-            powers = Pose(move, Angle(-gamepad.right_stick_x * scale, Angle.Unit.RAW))
-        }
+    fun setZeroPowers() {
+        powers = Pose(Point(), Angle(0.0, Angle.Unit.RAW))
     }
 
     init {

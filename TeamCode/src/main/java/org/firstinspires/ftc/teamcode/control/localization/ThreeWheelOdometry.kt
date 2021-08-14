@@ -42,7 +42,7 @@ class ThreeWheelOdometry(val startPose: Pose) {
         val yDelta = (leftDelta - rightDelta) / 2.0
         val xDelta = auxDelta - auxPrediction
 
-        val data = ArcLocalizer.update(currentPosition, Pose(xDelta, yDelta, angleIncrement), Angle(finalAngle).wrap())
+        val data = ArcLocalizer.update(currentPosition, Pose(xDelta, yDelta, Angle(angleIncrement, Angle.Unit.RAD)), Angle(finalAngle).wrap())
 
         totalXTraveled += data.deltaXVec
         totalYTraveled += data.deltaYVec

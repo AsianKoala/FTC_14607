@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.control.controllers
 import org.firstinspires.ftc.teamcode.control.path.LockedPathPoint
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 import org.firstinspires.ftc.teamcode.control.path.StopPathPoint
-import org.firstinspires.ftc.teamcode.control.system.Azusa
+import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.MathUtil.circleLineIntersection
 import org.firstinspires.ftc.teamcode.util.MathUtil.clipIntersection

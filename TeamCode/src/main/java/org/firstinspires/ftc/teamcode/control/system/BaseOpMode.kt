@@ -1,33 +1,33 @@
 package org.firstinspires.ftc.teamcode.control.system
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.hardware.BaseAzusa
-import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
+import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
+import org.firstinspires.ftc.teamcode.hardware.Azusa
+import org.firstinspires.ftc.teamcode.util.MarkerNew
 import org.firstinspires.ftc.teamcode.util.OpModeType
 
-abstract class BaseOpMode : LinearOpMode() {
-    abstract val getRobot: BaseAzusa
-
-    open fun onInit() {}
-    open fun onInitLoop() {}
-    open fun onStart() {}
-    abstract fun onLoop()
-    open fun onStop() {}
+abstract class BaseOpMode : TunableLinearOpMode() {
+    abstract val robot: Azusa
 
     lateinit var opModeType: OpModeType
-        private set
     private var status: Status = Status.INIT_LOOP
 
     override fun runOpMode() {
-        opModeType = if (javaClass.isAnnotationPresent(Autonomous::class.java)) OpModeType.AUTO
-        else OpModeType.TELEOP
+        val mar = MarkerNew("init")
+        opModeType = when (javaClass.isAnnotationPresent(Autonomous::class.java)) {
+            true -> OpModeType.AUTO
+            false -> OpModeType.TELEOP
+        }
 
-        telemetry = AzusaTelemetry(this)
-        getRobot.init()
+        robot.init()
         onInit()
+        mar.stop()
+        telemetry.addData("init time", mar.time)
+        telemetry.update()
 
         mainLoop@ while (true) {
+            mar.name = status.name
+            mar.start()
             when (status) {
                 Status.INIT_LOOP -> {
                     onInitLoop()
@@ -51,7 +51,16 @@ abstract class BaseOpMode : LinearOpMode() {
                     break@mainLoop
                 }
             }
-            getRobot.update()
+            robot.update()
+            mar.stop()
+            telemetry.addData(status.name + " time", mar.time)
+            telemetry.update()
         }
     }
+
+    open fun onInit() {}
+    open fun onInitLoop() {}
+    open fun onStart() {}
+    abstract fun onLoop()
+    open fun onStop() {}
 }

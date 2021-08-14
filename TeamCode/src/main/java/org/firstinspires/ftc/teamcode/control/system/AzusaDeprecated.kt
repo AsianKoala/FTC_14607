@@ -27,7 +27,8 @@ import kotlin.math.sign
 
 @Config
 @Disabled
-abstract class Azusa : TunableOpMode() {
+@Deprecated("moved over to hw azusa")
+abstract class AzusaDeprecated : TunableOpMode() {
     abstract fun startPose(): Pose
     abstract fun path(): Path?
 
@@ -133,7 +134,7 @@ abstract class Azusa : TunableOpMode() {
         loopTime.start()
         if (debugging) debugControl() else updateOdo()
         updateTelemetry(false)
-        updatePath()
+//        updatePath()
         updateDashboard()
         loopTime.stop()
     }
@@ -143,15 +144,15 @@ abstract class Azusa : TunableOpMode() {
         telemetry
     }
 
-    private fun updatePath() {
-        pathTime.start()
-        pathCache?.follow(this)
-
-        if (pathCache?.finished() == true) {
-            pathCache = null
-        }
-        pathTime.stop()
-    }
+//    private fun updatePath() {
+//        pathTime.start()
+//        pathCache?.follow(this)
+//
+//        if (pathCache?.finished() == true) {
+//            pathCache = null
+//        }
+//        pathTime.stop()
+//    }
 
     private fun updateOdo() {
         odoTime.start()

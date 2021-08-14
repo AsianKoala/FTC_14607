@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.path
 
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController
-import org.firstinspires.ftc.teamcode.control.system.Azusa
-import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.MathUtil.angleThresh
+import org.firstinspires.ftc.teamcode.hardware.Azusa
 import java.util.LinkedList
 import kotlin.collections.ArrayList
 
@@ -13,11 +11,9 @@ class Path(
 ) : LinkedList<PathPoint>() {
     lateinit var curr: PathPoint
     var initialPoints: ArrayList<PathPoint> = ArrayList()
-    private var firstFinish: Boolean
+    var interrupting = false
 
-    init {
-        firstFinish = false
-    }
+    private var firstFinish = false
 
     fun init() {
         for (pathPoint in path) {
@@ -32,50 +28,55 @@ class Path(
 
     fun follow(azusa: Azusa) {
         val target = first
-        if (true/*!isPurePursuit*/) {
-            PurePursuitController.goToPosition(azusa, target) // TODO: FIX THIS SHIT
-        } else {
-            var skip: Boolean
-            if (target is OnlyTurnPoint) {
-                skip = angleThresh(azusa.currPose.h, target.h, Angle(0.5, Angle.Unit.DEG))
-            } else if (target is StopPathPoint) {
-                skip = azusa.currPose.distance(target) < 2
-            } else {
-                skip = azusa.currPose.distance(target) < target.followDistance
-                if (size > 1 && get(1) is StopPathPoint) {
-                    skip = azusa.currPose.distance(target) < 10
-                }
-            }
+        val currPose = azusa.currPose
+        var skip: Boolean
 
-//            if(!target.functions.isEmpty()) {
-//                target.functions.removeIf(f -> f.cond() && f.func());
-//                skip = skip && target.functions.size() == 0;
-//            } // TODO
-            if (skip) {
-                curr = target.copy // swap old target to curr start
-                removeFirst()
-            }
-            if (isEmpty()) {
-                firstFinish = true
+        if (interrupting) {
+            val advance = (curr.func as Functions.InterruptFunction).run(azusa, this)
+            if (advance)
+                interrupting = false
+            else {
                 return
             }
-            if (target is StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
-                PurePursuitController.goToPosition(azusa, target)
-            } else {
-                PurePursuitController.followPath(azusa, curr, target)
+        }
+
+        do {
+            skip = when (target) {
+                is StopPathPoint -> currPose.distance(target) < 1
+                is OnlyTurnPoint -> (currPose.h - target.h).rad < target.dh.rad
+                else -> azusa.currPose.distance(target) < target.followDistance
             }
+
+            var currAction = curr.func
+            if (currAction is Functions.RepeatFunction) {
+                currAction.run(azusa, this)
+            } else if (currAction is Functions.LoopUntilFunction) {
+                skip = currAction.run(azusa, this)
+            }
+
+            if (skip) {
+                curr = target.copy
+                removeFirst()
+
+                currAction = curr.func
+                if (currAction is Functions.SimpleFunction) {
+                    currAction.run(azusa, this)
+                }
+                if (currAction is Functions.InterruptFunction) {
+                    interrupting = true
+                }
+            }
+        } while (skip && !isEmpty())
+        if (isEmpty()) return
+
+        if (target is StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
+            PurePursuitController.goToPosition(azusa, target)
+        } else {
+            PurePursuitController.followPath(azusa, curr, target)
         }
     }
 
     override fun toString(): String {
         return name
-    }
-
-    fun finished(): Boolean {
-        if (firstFinish) {
-            firstFinish = false
-            return true
-        }
-        return false
     }
 }

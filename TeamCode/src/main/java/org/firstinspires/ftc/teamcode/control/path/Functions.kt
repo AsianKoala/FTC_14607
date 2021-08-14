@@ -1,31 +1,26 @@
 package org.firstinspires.ftc.teamcode.control.path
 
-import org.firstinspires.ftc.teamcode.control.system.Azusa
-import org.firstinspires.ftc.teamcode.util.Pose
+import org.firstinspires.ftc.teamcode.hardware.Azusa
 
 class Functions {
     interface Function
+
     interface SimpleFunction : Function {
         fun run(azusa: Azusa, path: Path)
     }
 
-    interface LoopUntilFunction : Function {
-        fun run(azusa: Azusa, path: Path): Boolean
-    }
-
-    // these give higher priority to path
+    // path prio
     interface RepeatFunction : Function {
         fun run(azusa: Azusa, path: Path)
     }
 
-    // highest prio
-    interface InterruptFunction : Function {
+    // parallel
+    interface LoopUntilFunction : Function {
         fun run(azusa: Azusa, path: Path): Boolean
     }
 
-    class SysTimeFunc(dt: Long, var func: Function) {
-        var targetTime: Long = dt + System.currentTimeMillis()
+    // max prio
+    interface InterruptFunction : Function {
+        fun run(azusa: Azusa, path: Path): Boolean
     }
-
-    class SysPoseFunc(var targetPose: Pose, var func: Function)
 }

@@ -3,10 +3,5 @@
   <component name="KtlintProjectConfiguration">
     <treatAsErrors>false</treatAsErrors>
     <hideErrors>true</hideErrors>
-    <disabledRules>
-      <list>
-        <option value="no-wildcard-imports no-trailing-spaces" />
-      </list>
-    </disabledRules>
   </component>
 </project>

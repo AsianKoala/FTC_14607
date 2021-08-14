@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
-import org.firstinspires.ftc.teamcode.control.system.BasePPOpMode
+import org.firstinspires.ftc.teamcode.control.system.BaseAuto
 
 @Autonomous
 @Disabled
-abstract class AzusaAuto : BasePPOpMode() {
+@Deprecated("deprecated with azusa")
+abstract class AzusaAuto : BaseAuto() {
 //    override fun startPose(): Pose = Pose(-64.0, -64.0, Math.PI / 2)
 //
 //    override fun path(): Path {

@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 import org.firstinspires.ftc.teamcode.control.path.StopPathPoint
 import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
-import org.firstinspires.ftc.teamcode.control.system.Azusa
+import org.firstinspires.ftc.teamcode.control.system.AzusaDeprecated
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.Debuggable
 import org.firstinspires.ftc.teamcode.util.Point
@@ -13,7 +14,9 @@ import org.firstinspires.ftc.teamcode.util.Pose
 
 @Debuggable
 @TeleOp
-class AzusaDebug : Azusa() {
+@Deprecated("deprecated with azusa")
+@Disabled
+class AzusaDebug : AzusaDeprecated() {
     override fun startPose() = Pose(Point(-64.0, -64.0), Angle(Math.PI / 2, Angle.Unit.RAD))
 
     override fun path(): Path {
