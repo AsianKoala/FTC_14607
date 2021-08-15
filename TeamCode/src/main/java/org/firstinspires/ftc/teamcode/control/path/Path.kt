@@ -35,9 +35,7 @@ class Path(
             val advance = (curr.func as Functions.InterruptFunction).run(azusa, this)
             if (advance)
                 interrupting = false
-            else {
-                return
-            }
+            else return
         }
 
         do {

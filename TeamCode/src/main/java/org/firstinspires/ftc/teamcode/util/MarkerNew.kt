@@ -7,8 +7,4 @@ class MarkerNew(var name: String) {
     fun start() {
         start = System.currentTimeMillis()
     }
-
-    fun stop() {
-        time = System.currentTimeMillis() - start
-    }
 }

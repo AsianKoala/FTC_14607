@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
 import com.acmerobotics.dashboard.config.Config
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.MathUtil.toDegrees
 import org.firstinspires.ftc.teamcode.util.Pose
 
 @Config
@@ -25,10 +27,14 @@ class ThreeWheelOdometry(val startPose: Pose) {
 
     private var currentPosition: Pose = startPose
 
-    fun update(currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
+    fun update(telemetry: Telemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
         val leftDelta = (currLeftEncoder - lastLeftEncoder) / TICKS_PER_INCH
-        val rightDelta = (currRightEncoder - lastRightEncoder) / TICKS_PER_INCH
+        val rightDelta = -(currRightEncoder - lastRightEncoder) / TICKS_PER_INCH
         val auxDelta = (currAuxEncoder - lastAuxEncoder) / TICKS_PER_INCH
+
+        telemetry.addData("left delta", (currLeftEncoder - lastLeftEncoder))
+        telemetry.addData("right delta", -(currRightEncoder - lastRightEncoder))
+        telemetry.addData("aux delta", (currAuxEncoder - lastAuxEncoder))
 
         val angleIncrement = (leftDelta - rightDelta) / turnScalar
 
@@ -37,12 +43,14 @@ class ThreeWheelOdometry(val startPose: Pose) {
         lastRawAngle = ((leftTotal - rightTotal) / turnScalar)
         val finalAngle = lastRawAngle + startPose.h.rad
 
+        telemetry.addData("final angle", finalAngle.toDegrees)
+
         val auxPrediction = angleIncrement * xTracker
 
         val yDelta = (leftDelta - rightDelta) / 2.0
         val xDelta = auxDelta - auxPrediction
 
-        val data = ArcLocalizer.update(currentPosition, Pose(xDelta, yDelta, Angle(angleIncrement, Angle.Unit.RAD)), Angle(finalAngle).wrap())
+        val data = ArcLocalizer.update(currentPosition, Pose(xDelta, yDelta, Angle(angleIncrement, Angle.Unit.RAD)), Angle(finalAngle).wrap(), telemetry)
 
         totalXTraveled += data.deltaXVec
         totalYTraveled += data.deltaYVec
@@ -51,6 +59,8 @@ class ThreeWheelOdometry(val startPose: Pose) {
         lastLeftEncoder = currLeftEncoder
         lastRightEncoder = currRightEncoder
         lastAuxEncoder = currAuxEncoder
+
+        currentPosition = data.finalPose
 
         return currentPosition
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.MathUtil
 import org.firstinspires.ftc.teamcode.util.MathUtil.epsilonEquals
@@ -9,7 +10,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 object ArcLocalizer {
-    fun update(currentPosition: Pose, baseDeltas: Pose, finalAngle: Angle): LocalizationData {
+    fun update(currentPosition: Pose, baseDeltas: Pose, finalAngle: Angle, telemetry: Telemetry): LocalizationData {
         val dtheta = baseDeltas.h.angle
         val (sineTerm, cosTerm) = if (dtheta epsilonEquals 0.0) {
             1.0 - dtheta * dtheta / 6.0 to dtheta / 2.0
@@ -23,6 +24,9 @@ object ArcLocalizer {
 
         val finalDelta = MathUtil.rotatePoint(deltas, currentPosition.h)
         val finalPose = Pose(currentPosition.p + finalDelta, finalAngle)
+
+        telemetry.addData("final delta x", finalDelta.x)
+        telemetry.addData("final delta y", finalDelta.y)
 
         Speedometer.deltas += baseDeltas.p
         return LocalizationData(finalPose, deltas.x, deltas.y)

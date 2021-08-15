@@ -51,6 +51,12 @@ object PurePursuitController {
         }
     }
 
+    fun gunToPosition(azusa: Azusa, target: PathPoint) {
+        val pointDeltas = relVals(azusa.currPose, target).p / 12.0
+        val dh = getDeltaH(azusa.currPose, target) / 35.0.toRadians
+        azusa.driveTrain.powers = Pose(pointDeltas, Angle(dh, Angle.Unit.RAW))
+    }
+
     private fun getDeltaH(curr: Pose, target: PathPoint): Double {
         return if (target is LockedPathPoint) {
             (target.h - curr.h).wrap().raw

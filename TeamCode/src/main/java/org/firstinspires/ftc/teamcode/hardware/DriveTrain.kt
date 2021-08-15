@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware
 
 import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.Point
@@ -20,10 +19,10 @@ class DriveTrain(
     private val motors = arrayOf(frontLeft, frontRight, backLeft, backRight)
 
     override fun update(telemetry: Telemetry) {
-        val rawFrontLeft: Double = powers.y + powers.x + powers.h.raw
-        val rawFrontRight: Double = powers.y - powers.x - powers.h.raw
-        val rawBackLeft: Double = powers.y - powers.x + powers.h.raw
-        val rawBackRight: Double = powers.y + powers.x - powers.h.raw
+        val rawFrontLeft: Double = -powers.y - powers.x + powers.h.raw
+        val rawFrontRight: Double = powers.y - powers.x + powers.h.raw
+        val rawBackLeft: Double = -powers.y + powers.x + powers.h.raw
+        val rawBackRight: Double = powers.y + powers.x + powers.h.raw
 
         var rawPowers = listOf(rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight)
         val max: Double = rawPowers.map { it.absoluteValue }.maxOrNull()!!
@@ -42,8 +41,6 @@ class DriveTrain(
     }
 
     init {
-        frontRight.direction = DcMotorSimple.Direction.REVERSE
-        backRight.direction = DcMotorSimple.Direction.REVERSE
         for (m in motors) {
             m.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             m.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
