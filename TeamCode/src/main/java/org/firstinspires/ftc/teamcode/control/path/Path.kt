@@ -62,12 +62,16 @@ class Path(
                 }
                 if (currAction is Functions.InterruptFunction) {
                     interrupting = true
+                    this.follow(azusa)
+                    return
                 }
             }
         } while (skip && !isEmpty())
         if (isEmpty()) return
 
         if (target is StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
+            PurePursuitController.goToPosition(azusa, target)
+        } else if(target is OnlyTurnPoint) {
             PurePursuitController.goToPosition(azusa, target)
         } else {
             PurePursuitController.followPath(azusa, curr, target)

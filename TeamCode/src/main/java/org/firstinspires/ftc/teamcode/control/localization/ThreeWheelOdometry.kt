@@ -13,9 +13,9 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         const val TICKS_PER_INCH = 1103.8839
     }
 
-    val turnScalar: Double = 16.0
+    val turnScalar: Double = 18.44
     val xTracker: Double = 4.0
-    
+
     var lastLeftEncoder = 0
     var lastRightEncoder = 0
     var lastAuxEncoder = 0
@@ -23,8 +23,8 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
     private var currentPosition: Pose = startPose.copy
 
     fun update(telemetry: Telemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
-        val actualCurrLeft = currLeftEncoder - startL
-        val actualCurrRight = -(currRightEncoder - startR)
+        val actualCurrLeft = -(currLeftEncoder - startL)
+        val actualCurrRight = currRightEncoder - startR
         val actualCurrAux = currAuxEncoder - startA
 
         telemetry.addData("left wheel", actualCurrLeft)
@@ -49,7 +49,7 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         telemetry.addData("right total", rightTotal)
 
         val lastAngle = currentPosition.h.copy
-        currentPosition.h = Angle(((leftTotal + rightTotal) / turnScalar), Angle.Unit.RAD) + startPose.h
+        currentPosition.h = -Angle(((leftTotal + rightTotal) * turnScalar), Angle.Unit.RAD) + startPose.h
 
         telemetry.addData("last angle", lastAngle)
         telemetry.addData("left total", leftTotal)
