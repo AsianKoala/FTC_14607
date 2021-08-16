@@ -25,7 +25,6 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
     lateinit var masterBulkData: RevBulkData
 
     lateinit var odometry: ThreeWheelOdometry
-    lateinit var speedometer: Speedometer
 
     lateinit var driveTrain: DriveTrain
     lateinit var allHardware: ArrayList<Hardware>
@@ -48,11 +47,15 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         masterHub = hwMap.get(ExpansionHubEx::class.java, "masterHub")
         masterBulkData = masterHub.bulkInputData
 
-        odometry = ThreeWheelOdometry(startPose)
-        speedometer = Speedometer()
+        odometry = ThreeWheelOdometry(
+            startPose,
+            masterBulkData.getMotorCurrentPosition(1),
+            masterBulkData.getMotorCurrentPosition(3),
+            masterBulkData.getMotorCurrentPosition(2)
+        )
 
-        currPose = Pose(Point(), Angle(Angle.Unit.RAW))
-        currVel = Pose(Point(), Angle(Angle.Unit.RAW))
+        currPose = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
+        currVel = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
 
         driveTrain = DriveTrain(
             hwMap.get(ExpansionHubMotor::class.java, "FL"),
@@ -62,7 +65,7 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         )
         allHardware.add(driveTrain)
 
-        debugSpeeds = Pose(Point(), Angle(Angle.Unit.RAW))
+        debugSpeeds = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
         lastManualUpdate = System.currentTimeMillis()
         lastAutoUpdate = System.currentTimeMillis()
         pathStopped = true
@@ -77,11 +80,18 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         updateTelemetry()
     }
 
+    private fun updateTelemetry() {
+        telemetry.addData("x", currPose.x)
+        telemetry.addData("y", currPose.y)
+        telemetry.addData("h", currPose.h.deg)
+        telemetry.addData("powers", driveTrain.powers.toRawString)
+        telemetry.addData("path stopped", pathStopped)
+        telemetry.addData("debugging", debugging)
+        telemetry.update()
+    }
+
     private fun updateOdo() {
         masterBulkData = masterHub.bulkInputData
-        telemetry.addData("left", masterBulkData.getMotorCurrentPosition(1))
-        telemetry.addData("right", masterBulkData.getMotorCurrentPosition(3))
-        telemetry.addData("aux", masterBulkData.getMotorCurrentPosition(2))
 
         currPose = odometry.update(
             telemetry,
@@ -90,29 +100,19 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
             masterBulkData.getMotorCurrentPosition(2)
         )
 
-        currVel = speedometer.update(currPose.h)
+        currVel = Speedometer.update(currPose.h)
     }
 
     private fun updateHW() {
         allHardware.forEach { it.update(telemetry) }
     }
 
-    private fun updateTelemetry() {
-        telemetry.addData("x", currPose.x)
-        telemetry.addData("y", currPose.y)
-        telemetry.addData("h", currPose.h.deg)
-        telemetry.addData("powers", driveTrain.powers.toString())
-        telemetry.addData("path stopped", pathStopped)
-        telemetry.addData("debugging", debugging)
-    }
-
     fun teleopControl(gamepad: Gamepad) {
-
         telemetry.addData("ls x", gamepad.left_stick_x)
         telemetry.addData("ls y", -gamepad.left_stick_y)
         telemetry.addData("rs x", -gamepad.right_stick_x)
 
-        val driveScale = 0.65 - if (gamepad.left_bumper) 0.3 else 0.0
+        val driveScale = 0.45 - if (gamepad.left_bumper) 0.2 else 0.0
         driveTrain.powers = Pose(
             gamepad.left_stick_x * driveScale,
             -gamepad.left_stick_y * driveScale,

@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.Debuggable
-import org.firstinspires.ftc.teamcode.util.MarkerNew
 import org.firstinspires.ftc.teamcode.util.OpModeType
 import org.firstinspires.ftc.teamcode.util.Pose
 
@@ -26,8 +25,6 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     var debugging = false
 
     override fun runOpMode() {
-        val mar = MarkerNew("init")
-
         debugging = javaClass.isAnnotationPresent(Debuggable::class.java)
 
         azusa = Azusa(startPose(), debugging)
@@ -40,34 +37,30 @@ abstract class BaseOpMode : TunableLinearOpMode() {
         azusa.init(hardwareMap, telemetry)
         onInit()
 
-        telemetry.addData("init time", mar.time)
         telemetry.update()
 
         mainLoop@ while (true) {
-            mar.name = status.name
-            mar.start()
-
             when (status) {
                 Status.INIT_LOOP -> {
                     onInitLoop()
                 }
 
                 Status.LOOP -> {
-                    if (!hasStarted) {
+                    if (hasStarted) {
+                        onLoop()
+                    } else {
                         onStart()
                         hasStarted = true
-                    } else
-                        onLoop()
-                    azusa.update()
+                    }
                 }
 
                 Status.STOP -> {
                     break@mainLoop
                 }
             }
-            telemetry.addData(status.name + " time", mar.time)
-            telemetry.update()
+            azusa.update()
         }
+
         onStop()
     }
 

@@ -37,7 +37,7 @@ class DriveTrain(
     }
 
     fun setZeroPowers() {
-        powers = Pose(Point(), Angle(0.0, Angle.Unit.RAW))
+        powers = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
     }
 
     init {
@@ -45,6 +45,6 @@ class DriveTrain(
             m.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             m.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         }
-        powers = Pose(Point(), Angle(0.0, Angle.Unit.RAW))
+        powers = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
     }
 }

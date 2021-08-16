@@ -53,12 +53,12 @@ class DriftOdo(start: Pose) {
     }
 
     init {
-        prevWheels = Point()
+        prevWheels = Point.ORIGIN
         prevHeading = startHeading
         currentPosition = start
-        currWheels = Point()
-        deltaScaled = Point()
-        trackerScaled = Point()
-        correctedDeltas = Point()
+        currWheels = Point.ORIGIN
+        deltaScaled = Point.ORIGIN
+        trackerScaled = Point.ORIGIN
+        correctedDeltas = Point.ORIGIN
     }
 }

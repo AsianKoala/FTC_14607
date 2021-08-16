@@ -3,16 +3,16 @@ package org.firstinspires.ftc.teamcode.util
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 
 data class Pose(
-    var p: Point = Point(),
-    var h: Angle = Angle()
+        @JvmField var p: Point,
+        @JvmField var h: Angle
 ) {
     constructor(x: Double, y: Double, h: Angle) : this(Point(x, y), h)
 
-    val x = p.x
-    val y = p.y
-    val cos = h.cos
-    val sin = h.sin
-    val hypot = p.hypot
+    val x get() = p.x
+    val y get() = p.y
+    val cos get() = h.cos
+    val sin get() = h.sin
+    val hypot get() = p.hypot
     val copy get() = Pose(p, h)
 
     fun distance(p2: Pose) = p.distance(p2.p)

@@ -91,7 +91,7 @@ abstract class AzusaDeprecated : TunableOpMode() {
 
 //        odometry = ThreeWheelOdometry(startPose())
         currPose = startPose()
-        currVel = Pose(Point(), Angle(Angle.Unit.RAW))
+        currVel = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
 
         frontLeft = hardwareMap.get(ExpansionHubMotor::class.java, "FL")
         frontRight = hardwareMap.get(ExpansionHubMotor::class.java, "FR")
@@ -111,7 +111,7 @@ abstract class AzusaDeprecated : TunableOpMode() {
         pathStopped = true
         type =
             if (javaClass.isAnnotationPresent(Autonomous::class.java)) OpModeType.AUTO else OpModeType.TELEOP
-        debugSpeeds = Pose(Point(), Angle(Angle.Unit.RAW))
+        debugSpeeds = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
 
         dashboard = FtcDashboard.getInstance()
         initTime.stop()

@@ -3,64 +3,87 @@ package org.firstinspires.ftc.teamcode.control.localization
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.MathUtil.toDegrees
 import org.firstinspires.ftc.teamcode.util.Pose
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Config
-class ThreeWheelOdometry(val startPose: Pose) {
+class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, val startA: Int) {
     companion object {
         const val TICKS_PER_INCH = 1103.8839
     }
 
-    val turnScalar = 8272.5 / DriftOdo.TICKS_PER_INCH
-    val xTracker = -8651 / DriftOdo.TICKS_PER_INCH
+    val turnScalar: Double = 1.0
+    val xTracker: Double = 1.0
 
-    var totalYTraveled = 0.0
-    var totalXTraveled = 0.0
-    var totalHTraveled = 0.0
+//    var totalYTraveled = 0.0
+//    var totalXTraveled = 0.0
+//    var totalHTraveled = 0.0
 
     var lastLeftEncoder = 0
     var lastRightEncoder = 0
     var lastAuxEncoder = 0
 
-    private var lastRawAngle = 0.0
-
     private var currentPosition: Pose = startPose
 
     fun update(telemetry: Telemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
-        val leftDelta = (currLeftEncoder - lastLeftEncoder) / TICKS_PER_INCH
-        val rightDelta = -(currRightEncoder - lastRightEncoder) / TICKS_PER_INCH
-        val auxDelta = (currAuxEncoder - lastAuxEncoder) / TICKS_PER_INCH
+        val actualCurrLeft = currLeftEncoder - startL
+        val actualCurrRight = -(currRightEncoder - startR)
+        val actualCurrAux = currAuxEncoder - startA
 
-        telemetry.addData("left delta", (currLeftEncoder - lastLeftEncoder))
-        telemetry.addData("right delta", -(currRightEncoder - lastRightEncoder))
-        telemetry.addData("aux delta", (currAuxEncoder - lastAuxEncoder))
+        telemetry.addData("left wheel", actualCurrLeft)
+        telemetry.addData("right wheel", actualCurrRight)
+        telemetry.addData("aux wheel", actualCurrAux)
 
-        val angleIncrement = (leftDelta - rightDelta) / turnScalar
+        val lWheelDelta = (actualCurrLeft - lastLeftEncoder) / TICKS_PER_INCH
+        val rWheelDelta = (actualCurrRight - lastRightEncoder) / TICKS_PER_INCH
+        val aWheelDelta = (actualCurrAux - lastAuxEncoder) / TICKS_PER_INCH
 
-        val leftTotal = currLeftEncoder / TICKS_PER_INCH
-        val rightTotal = currRightEncoder / TICKS_PER_INCH
-        lastRawAngle = ((leftTotal - rightTotal) / turnScalar)
-        val finalAngle = lastRawAngle + startPose.h.rad
+        telemetry.addData("left delta", lWheelDelta)
+        telemetry.addData("right delta", rWheelDelta)
+        telemetry.addData("aux delta", aWheelDelta)
 
-        telemetry.addData("final angle", finalAngle.toDegrees)
+        val angleIncrement = (lWheelDelta - rWheelDelta) / turnScalar
+        telemetry.addData("angle increment", angleIncrement)
+
+
+        val leftTotal = actualCurrLeft / TICKS_PER_INCH
+        val rightTotal = actualCurrRight / TICKS_PER_INCH
+
+        telemetry.addData("left total", leftTotal)
+        telemetry.addData("right total", rightTotal)
+
+        val lastAngle = currentPosition.h
+        currentPosition.h = Angle(((leftTotal + rightTotal) / turnScalar)) + startPose.h
 
         val auxPrediction = angleIncrement * xTracker
 
-        val yDelta = (leftDelta - rightDelta) / 2.0
-        val xDelta = auxDelta - auxPrediction
+        val rX = aWheelDelta - auxPrediction
 
-        val data = ArcLocalizer.update(currentPosition, Pose(xDelta, yDelta, Angle(angleIncrement, Angle.Unit.RAD)), Angle(finalAngle).wrap(), telemetry)
+        var deltaY = (lWheelDelta - rWheelDelta) / 2.0
+        var deltaX = rX
 
-        totalXTraveled += data.deltaXVec
-        totalYTraveled += data.deltaYVec
-        totalHTraveled += angleIncrement
+//        if (angleIncrement.absoluteValue > 0) {
+//            val radiusOfMovement = (leftDelta + rightDelta) / (2 * angleIncrement)
+//            val radiusOfStrafe = auxPrediction / angleIncrement
+//
+//            deltaX = radiusOfMovement * (1 - cos(angleIncrement)) + (radiusOfStrafe * sin(angleIncrement))
+//            deltaY = (radiusOfMovement * sin(angleIncrement)) + (radiusOfStrafe * (1 - cos(angleIncrement)))
+//        }
 
-        lastLeftEncoder = currLeftEncoder
-        lastRightEncoder = currRightEncoder
-        lastAuxEncoder = currAuxEncoder
+        telemetry.addData("predicted rX", rX)
+        telemetry.addData("deltaY", deltaY)
 
-        currentPosition = data.finalPose
+        currentPosition.p.x += lastAngle.cos * deltaY + lastAngle.sin * deltaX
+        currentPosition.p.y += lastAngle.sin * deltaY - lastAngle.cos * deltaX
+
+        telemetry.addData("current position", currentPosition.x)
+        Speedometer.xDistTraveled += rX
+        Speedometer.yDistTraveled += deltaY
+
+        lastLeftEncoder = actualCurrLeft
+        lastRightEncoder = actualCurrRight
+        lastAuxEncoder = actualCurrAux
 
         return currentPosition
     }
