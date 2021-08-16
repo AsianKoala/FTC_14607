@@ -5,8 +5,10 @@ import kotlin.jvm.JvmStatic
 object KotlinTest {
     @JvmStatic
     fun main(args: Array<String>) {
-        var o = Point()
-        o.x += 100
-        println(o.toString())
+        val foo = Point(0.0, 0.0)
+        val bar = foo
+        bar.x = 10.0
+        println(foo)
+        println(bar)
     }
 }

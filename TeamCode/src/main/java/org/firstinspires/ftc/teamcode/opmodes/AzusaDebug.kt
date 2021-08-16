@@ -26,7 +26,7 @@ class AzusaDebug : AzusaDeprecated() {
             .addPoint(PathPoint("joint 1", -46.0, -10.0, 14.0))
             .addPoint(PathPoint("joint 2", -16.0, 8.0, 14.0))
             .addPoint(PathPoint("track 1", 16.0, 12.0, 14.0))
-            .addPoint(StopPathPoint("track 2", 56.0, 12.0, 14.0, Angle(0.0)))
+            .addPoint(StopPathPoint("track 2", 56.0, 12.0, 14.0, Angle(0.0, Angle.Unit.RAW)))
         return exp.build()
     }
 }

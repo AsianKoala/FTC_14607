@@ -13,18 +13,14 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         const val TICKS_PER_INCH = 1103.8839
     }
 
-    val turnScalar: Double = 1.0
-    val xTracker: Double = 1.0
-
-//    var totalYTraveled = 0.0
-//    var totalXTraveled = 0.0
-//    var totalHTraveled = 0.0
-
+    val turnScalar: Double = 16.0
+    val xTracker: Double = 4.0
+    
     var lastLeftEncoder = 0
     var lastRightEncoder = 0
     var lastAuxEncoder = 0
 
-    private var currentPosition: Pose = startPose
+    private var currentPosition: Pose = startPose.copy
 
     fun update(telemetry: Telemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
         val actualCurrLeft = currLeftEncoder - startL
@@ -46,15 +42,20 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         val angleIncrement = (lWheelDelta - rWheelDelta) / turnScalar
         telemetry.addData("angle increment", angleIncrement)
 
-
         val leftTotal = actualCurrLeft / TICKS_PER_INCH
         val rightTotal = actualCurrRight / TICKS_PER_INCH
 
         telemetry.addData("left total", leftTotal)
         telemetry.addData("right total", rightTotal)
 
-        val lastAngle = currentPosition.h
-        currentPosition.h = Angle(((leftTotal + rightTotal) / turnScalar)) + startPose.h
+        val lastAngle = currentPosition.h.copy
+        currentPosition.h = Angle(((leftTotal + rightTotal) / turnScalar), Angle.Unit.RAD) + startPose.h
+
+        telemetry.addData("last angle", lastAngle)
+        telemetry.addData("left total", leftTotal)
+        telemetry.addData("right total", rightTotal)
+
+        telemetry.addData("startpose h", startPose.h)
 
         val auxPrediction = angleIncrement * xTracker
 
@@ -77,7 +78,6 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         currentPosition.p.x += lastAngle.cos * deltaY + lastAngle.sin * deltaX
         currentPosition.p.y += lastAngle.sin * deltaY - lastAngle.cos * deltaX
 
-        telemetry.addData("current position", currentPosition.x)
         Speedometer.xDistTraveled += rX
         Speedometer.yDistTraveled += deltaY
 

@@ -62,7 +62,7 @@ object PurePursuitController {
             (target.h - curr.h).wrap().raw
         } else {
             val forward = (target.p - curr.p).atan2
-            val back = forward + Angle(PI)
+            val back = forward + Angle(PI, Angle.Unit.RAD)
             val angleToForward = (forward - curr.h).wrap()
             val angleToBack = (back - curr.h).wrap()
             val autoAngle = if (angleToForward.abs < angleToBack.abs) forward else back

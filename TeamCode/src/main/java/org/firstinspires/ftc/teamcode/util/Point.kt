@@ -6,11 +6,11 @@ import kotlin.math.hypot
 import kotlin.math.sin
 
 data class Point(
-         var x: Double,
-        @JvmField var y: Double
+    var x: Double,
+    var y: Double
 ) {
     val hypot get() = hypot(x, y)
-    val atan2 get() = Angle(atan2(y, x))
+    val atan2 get() = Angle(atan2(y, x), Angle.Unit.RAD)
     val dbNormalize get() = Point(y, -x)
     val copy get() = Point(x, y)
 

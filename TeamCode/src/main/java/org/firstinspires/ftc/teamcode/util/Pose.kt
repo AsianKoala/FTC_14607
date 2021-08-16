@@ -3,11 +3,9 @@ package org.firstinspires.ftc.teamcode.util
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 
 data class Pose(
-        @JvmField var p: Point,
-        @JvmField var h: Angle
+    var p: Point,
+    var h: Angle
 ) {
-    constructor(x: Double, y: Double, h: Angle) : this(Point(x, y), h)
-
     val x get() = p.x
     val y get() = p.y
     val cos get() = h.cos

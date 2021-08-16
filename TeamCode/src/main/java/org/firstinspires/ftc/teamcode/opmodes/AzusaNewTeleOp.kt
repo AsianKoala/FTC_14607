@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.util.Pose
 class AzusaNewTeleOp : BaseOpMode() {
 
     private var currFollowPoint: PathPoint? = null
-    override fun startPose(): Pose = Pose(Point.ORIGIN, Angle(Angle.Unit.RAD))
+    override fun startPose(): Pose = Pose(Point.ORIGIN, Angle(0f.toDouble(), Angle.Unit.RAD))
 
     override fun onLoop() {
         if (currFollowPoint != null) {

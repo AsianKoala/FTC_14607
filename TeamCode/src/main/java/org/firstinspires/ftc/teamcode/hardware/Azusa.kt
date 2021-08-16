@@ -54,8 +54,8 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
             masterBulkData.getMotorCurrentPosition(2)
         )
 
-        currPose = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
-        currVel = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
+        currPose = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
+        currVel = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
 
         driveTrain = DriveTrain(
             hwMap.get(ExpansionHubMotor::class.java, "FL"),
@@ -65,7 +65,7 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         )
         allHardware.add(driveTrain)
 
-        debugSpeeds = Pose(Point.ORIGIN, Angle(Angle.Unit.RAW))
+        debugSpeeds = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
         lastManualUpdate = System.currentTimeMillis()
         lastAutoUpdate = System.currentTimeMillis()
         pathStopped = true
@@ -113,9 +113,9 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         telemetry.addData("rs x", -gamepad.right_stick_x)
 
         val driveScale = 0.45 - if (gamepad.left_bumper) 0.2 else 0.0
-        driveTrain.powers = Pose(
+        driveTrain.powers = Pose(Point(
             gamepad.left_stick_x * driveScale,
-            -gamepad.left_stick_y * driveScale,
+            -gamepad.left_stick_y * driveScale),
             Angle(-gamepad.right_stick_x * driveScale, Angle.Unit.RAW)
         )
         driveTrain.update(telemetry)
@@ -133,7 +133,7 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
                     currPose.x + gamepad.left_stick_x.sign,
                     currPose.y - gamepad.left_stick_y.sign
                 ),
-                (currPose.h + Angle((-gamepad.right_stick_x).sign.toDouble()).times(Math.PI / 10))
+                (currPose.h + Angle((-gamepad.right_stick_x).sign.toDouble(), Angle.Unit.RAW).times(Math.PI / 10))
             )
             lastManualUpdate = System.currentTimeMillis()
         }
@@ -144,7 +144,7 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
             if (elapsed > 1) return
 
             val radius: Double = debugSpeeds.hypot
-            val theta = currPose.h + debugSpeeds.p.atan2 - Angle(Math.PI / 2)
+            val theta = currPose.h + debugSpeeds.p.atan2 - Angle(Math.PI / 2, Angle.Unit.RAW)
 
             currPose.p.x += radius * theta.cos * elapsed * 100
             currPose.p.y += radius * theta.sin * elapsed * 100
