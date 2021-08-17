@@ -100,8 +100,6 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         telemetry.addData("y", currPose.y)
         telemetry.addData("h", currPose.h.deg)
         telemetry.addData("powers", driveTrain.powers.toRawString)
-        telemetry.addData("path stopped", pathStopped)
-        telemetry.addData("debugging", debugging)
         telemetry.update()
     }
 
