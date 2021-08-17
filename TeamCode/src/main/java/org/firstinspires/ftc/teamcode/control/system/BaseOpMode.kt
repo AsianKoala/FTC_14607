@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.control.system
 import android.util.Log
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.Debuggable
@@ -18,8 +19,8 @@ abstract class BaseOpMode : TunableLinearOpMode() {
 
     private val status: Status
         get() = when {
-            isStarted -> Status.LOOP
             isStopRequested -> Status.STOP
+            isStarted -> Status.LOOP
             else -> Status.INIT_LOOP
         }
 
@@ -64,13 +65,14 @@ abstract class BaseOpMode : TunableLinearOpMode() {
             azusa.update()
             azusaTelemetry.update()
         }
-
         onStop()
+        if(opModeType == OpModeType.AUTO)
+            (internalOpModeServices as OpModeManagerImpl).initActiveOpMode("AzusaNewTeleOp")
     }
 
     open fun onInit() {}
     open fun onInitLoop() {}
     open fun onStart() {}
     abstract fun onLoop()
-    fun onStop() { Log.w("AZUSA", "IT STOPPED FAGGOT") }
+    open fun onStop() {}
 }

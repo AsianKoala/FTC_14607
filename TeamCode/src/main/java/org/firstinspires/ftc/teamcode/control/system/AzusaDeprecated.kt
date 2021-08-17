@@ -91,7 +91,7 @@ abstract class AzusaDeprecated : TunableOpMode() {
 
 //        odometry = ThreeWheelOdometry(startPose())
         currPose = startPose()
-        currVel = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
+        currVel = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
 
         frontLeft = hardwareMap.get(ExpansionHubMotor::class.java, "FL")
         frontRight = hardwareMap.get(ExpansionHubMotor::class.java, "FR")
@@ -111,7 +111,7 @@ abstract class AzusaDeprecated : TunableOpMode() {
         pathStopped = true
         type =
             if (javaClass.isAnnotationPresent(Autonomous::class.java)) OpModeType.AUTO else OpModeType.TELEOP
-        debugSpeeds = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
+        debugSpeeds = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
 
         dashboard = FtcDashboard.getInstance()
         initTime.stop()
@@ -272,7 +272,7 @@ abstract class AzusaDeprecated : TunableOpMode() {
                     currPose.x + gamepad1.left_stick_x.sign,
                     currPose.y - gamepad1.left_stick_y.sign
                 ),
-                (currPose.h + Angle((-gamepad1.right_stick_x).sign.toDouble(), Angle.Unit.RAD).times(Math.PI / 10))
+                (currPose.h + Angle((-gamepad1.right_stick_x).sign.toDouble(), AngleUnit.RAD).times(Math.PI / 10))
             )
             lastManualUpdate = System.currentTimeMillis()
         }
@@ -283,15 +283,15 @@ abstract class AzusaDeprecated : TunableOpMode() {
             if (elapsed > 1) return
 
             val radius: Double = debugSpeeds.hypot
-            val theta = currPose.h + debugSpeeds.p.atan2 - Angle(Math.PI / 2, Angle.Unit.RAD)
+            val theta = currPose.h + debugSpeeds.p.atan2 - Angle(Math.PI / 2, AngleUnit.RAD)
 
             currPose.p.x += radius * theta.cos * elapsed * 100
             currPose.p.y += radius * theta.sin * elapsed * 100
-            currPose.h += Angle(driveTrain.powers.h.raw * elapsed * 10.0 / (2 * Math.PI), Angle.Unit.RAD)
+            currPose.h += Angle(driveTrain.powers.h.raw * elapsed * 10.0 / (2 * Math.PI), AngleUnit.RAD)
 
             debugSpeeds.p.x += (Range.clip((driveTrain.powers.x - debugSpeeds.x) / 0.2, -1.0, 1.0)) * elapsed * (1.0 - elapsed)
             debugSpeeds.p.y += (Range.clip((driveTrain.powers.y - debugSpeeds.y) / 0.2, -1.0, 1.0)) * elapsed * (1.0 - elapsed)
-            debugSpeeds.h += Angle(Range.clip((driveTrain.powers.h.raw - debugSpeeds.h.raw) / 0.2, -1.0, 1.0), Angle.Unit.RAW) * elapsed * (1.0 - elapsed)
+            debugSpeeds.h += Angle(Range.clip((driveTrain.powers.h.raw - debugSpeeds.h.raw) / 0.2, -1.0, 1.0), AngleUnit.RAW) * elapsed * (1.0 - elapsed)
 
             packet.addLine(debugSpeeds.toRawString)
         }

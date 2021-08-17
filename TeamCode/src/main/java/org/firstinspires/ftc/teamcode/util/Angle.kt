@@ -5,39 +5,35 @@ import kotlin.math.* // ktlint-disable no-wildcard-imports
 
 data class Angle(
     var angle: Double,
-    var unit: Unit
+    var unit: AngleUnit
 ) {
-    enum class Unit {
-        RAD,
-        RAW
-    }
 
     private val fullCircle get() = when (unit) {
-        Unit.RAD -> PI * 2
-        Unit.RAW -> 0.0
+        AngleUnit.RAD -> PI * 2
+        AngleUnit.RAW -> 0.0
     }
 
     private val halfCircle get() = when (unit) {
-        Unit.RAD -> PI
-        Unit.RAW -> 0.0
+        AngleUnit.RAD -> PI
+        AngleUnit.RAW -> 0.0
     }
 
     val deg: Double
         get() = when (unit) {
-            Unit.RAD -> angle.toDegrees
-            Unit.RAW -> angle
+            AngleUnit.RAD -> angle.toDegrees
+            AngleUnit.RAW -> angle
         }
 
     val rad: Double
         get() = when (unit) {
-            Unit.RAD -> angle
-            Unit.RAW -> angle
+            AngleUnit.RAD -> angle
+            AngleUnit.RAW -> angle
         }
 
     val raw: Double
         get() = when (unit) {
-            Unit.RAD -> angle
-            Unit.RAW -> angle
+            AngleUnit.RAD -> angle
+            AngleUnit.RAW -> angle
         }
 
     val cos = cos(angle)
@@ -56,15 +52,15 @@ data class Angle(
     }
 
     operator fun plus(other: Angle) = when (unit) {
-        Unit.RAD -> Angle(rad + other.rad, unit).wrap()
-        Unit.RAW -> Angle(raw + other.raw, unit)
+        AngleUnit.RAD -> Angle(rad + other.rad, unit).wrap()
+        AngleUnit.RAW -> Angle(raw + other.raw, unit)
     }
 
     operator fun minus(other: Angle) = plus(other.unaryMinus())
 
     operator fun unaryMinus() = when (unit) {
-        Unit.RAD -> Angle(-rad, unit).wrap()
-        Unit.RAW -> Angle(-raw, unit)
+        AngleUnit.RAD -> Angle(-rad, unit).wrap()
+        AngleUnit.RAW -> Angle(-raw, unit)
     }
 
     operator fun times(scalar: Double) = Angle(angle * scalar, unit)

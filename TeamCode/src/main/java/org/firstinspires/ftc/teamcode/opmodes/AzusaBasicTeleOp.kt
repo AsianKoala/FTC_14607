@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.AngleUnit
 import org.firstinspires.ftc.teamcode.util.Point
 import org.firstinspires.ftc.teamcode.util.Pose
 import org.openftc.revextensions2.ExpansionHubMotor
@@ -34,7 +35,7 @@ class AzusaBasicTeleOp : OpMode() {
                 -gamepad1.left_stick_x * driveScale,
                 gamepad1.left_stick_y * driveScale
             ),
-            Angle(-gamepad1.right_stick_x * driveScale, Angle.Unit.RAW)
+            Angle(-gamepad1.right_stick_x * driveScale, AngleUnit.RAW)
         )
 //        driveTrain.update()
     }

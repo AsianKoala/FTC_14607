@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.util
 
+import com.qualcomm.robotcore.util.Range
 import kotlin.math.* // ktlint-disable no-wildcard-imports
 
 object MathUtil {
@@ -16,9 +17,11 @@ object MathUtil {
         }
     }
 
+    fun Double.clip(a: Double) = Range.clip(this, -a, a)
+
     // always remember the phrase "degrees is for brainlets!"
     // (i made that phrase up)
-    val Double.wrap get() = Angle(this, Angle.Unit.RAD).wrap().rad
+    val Double.wrap get() = Angle(this, AngleUnit.RAD).wrap().rad
 
     fun rotatePoint(p: Point, h: Angle) = Point(
         h.cos * p.y + h.sin * p.x,

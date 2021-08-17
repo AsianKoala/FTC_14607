@@ -16,7 +16,7 @@ abstract class BaseAuto : BaseOpMode() {
 
     override fun onLoop() {
         if (!pathCache.isEmpty()) {
-            pathCache.follow(azusa)
+            pathCache.follow(azusa, 0.3)
         } else {
             azusa.driveTrain.setZeroPowers()
             requestOpModeStop()

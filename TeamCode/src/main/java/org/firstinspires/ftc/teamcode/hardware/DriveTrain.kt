@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware
 
 import com.qualcomm.robotcore.hardware.DcMotor
-import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
-import org.firstinspires.ftc.teamcode.util.Point
-import org.firstinspires.ftc.teamcode.util.Pose
+import org.firstinspires.ftc.teamcode.util.*
 import org.openftc.revextensions2.ExpansionHubMotor
 import kotlin.math.absoluteValue
 
@@ -37,7 +34,7 @@ class DriveTrain(
     }
 
     fun setZeroPowers() {
-        powers = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
+        powers = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
     }
 
     init {
@@ -45,6 +42,6 @@ class DriveTrain(
             m.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             m.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         }
-        powers = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
+        powers = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
     }
 }

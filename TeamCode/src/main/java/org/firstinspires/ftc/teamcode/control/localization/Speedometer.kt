@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.AngleUnit
 import org.firstinspires.ftc.teamcode.util.MathUtil.epsilonEquals
 import org.firstinspires.ftc.teamcode.util.Point
 import org.firstinspires.ftc.teamcode.util.Pose
@@ -14,8 +15,8 @@ object Speedometer {
     var xDistTraveled = 0.0
     var yDistTraveled = 0.0
 
-    var lastAngle = Angle(0.0, Angle.Unit.RAD)
-    var angularVel = Angle(0.0, Angle.Unit.RAD)
+    var lastAngle = Angle(0.0, AngleUnit.RAD)
+    var angularVel = Angle(0.0, AngleUnit.RAD)
 
     fun update(h: Angle): Pose {
         val currTime = System.currentTimeMillis()

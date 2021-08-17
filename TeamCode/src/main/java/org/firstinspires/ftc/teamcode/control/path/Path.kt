@@ -26,7 +26,7 @@ class Path(
         firstFinish = false
     }
 
-    fun follow(azusa: Azusa) {
+    fun follow(azusa: Azusa, moveSpeed: Double) {
         val target = first
         val currPose = azusa.currPose
         var skip: Boolean
@@ -62,7 +62,7 @@ class Path(
                 }
                 if (currAction is Functions.InterruptFunction) {
                     interrupting = true
-                    this.follow(azusa)
+                    this.follow(azusa, moveSpeed)
                     return
                 }
             }
@@ -70,11 +70,11 @@ class Path(
         if (isEmpty()) return
 
         if (target is StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
-            PurePursuitController.goToPosition(azusa, target)
+            PurePursuitController.goToPosition(azusa, target, moveSpeed)
         } else if (target is OnlyTurnPoint) {
-            PurePursuitController.goToPosition(azusa, target)
+            PurePursuitController.goToPosition(azusa, target, moveSpeed)
         } else {
-            PurePursuitController.followPath(azusa, curr, target)
+            PurePursuitController.followPath(azusa, curr, target, moveSpeed)
         }
     }
 
