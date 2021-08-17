@@ -2,13 +2,18 @@ package org.firstinspires.ftc.teamcode.hardware
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
+import com.qualcomm.hardware.bosch.BNO055IMU
+import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 import org.firstinspires.ftc.teamcode.control.localization.Speedometer
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
 import org.firstinspires.ftc.teamcode.util.*
+import org.firstinspires.ftc.teamcode.util.MathUtil.toDegrees
+import org.firstinspires.ftc.teamcode.util.MathUtil.wrap
 import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
@@ -25,6 +30,9 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
     lateinit var masterBulkData: RevBulkData
 
     lateinit var odometry: ThreeWheelOdometry
+
+    lateinit var imu: BNO055IMU
+    var headingOffset: Double = 0.0
 
     lateinit var driveTrain: DriveTrain
     lateinit var allHardware: ArrayList<Hardware>
@@ -53,6 +61,13 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
             masterBulkData.getMotorCurrentPosition(3),
             masterBulkData.getMotorCurrentPosition(2)
         )
+
+        imu = hwMap.get(BNO055IMUImpl::class.java, "imu")
+        val parameters = BNO055IMU.Parameters()
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS
+        parameters.loggingEnabled = false
+        imu.initialize(parameters)
+        headingOffset = imu.angularOrientation.firstAngle.toDouble()
 
         currPose = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
         currVel = Pose(Point.ORIGIN, Angle(0.0, Angle.Unit.RAW))
@@ -91,13 +106,19 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
     }
 
     private fun updateOdo() {
-        masterBulkData = masterHub.bulkInputData
+        if(masterHub.bulkInputData != null) {
+            masterBulkData = masterHub.bulkInputData
+        }
+
+        val lastHeading = (imu.angularOrientation.firstAngle - headingOffset).wrap.toDegrees
+        telemetry.addData("imu heading", lastHeading)
 
         currPose = odometry.update(
             telemetry,
             masterBulkData.getMotorCurrentPosition(1),
             masterBulkData.getMotorCurrentPosition(3),
-            masterBulkData.getMotorCurrentPosition(2)
+            masterBulkData.getMotorCurrentPosition(2),
+                lastHeading
         )
 
         currVel = Speedometer.update(currPose.h)
@@ -107,12 +128,12 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         allHardware.forEach { it.update(telemetry) }
     }
 
-    fun teleopControl(gamepad: Gamepad) {
+    fun teleopControl(gamepad: Gamepad, driveScale: Double) {
         telemetry.addData("ls x", gamepad.left_stick_x)
         telemetry.addData("ls y", -gamepad.left_stick_y)
         telemetry.addData("rs x", -gamepad.right_stick_x)
 
-        val driveScale = 0.45 - if (gamepad.left_bumper) 0.2 else 0.0
+//        val driveScale = 0.45 - if (gamepad.left_bumper) 0.2 else 0.0
         driveTrain.powers = Pose(Point(
             gamepad.left_stick_x * driveScale,
             -gamepad.left_stick_y * driveScale),

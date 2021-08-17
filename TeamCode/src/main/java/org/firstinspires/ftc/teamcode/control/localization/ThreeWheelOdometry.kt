@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.control.localization
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.MathUtil.toDegrees
 import org.firstinspires.ftc.teamcode.util.Pose
 import kotlin.math.cos
 import kotlin.math.sin
@@ -13,7 +14,7 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         const val TICKS_PER_INCH = 1103.8839
     }
 
-    val turnScalar: Double = 18.44
+    val turnScalar: Double = 15.17778
     val xTracker: Double = 4.0
 
     var lastLeftEncoder = 0
@@ -22,10 +23,10 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
 
     private var currentPosition: Pose = startPose.copy
 
-    fun update(telemetry: Telemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
+    fun update(telemetry: Telemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int, imuH: Double): Pose {
         val actualCurrLeft = -(currLeftEncoder - startL)
-        val actualCurrRight = currRightEncoder - startR
-        val actualCurrAux = currAuxEncoder - startA
+        val actualCurrRight = (currRightEncoder - startR)
+        val actualCurrAux = (currAuxEncoder - startA)
 
         telemetry.addData("left wheel", actualCurrLeft)
         telemetry.addData("right wheel", actualCurrRight)
@@ -39,8 +40,8 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         telemetry.addData("right delta", rWheelDelta)
         telemetry.addData("aux delta", aWheelDelta)
 
-        val angleIncrement = (lWheelDelta - rWheelDelta) / turnScalar
-        telemetry.addData("angle increment", angleIncrement)
+        val angleIncrement = (lWheelDelta - rWheelDelta) * turnScalar
+//        telemetry.addData("angle increment", angleIncrement)
 
         val leftTotal = actualCurrLeft / TICKS_PER_INCH
         val rightTotal = actualCurrRight / TICKS_PER_INCH
@@ -49,13 +50,7 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         telemetry.addData("right total", rightTotal)
 
         val lastAngle = currentPosition.h.copy
-        currentPosition.h = -Angle(((leftTotal + rightTotal) * turnScalar), Angle.Unit.RAD) + startPose.h
-
-        telemetry.addData("last angle", lastAngle)
-        telemetry.addData("left total", leftTotal)
-        telemetry.addData("right total", rightTotal)
-
-        telemetry.addData("startpose h", startPose.h)
+        currentPosition.h = -Angle(((leftTotal - rightTotal) / turnScalar), Angle.Unit.RAD) + startPose.h
 
         val auxPrediction = angleIncrement * xTracker
 
@@ -72,8 +67,8 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
 //            deltaY = (radiusOfMovement * sin(angleIncrement)) + (radiusOfStrafe * (1 - cos(angleIncrement)))
 //        }
 
-        telemetry.addData("predicted rX", rX)
-        telemetry.addData("deltaY", deltaY)
+//        telemetry.addData("predicted rX", rX)
+//        telemetry.addData("deltaY", deltaY)
 
         currentPosition.p.x += lastAngle.cos * deltaY + lastAngle.sin * deltaX
         currentPosition.p.y += lastAngle.sin * deltaY - lastAngle.cos * deltaX
@@ -85,6 +80,15 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         lastRightEncoder = actualCurrRight
         lastAuxEncoder = actualCurrAux
 
+
+        val bestCoefficient = (imuH / currentPosition.h.angle)
+        telemetry.addData("currH", currentPosition.h.angle)
+        telemetry.addData("best coefficient", bestCoefficient)
+
         return currentPosition
     }
+    // 0.88359
+    // 0.84867
+    // 0.81807
+    //
 }

@@ -18,7 +18,7 @@ class AzusaNewTeleOp : BaseOpMode() {
         if (currFollowPoint != null) {
             PurePursuitController.goToPosition(azusa, currFollowPoint!!)
         } else {
-            azusa.teleopControl(gamepad1)
+            azusa.teleopControl(gamepad1, 0.25)
         }
     }
 }
