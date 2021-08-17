@@ -16,13 +16,13 @@ import kotlin.math.PI
 class AzusaExtAuto : BaseAuto() {
     override fun initialPath(): Path {
         return PathBuilder("main path")
-                .addPoint(PathPoint("first", 16.0, 16.0, 8.0))
-                .addPoint(PathPoint("waterbottle upbend", 20.0, 28.0, 8.0))
-                .addPoint(PathPoint("peak", 28.0, 36.0, 8.0))
-                .addPoint(PathPoint("waterbottle downbend", 34.0, 28.0, 8.0))
-                .addPoint(PathPoint("waterbottle downbend 2", 32.0, 18.0, 8.0))
-                .addPoint(PathPoint("smoother 1", 25.0, 10.0, 8.0))
-                .addPoint(StopPathPoint("smoother 2", 18.0, 5.0, 8.0, Angle(PI, AngleUnit.RAD))).build()
+            .addPoint(PathPoint("first", 16.0, 16.0, 8.0))
+            .addPoint(PathPoint("waterbottle upbend", 20.0, 28.0, 8.0))
+            .addPoint(PathPoint("peak", 28.0, 36.0, 8.0))
+            .addPoint(PathPoint("waterbottle downbend", 34.0, 28.0, 8.0))
+            .addPoint(PathPoint("waterbottle downbend 2", 32.0, 18.0, 8.0))
+            .addPoint(PathPoint("smoother 1", 25.0, 10.0, 8.0))
+            .addPoint(StopPathPoint("smoother 2", 18.0, 5.0, 8.0, Angle(PI, AngleUnit.RAD))).build()
     }
 
     override fun startPose(): Pose = Pose(Point.ORIGIN, Angle(PI / 2, AngleUnit.RAD))

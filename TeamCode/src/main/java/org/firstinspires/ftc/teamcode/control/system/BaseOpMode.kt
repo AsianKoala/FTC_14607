@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.system
 
-import android.util.Log
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl
@@ -66,7 +65,7 @@ abstract class BaseOpMode : TunableLinearOpMode() {
             azusaTelemetry.update()
         }
         onStop()
-        if(opModeType == OpModeType.AUTO)
+        if (opModeType == OpModeType.AUTO)
             (internalOpModeServices as OpModeManagerImpl).initActiveOpMode("AzusaNewTeleOp")
     }
 

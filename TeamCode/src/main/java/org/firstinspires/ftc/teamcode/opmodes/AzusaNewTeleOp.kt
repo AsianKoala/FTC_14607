@@ -16,11 +16,11 @@ class AzusaNewTeleOp : BaseOpMode() {
     override fun startPose(): Pose = Pose(Point.ORIGIN, Angle(PI / 2, AngleUnit.RAD))
 
     override fun onLoop() {
-       if(gamepad1.right_trigger > 0.4) {
-           PurePursuitController.goToPosition(azusa, StopPathPoint("stop", 24.0, 24.0, 8.0, Angle(PI + PI / 4, AngleUnit.RAD)), 0.3)
-       } else {
-           azusa.teleopControl(gamepad1, 0.3)
-       }
+        if (gamepad1.right_trigger > 0.4) {
+            PurePursuitController.goToPosition(azusa, StopPathPoint("stop", 24.0, 24.0, 8.0, Angle(PI + PI / 4, AngleUnit.RAD)), 0.3)
+        } else {
+            azusa.teleopControl(gamepad1, 0.3)
+        }
     }
 }
-//54-1964039
+// 54-1964039

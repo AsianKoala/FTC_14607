@@ -19,11 +19,9 @@ class AzusaNewAuto : BaseOpMode() {
 
     fun getPath(): Path {
         return PathBuilder("path")
-                .addPoint(PathPoint("diag", 24.0, 24.0, 8.0))
-                .addPoint(PathPoint()).build()
+            .addPoint(PathPoint("diag", 24.0, 24.0, 8.0))
+            .addPoint(PathPoint()).build()
     }
-
-
 
     override fun onLoop() {
         PurePursuitController.goToPosition(azusa, StopPathPoint("final", 24.0, 24.0, 8.0, Angle(PI + PI / 4, AngleUnit.RAD)), 0.3)
