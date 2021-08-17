@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware
 
 import com.qualcomm.robotcore.hardware.DcMotor
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.Point

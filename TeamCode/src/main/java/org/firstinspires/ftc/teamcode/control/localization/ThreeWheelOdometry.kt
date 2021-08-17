@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
 import com.acmerobotics.dashboard.config.Config
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.Pose
@@ -31,10 +30,6 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         val actualCurrRight = (currRightEncoder - startR)
         val actualCurrAux = (currAuxEncoder - startA)
 
-        azuTelemetry.addData("left wheel", actualCurrLeft)
-        azuTelemetry.addData("right wheel", actualCurrRight)
-        azuTelemetry.addData("aux wheel", actualCurrAux)
-
         val lWheelDelta = (actualCurrLeft - lastLeftEncoder) / TICKS_PER_INCH
         val rWheelDelta = (actualCurrRight - lastRightEncoder) / TICKS_PER_INCH
         val aWheelDelta = (actualCurrAux - lastAuxEncoder) / TICKS_PER_INCH
@@ -42,16 +37,12 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         val leftTotal = actualCurrLeft / TICKS_PER_INCH
         val rightTotal = actualCurrRight / TICKS_PER_INCH
 
-        azuTelemetry.addData("left total", leftTotal)
-        azuTelemetry.addData("right total", rightTotal)
-
         val lastAngle = currentPosition.h.copy
         currentPosition.h = -Angle(((leftTotal - rightTotal) / turnScalar), Angle.Unit.RAD) + startPose.h
 
         val angleIncrement = (lWheelDelta - rWheelDelta) / turnScalar
         val auxPrediction = angleIncrement * auxTracker
         val rX = aWheelDelta - auxPrediction
-
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX
@@ -64,8 +55,8 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
             deltaY = (radiusOfMovement * sin(angleIncrement)) + (radiusOfStrafe * (1 - cos(angleIncrement)))
         }
 
-        currentPosition.p.x += lastAngle.cos * deltaY + lastAngle.sin * deltaX
-        currentPosition.p.y += lastAngle.sin * deltaY - lastAngle.cos * deltaX
+        currentPosition.p.x += lastAngle.cos * deltaY - lastAngle.sin * deltaX
+        currentPosition.p.y += lastAngle.sin * deltaY + lastAngle.cos * deltaX
 
         Speedometer.xDistTraveled += rX
         Speedometer.yDistTraveled += deltaY

@@ -72,5 +72,5 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     open fun onInitLoop() {}
     open fun onStart() {}
     abstract fun onLoop()
-    fun onStop() { Log.w("AZUSA", "IT STOPPED FAGGOT")}
+    fun onStop() { Log.w("AZUSA", "IT STOPPED FAGGOT") }
 }

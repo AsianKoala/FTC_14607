@@ -60,6 +60,9 @@ object PurePursuitController {
         pointDeltas.y = Range.clip(pointDeltas.y, -moveSpeed, moveSpeed)
         dh = Range.clip(dh, -moveSpeed, moveSpeed)
 
+        val (x, y) = target.p.dbNormalize
+        azusa.azuTelemetry.fieldOverlay().fillCircle(x, y, 3.0)
+
         azusa.driveTrain.powers = Pose(pointDeltas, Angle(dh, Angle.Unit.RAW))
     }
 

@@ -71,7 +71,7 @@ class Path(
 
         if (target is StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
             PurePursuitController.goToPosition(azusa, target)
-        } else if(target is OnlyTurnPoint) {
+        } else if (target is OnlyTurnPoint) {
             PurePursuitController.goToPosition(azusa, target)
         } else {
             PurePursuitController.followPath(azusa, curr, target)

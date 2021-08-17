@@ -29,9 +29,11 @@ class AzusaBasicTeleOp : OpMode() {
 
     override fun loop() {
         val driveScale = 0.65 - if (gamepad1.left_bumper) 0.3 else 0.0
-        driveTrain.powers = Pose(Point(
-            -gamepad1.left_stick_x * driveScale,
-            gamepad1.left_stick_y * driveScale),
+        driveTrain.powers = Pose(
+            Point(
+                -gamepad1.left_stick_x * driveScale,
+                gamepad1.left_stick_y * driveScale
+            ),
             Angle(-gamepad1.right_stick_x * driveScale, Angle.Unit.RAW)
         )
 //        driveTrain.update()

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.util
 
 import org.firstinspires.ftc.teamcode.util.MathUtil.toDegrees
-import org.firstinspires.ftc.teamcode.util.MathUtil.toRadians
 import kotlin.math.* // ktlint-disable no-wildcard-imports
 
 data class Angle(
