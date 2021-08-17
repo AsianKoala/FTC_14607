@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.control.localization
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.Pose
 import kotlin.math.absoluteValue
 import kotlin.math.cos
@@ -25,28 +26,24 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
 
     var totalAuxTracker: Double = 0.0
 
-    fun update(telemetry: Telemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int, imuH: Double): Pose {
+    fun update(azuTelemetry: AzusaTelemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
         val actualCurrLeft = -(currLeftEncoder - startL)
         val actualCurrRight = (currRightEncoder - startR)
         val actualCurrAux = (currAuxEncoder - startA)
 
-        telemetry.addData("left wheel", actualCurrLeft)
-        telemetry.addData("right wheel", actualCurrRight)
-        telemetry.addData("aux wheel", actualCurrAux)
+        azuTelemetry.addData("left wheel", actualCurrLeft)
+        azuTelemetry.addData("right wheel", actualCurrRight)
+        azuTelemetry.addData("aux wheel", actualCurrAux)
 
         val lWheelDelta = (actualCurrLeft - lastLeftEncoder) / TICKS_PER_INCH
         val rWheelDelta = (actualCurrRight - lastRightEncoder) / TICKS_PER_INCH
         val aWheelDelta = (actualCurrAux - lastAuxEncoder) / TICKS_PER_INCH
 
-        telemetry.addData("left delta", lWheelDelta)
-        telemetry.addData("right delta", rWheelDelta)
-        telemetry.addData("aux delta", aWheelDelta)
-
         val leftTotal = actualCurrLeft / TICKS_PER_INCH
         val rightTotal = actualCurrRight / TICKS_PER_INCH
 
-        telemetry.addData("left total", leftTotal)
-        telemetry.addData("right total", rightTotal)
+        azuTelemetry.addData("left total", leftTotal)
+        azuTelemetry.addData("right total", rightTotal)
 
         val lastAngle = currentPosition.h.copy
         currentPosition.h = -Angle(((leftTotal - rightTotal) / turnScalar), Angle.Unit.RAD) + startPose.h
@@ -55,8 +52,6 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         val auxPrediction = angleIncrement * auxTracker
         val rX = aWheelDelta - auxPrediction
 
-        totalAuxTracker += auxPrediction
-        telemetry.addData("total aux - tracker", actualCurrAux - totalAuxTracker * TICKS_PER_INCH)
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX
@@ -78,8 +73,6 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         lastLeftEncoder = actualCurrLeft
         lastRightEncoder = actualCurrRight
         lastAuxEncoder = actualCurrAux
-
-        telemetry.addData("encoder ticks per degree", currentPosition.h)
 
         return currentPosition
     }

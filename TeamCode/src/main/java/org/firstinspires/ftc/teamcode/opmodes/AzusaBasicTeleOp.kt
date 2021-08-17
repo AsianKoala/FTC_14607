@@ -34,6 +34,6 @@ class AzusaBasicTeleOp : OpMode() {
             gamepad1.left_stick_y * driveScale),
             Angle(-gamepad1.right_stick_x * driveScale, Angle.Unit.RAW)
         )
-        driveTrain.update(telemetry)
+//        driveTrain.update()
     }
 }

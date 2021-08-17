@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.control.system
 
+import android.util.Log
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
 import org.firstinspires.ftc.teamcode.hardware.Azusa
+import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.Debuggable
 import org.firstinspires.ftc.teamcode.util.OpModeType
 import org.firstinspires.ftc.teamcode.util.Pose
@@ -11,6 +13,8 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     abstract fun startPose(): Pose
 
     lateinit var azusa: Azusa
+
+    lateinit var azusaTelemetry: AzusaTelemetry
 
     private val status: Status
         get() = when {
@@ -27,6 +31,7 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     override fun runOpMode() {
         debugging = javaClass.isAnnotationPresent(Debuggable::class.java)
 
+        azusaTelemetry = AzusaTelemetry(this)
         azusa = Azusa(startPose(), debugging)
 
         opModeType = when (javaClass.isAnnotationPresent(Autonomous::class.java)) {
@@ -34,10 +39,8 @@ abstract class BaseOpMode : TunableLinearOpMode() {
             false -> OpModeType.TELEOP
         }
 
-        azusa.init(hardwareMap, telemetry)
+        azusa.init(hardwareMap, azusaTelemetry)
         onInit()
-
-        telemetry.update()
 
         mainLoop@ while (true) {
             when (status) {
@@ -59,6 +62,7 @@ abstract class BaseOpMode : TunableLinearOpMode() {
                 }
             }
             azusa.update()
+            azusaTelemetry.update()
         }
 
         onStop()
@@ -68,5 +72,5 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     open fun onInitLoop() {}
     open fun onStart() {}
     abstract fun onLoop()
-    open fun onStop() {}
+    fun onStop() { Log.w("AZUSA", "IT STOPPED FAGGOT")}
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.controllers
 
+import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.path.LockedPathPoint
 import org.firstinspires.ftc.teamcode.control.path.PathPoint
 import org.firstinspires.ftc.teamcode.control.path.StopPathPoint
@@ -51,9 +52,14 @@ object PurePursuitController {
         }
     }
 
-    fun gunToPosition(azusa: Azusa, target: PathPoint) {
+    fun gunToPosition(azusa: Azusa, target: PathPoint, moveSpeed: Double) {
         val pointDeltas = relVals(azusa.currPose, target).p / 12.0
-        val dh = getDeltaH(azusa.currPose, target) / 35.0.toRadians
+        var dh = getDeltaH(azusa.currPose, target) / 60.0.toRadians
+
+        pointDeltas.x = Range.clip(pointDeltas.x, -moveSpeed, moveSpeed)
+        pointDeltas.y = Range.clip(pointDeltas.y, -moveSpeed, moveSpeed)
+        dh = Range.clip(dh, -moveSpeed, moveSpeed)
+
         azusa.driveTrain.powers = Pose(pointDeltas, Angle(dh, Angle.Unit.RAW))
     }
 
@@ -76,7 +82,7 @@ object PurePursuitController {
         val followPoint = end.copy
         followPoint.p.x = x
         followPoint.p.y = y
-        azusa.packet.fieldOverlay()
+        azusa.azuTelemetry.fieldOverlay()
             .setFill("white")
             .fillCircle(followPoint.p.dbNormalize.x, followPoint.p.dbNormalize.y, 2.0)
         goToPosition(azusa, followPoint)

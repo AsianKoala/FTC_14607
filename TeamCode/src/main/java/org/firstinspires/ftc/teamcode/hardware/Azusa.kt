@@ -38,17 +38,16 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
     lateinit var allHardware: ArrayList<Hardware>
 
     lateinit var dashboard: FtcDashboard
-    lateinit var packet: DataPacket
 
     private var lastManualUpdate: Long = 0
     private var lastAutoUpdate: Long = 0
     private var pathStopped = false
     private lateinit var debugSpeeds: Pose
 
-    lateinit var telemetry: Telemetry
+    lateinit var azuTelemetry: AzusaTelemetry
 
-    fun init(hwMap: HardwareMap, telemetry: Telemetry) {
-        this.telemetry = telemetry
+    fun init(hwMap: HardwareMap, telemetry: AzusaTelemetry) {
+        azuTelemetry = telemetry
 
         allHardware = ArrayList()
 
@@ -86,7 +85,6 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         pathStopped = true
 
         dashboard = FtcDashboard.getInstance()
-        packet = DataPacket()
     }
 
     fun update() {
@@ -96,11 +94,20 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
     }
 
     private fun updateTelemetry() {
-        telemetry.addData("x", currPose.x)
-        telemetry.addData("y", currPose.y)
-        telemetry.addData("h", currPose.h.deg)
-        telemetry.addData("powers", driveTrain.powers.toRawString)
-        telemetry.update()
+        azuTelemetry.addData("x", currPose.x)
+        azuTelemetry.addData("y", currPose.y)
+        azuTelemetry.addData("h", currPose.h.deg)
+        azuTelemetry.addData("powers", driveTrain.powers.toRawString)
+
+        val (x, y) = currPose.p.dbNormalize
+        azuTelemetry.fieldOverlay()
+                .setFill("blue")
+                .fillCircle(x, y, 3.0)
+                .setStroke("purple")
+                .setStrokeWidth(1)
+                .strokeLine(
+                        x, y, x + 10 * currPose.h.sin, y - 10 * currPose.h.cos
+                )
     }
 
     private fun updateOdo() {
@@ -109,27 +116,26 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         }
 
         val lastHeading = (imu.angularOrientation.firstAngle - headingOffset).wrap.toDegrees
-        telemetry.addData("imu heading", lastHeading)
+        azuTelemetry.addData("imu heading", lastHeading)
 
         currPose = odometry.update(
-            telemetry,
+                azuTelemetry,
             masterBulkData.getMotorCurrentPosition(1),
             masterBulkData.getMotorCurrentPosition(3),
-            masterBulkData.getMotorCurrentPosition(2),
-                lastHeading
+            masterBulkData.getMotorCurrentPosition(2)
         )
 
         currVel = Speedometer.update(currPose.h)
     }
 
     private fun updateHW() {
-        allHardware.forEach { it.update(telemetry) }
+        allHardware.forEach { it.update(azuTelemetry) }
     }
 
     fun teleopControl(gamepad: Gamepad, driveScale: Double) {
-        telemetry.addData("ls x", gamepad.left_stick_x)
-        telemetry.addData("ls y", -gamepad.left_stick_y)
-        telemetry.addData("rs x", -gamepad.right_stick_x)
+        azuTelemetry.addData("ls x", gamepad.left_stick_x)
+        azuTelemetry.addData("ls y", -gamepad.left_stick_y)
+        azuTelemetry.addData("rs x", -gamepad.right_stick_x)
 
 //        val driveScale = 0.45 - if (gamepad.left_bumper) 0.2 else 0.0
         driveTrain.powers = Pose(Point(
@@ -137,7 +143,7 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
             -gamepad.left_stick_y * driveScale),
             Angle(-gamepad.right_stick_x * driveScale, Angle.Unit.RAW)
         )
-        driveTrain.update(telemetry)
+        driveTrain.update(azuTelemetry)
     }
 
     fun debugControl(gamepad: Gamepad) {
@@ -173,7 +179,6 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
             debugSpeeds.p.y += (Range.clip((driveTrain.powers.y - debugSpeeds.y) / 0.2, -1.0, 1.0)) * elapsed * (1.0 - elapsed)
             debugSpeeds.h += Angle(Range.clip((driveTrain.powers.h.raw - debugSpeeds.h.raw) / 0.2, -1.0, 1.0), Angle.Unit.RAW) * elapsed * (1.0 - elapsed)
 
-            packet.addLine(debugSpeeds.toRawString)
         }
     }
 }

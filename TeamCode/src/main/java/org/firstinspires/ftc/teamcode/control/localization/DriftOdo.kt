@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.util.Point
 import org.firstinspires.ftc.teamcode.util.Pose
 import org.openftc.revextensions2.RevBulkData
 
+@Deprecated("in favor of ThreeWheelOdometry")
 class DriftOdo(start: Pose) {
     companion object {
         const val TICKS_PER_INCH = 1103.8839
@@ -42,10 +43,10 @@ class DriftOdo(start: Pose) {
         )
         currentPosition.h = (heading + startHeading).wrap()
 
-        azusa.telemetry.addData("curr", currWheels)
-        azusa.telemetry.addData("corrected", correctedDeltas)
-        azusa.telemetry.addData("delta H", deltaAngle)
-        azusa.telemetry.addData("prev wheels", prevWheels)
+        azusa.azuTelemetry.addData("curr", currWheels)
+        azusa.azuTelemetry.addData("corrected", correctedDeltas)
+        azusa.azuTelemetry.addData("delta H", deltaAngle)
+        azusa.azuTelemetry.addData("prev wheels", prevWheels)
 
         prevWheels = currWheels
         prevHeading = currentPosition.h

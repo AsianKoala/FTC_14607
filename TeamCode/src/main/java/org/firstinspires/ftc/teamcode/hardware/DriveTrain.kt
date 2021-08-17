@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.hardware
 import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.util.Angle
+import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.Point
 import org.firstinspires.ftc.teamcode.util.Pose
 import org.openftc.revextensions2.ExpansionHubMotor
@@ -18,7 +19,7 @@ class DriveTrain(
     var powers: Pose
     private val motors = arrayOf(frontLeft, frontRight, backLeft, backRight)
 
-    override fun update(telemetry: Telemetry) {
+    override fun update(azuTelemetry: AzusaTelemetry) {
         val rawFrontLeft: Double = -powers.y - powers.x + powers.h.raw
         val rawFrontRight: Double = powers.y - powers.x + powers.h.raw
         val rawBackLeft: Double = -powers.y + powers.x + powers.h.raw
