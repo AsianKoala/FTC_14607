@@ -24,7 +24,7 @@ object PurePursuitController {
 
     fun goToPosition(azusa: Azusa, target: Waypoint, moveSpeed: Double) {
         val pointDeltas = relVals(azusa.currPose, target).p / 12.0
-        var dh = getDeltaH(azusa.currPose, target) / 60.0.toRadians
+        var dh = getDeltaH(azusa.currPose, target) / 35.0.toRadians
 
         pointDeltas.x = Range.clip(pointDeltas.x, -moveSpeed, moveSpeed)
         pointDeltas.y = Range.clip(pointDeltas.y, -moveSpeed, moveSpeed)

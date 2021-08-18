@@ -7,14 +7,14 @@ import kotlin.collections.ArrayList
 class Path(
     var waypoints: ArrayList<Waypoint>,
 ) {
-    var currWaypoint: Int
+    private var currWaypoint: Int
     private var interrupting: Boolean
 
     fun follow(azusa: Azusa, moveSpeed: Double) {
         val currPose = azusa.currPose
 
         if (interrupting) {
-            val advance = (waypoints.get(currWaypoint).func as Functions.InterruptFunction).run(azusa, this)
+            val advance = (waypoints[currWaypoint].func as Functions.InterruptFunction).run(azusa, this)
             if (advance)
                 interrupting = false
             else return
@@ -23,7 +23,7 @@ class Path(
         var skip: Boolean
         do {
             skip = false
-            val target = waypoints.get(currWaypoint + 1)
+            val target = waypoints[currWaypoint + 1]
 
             if (target is StopWaypoint) {
                 if (currPose.distance(target) < 0.8)
@@ -36,7 +36,7 @@ class Path(
                     skip = true
             }
 
-            var currAction = waypoints.get(currWaypoint).func
+            var currAction = waypoints[currWaypoint].func
             if (currAction is Functions.RepeatFunction) {
                 currAction.run(azusa, this)
             } else if (currAction is Functions.LoopUntilFunction) {
@@ -46,7 +46,7 @@ class Path(
             if (skip) {
                 currWaypoint++
 
-                currAction = waypoints.get(currWaypoint).func
+                currAction = waypoints[currWaypoint].func
                 if (currAction is Functions.SimpleFunction) {
                     currAction.run(azusa, this)
                 }
@@ -59,14 +59,14 @@ class Path(
         } while (skip && currWaypoint < waypoints.size - 1)
         if (finished()) return
 
-        val target = waypoints.get(currWaypoint + 1)
+        val target = waypoints[currWaypoint + 1]
 
         if (target is StopWaypoint && azusa.currPose.distance(target) < target.followDistance) {
             PurePursuitController.goToPosition(azusa, target, moveSpeed)
         } else if (target is PointTurnWaypoint) {
             PurePursuitController.goToPosition(azusa, target, moveSpeed)
         } else {
-            PurePursuitController.followPath(azusa, waypoints.get(currWaypoint), target, moveSpeed)
+            PurePursuitController.followPath(azusa, waypoints[currWaypoint], target, moveSpeed)
         }
     }
 

@@ -14,17 +14,27 @@ import kotlin.math.PI
 
 @Autonomous
 class AzusaExtAuto : BaseAuto() {
+    override fun startPose(): Pose = Pose(Point(88.0, 88.0), Angle(PI, AngleUnit.RAD))
+
     override fun initialPath(): Path {
         return PathBuilder()
-            .addPoint(Waypoint("start", startPose().x, startPose().y, 0.0))
-            .addPoint(Waypoint("forward", 18.0, 14.0, 4.0))
-            .addPoint(Waypoint("first bend", 21.0, 30.0, 4.0))
-            .addPoint(Waypoint("second bend", 29.0, 36.0, 4.0))
-            .addPoint(Waypoint("third bend", 38.0, 33.0, 4.0))
-            .addPoint(Waypoint("fourth bend", 40.0, 28.0, 4.0))
-            .addPoint(Waypoint("exit", 36.0, 15.0, 4.0))
-            .addPoint(StopWaypoint("stop", startPose().x, startPose().y, 6.0, Angle(4.167, AngleUnit.RAD))).build()
+            .addPoint(Waypoint(88.0, 88.0, 0.0))
+            .addPoint(Waypoint(65.0, 84.0, 6.0))
+            .addPoint(Waypoint(45.0, 80.0, 6.0))
+            .addPoint(Waypoint(32.0, 76.0, 6.0))
+            .addPoint(Waypoint(26.0, 72.0, 6.0))
+            .addPoint(Waypoint(20.0, 68.0, 6.0))
+            .addPoint(Waypoint(16.0, 62.0, 6.0))
+            .addPoint(Waypoint(12.0, 40.0, 6.0))
+            .addPoint(Waypoint(10.0, 20.0, 6.0))
+            .addPoint(Waypoint(16.0, 10.0, 6.0))
+            .addPoint(Waypoint(30.0, 12.0, 6.0))
+            .addPoint(Waypoint(42.0, 24.0, 6.0))
+            .addPoint(Waypoint(46.0, 36.0, 6.0))
+            .addPoint(Waypoint(42.0, 46.0, 6.0))
+            .addPoint(Waypoint(30.0, 58.0, 10.0))
+            .addPoint(Waypoint(36.0, 72.0, 12.0))
+            .addPoint(Waypoint(45.0, 76.0, 10.0))
+            .addPoint(StopWaypoint(84.0, 84.0, 6.0, Angle(0.2, AngleUnit.RAD))).build()
     }
-
-    override fun startPose(): Pose = Pose(Point.ORIGIN, Angle(PI / 2, AngleUnit.RAD))
 }

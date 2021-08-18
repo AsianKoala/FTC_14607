@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.AngleUnit
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.Pose
+import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
@@ -13,20 +14,22 @@ import kotlin.math.sin
 class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, val startA: Int) {
     companion object {
         const val TICKS_PER_INCH = 1103.8839
+        @JvmField var turnScalar: Double = 14.9691931
+        @JvmField var auxTracker: Double = 3.85
     }
 
     private var currentPosition: Pose = startPose.copy
-
-    val turnScalar: Double = 15.17775
-    val auxTracker: Double = 3.85
 
     var lastLeftEncoder = 0
     var lastRightEncoder = 0
     var lastAuxEncoder = 0
 
-    var totalAuxTracker: Double = 0.0
+    var accumHeading = 0.0
 
     fun update(azuTelemetry: AzusaTelemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
+        azuTelemetry.addData("turn scalar", turnScalar)
+        azuTelemetry.addData("aux tracker", auxTracker)
+
         val actualCurrLeft = -(currLeftEncoder - startL)
         val actualCurrRight = (currRightEncoder - startR)
         val actualCurrAux = (currAuxEncoder - startA)
@@ -44,6 +47,9 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         val angleIncrement = (lWheelDelta - rWheelDelta) / turnScalar
         val auxPrediction = angleIncrement * auxTracker
         val rX = aWheelDelta - auxPrediction
+
+        accumHeading += angleIncrement
+        azuTelemetry.addData("calc turnScalar", (accumHeading / (2 * PI * 15)) * turnScalar)
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX
