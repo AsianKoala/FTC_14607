@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
-import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.AngleUnit
-import org.firstinspires.ftc.teamcode.util.Point
-import org.firstinspires.ftc.teamcode.util.Pose
+import org.firstinspires.ftc.teamcode.util.math.Angle
+import org.firstinspires.ftc.teamcode.util.math.AngleUnit
+import org.firstinspires.ftc.teamcode.util.math.Point
+import org.firstinspires.ftc.teamcode.util.math.Pose
 import org.openftc.revextensions2.ExpansionHubMotor
 
 @TeleOp

@@ -3,7 +3,11 @@ package org.firstinspires.ftc.teamcode.opmodes
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.control.system.BaseOpMode
-import org.firstinspires.ftc.teamcode.util.*
+import org.firstinspires.ftc.teamcode.util.debug.Debuggable
+import org.firstinspires.ftc.teamcode.util.math.Angle
+import org.firstinspires.ftc.teamcode.util.math.AngleUnit
+import org.firstinspires.ftc.teamcode.util.math.Point
+import org.firstinspires.ftc.teamcode.util.math.Pose
 
 @Debuggable
 @TeleOp

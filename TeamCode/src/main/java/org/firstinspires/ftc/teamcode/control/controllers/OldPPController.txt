@@ -4,11 +4,11 @@
 //
 //import static org.firstinspires.ftc.teamcode.hardware.DriveTrain.*;
 //import static org.firstinspires.ftc.teamcode.movement.Odometry.*;
-//import static org.firstinspires.ftc.teamcode.util.MathUtil.*;
+//import static org.firstinspires.ftc.teamcode.util.math.MathUtil.*;
 //
 //import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-//import org.firstinspires.ftc.teamcode.util.Point;
-//import org.firstinspires.ftc.teamcode.util.MathUtil;
+//import org.firstinspires.ftc.teamcode.util.geometry.Point;
+//import org.firstinspires.ftc.teamcode.util.math.MathUtil;
 //
 //import java.util.ArrayList;
 //

@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.control.path
 
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController
+import org.firstinspires.ftc.teamcode.control.path.funcs.Functions
+import org.firstinspires.ftc.teamcode.control.path.waypoints.PointTurnWaypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import kotlin.collections.ArrayList
 
 class Path(
-    var waypoints: ArrayList<Waypoint>,
+        var waypoints: ArrayList<Waypoint>,
 ) {
     private var currWaypoint: Int
     private var interrupting: Boolean

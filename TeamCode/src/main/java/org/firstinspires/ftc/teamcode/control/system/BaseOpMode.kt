@@ -5,9 +5,9 @@ import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
-import org.firstinspires.ftc.teamcode.util.Debuggable
-import org.firstinspires.ftc.teamcode.util.OpModeType
-import org.firstinspires.ftc.teamcode.util.Pose
+import org.firstinspires.ftc.teamcode.util.debug.Debuggable
+import org.firstinspires.ftc.teamcode.util.opmode.OpModeType
+import org.firstinspires.ftc.teamcode.util.math.Pose
 
 abstract class BaseOpMode : TunableLinearOpMode() {
     abstract fun startPose(): Pose

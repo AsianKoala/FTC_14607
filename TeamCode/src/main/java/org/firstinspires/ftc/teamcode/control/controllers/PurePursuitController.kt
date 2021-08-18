@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.control.controllers
 
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.teamcode.control.path.LockedWaypoint
-import org.firstinspires.ftc.teamcode.control.path.Waypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
-import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.AngleUnit
-import org.firstinspires.ftc.teamcode.util.MathUtil.circleLineIntersection
-import org.firstinspires.ftc.teamcode.util.MathUtil.clipIntersection
-import org.firstinspires.ftc.teamcode.util.MathUtil.toRadians
-import org.firstinspires.ftc.teamcode.util.Point
-import org.firstinspires.ftc.teamcode.util.Pose
+import org.firstinspires.ftc.teamcode.util.math.Angle
+import org.firstinspires.ftc.teamcode.util.math.AngleUnit
+import org.firstinspires.ftc.teamcode.util.math.MathUtil.circleLineIntersection
+import org.firstinspires.ftc.teamcode.util.math.MathUtil.clipIntersection
+import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
+import org.firstinspires.ftc.teamcode.util.math.Point
+import org.firstinspires.ftc.teamcode.util.math.Pose
 import kotlin.math.PI
 
 object PurePursuitController {
@@ -24,7 +24,7 @@ object PurePursuitController {
 
     fun goToPosition(azusa: Azusa, target: Waypoint, moveSpeed: Double) {
         val pointDeltas = relVals(azusa.currPose, target).p / 12.0
-        var dh = getDeltaH(azusa.currPose, target) / 35.0.toRadians
+        var dh = getDeltaH(azusa.currPose, target) / 45.0.toRadians
 
         pointDeltas.x = Range.clip(pointDeltas.x, -moveSpeed, moveSpeed)
         pointDeltas.y = Range.clip(pointDeltas.y, -moveSpeed, moveSpeed)

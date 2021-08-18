@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
-import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.AngleUnit
-import org.firstinspires.ftc.teamcode.util.MathUtil.epsilonEquals
-import org.firstinspires.ftc.teamcode.util.Point
-import org.firstinspires.ftc.teamcode.util.Pose
+import org.firstinspires.ftc.teamcode.util.math.Angle
+import org.firstinspires.ftc.teamcode.util.math.AngleUnit
+import org.firstinspires.ftc.teamcode.util.math.MathUtil.epsilonEquals
+import org.firstinspires.ftc.teamcode.util.math.Point
+import org.firstinspires.ftc.teamcode.util.math.Pose
 
 object Speedometer {
     private var lastUpdateTime = 0.0

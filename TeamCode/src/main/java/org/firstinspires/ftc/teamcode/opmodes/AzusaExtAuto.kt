@@ -2,14 +2,16 @@ package org.firstinspires.ftc.teamcode.opmodes
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.control.path.Path
-import org.firstinspires.ftc.teamcode.control.path.StopWaypoint
-import org.firstinspires.ftc.teamcode.control.path.Waypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.PointTurnWaypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
 import org.firstinspires.ftc.teamcode.control.system.BaseAuto
-import org.firstinspires.ftc.teamcode.util.Angle
-import org.firstinspires.ftc.teamcode.util.AngleUnit
-import org.firstinspires.ftc.teamcode.util.Point
-import org.firstinspires.ftc.teamcode.util.Pose
+import org.firstinspires.ftc.teamcode.util.math.Angle
+import org.firstinspires.ftc.teamcode.util.math.AngleUnit
+import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
+import org.firstinspires.ftc.teamcode.util.math.Point
+import org.firstinspires.ftc.teamcode.util.math.Pose
 import kotlin.math.PI
 
 @Autonomous
@@ -17,6 +19,7 @@ class AzusaExtAuto : BaseAuto() {
     override fun startPose(): Pose = Pose(Point(88.0, 88.0), Angle(PI, AngleUnit.RAD))
 
     override fun initialPath(): Path {
+
         return PathBuilder()
             .addPoint(Waypoint(88.0, 88.0, 0.0))
             .addPoint(Waypoint(65.0, 84.0, 6.0))
@@ -35,6 +38,7 @@ class AzusaExtAuto : BaseAuto() {
             .addPoint(Waypoint(30.0, 58.0, 10.0))
             .addPoint(Waypoint(36.0, 72.0, 12.0))
             .addPoint(Waypoint(45.0, 76.0, 10.0))
-            .addPoint(StopWaypoint(84.0, 84.0, 6.0, Angle(0.2, AngleUnit.RAD))).build()
+            .addPoint(StopWaypoint(84.0, 84.0, 6.0, Angle(0.2, AngleUnit.RAD)))
+            .addPoint(PointTurnWaypoint(84.0, 84.0, 0.0, Angle(0.0, AngleUnit.RAD), Angle(2.0.toRadians, AngleUnit.RAD))).build()
     }
 }
