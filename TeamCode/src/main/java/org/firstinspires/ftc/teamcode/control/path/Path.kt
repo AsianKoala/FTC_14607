@@ -2,50 +2,41 @@ package org.firstinspires.ftc.teamcode.control.path
 
 import org.firstinspires.ftc.teamcode.control.controllers.PurePursuitController
 import org.firstinspires.ftc.teamcode.hardware.Azusa
-import java.util.LinkedList
 import kotlin.collections.ArrayList
 
 class Path(
-    val path: LinkedList<PathPoint>,
-    val name: String = "default"
-) : LinkedList<PathPoint>() {
-    lateinit var curr: PathPoint
-    var initialPoints: ArrayList<PathPoint> = ArrayList()
-    var interrupting = false
-
-    private var firstFinish = false
-
-    fun init() {
-        for (pathPoint in path) {
-            val copy = pathPoint.copy
-            add(copy)
-            initialPoints.add(copy)
-        }
-        curr = first.copy
-        removeFirst()
-        firstFinish = false
-    }
+    var waypoints: ArrayList<Waypoint>,
+) {
+    var currWaypoint: Int
+    private var interrupting: Boolean
 
     fun follow(azusa: Azusa, moveSpeed: Double) {
-        val target = first
         val currPose = azusa.currPose
-        var skip: Boolean
 
         if (interrupting) {
-            val advance = (curr.func as Functions.InterruptFunction).run(azusa, this)
+            val advance = (waypoints.get(currWaypoint).func as Functions.InterruptFunction).run(azusa, this)
             if (advance)
                 interrupting = false
             else return
         }
 
+        var skip: Boolean
         do {
-            skip = when (target) {
-                is StopPathPoint -> currPose.distance(target) < 1
-                is OnlyTurnPoint -> (currPose.h - target.h).rad < target.dh.rad
-                else -> azusa.currPose.distance(target) < target.followDistance
+            skip = false
+            val target = waypoints.get(currWaypoint + 1)
+
+            if (target is StopWaypoint) {
+                if (currPose.distance(target) < 0.8)
+                    skip = true
+            } else if (target is PointTurnWaypoint) {
+                if ((currPose.h - target.h).rad < target.dh.rad)
+                    skip = true
+            } else {
+                if (azusa.currPose.distance(target) < target.followDistance)
+                    skip = true
             }
 
-            var currAction = curr.func
+            var currAction = waypoints.get(currWaypoint).func
             if (currAction is Functions.RepeatFunction) {
                 currAction.run(azusa, this)
             } else if (currAction is Functions.LoopUntilFunction) {
@@ -53,10 +44,9 @@ class Path(
             }
 
             if (skip) {
-                curr = target.copy
-                removeFirst()
+                currWaypoint++
 
-                currAction = curr.func
+                currAction = waypoints.get(currWaypoint).func
                 if (currAction is Functions.SimpleFunction) {
                     currAction.run(azusa, this)
                 }
@@ -66,19 +56,30 @@ class Path(
                     return
                 }
             }
-        } while (skip && !isEmpty())
-        if (isEmpty()) return
+        } while (skip && currWaypoint < waypoints.size - 1)
+        if (finished()) return
 
-        if (target is StopPathPoint && azusa.currPose.distance(target) < target.followDistance) {
+        val target = waypoints.get(currWaypoint + 1)
+
+        if (target is StopWaypoint && azusa.currPose.distance(target) < target.followDistance) {
             PurePursuitController.goToPosition(azusa, target, moveSpeed)
-        } else if (target is OnlyTurnPoint) {
+        } else if (target is PointTurnWaypoint) {
             PurePursuitController.goToPosition(azusa, target, moveSpeed)
         } else {
-            PurePursuitController.followPath(azusa, curr, target, moveSpeed)
+            PurePursuitController.followPath(azusa, waypoints.get(currWaypoint), target, moveSpeed)
         }
     }
 
-    override fun toString(): String {
-        return name
+    fun finished() = currWaypoint >= waypoints.size - 1
+
+    init {
+        val newWaypoints = ArrayList<Waypoint>(waypoints.size)
+        for (waypoint in waypoints) {
+            newWaypoints.add(waypoint.copy)
+        }
+        waypoints = newWaypoints
+
+        interrupting = false
+        currWaypoint = 0
     }
 }

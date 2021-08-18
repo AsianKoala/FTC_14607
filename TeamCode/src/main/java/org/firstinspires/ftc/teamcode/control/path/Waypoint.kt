@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.util.Point
 import org.firstinspires.ftc.teamcode.util.Pose
 
 // id love for this to be a dataclass but yeah sucks to suck
-open class PathPoint(
+open class Waypoint(
     val signature: String = "",
     val x: Double = 0.0,
     val y: Double = 0.0,
@@ -13,8 +13,8 @@ open class PathPoint(
 ) {
     val p get() = Point(x, y)
 
-    open val copy: PathPoint get() = PathPoint(signature, x, y, followDistance, func)
-    fun distance(p2: PathPoint) = p.distance(p2.p)
+    open val copy: Waypoint get() = Waypoint(signature, x, y, followDistance, func)
+    fun distance(p2: Waypoint) = p.distance(p2.p)
     fun distance(p2: Pose) = p.distance(p2.p)
 
     override fun toString(): String {

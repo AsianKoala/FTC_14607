@@ -82,7 +82,6 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
         azuTelemetry.addData("y", currPose.y)
         azuTelemetry.addData("h", currPose.h.deg)
         azuTelemetry.addData("powers", driveTrain.powers.toRawString)
-        azuTelemetry.addData("vel", currVel.toRawString)
 
         val (x, y) = currPose.p.dbNormalize
         azuTelemetry.fieldOverlay()

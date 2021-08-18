@@ -10,16 +10,30 @@ abstract class BaseAuto : BaseOpMode() {
 
     lateinit var pathCache: Path
 
+    lateinit var x: DoubleArray
+    lateinit var y: DoubleArray
+
     override fun onInit() {
         pathCache = initialPath()
+
+        x = DoubleArray(pathCache.waypoints.size)
+        y = DoubleArray(pathCache.waypoints.size)
+        for ((index, e) in pathCache.waypoints.withIndex()) {
+            x[index] = e.p.y
+            y[index] = -e.p.x
+        }
     }
 
+    override fun onInitLoop() {
+        azusaTelemetry.fieldOverlay().strokePolyline(x, y)
+    }
     override fun onLoop() {
-        if (!pathCache.isEmpty()) {
+        if (!pathCache.finished()) {
             pathCache.follow(azusa, 0.3)
         } else {
             azusa.driveTrain.setZeroPowers()
             requestOpModeStop()
         }
+        azusaTelemetry.fieldOverlay().strokePolyline(x, y)
     }
 }

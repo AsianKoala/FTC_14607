@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.util
 
-import org.firstinspires.ftc.teamcode.control.path.PathPoint
+import org.firstinspires.ftc.teamcode.control.path.Waypoint
 
 data class Pose(
     var p: Point,
@@ -14,7 +14,7 @@ data class Pose(
     val copy get() = Pose(p, h)
 
     fun distance(p2: Pose) = p.distance(p2.p)
-    fun distance(p2: PathPoint) = p.distance(p2.p)
+    fun distance(p2: Waypoint) = p.distance(p2.p)
 
     val toRawString = String.format("%.2f, %.2f, %.2f", x, y, h.raw)
     override fun toString() = String.format("%.2f, %.2f, %.2f", x, y, h.wrap().deg)

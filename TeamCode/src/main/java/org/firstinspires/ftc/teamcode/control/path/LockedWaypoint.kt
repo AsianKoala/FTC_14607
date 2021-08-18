@@ -2,16 +2,16 @@ package org.firstinspires.ftc.teamcode.control.path
 
 import org.firstinspires.ftc.teamcode.util.Angle
 
-class StopPathPoint(
+open class LockedWaypoint(
     signature: String,
     x: Double,
     y: Double,
     followDistance: Double,
-    h: Angle,
+    val h: Angle,
     func: Functions.Function? = null
-) : LockedPathPoint(signature, x, y, followDistance, h, func) {
+) : Waypoint(signature, x, y, followDistance, func) {
 
-    override val copy: PathPoint get() = StopPathPoint(signature, x, y, followDistance, h, func)
+    override val copy: Waypoint get() = LockedWaypoint(signature, x, y, followDistance, h, func)
     override fun toString(): String {
         return String.format(
             "%s, %.1f, %.1f, %.1f, %.1f, %s",

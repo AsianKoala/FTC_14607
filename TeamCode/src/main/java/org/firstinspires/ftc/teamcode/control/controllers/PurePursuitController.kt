@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.control.controllers
 
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.teamcode.control.path.LockedPathPoint
-import org.firstinspires.ftc.teamcode.control.path.PathPoint
+import org.firstinspires.ftc.teamcode.control.path.LockedWaypoint
+import org.firstinspires.ftc.teamcode.control.path.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.Angle
 import org.firstinspires.ftc.teamcode.util.AngleUnit
@@ -16,13 +16,13 @@ import kotlin.math.PI
 object PurePursuitController {
 //    private val mins = Pose(0.11, 0.09, 0.11)
 
-    private fun relVals(curr: Pose, target: PathPoint): Pose {
+    private fun relVals(curr: Pose, target: Waypoint): Pose {
         val d = (curr.p - target.p).hypot
         val rh = (target.p - curr.p).atan2 - curr.h
         return Pose(Point(-d * rh.sin, d * rh.cos), rh)
     }
 
-    fun goToPosition(azusa: Azusa, target: PathPoint, moveSpeed: Double) {
+    fun goToPosition(azusa: Azusa, target: Waypoint, moveSpeed: Double) {
         val pointDeltas = relVals(azusa.currPose, target).p / 12.0
         var dh = getDeltaH(azusa.currPose, target) / 60.0.toRadians
 
@@ -36,8 +36,8 @@ object PurePursuitController {
         azusa.driveTrain.powers = Pose(pointDeltas, Angle(dh, AngleUnit.RAW))
     }
 
-    private fun getDeltaH(curr: Pose, target: PathPoint): Double {
-        return if (target is LockedPathPoint) {
+    private fun getDeltaH(curr: Pose, target: Waypoint): Double {
+        return if (target is LockedWaypoint) {
             (target.h - curr.h).wrap().raw
         } else {
             val forward = (target.p - curr.p).atan2
@@ -49,7 +49,7 @@ object PurePursuitController {
         }
     }
 
-    fun followPath(azusa: Azusa, start: PathPoint, end: PathPoint, moveSpeed: Double) {
+    fun followPath(azusa: Azusa, start: Waypoint, end: Waypoint, moveSpeed: Double) {
         val clip: Point = clipIntersection(start.p, end.p, azusa.currPose.p)
         val (x, y) = circleLineIntersection(clip, start.p, end.p, end.followDistance)
         val followPoint = end.copy

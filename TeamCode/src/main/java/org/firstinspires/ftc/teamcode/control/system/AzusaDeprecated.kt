@@ -223,21 +223,21 @@ abstract class AzusaDeprecated : TunableOpMode() {
         packet.addSpace()
         val pathCacheCopy = pathCache
         if (pathCacheCopy != null) {
-            packet.addData("path size", pathCacheCopy.size)
-            packet.addData("current path name", pathCacheCopy.name)
-            packet.addData("current target", pathCacheCopy[0].toString())
-            val x = DoubleArray(pathCacheCopy.initialPoints.size)
-            val y = DoubleArray(pathCacheCopy.initialPoints.size)
-
-            for ((index, e) in pathCacheCopy.initialPoints.withIndex()) {
-                x[index] = e.p.y
-                y[index] = -e.p.x
-                packet.fieldOverlay().setFill("green").fillCircle(x[index], y[index], 2.0)
-            }
-            packet.fieldOverlay()
-                .setStroke("red")
-                .setStrokeWidth(1)
-                .strokePolyline(x, y)
+//            packet.addData("path size", pathCacheCopy.size)
+//            packet.addData("current path name", pathCacheCopy.name)
+//            packet.addData("current target", pathCacheCopy[0].toString())
+//            val x = DoubleArray(pathCacheCopy.initialPoints.size)
+//            val y = DoubleArray(pathCacheCopy.initialPoints.size)
+//
+//            for ((index, e) in pathCacheCopy.initialPoints.withIndex()) {
+//                x[index] = e.p.y
+//                y[index] = -e.p.x
+//                packet.fieldOverlay().setFill("green").fillCircle(x[index], y[index], 2.0)
+//            }
+//            packet.fieldOverlay()
+//                .setStroke("red")
+//                .setStrokeWidth(1)
+//                .strokePolyline(x, y)
         } else {
             packet.addData("path empty", "")
         }
