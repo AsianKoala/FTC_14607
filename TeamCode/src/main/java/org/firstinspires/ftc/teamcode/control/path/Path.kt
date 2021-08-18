@@ -9,12 +9,13 @@ import org.firstinspires.ftc.teamcode.hardware.Azusa
 import kotlin.collections.ArrayList
 
 class Path(
-        var waypoints: ArrayList<Waypoint>,
+    var waypoints: ArrayList<Waypoint>,
+    val maxSpeed: Double
 ) {
     private var currWaypoint: Int
     private var interrupting: Boolean
 
-    fun follow(azusa: Azusa, moveSpeed: Double) {
+    fun follow(azusa: Azusa) {
         val currPose = azusa.currPose
 
         if (interrupting) {
@@ -56,7 +57,7 @@ class Path(
                 }
                 if (currAction is Functions.InterruptFunction) {
                     interrupting = true
-                    this.follow(azusa, moveSpeed)
+                    this.follow(azusa)
                     return
                 }
             }
@@ -66,11 +67,11 @@ class Path(
         val target = waypoints[currWaypoint + 1]
 
         if (target is StopWaypoint && azusa.currPose.distance(target) < target.followDistance) {
-            PurePursuitController.goToPosition(azusa, target, moveSpeed)
+            PurePursuitController.goToPosition(azusa, target, maxSpeed)
         } else if (target is PointTurnWaypoint) {
-            PurePursuitController.goToPosition(azusa, target, moveSpeed)
+            PurePursuitController.goToPosition(azusa, target, maxSpeed)
         } else {
-            PurePursuitController.followPath(azusa, waypoints[currWaypoint], target, moveSpeed)
+            PurePursuitController.followPath(azusa, waypoints[currWaypoint], target, maxSpeed)
         }
     }
 

@@ -77,10 +77,10 @@ object MathUtil {
      * @see [https://mathworld.wolfram.com/Circle-LineIntersection.html](https://mathworld.wolfram.com/Circle-LineIntersection.html)
      */
     fun circleLineIntersection(
-            center: Point,
-            startPoint: Point,
-            endPoint: Point,
-            radius: Double
+        center: Point,
+        startPoint: Point,
+        endPoint: Point,
+        radius: Double
     ): Point {
         val start = startPoint - center
         val end = endPoint - center

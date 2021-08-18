@@ -6,8 +6,8 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.debug.Debuggable
-import org.firstinspires.ftc.teamcode.util.opmode.OpModeType
 import org.firstinspires.ftc.teamcode.util.math.Pose
+import org.firstinspires.ftc.teamcode.util.opmode.OpModeType
 
 abstract class BaseOpMode : TunableLinearOpMode() {
     abstract fun startPose(): Pose

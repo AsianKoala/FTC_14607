@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.opmodes
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.control.path.Path
+import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
 import org.firstinspires.ftc.teamcode.control.path.waypoints.PointTurnWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
-import org.firstinspires.ftc.teamcode.control.path.builders.PathBuilder
 import org.firstinspires.ftc.teamcode.control.system.BaseAuto
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
@@ -20,7 +20,7 @@ class AzusaExtAuto : BaseAuto() {
 
     override fun initialPath(): Path {
 
-        return PathBuilder()
+        return PathBuilder(0.55)
             .addPoint(Waypoint(88.0, 88.0, 0.0))
             .addPoint(Waypoint(65.0, 84.0, 6.0))
             .addPoint(Waypoint(45.0, 80.0, 6.0))

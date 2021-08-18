@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
 import org.firstinspires.ftc.teamcode.hardware.Hardware
-import org.firstinspires.ftc.teamcode.util.* // ktlint-disable no-wildcard-imports
+import org.firstinspires.ftc.teamcode.util.DataPacket
 import org.firstinspires.ftc.teamcode.util.debug.Debuggable
 import org.firstinspires.ftc.teamcode.util.debug.Mar
 import org.firstinspires.ftc.teamcode.util.math.Angle

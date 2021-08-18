@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.util.math
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 
 data class Pose(
-        var p: Point,
-        var h: Angle
+    var p: Point,
+    var h: Angle
 ) {
     val x get() = p.x
     val y get() = p.y
