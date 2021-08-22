@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import kotlin.collections.ArrayList
+import kotlin.math.absoluteValue
 
 class Path(
     var waypoints: ArrayList<Waypoint>,
@@ -66,12 +67,16 @@ class Path(
 
         val target = waypoints[currWaypoint + 1]
 
-        if (target is StopWaypoint && azusa.currPose.distance(target) < target.followDistance) {
+        if (target is StopWaypoint /*&& azusa.currPose.distance(target) < target.followDistance*/) {
             PurePursuitController.goToPosition(azusa, target, maxSpeed)
         } else if (target is PointTurnWaypoint) {
             PurePursuitController.goToPosition(azusa, target, maxSpeed)
         } else {
             PurePursuitController.followPath(azusa, waypoints[currWaypoint], target, maxSpeed)
+            val totalAbs = azusa.driveTrain.powers.x.absoluteValue + azusa.driveTrain.powers.y.absoluteValue
+            if(totalAbs != 0.0) {
+                azusa.driveTrain.powers.p /= totalAbs
+            }
         }
     }
 

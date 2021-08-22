@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.control.controllers
 
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.Angle
@@ -23,7 +24,7 @@ object PurePursuitController {
     }
 
     fun goToPosition(azusa: Azusa, target: Waypoint, moveSpeed: Double) {
-        val pointDeltas = relVals(azusa.currPose, target).p / 12.0
+        val pointDeltas = relVals(azusa.currPose, target).p / if(target is StopWaypoint) 16.0 else 12.0
         var dh = getDeltaH(azusa.currPose, target) / 45.0.toRadians
 
         pointDeltas.x = Range.clip(pointDeltas.x, -moveSpeed, moveSpeed)
@@ -51,7 +52,7 @@ object PurePursuitController {
 
     fun followPath(azusa: Azusa, start: Waypoint, end: Waypoint, moveSpeed: Double) {
         val clip: Point = clipIntersection(start.p, end.p, azusa.currPose.p)
-        val (x, y) = circleLineIntersection(clip, start.p, end.p, end.followDistance)
+        val (x, y) = circleLineIntersection(azusa.currPose.p, start.p, end.p, end.followDistance)
         val followPoint = end.copy
         followPoint.p.x = x
         followPoint.p.y = y
