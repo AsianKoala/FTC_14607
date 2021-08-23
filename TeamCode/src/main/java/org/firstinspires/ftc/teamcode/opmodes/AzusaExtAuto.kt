@@ -19,7 +19,7 @@ class AzusaExtAuto : BaseAuto() {
     override fun startPose(): Pose = Pose(Point(38.0, 58.0), Angle(PI, AngleUnit.RAD))
 
     override fun initialPath(): Path {
-        return PathBuilder(1.0).addPoint(Waypoint(38.0, 58.0, 0.0))
+        return PathBuilder().addPoint(Waypoint(38.0, 58.0, 0.0))
             .addPoint(Waypoint(15.0, 54.0, 13.0))
             .addPoint(Waypoint(-8.0, 32.0, 13.0))
             .addPoint(Waypoint(-12.0, 10.0, 13.0))

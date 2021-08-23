@@ -6,8 +6,8 @@ import org.firstinspires.ftc.teamcode.util.math.Pose
 
 // id love for this to be a dataclass but yeah sucks to suck
 open class Waypoint(
-    val x: Double = 0.0,
-    val y: Double = 0.0,
+    var x: Double = 0.0,
+    var y: Double = 0.0,
     val followDistance: Double = 0.0,
     val func: Functions.Function? = null
 ) {

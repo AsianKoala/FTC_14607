@@ -15,7 +15,7 @@ class PointTurnWaypoint(
     override val copy: Waypoint get() = PointTurnWaypoint(x, y, followDistance, h, dh, func)
     override fun toString(): String {
         return String.format(
-            "%.1f, %.1f, %.1f, %.1f, %.1f, %s",
+            "%.1f, %.1f, %.1f, %s, %s, %s",
             x,
             y,
             followDistance,

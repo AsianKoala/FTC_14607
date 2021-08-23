@@ -23,13 +23,9 @@ object PurePursuitController {
         return Pose(Point(-d * rh.sin, d * rh.cos), rh)
     }
 
-    fun goToPosition(azusa: Azusa, target: Waypoint, moveSpeed: Double) {
-        val pointDeltas = relVals(azusa.currPose, target).p / if(target is StopWaypoint) 16.0 else 12.0
-        var dh = getDeltaH(azusa.currPose, target) / 45.0.toRadians
-
-        pointDeltas.x = Range.clip(pointDeltas.x, -moveSpeed, moveSpeed)
-        pointDeltas.y = Range.clip(pointDeltas.y, -moveSpeed, moveSpeed)
-        dh = Range.clip(dh, -moveSpeed, moveSpeed)
+    fun goToPosition(azusa: Azusa, target: Waypoint) {
+        val pointDeltas = relVals(azusa.currPose, target).p / 12.0
+        val dh = getDeltaH(azusa.currPose, target) / 60.0.toRadians
 
         val (x, y) = target.p.dbNormalize
         azusa.azuTelemetry.fieldOverlay().fillCircle(x, y, 3.0)
@@ -50,15 +46,15 @@ object PurePursuitController {
         }
     }
 
-    fun followPath(azusa: Azusa, start: Waypoint, end: Waypoint, moveSpeed: Double) {
+    fun followPath(azusa: Azusa, start: Waypoint, end: Waypoint) {
         val clip: Point = clipIntersection(start.p, end.p, azusa.currPose.p)
-        val (x, y) = circleLineIntersection(azusa.currPose.p, start.p, end.p, end.followDistance)
+        val (x, y) = circleLineIntersection(clip, start.p, end.p, end.followDistance)
         val followPoint = end.copy
-        followPoint.p.x = x
-        followPoint.p.y = y
+        followPoint.x = x
+        followPoint.y = y
         azusa.azuTelemetry.fieldOverlay()
             .setFill("white")
             .fillCircle(followPoint.p.dbNormalize.x, followPoint.p.dbNormalize.y, 2.0)
-        goToPosition(azusa, followPoint, moveSpeed)
+        goToPosition(azusa, followPoint)
     }
 }

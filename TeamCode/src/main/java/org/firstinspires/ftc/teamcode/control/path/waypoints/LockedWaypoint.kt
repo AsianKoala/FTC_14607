@@ -14,7 +14,7 @@ open class LockedWaypoint(
     override val copy: Waypoint get() = LockedWaypoint(x, y, followDistance, h, func)
     override fun toString(): String {
         return String.format(
-            "%.1f, %.1f, %.1f, %.1f, %s",
+            "%.1f, %.1f, %.1f, %s, %s",
             x,
             y,
             followDistance,

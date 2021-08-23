@@ -23,7 +23,7 @@ class AzusaNewTeleOp : BaseOpMode() {
     lateinit var y: DoubleArray
 
     override fun onInit() {
-        pathCache = PathBuilder(0.55).addPoint(Waypoint(38.0, 58.0, 0.0))
+        pathCache = PathBuilder().addPoint(Waypoint(38.0, 58.0, 0.0))
             .addPoint(Waypoint(15.0, 54.0, 6.0))
             .addPoint(Waypoint(2.0, 46.0, 6.0))
             .addPoint(Waypoint(-8.0, 32.0, 6.0))

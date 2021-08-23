@@ -11,7 +11,6 @@ import kotlin.math.absoluteValue
 
 class Path(
     var waypoints: ArrayList<Waypoint>,
-    val maxSpeed: Double
 ) {
     private var currWaypoint: Int
     private var interrupting: Boolean
@@ -28,19 +27,14 @@ class Path(
 
         var skip: Boolean
         do {
-            skip = false
             val target = waypoints[currWaypoint + 1]
 
-            if (target is StopWaypoint) {
-                if (currPose.distance(target) < 0.8)
-                    skip = true
-            } else if (target is PointTurnWaypoint) {
-                if ((currPose.h - target.h).rad < target.dh.rad)
-                    skip = true
-            } else {
-                if (azusa.currPose.distance(target) < target.followDistance)
-                    skip = true
+            skip = when(target) {
+                is StopWaypoint -> currPose.distance(target) < 0.8
+                is PointTurnWaypoint -> ((currPose.h - target.h).rad < target.dh.rad)
+                else -> currPose.distance(target) < target.followDistance
             }
+
 
             var currAction = waypoints[currWaypoint].func
             if (currAction is Functions.RepeatFunction) {
@@ -67,12 +61,14 @@ class Path(
 
         val target = waypoints[currWaypoint + 1]
 
-        if (target is StopWaypoint /*&& azusa.currPose.distance(target) < target.followDistance*/) {
-            PurePursuitController.goToPosition(azusa, target, maxSpeed)
+        if (target is StopWaypoint && azusa.currPose.distance(target) < target.followDistance) {
+            PurePursuitController.goToPosition(azusa, target)
         } else if (target is PointTurnWaypoint) {
-            PurePursuitController.goToPosition(azusa, target, maxSpeed)
+            PurePursuitController.goToPosition(azusa, target)
         } else {
-            PurePursuitController.followPath(azusa, waypoints[currWaypoint], target, maxSpeed)
+            PurePursuitController.followPath(azusa, waypoints[currWaypoint], target)
+
+            // make sure our power vector has a magnitude of 1
             val totalAbs = azusa.driveTrain.powers.x.absoluteValue + azusa.driveTrain.powers.y.absoluteValue
             if(totalAbs != 0.0) {
                 azusa.driveTrain.powers.p /= totalAbs
@@ -83,11 +79,10 @@ class Path(
     fun finished() = currWaypoint >= waypoints.size - 1
 
     init {
-        val newWaypoints = ArrayList<Waypoint>(waypoints.size)
+        this.waypoints = ArrayList()
         for (waypoint in waypoints) {
-            newWaypoints.add(waypoint.copy)
+            this.waypoints.add(waypoint.copy)
         }
-        waypoints = newWaypoints
 
         interrupting = false
         currWaypoint = 0
