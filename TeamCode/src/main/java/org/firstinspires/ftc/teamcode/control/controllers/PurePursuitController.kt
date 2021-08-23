@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.controllers
 
-import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
-import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.Angle

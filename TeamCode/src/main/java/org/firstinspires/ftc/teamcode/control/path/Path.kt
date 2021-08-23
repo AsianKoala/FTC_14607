@@ -29,12 +29,11 @@ class Path(
         do {
             val target = waypoints[currWaypoint + 1]
 
-            skip = when(target) {
+            skip = when (target) {
                 is StopWaypoint -> currPose.distance(target) < 0.8
                 is PointTurnWaypoint -> ((currPose.h - target.h).rad < target.dh.rad)
                 else -> currPose.distance(target) < target.followDistance
             }
-
 
             var currAction = waypoints[currWaypoint].func
             if (currAction is Functions.RepeatFunction) {
@@ -70,7 +69,7 @@ class Path(
 
             // make sure our power vector has a magnitude of 1
             val totalAbs = azusa.driveTrain.powers.x.absoluteValue + azusa.driveTrain.powers.y.absoluteValue
-            if(totalAbs != 0.0) {
+            if (totalAbs != 0.0) {
                 azusa.driveTrain.powers.p /= totalAbs
             }
         }
