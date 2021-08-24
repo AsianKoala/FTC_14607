@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.teamcode.control.localization.Speedometer
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.math.Angle
@@ -19,7 +18,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.sign
 
 @Config
-class Azusa(val startPose: Pose, val debugging: Boolean) {
+class Azusa(val startPose: Pose, private val debugging: Boolean) {
 
     lateinit var currPose: Pose
     lateinit var currVel: Pose
@@ -109,8 +108,6 @@ class Azusa(val startPose: Pose, val debugging: Boolean) {
             masterBulkData.getMotorCurrentPosition(3),
             masterBulkData.getMotorCurrentPosition(2)
         )
-
-        currVel = Speedometer.update(currPose.h)
     }
 
     private fun updateHW() {

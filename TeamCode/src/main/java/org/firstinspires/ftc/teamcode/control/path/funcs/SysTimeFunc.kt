@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.control.path.funcs
 
-class SysTimeFunc(dt: Long, var func: Functions.Function) : SysFunc() {
+class SysTimeFunc(dt: Long, func: Functions.SimpleFunction) : SysFunc(func) {
     var targetTime: Long = dt + System.currentTimeMillis()
 }

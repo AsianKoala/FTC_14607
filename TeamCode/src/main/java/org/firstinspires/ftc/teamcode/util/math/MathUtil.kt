@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode.util.math
 
+import android.R.attr
 import com.qualcomm.robotcore.util.Range
+import java.util.LinkedList
 import kotlin.math.* // ktlint-disable no-wildcard-imports
+
+
+
 
 object MathUtil {
     const val EPSILON = 1e-6
@@ -77,10 +82,10 @@ object MathUtil {
      * @see [https://mathworld.wolfram.com/Circle-LineIntersection.html](https://mathworld.wolfram.com/Circle-LineIntersection.html)
      */
     fun circleLineIntersection(
-        center: Point,
-        startPoint: Point,
-        endPoint: Point,
-        radius: Double
+            center: Point,
+            startPoint: Point,
+            endPoint: Point,
+            radius: Double
     ): Point {
         val start = startPoint - center
         val end = endPoint - center
@@ -92,7 +97,7 @@ object MathUtil {
         val intersections = ArrayList<Point>()
         val xLeft = d * deltas.y
         val yLeft = -d * deltas.x
-        val xRight: Double = deltas.y.sign * deltas.x * sqrt(discriminant)
+        val xRight: Double = stupidSign(deltas.y) * deltas.x * sqrt(discriminant)
         val yRight = deltas.y.absoluteValue * sqrt(discriminant)
         val div = deltas.hypot.pow(2)
         if (discriminant == 0.0) {
@@ -110,4 +115,6 @@ object MathUtil {
         }
         return closest
     }
+
+    private fun stupidSign(a: Double): Int = if(a > 0) 1 else -1
 }

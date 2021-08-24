@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.control.localization
 
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
-import org.firstinspires.ftc.teamcode.util.math.Angle
-import org.firstinspires.ftc.teamcode.util.math.AngleUnit
-import org.firstinspires.ftc.teamcode.util.math.Pose
+import org.firstinspires.ftc.teamcode.util.math.*
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
@@ -18,6 +16,13 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
     }
 
     private var currentPosition: Pose = startPose.copy
+
+    private var allRawDeltas: ArrayList<TimePose> = ArrayList()
+    private var currVelocity: Pose = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAD))
+
+    private var totalX = 0.0
+    private var totalY = 0.0
+    private var totalH = 0.0
 
     var lastLeftEncoder = 0
     var lastRightEncoder = 0
@@ -61,8 +66,12 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         currentPosition.p.x += lastAngle.cos * deltaY - lastAngle.sin * deltaX
         currentPosition.p.y += lastAngle.sin * deltaY + lastAngle.cos * deltaX
 
-        Speedometer.xDistTraveled += rX
-        Speedometer.yDistTraveled += deltaY
+
+        // calc vel
+//        allRawDeltas.add(TimePose(Pose(Point(deltaX, deltaY), Angle(angleIncrement, AngleUnit.RAD))))
+//        val bestIndex:  = if(allRawDeltas.size < 6) 0 else allRawDeltas.size - 6
+//        val currRawDelta = allRawDeltas[allRawDeltas.size - 1]
+
 
         lastLeftEncoder = actualCurrLeft
         lastRightEncoder = actualCurrRight

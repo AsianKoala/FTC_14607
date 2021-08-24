@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.controllers
 
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
+import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.Angle
@@ -11,6 +12,8 @@ import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
 import kotlin.math.PI
+import kotlin.math.absoluteValue
+import kotlin.math.max
 
 object PurePursuitController {
 //    private val mins = Pose(0.11, 0.09, 0.11)
@@ -24,6 +27,12 @@ object PurePursuitController {
     fun goToPosition(azusa: Azusa, target: Waypoint) {
         val pointDeltas = relVals(azusa.currPose, target).p / 12.0
         val dh = getDeltaH(azusa.currPose, target) / 60.0.toRadians
+
+        if(target !is StopWaypoint) {
+            val totalAbs = azusa.driveTrain.powers.x.absoluteValue + azusa.driveTrain.powers.y.absoluteValue
+            if (totalAbs != 0.0)
+                azusa.driveTrain.powers.p /= totalAbs
+        }
 
         val (x, y) = target.p.dbNormalize
         azusa.azuTelemetry.fieldOverlay().fillCircle(x, y, 3.0)

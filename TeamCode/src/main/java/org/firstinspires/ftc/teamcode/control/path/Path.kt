@@ -66,22 +66,15 @@ class Path(
             PurePursuitController.goToPosition(azusa, target)
         } else {
             PurePursuitController.followPath(azusa, waypoints[currWaypoint], target)
-
-            // make sure our power vector has a magnitude of 1
-            val totalAbs = azusa.driveTrain.powers.x.absoluteValue + azusa.driveTrain.powers.y.absoluteValue
-            if (totalAbs != 0.0) {
-                azusa.driveTrain.powers.p /= totalAbs
-            }
         }
     }
 
     fun finished() = currWaypoint >= waypoints.size - 1
 
     init {
-        this.waypoints = ArrayList()
-        for (waypoint in waypoints) {
-            this.waypoints.add(waypoint.copy)
-        }
+        val copyList = ArrayList<Waypoint>()
+        waypoints.forEach {copyList.add(it) }
+        waypoints = copyList
 
         interrupting = false
         currWaypoint = 0

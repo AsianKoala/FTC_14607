@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.* // ktlint-disable no-wildcard-imports
 import com.qualcomm.robotcore.util.Range
 import net.frogbots.ftcopmodetunercommon.opmode.TunableOpMode
 import org.firstinspires.ftc.teamcode.BuildConfig
-import org.firstinspires.ftc.teamcode.control.localization.Speedometer
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain
@@ -49,9 +48,7 @@ abstract class AzusaDeprecated : TunableOpMode() {
     private lateinit var masterBulkData: RevBulkData
 //    private lateinit var slaveBulkData: RevBulkData
 
-    private lateinit var headingOffset: Angle
     private lateinit var odometry: ThreeWheelOdometry
-    private lateinit var speedometer: Speedometer
 
     private lateinit var frontLeft: ExpansionHubMotor
     private lateinit var frontRight: ExpansionHubMotor
@@ -172,7 +169,7 @@ abstract class AzusaDeprecated : TunableOpMode() {
 //                masterBulkData.getMotorCurrentPosition(RIGHT_PORT),
 //                masterBulkData.getMotorCurrentPosition(AUX_PORT)
 //            )
-        currVel = speedometer.update(currPose.h)
+//        currVel = speedometer.update(currPose.h)
         odoTime.stop()
     }
 

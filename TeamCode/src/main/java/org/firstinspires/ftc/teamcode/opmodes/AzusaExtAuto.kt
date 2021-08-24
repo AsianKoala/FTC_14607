@@ -20,16 +20,16 @@ class AzusaExtAuto : BaseAuto() {
 
     override fun initialPath(): Path {
         return PathBuilder().addPoint(Waypoint(38.0, 58.0, 0.0))
-            .addPoint(Waypoint(15.0, 54.0, 13.0))
-            .addPoint(Waypoint(-8.0, 32.0, 13.0))
-            .addPoint(Waypoint(-12.0, 10.0, 13.0))
-            .addPoint(LockedWaypoint(-14.0, -8.0, 13.0, Angle(255.0.toRadians, AngleUnit.RAD)))
-            .addPoint(LockedWaypoint(0.0, -10.0, 13.0, Angle(255.0.toRadians, AngleUnit.RAD)))
-            .addPoint(Waypoint(12.0, -2.0, 13.0))
-            .addPoint(Waypoint(16.0, 6.0, 13.0))
-            .addPoint(Waypoint(12.0, 16.0, 13.0))
-            .addPoint(Waypoint(0.0, 28.0, 13.0))
-            .addPoint(Waypoint(6.0, 42.0, 13.0))
-            .addPoint(StopWaypoint(28.0, 54.0, 13.0, Angle(0.0, AngleUnit.RAD))).build()
+            .addPoint(Waypoint(15.0, 54.0, 10.0))
+            .addPoint(Waypoint(-8.0, 32.0, 10.0))
+            .addPoint(Waypoint(-12.0, 10.0, 10.0))
+            .addPoint(LockedWaypoint(-14.0, -8.0, 10.0, Angle(255.0.toRadians, AngleUnit.RAD)))
+            .addPoint(LockedWaypoint(0.0, -10.0, 10.0, Angle(255.0.toRadians, AngleUnit.RAD)))
+            .addPoint(Waypoint(12.0, -2.0, 10.0))
+            .addPoint(Waypoint(16.0, 6.0, 10.0))
+            .addPoint(Waypoint(12.0, 16.0, 10.0))
+            .addPoint(Waypoint(0.0, 28.0, 10.0))
+            .addPoint(Waypoint(6.0, 42.0, 10.0))
+            .addPoint(StopWaypoint(28.0, 54.0, 10.0, Angle(0.0, AngleUnit.RAD))).build()
     }
 }
