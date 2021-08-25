@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
 import com.acmerobotics.dashboard.config.Config
-import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.math.*
+import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
@@ -66,12 +66,10 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         currentPosition.p.x += lastAngle.cos * deltaY - lastAngle.sin * deltaX
         currentPosition.p.y += lastAngle.sin * deltaY + lastAngle.cos * deltaX
 
-
         // calc vel
 //        allRawDeltas.add(TimePose(Pose(Point(deltaX, deltaY), Angle(angleIncrement, AngleUnit.RAD))))
 //        val bestIndex:  = if(allRawDeltas.size < 6) 0 else allRawDeltas.size - 6
 //        val currRawDelta = allRawDeltas[allRawDeltas.size - 1]
-
 
         lastLeftEncoder = actualCurrLeft
         lastRightEncoder = actualCurrRight

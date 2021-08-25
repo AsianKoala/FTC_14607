@@ -6,16 +6,19 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
-import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
+import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
+import org.firstinspires.ftc.teamcode.util.math.MathUtil.wrap
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
+import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
+import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.sign
+import kotlin.math.*
 
 @Config
 class Azusa(val startPose: Pose, private val debugging: Boolean) {
@@ -32,13 +35,16 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
     lateinit var allHardware: ArrayList<Hardware>
 
     lateinit var dashboard: FtcDashboard
-
-    private var lastManualUpdate: Long = 0
-    private var lastAutoUpdate: Long = 0
-    private var pathStopped = false
-    private lateinit var debugSpeeds: Pose
-
     lateinit var azuTelemetry: AzusaTelemetry
+
+    private val lastPositions = LinkedList<Point>()
+    var lastllupdate: Long = 0
+
+    var xSpeed = 0.0
+    var ySpeed = 0.0
+    var turnSpeed = 0.0
+
+    var lastUpdateTime: Long = 0
 
     fun init(hwMap: HardwareMap, telemetry: AzusaTelemetry) {
         azuTelemetry = telemetry
@@ -55,7 +61,8 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
             masterBulkData.getMotorCurrentPosition(2)
         )
 
-        currPose = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
+        currPose = startPose
+
         currVel = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
 
         driveTrain = DriveTrain(
@@ -66,16 +73,11 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         )
         allHardware.add(driveTrain)
 
-        debugSpeeds = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
-        lastManualUpdate = System.currentTimeMillis()
-        lastAutoUpdate = System.currentTimeMillis()
-        pathStopped = true
-
         dashboard = FtcDashboard.getInstance()
     }
 
     fun update() {
-        if (!debugging) updateOdo()
+        if (!debugging) updateOdo() else debugPhysics()
         updateHW()
         updateTelemetry()
     }
@@ -87,14 +89,28 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         azuTelemetry.addData("powers", driveTrain.powers.toRawString)
 
         val (x, y) = currPose.p.dbNormalize
+        val radius = 5
         azuTelemetry.fieldOverlay()
             .setFill("blue")
             .fillCircle(x, y, 3.0)
             .setStroke("purple")
             .setStrokeWidth(1)
             .strokeLine(
-                x, y, x + 10 * currPose.h.sin, y - 10 * currPose.h.cos
+                x, y, x + radius * currPose.h.sin, y - radius * currPose.h.cos
             )
+
+        if (System.currentTimeMillis() - lastllupdate > 250) {
+            lastllupdate = System.currentTimeMillis()
+            lastPositions.add(currPose.p.copy)
+        }
+
+        val iterator = lastPositions.iterator()
+        while (iterator.hasNext()) {
+            val curr = iterator.next()
+            azuTelemetry.fieldOverlay()
+                .setStroke("red")
+                .strokeCircle(curr.dbNormalize.x, curr.dbNormalize.y, 1.0)
+        }
     }
 
     private fun updateOdo() {
@@ -126,38 +142,34 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         driveTrain.update(azuTelemetry)
     }
 
-    fun debugControl(gamepad: Gamepad) {
-        if (gamepad.left_trigger > 0.5) {
-            pathStopped = true
-        } else if (gamepad.right_trigger > 0.5) {
-            pathStopped = false
-        }
-        if (System.currentTimeMillis() - lastManualUpdate > 50) {
-            currPose = Pose(
-                Point(
-                    currPose.x + gamepad.left_stick_x.sign,
-                    currPose.y - gamepad.left_stick_y.sign
-                ),
-                (currPose.h + Angle((-gamepad.right_stick_x).sign.toDouble(), AngleUnit.RAW).times(Math.PI / 10))
-            )
-            lastManualUpdate = System.currentTimeMillis()
+    private fun debugPhysics() {
+        currPose.h = currPose.h.wrap()
+
+        // current time
+        val currentTimeMillis = System.currentTimeMillis()
+        // elapsed time
+        val elapsedTime = (currentTimeMillis - lastUpdateTime) / 1000.0
+
+        lastUpdateTime = currentTimeMillis
+        if (elapsedTime > 1) {
+            println("you fucked up")
+            return
         }
 
-        if (!pathStopped) {
-            val elapsed = (System.currentTimeMillis() - lastAutoUpdate) / 1000.0
-            lastAutoUpdate = System.currentTimeMillis()
-            if (elapsed > 1) return
+        val totalSpeed = hypot(xSpeed, ySpeed)
+        val angle = atan2(ySpeed, xSpeed) - 90.0.toRadians
+        val outputAngle = currPose.h.rad + angle
+        currPose.p.x += totalSpeed * cos(outputAngle) * elapsedTime * 40
+        currPose.p.y += totalSpeed * sin(outputAngle) * elapsedTime * 40
 
-            val radius: Double = debugSpeeds.hypot
-            val theta = currPose.h + debugSpeeds.p.atan2 - Angle(Math.PI / 2, AngleUnit.RAW)
+        currPose.h.angle += turnSpeed * elapsedTime * 40 / (2 * PI)
 
-            currPose.p.x += radius * theta.cos * elapsed * 100
-            currPose.p.y += radius * theta.sin * elapsed * 100
-            currPose.h += Angle(driveTrain.powers.h.raw * elapsed * 10.0 / (2 * Math.PI), AngleUnit.RAD)
+        xSpeed += Range.clip((driveTrain.powers.x - xSpeed) / 0.2, -1.0, 1.0) * elapsedTime
+        ySpeed += Range.clip((driveTrain.powers.y - ySpeed) / 0.2, -1.0, 1.0) * elapsedTime
+        turnSpeed += Range.clip((driveTrain.powers.h.raw - turnSpeed) / 0.2, -1.0, 1.0) * elapsedTime
 
-            debugSpeeds.p.x += (Range.clip((driveTrain.powers.x - debugSpeeds.x) / 0.2, -1.0, 1.0)) * elapsed * (1.0 - elapsed)
-            debugSpeeds.p.y += (Range.clip((driveTrain.powers.y - debugSpeeds.y) / 0.2, -1.0, 1.0)) * elapsed * (1.0 - elapsed)
-            debugSpeeds.h += Angle(Range.clip((driveTrain.powers.h.raw - debugSpeeds.h.raw) / 0.2, -1.0, 1.0), AngleUnit.RAW) * elapsed * (1.0 - elapsed)
-        }
+        xSpeed *= 1.0 - (elapsedTime)
+        ySpeed *= 1.0 - (elapsedTime)
+        turnSpeed *= 1.0 - (elapsedTime)
     }
 }
