@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.util.math.Pose
 @Debuggable
 @TeleOp
 @Disabled
-class AzusaNewDebug : BaseOpMode() {
+class AzusaDebug : BaseOpMode() {
     override fun startPose(): Pose = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAD))
 
     override fun onLoop() {

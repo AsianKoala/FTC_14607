@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.util.opmode
 
 object Globals {
-    const val TELEOP_NAME = "AzusaNewTeleOp"
+    const val TELEOP_NAME = "AzusaTele"
 }
