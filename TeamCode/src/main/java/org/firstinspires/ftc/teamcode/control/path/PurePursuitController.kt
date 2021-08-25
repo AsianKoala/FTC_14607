@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.control.controllers
+package org.firstinspires.ftc.teamcode.control.path
 
-import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
@@ -8,7 +7,6 @@ import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.circleLineIntersection
-import org.firstinspires.ftc.teamcode.util.math.MathUtil.clip
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.clipIntersection
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import org.firstinspires.ftc.teamcode.util.math.Point
@@ -17,63 +15,46 @@ import kotlin.math.PI
 import kotlin.math.absoluteValue
 
 object PurePursuitController {
-//    private val mins = Pose(0.11, 0.09, 0.11)
 
-    private fun relVals(curr: Pose, target: Waypoint): Pose {
+    private fun relVals(curr: Pose, target: Waypoint): Point {
         val d = (curr.p - target.p).hypot
         val rh = (target.p - curr.p).atan2 - curr.h
-        return Pose(Point(-d * rh.sin, d * rh.cos), rh)
+        return Point(-d * rh.sin, d * rh.cos)
     }
 
     fun goToPosition(azusa: Azusa, target: Waypoint) {
         val (x, y) = target.p.dbNormalize
         azusa.azuTelemetry.fieldOverlay()
-                .setStroke("yellow")
-                .strokeCircle(x, y, 3.0)
+            .setStroke("yellow")
+            .strokeCircle(x, y, 3.0)
+
+        val relTarget = relVals(azusa.currPose, target)
+
+        val sumAbs = relTarget.x.absoluteValue + relTarget.y.absoluteValue
+
+        val movementPowers = (relTarget / sumAbs)
+        movementPowers.x *= relTarget.x.absoluteValue / 18.0
+        movementPowers.y *= relTarget.y.absoluteValue / 18.0
 
 
-        var movementPoint = Point.ORIGIN
-
-        val pointDeltas = relVals(azusa.currPose, target).p
-
-        val relativeAngle = getDeltaH(azusa.currPose, target)
-        var turnPower = relativeAngle / 40.0.toRadians
+        if(target is StopWaypoint) {
+            movementPowers.x = relTarget.x / 14.0
+            movementPowers.y = relTarget.y / 14.0
+        }
 
 
-        movementPoint.x = (pointDeltas.x / (pointDeltas.x.absoluteValue + pointDeltas.y.absoluteValue))
-        movementPoint.y = (pointDeltas.y / (pointDeltas.x.absoluteValue + pointDeltas.y.absoluteValue))
+        val deltaH = getDeltaH(azusa.currPose, target)
+        var turnPower = deltaH / 60.0.toRadians
 
-        movementPoint.x *= pointDeltas.x.absoluteValue / 12.0
-        movementPoint.y *= pointDeltas.y.absoluteValue / 12.0
-
-        movementPoint = movementPoint.clip(1.0)
-
-
-
-        movementPoint.x *= (pointDeltas.x / 2.5).clip(1.0)
-        movementPoint.y *= (pointDeltas.y / 2.5).clip(1.0)
-
-        turnPower *= (relativeAngle.absoluteValue / 3.0.toRadians).clip(1.0).clip(1.0)
-
-
-        if(azusa.currPose.distance(target) < 4) {
+        if(azusa.currPose.distance(target) < 3) {
             turnPower = 0.0
         }
 
-        var errorTurnScale = Range.clip(1.0-(relativeAngle / 45.0.toRadians).absoluteValue, 0.4, 1.0)
-
-        if(turnPower.absoluteValue < 0.0001) {
-            errorTurnScale = 1.0
-        }
-
-        movementPoint *= errorTurnScale
-
-
-        azusa.driveTrain.powers = Pose(movementPoint, Angle(turnPower, AngleUnit.RAW))
+        azusa.driveTrain.powers = Pose(movementPowers, Angle(turnPower, AngleUnit.RAW))
     }
 
     private fun getDeltaH(curr: Pose, target: Waypoint): Double {
-        return if(target is LockedWaypoint) {
+        return if (target is LockedWaypoint) {
             (target.h - curr.h).wrap().raw
         } else {
             val forward = (target.p - curr.p).atan2
@@ -91,13 +72,12 @@ object PurePursuitController {
         val followPoint = end.copy
         followPoint.x = x
         followPoint.y = y
+
         azusa.azuTelemetry.addData("followpoint", followPoint.p)
         azusa.azuTelemetry.fieldOverlay()
-                .setStroke("white")
-                .strokeLine(azusa.currPose.p.dbNormalize.x, azusa.currPose.p.dbNormalize.y, followPoint.p.dbNormalize.x, followPoint.p.dbNormalize.y)
+            .setStroke("white")
+            .strokeLine(azusa.currPose.p.dbNormalize.x, azusa.currPose.p.dbNormalize.y, followPoint.p.dbNormalize.x, followPoint.p.dbNormalize.y)
 
         goToPosition(azusa, followPoint)
     }
-
 }
-

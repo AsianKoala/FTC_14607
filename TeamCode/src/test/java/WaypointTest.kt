@@ -3,7 +3,6 @@ import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import org.firstinspires.ftc.teamcode.util.math.MathUtil
-import org.firstinspires.ftc.teamcode.util.math.MathUtil.epsilonEquals
 import org.firstinspires.ftc.teamcode.util.math.Point
 
 object WaypointTest {

@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.control.system
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
-import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl
 import org.firstinspires.ftc.teamcode.hardware.Azusa
-import org.firstinspires.ftc.teamcode.util.AzusaTelemetry
+<<<<<<< HEAD
+import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
+=======
+>>>>>>> addc3b9e3ee1e606d023244e45ef484f081844a0
 import org.firstinspires.ftc.teamcode.util.debug.Debuggable
 import org.firstinspires.ftc.teamcode.util.math.Pose
-import org.firstinspires.ftc.teamcode.util.opmode.Globals
+import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.opmode.OpModeType
 
 abstract class BaseOpMode : TunableLinearOpMode() {
@@ -67,8 +68,8 @@ abstract class BaseOpMode : TunableLinearOpMode() {
             azusaTelemetry.update()
         }
         onStop()
-        if (opModeType == OpModeType.AUTO)
-            (internalOpModeServices as OpModeManagerImpl).initActiveOpMode(Globals.TELEOP_NAME)
+//        if (opModeType == OpModeType.AUTO)
+//            (internalOpModeServices as OpModeManagerImpl).initActiveOpMode(Globals.TELEOP_NAME)
     }
 
     open fun onInit() {}

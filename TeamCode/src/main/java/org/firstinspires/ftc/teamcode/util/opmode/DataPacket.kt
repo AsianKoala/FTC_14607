@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util
+package org.firstinspires.ftc.teamcode.util.opmode
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 
