@@ -6,20 +6,12 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
-<<<<<<< HEAD
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
-=======
-import org.firstinspires.ftc.teamcode.util.math.Angle
-import org.firstinspires.ftc.teamcode.util.math.AngleUnit
-import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
-import org.firstinspires.ftc.teamcode.util.math.MathUtil.wrap
->>>>>>> addc3b9e3ee1e606d023244e45ef484f081844a0
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
-import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
@@ -46,15 +38,6 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
 
     private val lastPositions = LinkedList<Point>()
     var lastllupdate: Long = 0
-<<<<<<< HEAD
-
-    var xSpeed = 0.0
-    var ySpeed = 0.0
-    var turnSpeed = 0.0
-
-    var lastUpdateTime: Long = 0
-=======
->>>>>>> addc3b9e3ee1e606d023244e45ef484f081844a0
 
     var xSpeed = 0.0
     var ySpeed = 0.0
@@ -89,10 +72,6 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         )
         allHardware.add(driveTrain)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> addc3b9e3ee1e606d023244e45ef484f081844a0
         dashboard = FtcDashboard.getInstance()
     }
 
@@ -128,13 +107,8 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         while (iterator.hasNext()) {
             val curr = iterator.next()
             azuTelemetry.fieldOverlay()
-<<<<<<< HEAD
-                    .setStroke("red")
-                    .strokeCircle(curr.dbNormalize.x, curr.dbNormalize.y, 1.0)
-=======
                 .setStroke("red")
                 .strokeCircle(curr.dbNormalize.x, curr.dbNormalize.y, 1.0)
->>>>>>> addc3b9e3ee1e606d023244e45ef484f081844a0
         }
     }
 

@@ -3,10 +3,6 @@ package org.firstinspires.ftc.teamcode.control.system
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
 import org.firstinspires.ftc.teamcode.hardware.Azusa
-<<<<<<< HEAD
-import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
-=======
->>>>>>> addc3b9e3ee1e606d023244e45ef484f081844a0
 import org.firstinspires.ftc.teamcode.util.debug.Debuggable
 import org.firstinspires.ftc.teamcode.util.math.Pose
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
