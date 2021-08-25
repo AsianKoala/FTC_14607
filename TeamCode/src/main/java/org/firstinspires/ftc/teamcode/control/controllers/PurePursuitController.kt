@@ -37,7 +37,7 @@ object PurePursuitController {
         val pointDeltas = relVals(azusa.currPose, target).p
 
         val relativeAngle = getDeltaH(azusa.currPose, target)
-        var turnPower = relativeAngle / 30.0.toRadians
+        var turnPower = relativeAngle / 40.0.toRadians
 
 
         movementPoint.x = (pointDeltas.x / (pointDeltas.x.absoluteValue + pointDeltas.y.absoluteValue))
@@ -56,13 +56,13 @@ object PurePursuitController {
         turnPower *= (relativeAngle.absoluteValue / 3.0.toRadians).clip(1.0).clip(1.0)
 
 
-        if(azusa.currPose.distance(target) < 3.5) {
+        if(azusa.currPose.distance(target) < 4) {
             turnPower = 0.0
         }
 
-        var errorTurnScale = Range.clip(1.0-(relativeAngle / 45.0.toRadians), 0.4, 1.0)
+        var errorTurnScale = Range.clip(1.0-(relativeAngle / 45.0.toRadians).absoluteValue, 0.4, 1.0)
 
-        if(turnPower < 0.0001) {
+        if(turnPower.absoluteValue < 0.0001) {
             errorTurnScale = 1.0
         }
 
@@ -87,7 +87,7 @@ object PurePursuitController {
 
     fun followPath(azusa: Azusa, start: Waypoint, end: Waypoint) {
         val clip: Point = clipIntersection(start.p, end.p, azusa.currPose.p)
-        val (x, y) = circleLineIntersection(clip    , start.p, end.p, end.followDistance)
+        val (x, y) = circleLineIntersection(clip, start.p, end.p, end.followDistance)
         val followPoint = end.copy
         followPoint.x = x
         followPoint.y = y
