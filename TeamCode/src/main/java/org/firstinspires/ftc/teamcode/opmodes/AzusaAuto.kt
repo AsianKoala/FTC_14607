@@ -25,11 +25,11 @@ class AzusaAuto : BaseAuto() {
             .addPoint(Waypoint(-8.0, 10.0, 12.0))
             .addPoint(Waypoint(-8.0, -8.0, 12.0))
             .addPoint(Waypoint(0.0, -10.0, 14.0))
-            .addPoint(Waypoint(12.0, -2.0, 14.0))
-            .addPoint(Waypoint(16.0, 6.0, 14.0))
-            .addPoint(Waypoint(12.0, 16.0, 14.0))
-            .addPoint(Waypoint(0.0, 28.0, 12.0))
-            .addPoint(Waypoint(6.0, 42.0, 12.0))
-            .addPoint(StopWaypoint(28.0, 54.0, 12.0, Angle(PI, AngleUnit.RAD))).build()
+            .addPoint(Waypoint(12.0, -2.0, 12.0))
+            .addPoint(Waypoint(16.0, 6.0, 12.0))
+            .addPoint(Waypoint(12.0, 16.0, 12.0))
+            .addPoint(Waypoint(0.0, 28.0, 10.0))
+            .addPoint(Waypoint(6.0, 42.0, 10.0))
+            .addPoint(StopWaypoint(28.0, 54.0, 10.0, Angle(PI, AngleUnit.RAD))).build()
     }
 }
