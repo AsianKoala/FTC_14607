@@ -4,11 +4,11 @@ import org.firstinspires.ftc.teamcode.control.path.funcs.Functions
 import org.firstinspires.ftc.teamcode.util.math.Angle
 
 open class LockedWaypoint(
-        x: Double,
-        y: Double,
-        followDistance: Double,
-        var h: Angle,
-        func: Functions.Function? = null
+    x: Double,
+    y: Double,
+    followDistance: Double,
+    var h: Angle,
+    func: Functions.Function? = null
 ) : Waypoint(x, y, followDistance, func) {
 
     override val copy: Waypoint get() = LockedWaypoint(x, y, followDistance, h, func)

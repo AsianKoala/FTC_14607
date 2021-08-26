@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.control.localization
 
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.teamcode.util.math.*
-import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin

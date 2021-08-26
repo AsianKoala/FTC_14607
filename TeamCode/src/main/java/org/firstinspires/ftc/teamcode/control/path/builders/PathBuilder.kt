@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.control.path.builders
 
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
-import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
@@ -16,9 +15,9 @@ class PathBuilder() {
     }
 
     fun reverse(): PathBuilder {
-        for(w in path) {
+        for (w in path) {
             w.x = -w.x
-            if(w is LockedWaypoint) {
+            if (w is LockedWaypoint) {
                 w.h += Angle(PI, AngleUnit.RAD)
             }
         }

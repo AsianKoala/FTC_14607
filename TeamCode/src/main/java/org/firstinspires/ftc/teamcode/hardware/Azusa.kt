@@ -6,12 +6,12 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
-import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
+import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
@@ -118,9 +118,9 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         }
 
         currPose = odometry.update(
-                masterBulkData.getMotorCurrentPosition(1),
-                masterBulkData.getMotorCurrentPosition(3),
-                masterBulkData.getMotorCurrentPosition(2)
+            masterBulkData.getMotorCurrentPosition(1),
+            masterBulkData.getMotorCurrentPosition(3),
+            masterBulkData.getMotorCurrentPosition(2)
         )
     }
 

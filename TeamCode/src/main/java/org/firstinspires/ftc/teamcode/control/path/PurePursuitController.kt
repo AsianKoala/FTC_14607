@@ -33,22 +33,18 @@ object PurePursuitController {
         val sumAbs = relTarget.x.absoluteValue + relTarget.y.absoluteValue
 
         val movementPowers = (relTarget / sumAbs)
-        movementPowers.x *= relTarget.x.absoluteValue / 18.0
-        movementPowers.y *= relTarget.y.absoluteValue / 18.0
+        movementPowers.x *= relTarget.x.absoluteValue / 14.0
+        movementPowers.y *= relTarget.y.absoluteValue / 14.0
 
-
-        if(target is StopWaypoint) {
-            movementPowers.x = relTarget.x / 14.0
-            movementPowers.y = relTarget.y / 14.0
+        if (target is StopWaypoint) {
+            movementPowers.x = relTarget.x / 12.0
+            movementPowers.y = relTarget.y / 12.0
         }
 
 
         val deltaH = getDeltaH(azusa.currPose, target)
-        var turnPower = deltaH / 60.0.toRadians
+        val turnPower = deltaH / 90.0.toRadians
 
-        if(azusa.currPose.distance(target) < 3) {
-            turnPower = 0.0
-        }
 
         azusa.driveTrain.powers = Pose(movementPowers, Angle(turnPower, AngleUnit.RAW))
     }
