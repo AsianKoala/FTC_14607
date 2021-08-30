@@ -37,8 +37,6 @@ abstract class BaseAuto : BaseOpMode() {
             requestOpModeStop()
         }
 
-        pathCache.follow(azusa)
-
         azusaTelemetry.fieldOverlay()
             .setStroke("black")
             .strokePolyline(x, y)

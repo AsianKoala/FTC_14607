@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import kotlin.collections.ArrayList
+import kotlin.math.absoluteValue
 
 class Path(
     var waypoints: ArrayList<Waypoint>,
@@ -28,7 +29,7 @@ class Path(
             val target = waypoints[currWaypoint + 1]
 
             skip = when (target) {
-                is StopWaypoint -> currPose.distance(target) < 0.8
+                is StopWaypoint -> (currPose.distance(target) < 0.8 && (currPose.h - target.h).angle.absoluteValue < 2.0)
                 is PointTurnWaypoint -> ((currPose.h - target.h).rad < target.dh.rad)
                 else -> currPose.distance(target) < target.followDistance
             }

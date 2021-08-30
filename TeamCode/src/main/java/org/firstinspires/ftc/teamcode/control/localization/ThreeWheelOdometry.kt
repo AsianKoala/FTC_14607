@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.control.localization
 
 import com.acmerobotics.dashboard.config.Config
+import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.*
+import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
+import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
@@ -29,7 +32,7 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
 
     var accumHeading = 0.0
 
-    fun update(currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
+    fun update(azuTelemetry: AzusaTelemetry, currLeftEncoder: Int, currRightEncoder: Int, currAuxEncoder: Int): Pose {
 
         val actualCurrLeft = -(currLeftEncoder - startL)
         val actualCurrRight = (currRightEncoder - startR)
@@ -50,6 +53,7 @@ class ThreeWheelOdometry(val startPose: Pose, val startL: Int, val startR: Int, 
         val rX = aWheelDelta - auxPrediction
 
         accumHeading += angleIncrement
+        azuTelemetry.addData("calc turnScalar", (accumHeading / (2 * PI * 15)) * turnScalar)
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX

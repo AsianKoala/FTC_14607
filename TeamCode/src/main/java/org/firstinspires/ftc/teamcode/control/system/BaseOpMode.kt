@@ -28,6 +28,8 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     var debugging = false
 
     override fun runOpMode() {
+
+        print(status)
         debugging = javaClass.isAnnotationPresent(Debuggable::class.java)
 
         azusaTelemetry = AzusaTelemetry(this)

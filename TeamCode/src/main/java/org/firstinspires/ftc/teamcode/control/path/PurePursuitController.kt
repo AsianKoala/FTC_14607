@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
 import kotlin.math.PI
 import kotlin.math.absoluteValue
+import kotlin.math.hypot
 
 object PurePursuitController {
 
@@ -25,26 +26,33 @@ object PurePursuitController {
     fun goToPosition(azusa: Azusa, target: Waypoint) {
         val (x, y) = target.p.dbNormalize
         azusa.azuTelemetry.fieldOverlay()
-            .setStroke("yellow")
-            .strokeCircle(x, y, 3.0)
+            .setStroke("purple")
+            .strokeCircle(x, y, 1.0)
 
         val relTarget = relVals(azusa.currPose, target)
 
         val sumAbs = relTarget.x.absoluteValue + relTarget.y.absoluteValue
 
-        val movementPowers = (relTarget / sumAbs)
-        movementPowers.x *= relTarget.x.absoluteValue / 14.0
-        movementPowers.y *= relTarget.y.absoluteValue / 14.0
+        var movementPowers = (relTarget / sumAbs)
+//        movementPowers.x *= relTarget.x.absoluteValue / 14.0
+//        movementPowers.y *= relTarget.y.absoluteValue / 14.0
+//
+//        if (target is StopWaypoint) {
+//            movementPowers.x = relTarget.x / 12.0
+//            movementPowers.y      = relTarget.y / 12.0
+//        }
 
-        if (target is StopWaypoint) {
-            movementPowers.x = relTarget.x / 12.0
-            movementPowers.y = relTarget.y / 12.0
-        }
+        movementPowers = (relTarget / 12.0)
+
+
+//        movementPowers.x = (relTarget.x / (hypot(relTarget.x.absoluteValue, relTarget.y.absoluteValue))) * (relTarget.x.absoluteValue / 12.0)
+//        movementPowers.y = (relTarget.y / (hypot(relTarget.x.absoluteValue, relTarget.y.absoluteValue))) * (relTarget.y.absoluteValue / 12.0)
+
+
 
 
         val deltaH = getDeltaH(azusa.currPose, target)
-        val turnPower = deltaH / 90.0.toRadians
-
+        var turnPower = deltaH / 90.0.toRadians
 
         azusa.driveTrain.powers = Pose(movementPowers, Angle(turnPower, AngleUnit.RAW))
     }

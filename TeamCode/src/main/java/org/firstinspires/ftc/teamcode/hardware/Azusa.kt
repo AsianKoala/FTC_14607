@@ -117,7 +117,7 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
             masterBulkData = masterHub.bulkInputData
         }
 
-        currPose = odometry.update(
+        currPose = odometry.update(azuTelemetry,
             masterBulkData.getMotorCurrentPosition(1),
             masterBulkData.getMotorCurrentPosition(3),
             masterBulkData.getMotorCurrentPosition(2)
