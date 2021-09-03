@@ -16,6 +16,6 @@ data class Pose(
     fun distance(p2: Pose) = p.distance(p2.p)
     fun distance(p2: Waypoint) = p.distance(p2.p)
 
-    val toRawString = String.format("%.2f, %.2f, %.2f", x, y, h.raw)
+    val toRawString = String.format("%.2f, %.2f, %.2f", x, y, h.angle)
     override fun toString() = String.format("%.2f, %.2f, %.2f", x, y, h.wrap().deg)
 }

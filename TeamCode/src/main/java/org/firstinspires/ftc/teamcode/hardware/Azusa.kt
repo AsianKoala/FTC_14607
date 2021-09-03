@@ -23,7 +23,7 @@ import kotlin.math.*
 class Azusa(val startPose: Pose, private val debugging: Boolean) {
 
     lateinit var currPose: Pose
-    lateinit var currVel: Pose
+//    lateinit var currVel: Pose
 
     lateinit var masterHub: ExpansionHubEx
     lateinit var masterBulkData: RevBulkData
@@ -62,7 +62,7 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
 
         currPose = startPose
 
-        currVel = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
+//        currVel = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
 
         driveTrain = DriveTrain(
             hwMap.get(ExpansionHubMotor::class.java, "FL"),
@@ -70,6 +70,7 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
             hwMap.get(ExpansionHubMotor::class.java, "BL"),
             hwMap.get(ExpansionHubMotor::class.java, "BR")
         )
+
         allHardware.add(driveTrain)
 
         dashboard = FtcDashboard.getInstance()
@@ -117,7 +118,8 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
             masterBulkData = masterHub.bulkInputData
         }
 
-        currPose = odometry.update(azuTelemetry,
+        currPose = odometry.update(
+            azuTelemetry,
             masterBulkData.getMotorCurrentPosition(1),
             masterBulkData.getMotorCurrentPosition(3),
             masterBulkData.getMotorCurrentPosition(2)
@@ -129,7 +131,6 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
     }
 
     fun teleopControl(gamepad: Gamepad, driveScale: Double) {
-//        val driveScale = 0.45 - if (gamepad.left_bumper) 0.2 else 0.0
         driveTrain.powers = Pose(
             Point(
                 gamepad.left_stick_x * driveScale,
@@ -156,7 +157,7 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
 
         val totalSpeed = hypot(xSpeed, ySpeed)
         val angle = atan2(ySpeed, xSpeed) - 90.0.toRadians
-        val outputAngle = currPose.h.rad + angle
+        val outputAngle = currPose.h.angle + angle
         currPose.p.x += totalSpeed * cos(outputAngle) * elapsedTime * 40
         currPose.p.y += totalSpeed * sin(outputAngle) * elapsedTime * 40
 
@@ -164,7 +165,7 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
 
         xSpeed += Range.clip((driveTrain.powers.x - xSpeed) / 0.2, -1.0, 1.0) * elapsedTime
         ySpeed += Range.clip((driveTrain.powers.y - ySpeed) / 0.2, -1.0, 1.0) * elapsedTime
-        turnSpeed += Range.clip((driveTrain.powers.h.raw - turnSpeed) / 0.2, -1.0, 1.0) * elapsedTime
+        turnSpeed += Range.clip((driveTrain.powers.h.angle - turnSpeed) / 0.2, -1.0, 1.0) * elapsedTime
 
         xSpeed *= 1.0 - (elapsedTime)
         ySpeed *= 1.0 - (elapsedTime)

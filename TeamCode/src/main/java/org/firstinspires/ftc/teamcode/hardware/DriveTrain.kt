@@ -20,10 +20,10 @@ class DriveTrain(
     private val motors = arrayOf(frontLeft, frontRight, backLeft, backRight)
 
     override fun update(azuTelemetry: AzusaTelemetry) {
-        val rawFrontLeft: Double = -powers.y - powers.x + powers.h.raw
-        val rawFrontRight: Double = powers.y - powers.x + powers.h.raw
-        val rawBackLeft: Double = -powers.y + powers.x + powers.h.raw
-        val rawBackRight: Double = powers.y + powers.x + powers.h.raw
+        val rawFrontLeft: Double = -powers.y - powers.x + powers.h.angle
+        val rawFrontRight: Double = powers.y - powers.x + powers.h.angle
+        val rawBackLeft: Double = -powers.y + powers.x + powers.h.angle
+        val rawBackRight: Double = powers.y + powers.x + powers.h.angle
 
         var rawPowers = listOf(rawFrontLeft, rawFrontRight, rawBackLeft, rawBackRight)
         val max: Double = rawPowers.map { it.absoluteValue }.maxOrNull()!!

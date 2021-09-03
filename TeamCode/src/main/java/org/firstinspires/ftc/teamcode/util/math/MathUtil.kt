@@ -10,18 +10,7 @@ object MathUtil {
     val Double.toRadians get() = Math.toRadians(this)
     val Double.toDegrees get() = Math.toDegrees(this)
 
-    infix fun Double.epsilonEquals(a: Double): Boolean {
-        return when (this.isInfinite()) {
-            true -> this == a
-            false -> (this - a).absoluteValue < EPSILON
-        }
-    }
-
     fun Double.clip(a: Double) = Range.clip(this, -a, a)
-
-    // always remember the phrase "degrees is for brainlets!"
-    // (i made that phrase up)
-    val Double.wrap get() = Angle(this, AngleUnit.RAD).wrap().rad
 
     fun rotatePoint(p: Point, h: Angle) = Point(
         h.cos * p.y + h.sin * p.x,
@@ -29,7 +18,7 @@ object MathUtil {
     )
 
     fun angleThresh(a: Angle, b: Angle, c: Angle): Boolean {
-        return (a - b).wrap().rad.absoluteValue < c.rad
+        return (a - b).wrap().angle.absoluteValue < c.angle
     }
 
     fun maxify(input: Double, min: Double): Double {
@@ -54,12 +43,12 @@ object MathUtil {
     }
 
     fun extendLine(firstPoint: Point, secondPoint: Point, distance: Double): Point {
-        val lineAngle = atan2(secondPoint.y - firstPoint.y, secondPoint.x - firstPoint.x)
-        val lineLength = hypot(secondPoint.y - firstPoint.y, secondPoint.x - firstPoint.x)
-        val extendedLineLength = lineLength + distance
+        val lineAngle = (secondPoint - firstPoint).atan2
+        val length = secondPoint.distance(firstPoint)
+        val extendedLineLength = length + distance
         val extended = secondPoint.copy
-        extended.x = cos(lineAngle) * extendedLineLength + firstPoint.x
-        extended.y = sin(lineAngle) * extendedLineLength + firstPoint.y
+        extended.x = lineAngle.cos * extendedLineLength + firstPoint.x
+        extended.y = lineAngle.sin * extendedLineLength + firstPoint.y
         return extended
     }
 
