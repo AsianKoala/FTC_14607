@@ -13,6 +13,6 @@ class AzusaTele : BaseOpMode() {
     override fun startPose(): Pose = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAD))
 
     override fun onLoop() {
-        azusa.teleopControl(gamepad1, 0.5)
+        azusa.teleopControl(gamepad1, 0.5, false)
     }
 }

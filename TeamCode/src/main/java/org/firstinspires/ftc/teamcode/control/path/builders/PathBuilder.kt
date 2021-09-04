@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import kotlin.math.PI
 
 class PathBuilder() {
-    var path: ArrayList<Waypoint> = ArrayList()
+    val path: ArrayList<Waypoint> = ArrayList()
     fun addPoint(p: Waypoint): PathBuilder {
         path.add(p)
         return this

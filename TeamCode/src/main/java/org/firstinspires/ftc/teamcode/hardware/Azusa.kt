@@ -130,15 +130,29 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         allHardware.forEach { it.update(azuTelemetry) }
     }
 
-    fun teleopControl(gamepad: Gamepad, driveScale: Double) {
-        driveTrain.powers = Pose(
-            Point(
-                gamepad.left_stick_x * driveScale,
-                -gamepad.left_stick_y * driveScale
-            ),
-            Angle(-gamepad.right_stick_x * driveScale, AngleUnit.RAW)
-        )
-        driveTrain.update(azuTelemetry)
+    fun teleopControl(gamepad: Gamepad, driveScale: Double, fieldOriented: Boolean) {
+        if(fieldOriented) {
+            val p = Point(gamepad.left_stick_x.toDouble(), -gamepad.left_stick_y.toDouble())
+            val h = p.hypot
+            val angle = p.atan2
+
+            driveTrain.powers = Pose(
+                    Point(
+                            h * angle.cos,
+                            h * angle.sin
+                    ),
+                    Angle(-gamepad.right_stick_x.toDouble(), AngleUnit.RAW)
+            )
+        } else {
+            driveTrain.powers = Pose(
+                    Point(
+                            gamepad.left_stick_x * driveScale,
+                            -gamepad.left_stick_y * driveScale
+                    ),
+                    Angle(-gamepad.right_stick_x * driveScale, AngleUnit.RAW)
+            )
+            driveTrain.update(azuTelemetry)
+        }
     }
 
     private fun debugPhysics() {
