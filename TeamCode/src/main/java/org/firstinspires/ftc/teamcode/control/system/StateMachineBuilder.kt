@@ -10,7 +10,7 @@ class StateMachineBuilder {
 
     fun build(): StateMachine {
         val copyList = ArrayList<State>()
-        for(state in states) {
+        for (state in states) {
             copyList.add(state)
         }
         return StateMachine(states)

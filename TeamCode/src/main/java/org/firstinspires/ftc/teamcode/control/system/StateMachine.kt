@@ -6,12 +6,12 @@ class StateMachine(val states: ArrayList<State>) {
     val running get() = curr < states.size
 
     fun run() {
-        if(running) {
+        if (running) {
             println("curr: $curr")
             val currState = states[curr]
             println("current state: ${currState.name}")
             currState.run()
-            if(currState.skipCondition) {
+            if (currState.skipCondition) {
                 curr++
             }
         }
