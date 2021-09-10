@@ -70,7 +70,7 @@ object PurePursuitController {
             }
 
             if (skip) {
-                path.incWaypoint()
+                println(path.incWaypoint())
 
                 val currAction = path.start.func
                 if (currAction is Functions.SimpleFunction) {

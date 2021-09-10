@@ -13,9 +13,7 @@ class Path(waypoints: ArrayList<Waypoint>) : ArrayList<Waypoint>() {
 
     val isFinished = currWaypoint >= size - 1
 
-    fun incWaypoint() {
-        currWaypoint++
-    }
+    fun incWaypoint() = ++currWaypoint
 
     init {
         waypoints.forEach { this.add(it.copy) }
