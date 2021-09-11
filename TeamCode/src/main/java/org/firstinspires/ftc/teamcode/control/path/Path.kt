@@ -1,21 +1,26 @@
 package org.firstinspires.ftc.teamcode.control.path
 
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
+import org.firstinspires.ftc.teamcode.hardware.Azusa
 import kotlin.collections.ArrayList
 
-class Path(waypoints: ArrayList<Waypoint>) : ArrayList<Waypoint>() {
-
+abstract class Path(val waypoints: ArrayList<Waypoint>) {
     var currWaypoint: Int = 0
         private set
 
-    val start get() = this[currWaypoint]
-    val target get() = this[currWaypoint + 1]
+    val start get() = waypoints[currWaypoint]
+    val target get() = waypoints[currWaypoint + 1]
 
-    val isFinished = currWaypoint >= size - 1
+    val isFinished = currWaypoint >= waypoints.size - 1
 
     fun incWaypoint() = ++currWaypoint
 
+    abstract fun update(azusa: Azusa)
+
     init {
-        waypoints.forEach { this.add(it.copy) }
+        val copy = ArrayList<Waypoint>()
+        waypoints.forEach { copy.add(it.copy) }
+        waypoints.clear()
+        waypoints.addAll(copy)
     }
 }

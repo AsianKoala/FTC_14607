@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.control.system
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PurePursuitController
+import org.firstinspires.ftc.teamcode.control.path.purepursuit.PurePursuitPath
 import java.util.*
 
 @Disabled
@@ -17,9 +18,9 @@ abstract class BaseAuto : BaseOpMode() {
     override fun onInit() {
         pathCache = initialPath()
 
-        x = DoubleArray(pathCache.size)
-        y = DoubleArray(pathCache.size)
-        for ((index, e) in pathCache.withIndex()) {
+        x = DoubleArray(pathCache.waypoints.size)
+        y = DoubleArray(pathCache.waypoints.size)
+        for ((index, e) in pathCache.waypoints.withIndex()) {
             x[index] = e.p.y
             y[index] = -e.p.x
         }
@@ -35,7 +36,7 @@ abstract class BaseAuto : BaseOpMode() {
             requestOpModeStop()
         }
 
-        PurePursuitController.followPath(azusa, pathCache)
+        pathCache.update(azusa)
         updateDashboardPath()
     }
 

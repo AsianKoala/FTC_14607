@@ -1,14 +1,9 @@
 package org.firstinspires.ftc.teamcode.control.path
 
-import org.firstinspires.ftc.teamcode.control.path.funcs.Functions
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
-import org.firstinspires.ftc.teamcode.control.path.waypoints.PointTurnWaypoint
-import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.*
-import org.firstinspires.ftc.teamcode.util.math.MathUtil.circleLineIntersection
-import org.firstinspires.ftc.teamcode.util.math.MathUtil.clipIntersection
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import kotlin.math.PI
 
@@ -46,57 +41,6 @@ object PurePursuitController {
             val angleToBack = (back - curr.h).wrap()
             val autoAngle = if (angleToForward.abs < angleToBack.abs) forward else back
             (autoAngle - curr.h).wrap().angle
-        }
-    }
-
-    fun followPath(azusa: Azusa, path: Path) {
-        val currPose = azusa.currPose
-
-        val target = path.target
-
-        var skip: Boolean
-        do {
-            skip = when (target) {
-                is StopWaypoint -> currPose.distance(target) < 0.8 && MathUtil.angleThresh(currPose.h, target.h, target.dh)
-                is PointTurnWaypoint -> MathUtil.angleThresh(currPose.h, target.h, target.dh)
-                else -> currPose.distance(target) < target.followDistance
-            }
-
-            val startAction = path.start.func
-            if (startAction is Functions.RepeatFunction) {
-                startAction.run(azusa, path)
-            } else if (startAction is Functions.LoopUntilFunction) {
-                skip = startAction.run(azusa, path)
-            }
-
-            if (skip) {
-                println(path.incWaypoint())
-
-                val currAction = path.start.func
-                if (currAction is Functions.SimpleFunction) {
-                    currAction.run(azusa, path)
-                }
-            }
-        } while (skip && !path.isFinished)
-
-        val nStart = path.start
-        val nEnd = path.target
-
-        val clip: Point = clipIntersection(nStart.p, nEnd.p, azusa.currPose.p)
-        val (x, y) = circleLineIntersection(clip, nStart.p, nEnd.p, nEnd.followDistance)
-        val followPoint = nEnd.copy
-        followPoint.x = x
-        followPoint.y = y
-
-        azusa.azuTelemetry.addData("followpoint", followPoint.p)
-        azusa.azuTelemetry.fieldOverlay()
-            .setStroke("white")
-            .strokeLine(azusa.currPose.p.dbNormalize.x, azusa.currPose.p.dbNormalize.y, followPoint.p.dbNormalize.x, followPoint.p.dbNormalize.y)
-
-        if ((target is StopWaypoint && azusa.currPose.distance(target) < target.followDistance) || target is PointTurnWaypoint) {
-            goToPosition(azusa, nEnd)
-        } else {
-            goToPosition(azusa, followPoint)
         }
     }
 }

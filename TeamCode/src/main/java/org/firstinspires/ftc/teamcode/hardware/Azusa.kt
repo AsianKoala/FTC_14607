@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
+import org.firstinspires.ftc.teamcode.util.opmode.OpModePacket
 import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
@@ -20,7 +21,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.*
 
 @Config
-class Azusa(val startPose: Pose, private val debugging: Boolean) {
+class Azusa(val dataPacket: OpModePacket) {
 
     lateinit var currPose: Pose
 //    lateinit var currVel: Pose
@@ -45,30 +46,30 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
 
     var lastUpdateTime: Long = 0
 
-    fun init(hwMap: HardwareMap, telemetry: AzusaTelemetry) {
-        azuTelemetry = telemetry
+    fun init() {
+        azuTelemetry = dataPacket.telemetry
 
         allHardware = ArrayList()
 
-        masterHub = hwMap.get(ExpansionHubEx::class.java, "masterHub")
+        masterHub = dataPacket.hwMap.get(ExpansionHubEx::class.java, "masterHub")
         masterBulkData = masterHub.bulkInputData
 
         odometry = ThreeWheelOdometry(
-            startPose,
+            dataPacket.startPose,
             masterBulkData.getMotorCurrentPosition(1),
             masterBulkData.getMotorCurrentPosition(3),
             masterBulkData.getMotorCurrentPosition(2)
         )
 
-        currPose = startPose
+        currPose = dataPacket.startPose
 
 //        currVel = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
 
         driveTrain = DriveTrain(
-            hwMap.get(ExpansionHubMotor::class.java, "FL"),
-            hwMap.get(ExpansionHubMotor::class.java, "FR"),
-            hwMap.get(ExpansionHubMotor::class.java, "BL"),
-            hwMap.get(ExpansionHubMotor::class.java, "BR")
+            dataPacket.hwMap.get(ExpansionHubMotor::class.java, "FL"),
+            dataPacket.hwMap.get(ExpansionHubMotor::class.java, "FR"),
+            dataPacket.hwMap.get(ExpansionHubMotor::class.java, "BL"),
+            dataPacket.hwMap.get(ExpansionHubMotor::class.java, "BR")
         )
 
         allHardware.add(driveTrain)
@@ -77,7 +78,12 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
     }
 
     fun update() {
-        if (!debugging) updateOdo() else debugPhysics()
+        if (dataPacket.debugging) {
+            debugPhysics()
+
+        } else {
+            updateOdo()
+        }
         updateHW()
         updateTelemetry()
     }
@@ -130,9 +136,9 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
         allHardware.forEach { it.update(azuTelemetry) }
     }
 
-    fun teleopControl(gamepad: Gamepad, driveScale: Double, fieldOriented: Boolean) {
+    fun teleopControl(driveScale: Double, fieldOriented: Boolean) {
         if (fieldOriented) {
-            val p = Point(gamepad.left_stick_x.toDouble(), -gamepad.left_stick_y.toDouble())
+            val p = Point(dataPacket.gamepad.left_stick_x.toDouble(), -dataPacket.gamepad.left_stick_y.toDouble())
             val h = p.hypot
             val angle = p.atan2
 
@@ -141,15 +147,15 @@ class Azusa(val startPose: Pose, private val debugging: Boolean) {
                     h * angle.cos,
                     h * angle.sin
                 ),
-                Angle(-gamepad.right_stick_x.toDouble(), AngleUnit.RAW)
+                Angle(-dataPacket.gamepad.right_stick_x.toDouble(), AngleUnit.RAW)
             )
         } else {
             driveTrain.powers = Pose(
                 Point(
-                    gamepad.left_stick_x * driveScale,
-                    -gamepad.left_stick_y * driveScale
+                    dataPacket.gamepad.left_stick_x * driveScale,
+                    -dataPacket.gamepad.left_stick_y * driveScale
                 ),
-                Angle(-gamepad.right_stick_x * driveScale, AngleUnit.RAW)
+                Angle(-dataPacket.gamepad.right_stick_x * driveScale, AngleUnit.RAW)
             )
             driveTrain.update(azuTelemetry)
         }

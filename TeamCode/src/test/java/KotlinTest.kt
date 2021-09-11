@@ -11,25 +11,25 @@ object KotlinTest {
         val start = System.currentTimeMillis()
 
         val stateMachine = StateMachineBuilder()
-                .addState(object: State() {
-                    override fun run() {
-                        println(name)
-                    }
+            .addState(object : State() {
+                override fun run() {
+                    println(name)
+                }
 
-                    override val name: String
-                        get() = "first one"
-                })
-                .addState(object: State() {
-                    override fun run() {
-                        println(name)
-                    }
+                override val name: String
+                    get() = "first one"
+            })
+            .addState(object : State() {
+                override fun run() {
+                    println(name)
+                }
 
-                    override val name: String
-                        get() = "second one"
-                })
-                .build()
+                override val name: String
+                    get() = "second one"
+            })
+            .build()
 
-        while(!stateMachine.killCond()) {
+        while (!stateMachine.killCond()) {
             stateMachine.run()
         }
     }

@@ -6,7 +6,7 @@ abstract class State {
     open val name: String = ""
 
     protected open fun onStart() {}
-    protected open fun onKill() {}
+    open fun onKill() {}
 
     open val killCond: Boolean = true
     protected open val runCond: Boolean = true
@@ -16,16 +16,16 @@ abstract class State {
         private set
 
     fun update() {
-        if(!started && runCond) {
+        if (!started && runCond) {
             onStart()
             started = true
         }
 
-        if(!killed) {
-            if(runCond)
+        if (!killed) {
+            if (runCond)
                 run()
 
-            if(killCond) {
+            if (killCond) {
                 onKill()
                 killed = true
             }

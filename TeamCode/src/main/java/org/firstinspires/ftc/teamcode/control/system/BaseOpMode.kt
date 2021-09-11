@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.debug.Debuggable
 import org.firstinspires.ftc.teamcode.util.math.Pose
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
+import org.firstinspires.ftc.teamcode.util.opmode.OpModePacket
 import org.firstinspires.ftc.teamcode.util.opmode.OpModeType
 
 abstract class BaseOpMode : TunableLinearOpMode() {
@@ -24,13 +25,15 @@ abstract class BaseOpMode : TunableLinearOpMode() {
         debugging = javaClass.isAnnotationPresent(Debuggable::class.java)
 
         azusaTelemetry = AzusaTelemetry(this)
-        azusa = Azusa(startPose(), debugging)
+        azusa = Azusa(OpModePacket(
+                startPose(), debugging, hardwareMap, azusaTelemetry, gamepad1, gamepad2
+        ))
 
         opModeType = if (javaClass.isAnnotationPresent(Autonomous::class.java)) {
             OpModeType.AUTO
         } else OpModeType.TELEOP
 
-        azusa.init(hardwareMap, azusaTelemetry)
+        azusa.init()
         onInit()
 
         while (opModeIsActive()) {
