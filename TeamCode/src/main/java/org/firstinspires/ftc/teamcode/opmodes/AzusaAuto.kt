@@ -18,7 +18,7 @@ import kotlin.math.PI
 @Autonomous
 @Debuggable
 class AzusaAuto : BaseAuto() {
-    override fun startPose(): Pose = Pose(Point(38.0, 58.0), Angle(PI, AngleUnit.RAD))
+    override val startPose get() = Pose(Point(38.0, 58.0), Angle(PI, AngleUnit.RAD))
 
     override fun initialPath(): Path {
         return PurePursuitBuilder().addPoint(Waypoint(38.0, 58.0, 0.0))

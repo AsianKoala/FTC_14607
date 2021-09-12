@@ -2,17 +2,23 @@ package org.firstinspires.ftc.teamcode.control.system
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl
 import org.firstinspires.ftc.teamcode.hardware.Azusa
+import org.firstinspires.ftc.teamcode.hardware.BaseRobot
+import org.firstinspires.ftc.teamcode.hardware.Firefly
 import org.firstinspires.ftc.teamcode.util.debug.Debuggable
 import org.firstinspires.ftc.teamcode.util.math.Pose
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
+import org.firstinspires.ftc.teamcode.util.opmode.Globals
 import org.firstinspires.ftc.teamcode.util.opmode.OpModePacket
 import org.firstinspires.ftc.teamcode.util.opmode.OpModeType
 
 abstract class BaseOpMode : TunableLinearOpMode() {
-    abstract fun startPose(): Pose
+    abstract val startPose: Pose
 
+    private lateinit var robot: BaseRobot
     lateinit var azusa: Azusa
+    lateinit var firefly: Firefly
 
     lateinit var azusaTelemetry: AzusaTelemetry
 
@@ -25,15 +31,23 @@ abstract class BaseOpMode : TunableLinearOpMode() {
         debugging = javaClass.isAnnotationPresent(Debuggable::class.java)
 
         azusaTelemetry = AzusaTelemetry(this)
-        azusa = Azusa(OpModePacket(
-                startPose(), debugging, hardwareMap, azusaTelemetry, gamepad1, gamepad2
-        ))
+
+
+        val packet = OpModePacket(startPose, debugging, hardwareMap, azusaTelemetry, gamepad1, gamepad2)
+        if ((internalOpModeServices as OpModeManagerImpl).activeOpModeName.startsWith("Azusa", true)) {
+            azusa = Azusa(packet)
+            robot = azusa
+
+        } else {
+            firefly = Firefly(packet)
+            robot = firefly
+        }
 
         opModeType = if (javaClass.isAnnotationPresent(Autonomous::class.java)) {
             OpModeType.AUTO
         } else OpModeType.TELEOP
 
-        azusa.init()
+        robot.init()
         onInit()
 
         while (opModeIsActive()) {
@@ -48,12 +62,12 @@ abstract class BaseOpMode : TunableLinearOpMode() {
                 }
             }
 
-            azusa.update()
+            robot.update()
             azusaTelemetry.update()
         }
         onStop()
-//        if (opModeType == OpModeType.AUTO)
-//            (internalOpModeServices as OpModeManagerImpl).initActiveOpMode(Globals.TELEOP_NAME)
+        if (opModeType == OpModeType.AUTO && Globals.IS_COMP)
+            (internalOpModeServices as OpModeManagerImpl).initActiveOpMode(Globals.TELEOP_NAME)
     }
 
     open fun onInit() {}

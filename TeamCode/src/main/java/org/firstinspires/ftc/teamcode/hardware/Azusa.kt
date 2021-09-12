@@ -21,7 +21,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.*
 
 @Config
-class Azusa(val dataPacket: OpModePacket) {
+class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
 
     lateinit var currPose: Pose
 //    lateinit var currVel: Pose
@@ -32,7 +32,6 @@ class Azusa(val dataPacket: OpModePacket) {
     lateinit var odometry: ThreeWheelOdometry
 
     lateinit var driveTrain: DriveTrain
-    lateinit var allHardware: ArrayList<Hardware>
 
     lateinit var dashboard: FtcDashboard
     lateinit var azuTelemetry: AzusaTelemetry
@@ -46,10 +45,8 @@ class Azusa(val dataPacket: OpModePacket) {
 
     var lastUpdateTime: Long = 0
 
-    fun init() {
+    override fun init() {
         azuTelemetry = dataPacket.telemetry
-
-        allHardware = ArrayList()
 
         masterHub = dataPacket.hwMap.get(ExpansionHubEx::class.java, "masterHub")
         masterBulkData = masterHub.bulkInputData
@@ -58,7 +55,7 @@ class Azusa(val dataPacket: OpModePacket) {
             dataPacket.startPose,
             masterBulkData.getMotorCurrentPosition(1),
             masterBulkData.getMotorCurrentPosition(3),
-            masterBulkData.getMotorCurrentPosition(2)
+            masterBulkData.getMotorCurrentPosition(2),
         )
 
         currPose = dataPacket.startPose
@@ -77,7 +74,7 @@ class Azusa(val dataPacket: OpModePacket) {
         dashboard = FtcDashboard.getInstance()
     }
 
-    fun update() {
+    override fun update() {
         if (dataPacket.debugging) {
             debugPhysics()
 
@@ -157,7 +154,6 @@ class Azusa(val dataPacket: OpModePacket) {
                 ),
                 Angle(-dataPacket.gamepad.right_stick_x * driveScale, AngleUnit.RAW)
             )
-            driveTrain.update(azuTelemetry)
         }
     }
 
