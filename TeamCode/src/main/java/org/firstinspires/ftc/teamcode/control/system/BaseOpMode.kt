@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.util.math.Pose
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.firstinspires.ftc.teamcode.util.opmode.OpModePacket
 import org.firstinspires.ftc.teamcode.util.opmode.OpModeType
+import org.firstinspires.ftc.teamcode.util.opmode.Status
 
 abstract class BaseOpMode : TunableLinearOpMode() {
     abstract fun startPose(): Pose
@@ -15,6 +16,13 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     lateinit var azusa: Azusa
 
     lateinit var azusaTelemetry: AzusaTelemetry
+
+    private val status: Status
+        get() = when {
+            isStopRequested -> Status.STOP
+            isStarted -> Status.LOOP
+            else -> Status.INIT_LOOP
+        }
 
     private var hasStarted = false
 
@@ -36,18 +44,25 @@ abstract class BaseOpMode : TunableLinearOpMode() {
         azusa.init()
         onInit()
 
-        while (opModeIsActive()) {
-            if (!isStarted) {
-                onInitLoop()
-            } else {
-                if (hasStarted)
-                    onLoop()
-                else {
-                    onStart()
-                    hasStarted = true
+        mainLoop@ while (true) {
+            when (status) {
+                Status.INIT_LOOP -> {
+                    onInitLoop()
+                }
+
+                Status.LOOP -> {
+                    if (hasStarted) {
+                        onLoop()
+                    } else {
+                        onStart()
+                        hasStarted = true
+                    }
+                }
+
+                Status.STOP -> {
+                    break@mainLoop
                 }
             }
-
             azusa.update()
             azusaTelemetry.update()
         }

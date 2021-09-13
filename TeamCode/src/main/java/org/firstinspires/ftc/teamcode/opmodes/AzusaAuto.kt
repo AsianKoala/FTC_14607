@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
 import kotlin.math.PI
 
-@Autonomous
 @Debuggable
+@Autonomous
 class AzusaAuto : BaseAuto() {
     override fun startPose(): Pose = Pose(Point(38.0, 58.0), Angle(PI, AngleUnit.RAD))
 

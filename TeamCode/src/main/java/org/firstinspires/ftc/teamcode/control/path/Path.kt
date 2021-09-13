@@ -6,14 +6,9 @@ import kotlin.collections.ArrayList
 
 abstract class Path(val waypoints: ArrayList<Waypoint>) {
     var currWaypoint: Int = 0
-        private set
+        protected set
 
-    val start get() = waypoints[currWaypoint]
-    val target get() = waypoints[currWaypoint + 1]
-
-    val isFinished = currWaypoint >= waypoints.size - 1
-
-    fun incWaypoint() = ++currWaypoint
+    val isFinished get() = currWaypoint >= waypoints.size - 1
 
     abstract fun update(azusa: Azusa)
 

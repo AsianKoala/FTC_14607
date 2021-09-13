@@ -9,7 +9,7 @@ import kotlin.math.PI
 
 object PurePursuitController {
 
-    private fun relVals(curr: Pose, target: Waypoint): Point {
+    fun relVals(curr: Pose, target: Waypoint): Point {
         val d = (curr.p - target.p).hypot
         val rh = (target.p - curr.p).atan2 - curr.h
         return Point(-d * rh.sin, d * rh.cos)
@@ -31,7 +31,7 @@ object PurePursuitController {
         azusa.driveTrain.powers = Pose(movementPowers, Angle(turnPower, AngleUnit.RAW))
     }
 
-    private fun getDeltaH(curr: Pose, target: Waypoint): Double {
+    fun getDeltaH(curr: Pose, target: Waypoint): Double {
         return if (target is LockedWaypoint) {
             (target.h - curr.h).wrap().angle
         } else {

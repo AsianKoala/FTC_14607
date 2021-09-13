@@ -105,18 +105,18 @@ class Azusa(val dataPacket: OpModePacket) {
                 x, y, x + radius * currPose.h.sin, y - radius * currPose.h.cos
             )
 
-        if (System.currentTimeMillis() - lastllupdate > 250) {
-            lastllupdate = System.currentTimeMillis()
-            lastPositions.add(currPose.p.copy)
-        }
+//        if (System.currentTimeMillis() - lastllupdate > 250) {
+//            lastllupdate = System.currentTimeMillis()
+//            lastPositions.add(currPose.p.copy)
+//        }
 
-        val iterator = lastPositions.iterator()
-        while (iterator.hasNext()) {
-            val curr = iterator.next()
-            azuTelemetry.fieldOverlay()
-                .setStroke("red")
-                .strokeCircle(curr.dbNormalize.x, curr.dbNormalize.y, 1.0)
-        }
+//        val iterator = lastPositions.iterator()
+//        while (iterator.hasNext()) {
+//            val curr = iterator.next()
+//            azuTelemetry.fieldOverlay()
+//                .setStroke("red")
+//                .strokeCircle(curr.dbNormalize.x, curr.dbNormalize.y, 1.0)
+//        }
     }
 
     private fun updateOdo() {
