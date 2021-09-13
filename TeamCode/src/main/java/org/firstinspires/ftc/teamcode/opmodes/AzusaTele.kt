@@ -19,7 +19,7 @@ import kotlin.math.PI
 @Debuggable
 class AzusaTele : BaseOpMode() {
 
-    override fun startPose(): Pose = Pose(Point(38.0, 58.0), Angle(0.0, AngleUnit.RAD))
+    override val startPose = Pose(Point(38.0, 58.0), Angle.EAST)
 
     lateinit var pathCache: Path
     override fun onInit() {
