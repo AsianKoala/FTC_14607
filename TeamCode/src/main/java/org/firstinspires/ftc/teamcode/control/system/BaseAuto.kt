@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PurePursuitController
 import org.firstinspires.ftc.teamcode.control.path.purepursuit.PurePursuitPath
+import org.firstinspires.ftc.teamcode.util.opmode.Globals
 import java.util.*
 
 @Disabled
@@ -38,6 +39,10 @@ abstract class BaseAuto : BaseOpMode() {
 
         pathCache.update(azusa)
         updateDashboardPath()
+    }
+
+    override fun onStop() {
+        Globals.AUTO_END_POSE = azusa.currPose.copy
     }
 
     private fun updateDashboardPath() {

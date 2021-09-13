@@ -24,7 +24,7 @@ import kotlin.math.*
 class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
 
     lateinit var currPose: Pose
-//    lateinit var currVel: Pose
+    lateinit var currVel: Pose
 
     lateinit var masterHub: ExpansionHubEx
     lateinit var masterBulkData: RevBulkData
@@ -60,7 +60,7 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
 
         currPose = dataPacket.startPose
 
-//        currVel = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
+        currVel = Pose(Point.ORIGIN, Angle(0.0, AngleUnit.RAW))
 
         driveTrain = DriveTrain(
             dataPacket.hwMap.get(ExpansionHubMotor::class.java, "FL"),

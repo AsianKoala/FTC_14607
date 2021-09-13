@@ -13,13 +13,14 @@ import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
+import org.firstinspires.ftc.teamcode.util.opmode.Globals
 import kotlin.math.PI
 
 @TeleOp
 @Debuggable
 class AzusaTele : BaseOpMode() {
 
-    override val startPose = Pose(Point(38.0, 58.0), Angle.EAST)
+    override val startPose = if(Globals.IS_COMP) Globals.AUTO_END_POSE.copy else Pose(Point(38.0, 58.0), Angle.EAST)
 
     lateinit var pathCache: Path
     override fun onInit() {
