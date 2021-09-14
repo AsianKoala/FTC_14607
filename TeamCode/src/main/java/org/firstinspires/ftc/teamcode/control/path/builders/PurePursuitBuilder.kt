@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import kotlin.math.PI
 
-class PurePursuitBuilder() {
+class PurePursuitBuilder : PathBuilder() {
     val path: ArrayList<Waypoint> = ArrayList()
     fun addPoint(p: Waypoint): PurePursuitBuilder {
         path.add(p)
@@ -25,5 +25,5 @@ class PurePursuitBuilder() {
         return this
     }
 
-    fun build() = PurePursuitPath(path) as Path
+    override fun build(): Path = PurePursuitPath(path)
 }

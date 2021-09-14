@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.control.path.purepursuit
 
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.PurePursuitController
-import org.firstinspires.ftc.teamcode.control.path.funcs.Functions
+import org.firstinspires.ftc.teamcode.control.path.funcs.LoopUntilFunction
+import org.firstinspires.ftc.teamcode.control.path.funcs.RepeatFunction
+import org.firstinspires.ftc.teamcode.control.path.funcs.SimpleFunction
 import org.firstinspires.ftc.teamcode.control.path.waypoints.PointTurnWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
@@ -25,9 +27,9 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
             }
 5
             val startAction = waypoints[currWaypoint].func
-            if (startAction is Functions.RepeatFunction) {
+            if (startAction is RepeatFunction) {
                 startAction.run(azusa, this)
-            } else if (startAction is Functions.LoopUntilFunction) {
+            } else if (startAction is LoopUntilFunction) {
                 skip = startAction.run(azusa, this)
             }
 
@@ -35,7 +37,7 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
                 currWaypoint++
 
                 val currAction = waypoints[currWaypoint].func
-                if (currAction is Functions.SimpleFunction) {
+                if (currAction is SimpleFunction) {
                     currAction.run(azusa, this)
                 }
             }

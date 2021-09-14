@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.path.waypoints
 
-import org.firstinspires.ftc.teamcode.control.path.funcs.Functions
+import org.firstinspires.ftc.teamcode.control.path.funcs.Func
 import org.firstinspires.ftc.teamcode.util.math.Angle
 
 class StopWaypoint(
@@ -9,7 +9,7 @@ class StopWaypoint(
     followDistance: Double,
     h: Angle,
     val dh: Angle,
-    func: Functions.Function? = null
+    func: Func? = null
 ) : LockedWaypoint(x, y, followDistance, h, func) {
 
     override val copy: Waypoint get() = StopWaypoint(x, y, followDistance, h, dh, func)

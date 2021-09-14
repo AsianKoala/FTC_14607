@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.path.waypoints
 
-import org.firstinspires.ftc.teamcode.control.path.funcs.Functions
+import org.firstinspires.ftc.teamcode.control.path.funcs.Func
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
 
@@ -9,7 +9,7 @@ open class Waypoint(
     var x: Double = 0.0,
     var y: Double = 0.0,
     val followDistance: Double = 0.0,
-    val func: Functions.Function? = null
+    val func: Func? = null
 ) {
     val p get() = Point(x, y)
 
