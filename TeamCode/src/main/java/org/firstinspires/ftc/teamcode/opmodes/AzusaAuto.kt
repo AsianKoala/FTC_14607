@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.builders.PurePursuitBuilder
+import org.firstinspires.ftc.teamcode.control.path.funcs.LoopUntilFunction
+import org.firstinspires.ftc.teamcode.control.path.funcs.SimpleFunction
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
@@ -35,6 +37,5 @@ class AzusaAuto : BaseAuto() {
                 .addPoint(Waypoint(6.0, 42.0, 10.0))
                 .addPoint(Waypoint(5.0, 5.0, 10.0))
                 .addPoint(StopWaypoint(28.0, 54.0, 10.0, Angle(PI, AngleUnit.RAD), Angle(3.0.toRadians, AngleUnit.RAD))).build()
-        // instead create a wrapper for functions to specify parameters and then have a sam interface function at the end (similar to roadrunner)
     }
 }

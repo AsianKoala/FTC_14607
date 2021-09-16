@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
+import org.firstinspires.ftc.teamcode.control.localization.Speedometer
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
 import org.firstinspires.ftc.teamcode.util.math.Angle
 import org.firstinspires.ftc.teamcode.util.math.AngleUnit
@@ -30,6 +31,7 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
     lateinit var masterBulkData: RevBulkData
 
     lateinit var odometry: ThreeWheelOdometry
+    lateinit var speedometer: Speedometer
 
     lateinit var driveTrain: DriveTrain
 
@@ -57,6 +59,8 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
             masterBulkData.getMotorCurrentPosition(3),
             masterBulkData.getMotorCurrentPosition(2),
         )
+
+        speedometer = Speedometer()
 
         currPose = dataPacket.startPose
 
@@ -127,6 +131,8 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
             masterBulkData.getMotorCurrentPosition(3),
             masterBulkData.getMotorCurrentPosition(2)
         )
+
+        speedometer.update(currPose)
     }
 
     private fun updateHW() {
@@ -137,12 +143,12 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
         if (fieldOriented) {
             val p = Point(dataPacket.gamepad.left_stick_x.toDouble(), -dataPacket.gamepad.left_stick_y.toDouble())
             val h = p.hypot
-            val angle = p.atan2
+            val angle = p.atan2 - currPose.h
 
             driveTrain.powers = Pose(
                 Point(
-                    h * angle.cos,
-                    h * angle.sin
+                    h * angle.sin,
+                    h * angle.cos
                 ),
                 Angle(-dataPacket.gamepad.right_stick_x.toDouble(), AngleUnit.RAW)
             )

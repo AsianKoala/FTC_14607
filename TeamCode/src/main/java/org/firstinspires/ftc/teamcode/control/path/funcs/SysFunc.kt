@@ -1,3 +1,8 @@
 package org.firstinspires.ftc.teamcode.control.path.funcs
 
-open class SysFunc(open var func: Functions.SimpleFunction)
+class SysFunc(var time: Double, val func: Func) {
+
+    init {
+        time += System.currentTimeMillis()
+    }
+}

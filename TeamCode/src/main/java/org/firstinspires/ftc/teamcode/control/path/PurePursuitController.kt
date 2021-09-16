@@ -9,9 +9,9 @@ import kotlin.math.PI
 
 object PurePursuitController {
 
-    fun relVals(curr: Pose, target: Waypoint): Point {
-        val d = (curr.p - target.p).hypot
-        val rh = (target.p - curr.p).atan2 - curr.h
+    fun relVals(curr: Pose, target: Point): Point {
+        val d = (curr.p - target).hypot
+        val rh = (target - curr.p).atan2 - curr.h
         return Point(-d * rh.sin, d * rh.cos)
     }
 
@@ -21,7 +21,7 @@ object PurePursuitController {
             .setStroke("purple")
             .strokeCircle(x, y, 1.0)
 
-        val relTarget = relVals(azusa.currPose, target)
+        val relTarget = relVals(azusa.currPose, target.p)
 
         val movementPowers = (relTarget / 12.0)
 

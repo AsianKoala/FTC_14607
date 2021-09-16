@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.*
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
+import kotlin.math.absoluteValue
 
 class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
     override fun update(azusa: Azusa) {
@@ -25,7 +26,7 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
                 is PointTurnWaypoint -> MathUtil.angleThresh(currPose.h, target.h, target.dh)
                 else -> currPose.distance(target) < target.followDistance
             }
-5
+            5
             val startAction = waypoints[currWaypoint].func
             if (startAction is RepeatFunction) {
                 startAction.run(azusa, this)
@@ -56,8 +57,8 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
         azusa.azuTelemetry.addData("followpoint", target.p)
         azusa.azuTelemetry.addData("target", end)
         azusa.azuTelemetry.fieldOverlay()
-            .setStroke("white")
-            .strokeLine(azusa.currPose.p.dbNormalize.x, azusa.currPose.p.dbNormalize.y, target.p.dbNormalize.x, target.p.dbNormalize.y)
+                .setStroke("white")
+                .strokeLine(azusa.currPose.p.dbNormalize.x, azusa.currPose.p.dbNormalize.y, target.p.dbNormalize.x, target.p.dbNormalize.y)
 
         if ((end is StopWaypoint && azusa.currPose.distance(end) < end.followDistance) || end is PointTurnWaypoint) {
             PurePursuitController.goToPosition(azusa, end)
@@ -67,7 +68,7 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
                     .setStroke("purple")
                     .strokeCircle(nx, ny, 1.0)
 
-            val relTarget = PurePursuitController.relVals(azusa.currPose, target)
+            val relTarget = PurePursuitController.relVals(azusa.currPose, target.p)
 
             val movementPowers = (relTarget / 12.0)
 
@@ -75,10 +76,17 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
             val turnPower = deltaH / 90.0.toRadians
 
 
+
             // get perpendicular intersetion for x component of the robot
-
-
-            azusa.driveTrain.powers = Pose(movementPowers, Angle(turnPower, AngleUnit.RAW))
+            val dClip = currPose.p.distance(clip)
+            if(dClip > 4) {
+                val relClip = PurePursuitController.relVals(currPose, target.p)
+                val relMovement = relClip / 4.0
+                val finalMovement = (relMovement + movementPowers) / 2.0
+                azusa.driveTrain.powers = Pose(finalMovement, Angle(turnPower, AngleUnit.RAW))
+            } else {
+                azusa.driveTrain.powers = Pose(movementPowers, Angle(turnPower, AngleUnit.RAW))
+            }
         }
     }
 }

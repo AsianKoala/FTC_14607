@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.util.opmode.Globals
 import kotlin.math.PI
 
 @TeleOp
-@Debuggable
 class AzusaTele : BaseOpMode() {
 
     override val startPose = if(Globals.IS_COMP) Globals.AUTO_END_POSE.copy else Pose(Point(38.0, 58.0), Angle.EAST)
@@ -40,10 +39,6 @@ class AzusaTele : BaseOpMode() {
     }
 
     override fun onLoop() {
-        if(gamepad1.right_trigger > 0.5 && !pathCache.isFinished) {
-            pathCache.update(azusa)
-        } else {
-            azusa.teleopControl(1.0, false)
-        }
+        azusa.teleopControl(0.5, true)
     }
 }
