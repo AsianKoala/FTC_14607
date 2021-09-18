@@ -19,8 +19,8 @@ object PIDFControllerTest {
 
             val timestarted = System.currentTimeMillis()
             var lastupdate = timestarted
-            while(abs(position - target) > 0.003) {
-                if(System.currentTimeMillis() - lastupdate > 10) {
+            while (abs(position - target) > 0.003) {
+                if (System.currentTimeMillis() - lastupdate > 10) {
                     position += controller.update(position, null) * Range.clip(Math.random(), 0.3, 0.7)
                     lastupdate = System.currentTimeMillis()
                 }

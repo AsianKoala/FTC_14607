@@ -8,7 +8,7 @@ data class Vector(val mag: Double, val angle: Angle) {
     val norm: Vector get() = Vector(ijform / mag)
 
     operator fun plus(a: Vector) = Vector(a.ijform + ijform)
-    operator fun minus(a: Vector) = Vector(a.ijform  - ijform)
+    operator fun minus(a: Vector) = Vector(a.ijform - ijform)
     operator fun times(scalar: Double) = Vector(mag * scalar, angle)
-    operator fun div(scalar: Double) = this * (1/scalar)
+    operator fun div(scalar: Double) = this * (1 / scalar)
 }

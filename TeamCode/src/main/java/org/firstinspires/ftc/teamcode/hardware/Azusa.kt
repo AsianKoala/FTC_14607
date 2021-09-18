@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.hardware
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
-import com.qualcomm.robotcore.hardware.Gamepad
-import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.localization.Speedometer
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
@@ -18,7 +16,6 @@ import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.*
 
 @Config
@@ -81,7 +78,6 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
     override fun update() {
         if (dataPacket.debugging) {
             debugPhysics()
-
         } else {
             updateOdo()
         }

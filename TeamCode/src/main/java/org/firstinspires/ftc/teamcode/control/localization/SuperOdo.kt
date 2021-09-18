@@ -18,7 +18,6 @@ class SuperOdo(private val startPose: Pose, private val startL: Int, private val
         @JvmField var K = 1.0
     }
 
-
     val kalmanFilter = KalmanFilter(startPose.h.angle, Q, R, P, K)
 
     private var currentPosition: Pose = startPose.copy
@@ -31,7 +30,6 @@ class SuperOdo(private val startPose: Pose, private val startL: Int, private val
     var lastIMURead: Long = 0
     var lastIMUAngle = 0.0
     var imuBias = Angle.EAST
-
 
     fun update(azuTelemetry: AzusaTelemetry, currLeftEncoder: Int, currRightEncoder: Int, currPerpEncoder: Int, imuHeading: Double): Pose {
 
@@ -51,8 +49,7 @@ class SuperOdo(private val startPose: Pose, private val startL: Int, private val
         val angleIncrement = (lWheelDelta - rWheelDelta) / turnScalar
         val odocalcangle = -Angle(((leftTotal - rightTotal) / turnScalar), AngleUnit.RAD) + startPose.h + imuBias
 
-
-        if(System.currentTimeMillis() - mintime > lastIMURead) {
+        if (System.currentTimeMillis() - mintime > lastIMURead) {
             lastIMUAngle = imuHeading
             lastIMURead = System.currentTimeMillis()
 
@@ -63,7 +60,6 @@ class SuperOdo(private val startPose: Pose, private val startL: Int, private val
 
         val finalAngle = kalmanFilter.update(odocalcangle.angle, lastIMUAngle)
         azuTelemetry.addData("finalAngle: ", finalAngle)
-
 
         val perpPredict = angleIncrement * perpScalar
         val dx = aWheelDelta - perpPredict

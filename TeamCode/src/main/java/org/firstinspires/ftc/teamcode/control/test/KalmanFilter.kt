@@ -4,7 +4,7 @@ class KalmanFilter(var x: Double, val Q: Double, val R: Double, var P: Double, v
 
     private var xprev = x
     private var pprev = P
-    private  var u = 0.0
+    private var u = 0.0
     private var z = 0.0
 
     fun update(inp1: Double, inp2: Double): Double {

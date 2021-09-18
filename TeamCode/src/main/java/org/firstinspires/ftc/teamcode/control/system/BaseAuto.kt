@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.control.system
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.control.path.Path
-import org.firstinspires.ftc.teamcode.control.path.PurePursuitController
-import org.firstinspires.ftc.teamcode.control.path.purepursuit.PurePursuitPath
 import org.firstinspires.ftc.teamcode.util.opmode.Globals
 import java.util.*
 

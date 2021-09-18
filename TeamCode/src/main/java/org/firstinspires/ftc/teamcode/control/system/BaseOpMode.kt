@@ -40,12 +40,10 @@ abstract class BaseOpMode : TunableLinearOpMode() {
 
         azusaTelemetry = AzusaTelemetry(this)
 
-
         val packet = OpModePacket(startPose, debugging, hardwareMap, azusaTelemetry, gamepad1, gamepad2)
         if ((internalOpModeServices as OpModeManagerImpl).activeOpModeName.startsWith("Azusa", true)) {
             azusa = Azusa(packet)
             robot = azusa
-
         } else {
             firefly = Firefly(packet)
             robot = firefly

@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.control.test
 
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.sign
 
 class PIDFController(val kp: Double, val ki: Double, val kd: Double, val kv: Double, val ka: Double, val ks: Double) {
@@ -36,7 +34,7 @@ class PIDFController(val kp: Double, val ki: Double, val kd: Double, val kv: Dou
         val error = target - position
         val timestamp = System.currentTimeMillis()
 
-        return if(lastupdate.toInt() == 0) {
+        return if (lastupdate.toInt() == 0) {
             lasterror = error
             lastupdate = timestamp
             0.0
@@ -51,7 +49,7 @@ class PIDFController(val kp: Double, val ki: Double, val kd: Double, val kv: Dou
             val baseoutput = kp * error + ki * errorsum + kd * deriv + (refvel ?: targetVel) * kv + targetAccel * ka
             val output = if (abs(baseoutput) < 0.0000001) 0.0 else baseoutput + baseoutput.sign * ks
 
-            if(bounded) {
+            if (bounded) {
                 when {
                     output < lowerbound -> lowerbound
                     output > upperbound -> upperbound

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
 import org.openftc.revextensions2.ExpansionHubMotor
 
-class Intake(private val leftIntake: ExpansionHubMotor, private val rightIntake: ExpansionHubMotor): Hardware() {
+class Intake(private val leftIntake: ExpansionHubMotor, private val rightIntake: ExpansionHubMotor) : Hardware() {
     private var leftPower = 0.0
     private var rightPower = 0.0
 
