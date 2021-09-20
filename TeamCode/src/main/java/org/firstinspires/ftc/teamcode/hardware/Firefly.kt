@@ -45,5 +45,5 @@ class Firefly(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
         intake.setPowers(dataPacket.gamepad.left_bumper.b2d, dataPacket.gamepad.right_bumper.b2d)
     }
 
-    private val Boolean.b2d get() = if(this) 1.0 else 0.0
+    private val Boolean.b2d get() = if (this) 1.0 else 0.0
 }

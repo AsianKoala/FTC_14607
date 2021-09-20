@@ -42,7 +42,7 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
                 }
             }
         } while (skip && currWaypoint < waypoints.size - 1)
-        if(isFinished) return
+        if (isFinished) return
 
         val start = waypoints[currWaypoint]
         val end = waypoints[currWaypoint + 1]
@@ -56,16 +56,16 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
         azusa.azuTelemetry.addData("followpoint", target.p)
         azusa.azuTelemetry.addData("target", end)
         azusa.azuTelemetry.fieldOverlay()
-                .setStroke("white")
-                .strokeLine(azusa.currPose.p.dbNormalize.x, azusa.currPose.p.dbNormalize.y, target.p.dbNormalize.x, target.p.dbNormalize.y)
+            .setStroke("white")
+            .strokeLine(azusa.currPose.p.dbNormalize.x, azusa.currPose.p.dbNormalize.y, target.p.dbNormalize.x, target.p.dbNormalize.y)
 
         if ((end is StopWaypoint && azusa.currPose.distance(end) < end.followDistance) || end is PointTurnWaypoint) {
             PurePursuitController.goToPosition(azusa, end)
         } else {
             val (nx, ny) = target.p.dbNormalize
             azusa.azuTelemetry.fieldOverlay()
-                    .setStroke("purple")
-                    .strokeCircle(nx, ny, 1.0)
+                .setStroke("purple")
+                .strokeCircle(nx, ny, 1.0)
 
             val relTarget = PurePursuitController.relVals(azusa.currPose, target.p)
 
@@ -74,11 +74,9 @@ class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
             val deltaH = PurePursuitController.getDeltaH(azusa.currPose, target)
             val turnPower = deltaH / 90.0.toRadians
 
-
-
             // get perpendicular intersetion for x component of the robot
             val dClip = currPose.p.distance(clip)
-            if(dClip > 4) {
+            if (dClip > 4) {
                 val relClip = PurePursuitController.relVals(currPose, target.p)
                 val relMovement = relClip / 4.0
                 val finalMovement = (relMovement + movementPowers) / 2.0

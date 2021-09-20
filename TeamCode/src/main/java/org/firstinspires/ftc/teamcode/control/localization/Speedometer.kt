@@ -11,7 +11,7 @@ class Speedometer {
     private var bestIndex = 0
 
     fun update(position: Pose): Pose {
-        return if(pastPositions.size == 0) {
+        return if (pastPositions.size == 0) {
             pastPositions.add(TimePose(position))
             Pose(Point.ORIGIN, Angle.EAST)
         } else {
@@ -28,6 +28,5 @@ class Speedometer {
 
             Pose(speeds, angvel)
         }
-
     }
 }

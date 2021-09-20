@@ -10,17 +10,17 @@ open class StateMachine(private val states: ArrayList<State>) {
     fun run() {
         if (!killCond()) {
             var done = 0
-           activeStates.forEach {
-               it.value.update()
-               if(deadStates.containsKey(it.key)) {
-                   it.value.onKill()
-                   activeStates.remove(it.key)
-               }
+            activeStates.forEach {
+                it.value.update()
+                if (deadStates.containsKey(it.key)) {
+                    it.value.onKill()
+                    activeStates.remove(it.key)
+                }
 
-               if(it.value.killed) {
-                   done++
-               }
-           }
+                if (it.value.killed) {
+                    done++
+                }
+            }
             defaultKillCond = done < activeStates.size
         }
     }
@@ -30,7 +30,7 @@ open class StateMachine(private val states: ArrayList<State>) {
     }
 
     fun forceKillState(name: String) {
-        if(activeStates.containsKey(name)) {
+        if (activeStates.containsKey(name)) {
             deadStates[name] = activeStates[name]!!
         }
     }

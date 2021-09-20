@@ -80,7 +80,6 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
     override fun update() {
         if (dataPacket.debugging) {
             debugPhysics()
-
         } else {
             updateOdo()
         }

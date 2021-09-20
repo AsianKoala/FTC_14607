@@ -39,7 +39,6 @@ data class Angle(
     operator fun times(scalar: Double) = Angle(angle * scalar, unit)
     operator fun div(scalar: Double) = Angle(angle / scalar, unit)
 
-
     companion object {
         val EAST get() = Angle(0.0, AngleUnit.RAD)
     }
