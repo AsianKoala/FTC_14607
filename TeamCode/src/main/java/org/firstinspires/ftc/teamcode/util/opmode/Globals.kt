@@ -8,4 +8,5 @@ object Globals {
     const val TELEOP_NAME = "AzusaTele"
     const val IS_COMP = false
     var AUTO_END_POSE = Pose(Point.ORIGIN, Angle.EAST)
+    var ALLIANCE_SIDE = AllianceSide.BLUE
 }

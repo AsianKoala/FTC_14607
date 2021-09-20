@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
 import org.firstinspires.ftc.teamcode.hardware.Azusa
 import org.firstinspires.ftc.teamcode.util.math.*
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
-import kotlin.math.absoluteValue
 
 class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
     override fun update(azusa: Azusa) {

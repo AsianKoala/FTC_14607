@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.builders.PurePursuitBuilder
-import org.firstinspires.ftc.teamcode.control.path.funcs.LoopUntilFunction
-import org.firstinspires.ftc.teamcode.control.path.funcs.SimpleFunction
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint

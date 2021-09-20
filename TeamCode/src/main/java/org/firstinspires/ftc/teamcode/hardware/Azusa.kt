@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.hardware
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
-import com.qualcomm.robotcore.hardware.Gamepad
-import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.control.localization.Speedometer
 import org.firstinspires.ftc.teamcode.control.localization.ThreeWheelOdometry
@@ -12,13 +10,14 @@ import org.firstinspires.ftc.teamcode.util.math.AngleUnit
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import org.firstinspires.ftc.teamcode.util.math.Point
 import org.firstinspires.ftc.teamcode.util.math.Pose
+import org.firstinspires.ftc.teamcode.util.opmode.AllianceSide
 import org.firstinspires.ftc.teamcode.util.opmode.AzusaTelemetry
+import org.firstinspires.ftc.teamcode.util.opmode.Globals
 import org.firstinspires.ftc.teamcode.util.opmode.OpModePacket
 import org.openftc.revextensions2.ExpansionHubEx
 import org.openftc.revextensions2.ExpansionHubMotor
 import org.openftc.revextensions2.RevBulkData
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.*
 
 @Config
@@ -144,13 +143,10 @@ class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
             val p = Point(dataPacket.gamepad.left_stick_x.toDouble(), -dataPacket.gamepad.left_stick_y.toDouble())
             val h = p.hypot
             val angle = p.atan2 - currPose.h
-
+            val powers = Point(h * angle.sin, h * angle.cos) * (if(Globals.ALLIANCE_SIDE==AllianceSide.BLUE) -1.0 else 1.0) * driveScale
             driveTrain.powers = Pose(
-                Point(
-                    h * angle.sin,
-                    h * angle.cos
-                ),
-                Angle(-dataPacket.gamepad.right_stick_x.toDouble(), AngleUnit.RAW)
+                    powers,
+                    Angle(-dataPacket.gamepad.right_stick_x * driveScale, AngleUnit.RAW)
             )
         } else {
             driveTrain.powers = Pose(
