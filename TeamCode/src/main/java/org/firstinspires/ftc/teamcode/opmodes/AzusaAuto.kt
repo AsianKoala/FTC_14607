@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.builders.PurePursuitBuilder
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
@@ -17,6 +18,7 @@ import kotlin.math.PI
 
 @Debuggable
 @Autonomous
+@Disabled
 class AzusaAuto : BaseAuto() {
     override val startPose = Pose(Point(38.0, 58.0), Angle(PI, AngleUnit.RAD))
 

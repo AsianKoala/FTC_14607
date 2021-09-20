@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.control.path
 
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
-import org.firstinspires.ftc.teamcode.hardware.Azusa
+import org.firstinspires.ftc.teamcode.hardware.OldAzusa
 import kotlin.collections.ArrayList
 
 abstract class Path(val waypoints: ArrayList<Waypoint>) {
@@ -10,7 +10,7 @@ abstract class Path(val waypoints: ArrayList<Waypoint>) {
 
     val isFinished get() = currWaypoint >= waypoints.size - 1
 
-    abstract fun update(azusa: Azusa)
+    abstract fun update(azusa: OldAzusa)
 
     init {
         val copy = ArrayList<Waypoint>()

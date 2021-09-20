@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.control.path.Path
 import org.firstinspires.ftc.teamcode.control.path.builders.PurePursuitBuilder
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.util.opmode.Globals
 import kotlin.math.PI
 
 @TeleOp
+@Disabled
 class AzusaTele : BaseOpMode() {
 
     override val startPose = if (Globals.IS_COMP) Globals.AUTO_END_POSE.copy else Pose(Point(38.0, 58.0), Angle.EAST)

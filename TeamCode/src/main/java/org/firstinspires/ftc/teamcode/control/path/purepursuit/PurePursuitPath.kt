@@ -8,12 +8,12 @@ import org.firstinspires.ftc.teamcode.control.path.funcs.SimpleFunction
 import org.firstinspires.ftc.teamcode.control.path.waypoints.PointTurnWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.StopWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
-import org.firstinspires.ftc.teamcode.hardware.Azusa
+import org.firstinspires.ftc.teamcode.hardware.OldAzusa
 import org.firstinspires.ftc.teamcode.util.math.*
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 
 class PurePursuitPath(waypoints: ArrayList<Waypoint>) : Path(waypoints) {
-    override fun update(azusa: Azusa) {
+    override fun update(azusa: OldAzusa) {
         val currPose = azusa.currPose
 
         var skip: Boolean

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.control.path
 
 import org.firstinspires.ftc.teamcode.control.path.waypoints.LockedWaypoint
 import org.firstinspires.ftc.teamcode.control.path.waypoints.Waypoint
-import org.firstinspires.ftc.teamcode.hardware.Azusa
+import org.firstinspires.ftc.teamcode.hardware.OldAzusa
 import org.firstinspires.ftc.teamcode.util.math.*
 import org.firstinspires.ftc.teamcode.util.math.MathUtil.toRadians
 import kotlin.math.PI
@@ -15,7 +15,7 @@ object PurePursuitController {
         return Point(-d * rh.sin, d * rh.cos)
     }
 
-    fun goToPosition(azusa: Azusa, target: Waypoint) {
+    fun goToPosition(azusa: OldAzusa, target: Waypoint) {
         val (x, y) = target.p.dbNormalize
         azusa.azuTelemetry.fieldOverlay()
             .setStroke("purple")

@@ -21,7 +21,7 @@ import java.util.*
 import kotlin.math.*
 
 @Config
-class Azusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
+class OldAzusa(dataPacket: OpModePacket) : BaseRobot(dataPacket) {
 
     lateinit var currPose: Pose
     lateinit var currVel: Pose

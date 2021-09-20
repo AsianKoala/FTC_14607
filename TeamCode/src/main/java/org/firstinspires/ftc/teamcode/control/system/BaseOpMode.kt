@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode.control.system
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import net.frogbots.ftcopmodetunercommon.opmode.TunableLinearOpMode
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl
-import org.firstinspires.ftc.teamcode.hardware.Azusa
+import org.firstinspires.ftc.teamcode.hardware.Akemi
+import org.firstinspires.ftc.teamcode.hardware.OldAzusa
 import org.firstinspires.ftc.teamcode.hardware.BaseRobot
 import org.firstinspires.ftc.teamcode.hardware.Firefly
 import org.firstinspires.ftc.teamcode.util.debug.Debuggable
@@ -18,7 +19,8 @@ abstract class BaseOpMode : TunableLinearOpMode() {
     abstract val startPose: Pose
 
     private lateinit var robot: BaseRobot
-    lateinit var azusa: Azusa
+    lateinit var akemi: Akemi
+    lateinit var azusa: OldAzusa
     lateinit var firefly: Firefly
 
     lateinit var azusaTelemetry: AzusaTelemetry
@@ -41,12 +43,22 @@ abstract class BaseOpMode : TunableLinearOpMode() {
         azusaTelemetry = AzusaTelemetry(this)
 
         val packet = OpModePacket(startPose, debugging, hardwareMap, azusaTelemetry, gamepad1, gamepad2)
-        if ((internalOpModeServices as OpModeManagerImpl).activeOpModeName.startsWith("Azusa", true)) {
-            azusa = Azusa(packet)
-            robot = azusa
-        } else {
-            firefly = Firefly(packet)
-            robot = firefly
+
+        val manager = (internalOpModeServices as OpModeManagerImpl)
+        val nm = manager.activeOpModeName
+        robot = when {
+            nm.startsWith("azusa", true) -> {
+                azusa = OldAzusa(packet)
+                azusa
+            }
+            nm.startsWith("firefly", true) -> {
+                firefly = Firefly(packet)
+                firefly
+            }
+            else -> {
+                akemi = Akemi(packet)
+                akemi
+            }
         }
 
         opModeType = if (javaClass.isAnnotationPresent(Autonomous::class.java)) {
@@ -81,7 +93,7 @@ abstract class BaseOpMode : TunableLinearOpMode() {
 
         onStop()
         if (opModeType == OpModeType.AUTO && Globals.IS_COMP)
-            (internalOpModeServices as OpModeManagerImpl).initActiveOpMode(Globals.TELEOP_NAME)
+            manager.initActiveOpMode(Globals.TELEOP_NAME)
     }
 
     open fun onInit() {}
