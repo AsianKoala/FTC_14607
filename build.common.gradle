@@ -47,10 +47,15 @@ android {
         }
     }
 
+    aaptOptions {
+        noCompress "tflite"
+    }
+
     defaultConfig {
         signingConfig signingConfigs.debug
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 24
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
 
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
@@ -64,8 +69,8 @@ android {
          * We accomplish this with the help of a funky little Groovy script that maintains that
          * correspondence automatically.
          *
-         * @see <ahref="http://developer.android.com/tools/building/configuring-gradle.html"     >     Configure Your Build</a>
-         * @see <ahref="http://developer.android.com/tools/publishing/versioning.html"     >     Versioning Your App</a>
+         * @see "http://developer.android.com/tools/building/configuring-gradle.html"
+         * @see "http://developer.android.com/tools/publishing/versioning.html?
          */
         def manifestFile = project(':FtcRobotController').file('src/main/AndroidManifest.xml');
         def manifestText = manifestFile.getText()
@@ -107,9 +112,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-        coreLibraryDesugaringEnabled true
     }
 
+    packagingOptions {
+        pickFirst '**/*.so'
+    }
     sourceSets.main {
         jni.srcDirs = []
         jniLibs.srcDir rootProject.file('libs')
@@ -121,5 +128,4 @@ repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
-    jcenter()
 }

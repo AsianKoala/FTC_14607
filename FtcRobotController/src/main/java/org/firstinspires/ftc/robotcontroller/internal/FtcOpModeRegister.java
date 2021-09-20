@@ -28,40 +28,41 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-package org.firstinspires.ftc.robotcontroller.internal
 
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManager
-import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister
+package org.firstinspires.ftc.robotcontroller.internal;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.ConceptNullOp;
 
 /**
- * [FtcOpModeRegister] is responsible for registering opmodes for use in an FTC game.
- *
- * @see .register
+ * {@link FtcOpModeRegister} is responsible for registering opmodes for use in an FTC game.
+ * @see #register(OpModeManager)
  */
-class FtcOpModeRegister : OpModeRegister {
+public class FtcOpModeRegister implements OpModeRegister {
+
     /**
-     * [.register] is called by the SDK game in order to register
+     * {@link #register(OpModeManager)} is called by the SDK game in order to register
      * OpMode classes or instances that will participate in an FTC game.
-     *
      *
      * There are two mechanisms by which an OpMode may be registered.
      *
+     *  1) The preferred method is by means of class annotations in the OpMode itself.
+     *  See, for example the class annotations in {@link ConceptNullOp}.
      *
-     * 1) The preferred method is by means of class annotations in the OpMode itself.
-     * See, for example the class annotations in [ConceptNullOp].
-     *
-     *
-     * 2) The other, retired,  method is to modify this [.register]
-     * method to include explicit calls to OpModeManager.register().
-     * This method of modifying this file directly is discouraged, as it
-     * makes updates to the SDK harder to integrate into your code.
+     *  2) The other, retired,  method is to modify this {@link #register(OpModeManager)}
+     *  method to include explicit calls to OpModeManager.register().
+     *  This method of modifying this file directly is discouraged, as it
+     *  makes updates to the SDK harder to integrate into your code.
      *
      * @param manager the object which contains methods for carrying out OpMode registrations
-     * @see com.qualcomm.robotcore.eventloop.opmode.TeleOp
      *
+     * @see com.qualcomm.robotcore.eventloop.opmode.TeleOp
      * @see com.qualcomm.robotcore.eventloop.opmode.Autonomous
      */
-    override fun register(manager: OpModeManager) {
+    public void register(OpModeManager manager) {
+
         /**
          * Any manual OpMode class registrations should go here.
          */
